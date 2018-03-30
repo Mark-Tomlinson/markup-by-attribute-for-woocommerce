@@ -11,7 +11,7 @@
  * Plugin Name: Markup by Attribute for WooCommerce - MT² Tech
  * Plugin URI:  https://wordpress.org/plugins/markup-by-attribute-for-woocommerce/
  * Description: This plugin adds product variation markup by attribute to WooCommerce -- the ability to add a markup (or markdown) to an attribute term and have that change the regular and sale price of the associated product variations.
- * Version:     1.1
+ * Version:     1.1.1
  * Author:      Mark Tomlinson
  * Author URI:  https://profiles.wordpress.org/marktomlinson
  * License:     GPL2

@@ -60,6 +60,9 @@ Thanks! The donation button assumes $15.00 USD. But feel free adjust that amount
 
 == Changelog ==
 
+= 1.1.1 =
+* Added code to class backend-attrb to prevent adjusting price when price field is NULL.
+
 = 1.1 =
 * Moved markup from term Description to new metadata field.
 * Added metadata field to term Add and Edit panels.
@@ -70,6 +73,9 @@ Thanks! The donation button assumes $15.00 USD. But feel free adjust that amount
 * Initial version.
 
 == Upgrade Notice ==
+
+= 1.1.1 =
+Prevents null prices (due to appearent bug in WooCommerce sale_price) from being adjusted with a markup.
 
 = 1.1 =
 * Markup is now stored in metadata, freeing up the Description field. Edits are added to the code so the markup will always be stored in the correct format.

@@ -15,23 +15,25 @@ This plugin adds product variation markup by attribute to WooCommerce and adjust
 
 == Description ==
 
-This plugin adds product variation markup by attribute to WooCommerce -- the ability to add a markup (or markdown) to an attribute term and have that change the regular and sale price of the associated product variations.
+WooCommerce does not have the native ability to specify a price markup or markdown in an attribute term and apply that markup or markdown when setting the price of variations. Various plugins attempt to mitigate the problem by applying metadata to simple products, but that creates its own set of problems. This plugin adds product variation price markup by attribute term to WooCommerce.
 
-While migrating a store from another online commerce system to WooCommenrce, we ran into a shortcoming of WooCommerce -- the inability to specify a markup or markdown in an attribute term and apply that markup or markdown when setting the price of variations. Various plugins attempt to mitigate the problem with metadata, but that creates its own set of problems.
-
-So, this plugin does one thing -- If you enter a numeric value in an attribute term description, that value will be applied to the price of the associated variation during the bulk edit actions "Set regular price" and "Set sale price". When setting the price, it adds explanative text to the variation description which WooCommerce will display as the variation is selected. The option dropdown will also contain the markup or markdown so the customer can estimate the final price while deciding options.
-
-This plugin is intended for large sets of variations where customizing the price for each is not practical. So, the maximum number of variations that can be created at a time is also raised from 50 to 250. WooCommerce allows us to create variations over 50 by running "Create variations from all attributes" several times. However, this creates additional work reorganizing the variations if the variations are expected to be in a specific order.
+* Uses WooCommerce bulk edit actions "Set regular price" and "Set sale price".
+*  Writes a breakdown of the price modifications in the variation description so the itemization is visible to the customer.
+*  Puts the price increase (or decrease) in the options drop-down box along side of the terms.
 
 == Installation ==
 
 1. Upload the plugin files to the `/wp-content/plugins/markup-by-attribute-for-woocommerce` directory, or install the plugin through the WordPress plugins screen directly.
+
 2. Activate the plugin through the 'Plugins' screen in WordPress.
+
 3. Create variation attributes and terms, if you haven't already. For instance, the attribute 'Style' may include the terms 'Turtleneck', 'V-neck', 'Button-down', and 'Polo'.
+
 4. While creating new terms or editing existing ones, add the markup.
   * For each term, consider whether a markup or markdown is needed. V-neck shirts might need to be marked down by a dollar or two, while button-down shirts might require a markup of a couple dollars.
   * Put the amount of the markup in the term's Markup field on either the 'Add new...' panel or the 'Edit...' panel. Any floating point number is valid; "5", "5.95", "+5.00", "-5", and "-1.2345" are all good.
   * Strings that are not recognized as numbers will be ignored. Markups with several numbers below the decimal will be rounded to the second decimal place (hundreds) before being saved.
+
 5. Once you create your product variations, use the "Set regular price" and "Set sale price" as you normally would.
   * The markup will be applied to the price according to the term associated with the variation.
   * The variation description will be overwritten with text to note the markup.
@@ -49,7 +51,7 @@ Markup by Attribute works within the framework provided by WooCommerce and sets 
 
 = I'd like to donate. =
 
-Thanks! The donation button assumes $15.00 USD. But feel free adjust that amount up or down as you feel it's approppriate. I'm a retired guy who's living off his savings, so every little bit helps.
+Thanks! The donation button assumes $15.00 USD. But feel free adjust that amount up or down as you feel it's appropriate. I'm a retired guy who's living off his savings, so every little bit helps.
 
 == Screenshots ==
 1. Note the addition of the "Markup (or markdown)" field on the bottom of the 'Add new...' panel of the attribute editor.
@@ -61,7 +63,7 @@ Thanks! The donation button assumes $15.00 USD. But feel free adjust that amount
 == Changelog ==
 
 = 1.1.1 =
-* Added code to class backend-attrb to prevent adjusting price when price field is NULL.
+* Added code to class backend-attrb to prevent adjusting the price when price field is NULL.
 
 = 1.1 =
 * Moved markup from term Description to new metadata field.
@@ -75,7 +77,7 @@ Thanks! The donation button assumes $15.00 USD. But feel free adjust that amount
 == Upgrade Notice ==
 
 = 1.1.1 =
-Prevents null prices (due to appearent bug in WooCommerce sale_price) from being adjusted with a markup.
+Prevents null prices (due to apparent bug in WooCommerce sale_price) from being adjusted with a markup.
 
 = 1.1 =
 * Markup is now stored in metadata, freeing up the Description field. Edits are added to the code so the markup will always be stored in the correct format.

@@ -1,7 +1,7 @@
 === Markup by Attribute for WooCommerce ===
 Contributors: MarkTomlinson
-Donate link: Haven't got one yet.
-Tags: WooCommerce, Attribute, Markup
+Donate link: https://www.paypal.me/MT2Dev/15
+Tags: WooCommerce, Attribute, Variation, Markup, Price
 Requires at least: 4.6
 Tested up to: 4.9.4
 Stable tag: 4.3
@@ -17,15 +17,15 @@ This plugin adds product variation markup by attribute to WooCommerce and adjust
 
 This plugin adds product variation markup by attribute to WooCommerce -- the ability to add a markup (or markdown) to an attribute term and have that change the regular and sale price of the associated product variations.
 
-When migrating a store from another online commerce system to WooCommenrce, we ran into a shortcoming of WooCommerce -- the inability to specify a markup or markdown in an attribute term and apply that markup or markdown when setting the price of variations. Various plugins attempt to mitigate the problem with metadata, but that creates its own set of problems.
+While migrating a store from another online commerce system to WooCommenrce, we ran into a shortcoming of WooCommerce -- the inability to specify a markup or markdown in an attribute term and apply that markup or markdown when setting the price of variations. Various plugins attempt to mitigate the problem with metadata, but that creates its own set of problems.
 
 So, this plugin does one thing -- If you enter a numeric value in an attribute term description, that value will be applied to the price of the associated variation during the bulk edit actions "Set regular price" and "Set sale price". When setting the price, it adds explanative text to the variation description which WooCommerce will display as the variation is selected. The option dropdown will also contain the markup or markdown so the customer can estimate the final price while deciding options.
 
-This plugin is intended for large sets of variations were customizing the price for each is not practical. So, the maximum number of variations that can be created at a time is also raised from 50 to 250. WooCommerce allows us to create variations over 50 by running "Create variations from all attributes" several times. However, this creates additional work reorganizing the variations if the variations are expected to be in a specific order.
+This plugin is intended for large sets of variations where customizing the price for each is not practical. So, the maximum number of variations that can be created at a time is also raised from 50 to 250. WooCommerce allows us to create variations over 50 by running "Create variations from all attributes" several times. However, this creates additional work reorganizing the variations if the variations are expected to be in a specific order.
 
 == Installation ==
 
-1. Upload the plugin files to the `/wp-content/plugins/mt2-markup-by-attribute` directory, or install the plugin through the WordPress plugins screen directly.
+1. Upload the plugin files to the `/wp-content/plugins/markup-by-attribute-for-woocommerce` directory, or install the plugin through the WordPress plugins screen directly.
 2. Activate the plugin through the 'Plugins' screen in WordPress.
 3. Create variation attributes and terms, if you haven't already. For instance, the attribute 'Style' may include the terms 'Turtleneck', 'V-neck', 'Button-down', and 'Polo'.
 4. While creating new terms or editing existing ones, add the markup.
@@ -47,11 +47,15 @@ Not at this time. I will be adding internationalization in a future release.
 
 Markup by Attribute works within the framework provided by WooCommerce and sets product variation markups (or markdowns) during the 'Set regular price' and 'Set sale price' actions. Therefore, you must locate all products affected by this change and reset the regular and sale prices. While this sounds cumbersome, it is a massive improvement over finding each and every variation, doing the math for each variation, and changing them manually. I'm working on adding an "Attribute" column to the Product list to facilitate this type of activity.
 
+= I'd like to donate. =
+
+Thanks! The donation button assumes $15.00 USD. But feel free adjust that amount up or down as you feel it's approppriate. I'm a retired guy who's living off his savings, so every little bit helps.
+
 == Screenshots ==
 1. Note the addition of the "Markup (or markdown)" field on the bottom of the 'Add new...' panel of the attribute editor.
 2. Note the addition of the "Markup (or markdown)" field on the bottom of the 'Edit...' panel of the attribute editor.
-3. The regular price for variations was set to $19.95 and the sale price was set at $15.95. For this variation, Markup by Attribute added $75 for "Holstein" and $4.00 for "2004". The description field breaks this down for the customer.
-4. The customer sees the full range of sale prices available and how much each option costs. Because the description was filled with an explanation, they will also see a clear description of the breakdown.
+3. The regular price is $19.95 and the sale price is $15.95. Markup by Attribute added $75 for "Holstein" and $4.00 for "2004".
+4. The customer sees the full range of sale prices available and how much each option costs, plus a clear description of the breakdown.
 5. Notice that markdowns (negative markups) can be used as well.
 
 == Changelog ==

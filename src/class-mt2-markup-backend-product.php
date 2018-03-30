@@ -87,55 +87,64 @@ class MT2MBA_BACKEND_PRODUCT {
     					$markup_table[$term->taxonomy][$term->slug]["description"] = $markup_desc;
 					}
 				}
-				
 			}
 
 			// -- Parse through variations and reprice --
 			// Loop through each variation
 			foreach ( $variations as $variation_id ) {
-				$variation      = wc_get_product( $variation_id );
-				$attributes     = $variation->get_attributes();
-				$description    = '';
 
-				// Loop through each attribute within variation
-				foreach ( $attributes as $attribute_id => $term_id ) {
-					
-					// Does this variation have a markup?
-					if ( isset( $markup_table[$attribute_id][$term_id] ) ) {
-						
-						// Put regular price in description if not present
-						if ( $description == '' ) {
-							$description = sprintf( "Product price $%01.2f", $orig_price ) . PHP_EOL;
+				$variation       = wc_get_product( $variation_id );
+				$attributes      = $variation->get_attributes();
+				$description     = '';
+				$variation_price = $variation->{ "get_$price_type" }( 'edit' );
+
+				// There seems to be a bug in WooCommerce where sometimes sale_price isn't set
+				// In that case, we want to leave it alone and not calculate a markup
+				if ( is_numeric( $variation_price ) ) {
+
+					// Loop through each attribute within variation
+					foreach ( $attributes as $attribute_id => $term_id ) {
+
+						// Does this variation have a markup?
+						if ( isset( $markup_table[$attribute_id][$term_id] ) ) {
+
+							// Put regular price in description if not present
+							if ( $description == '' ) {
+								$description = sprintf( "Product price $%01.2f", $orig_price ) . PHP_EOL;
+							}
+
+							// Add markup to price
+							$markup = (float)$markup_table[$attribute_id][$term_id]["markup"];
+							$variation_price = $variation_price + $markup;
+
+							// Make sure markup wasn't a reduction that creates
+							// a negative price, then set price accordingly
+							if ( $variation_price > 0 ) {
+								$variation->{"set_$price_type"}( $variation_price );
+							} else {
+								$variation->{"set_$price_type"}( 0.00 );
+							}
+
+							// Add markup description to variation description
+							$description .= $markup_table[$attribute_id][$term_id]["description"] . PHP_EOL;
 						}
-						
-						// Add markup to price
-						$markup = $markup_table[$attribute_id][$term_id]["markup"];
-						$new_price = $variation->{ "get_$price_type" }( 'edit' ) + $markup;
-						
-						// Make sure markup wasn't a reduction that creates
-						// a negative price, then set price accordingly
-						if ( $new_price > 0 ) {
-							$variation->{"set_$price_type"}( $new_price );
-						} else {
-							$variation->{"set_$price_type"}( 0.00 );
-						}
-						
-						// Add markup description to variation description
-						$description .= $markup_table[$attribute_id][$term_id]["description"] . PHP_EOL;
-					}
-				}	// End attribute loop
+					}	// End attribute loop
 				
-				// Rewrite variation description if setting the regular price and trim unwanted EOL
-				if ( $price_type == 'regular_price' ) {
-					$variation->set_description( rtrim( $description, PHP_EOL ) );
-				}
-				// And save
-				$variation->save( );
+					// Rewrite variation description if setting the regular price and trim unwanted EOL
+					if ( $price_type == 'regular_price' ) {
+						$variation->set_description( rtrim( $description, PHP_EOL ) );
+					}
+
+					// And save
+					$variation->save( );
+				} // END if is_numeric( $variation_price )
+
 			}	// END variation loop
 			
-		}	// END if mt2mba_apply_markup_to_price
+		}	// END if bulk_action
 		
 	}	// END function mt2mba_apply_markup_to_price
+
 
 }	// End  class MT2MBA_PRODUCT_BACKEND
 

@@ -1,15 +1,15 @@
 === Markup by Attribute for WooCommerce ===
-Contributors: MarkTomlinson
-Donate link: https://www.paypal.me/MT2Dev/15
-Tags: WooCommerce, Attribute, Term, Variation, Markup, Markdown, Mark-up, Mark-down, Price
-Requires at least: 4.6
-Tested up to: 4.9.4
-Stable tag: 4.3
-Requires PHP: 5.2.4
-License: GPLv2 or later
-License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Contributors:         MarkTomlinson
+Donate link:          https://www.paypal.me/MT2Dev/15
+Tags:                 WooCommerce, Attribute, Term, Variation, Markup, Markdown, Mark-up, Mark-down, Price
+Requires at least:    4.6
+Tested up to:         4.9.5
+Stable tag:           4.3
+Requires PHP:         5.2.4 or later
+License:              GPLv3
+License URI:          https://www.gnu.org/licenses/gpl-3.0.html
 WC requires at least: 3.0
-WC tested up to: 3.3.1
+WC tested up to:      3.3.4
 
 This plugin adds product variation markup by attribute to WooCommerce and adjusts product variation regular and sale prices accordingly.
 

@@ -94,9 +94,17 @@ class MT2MBA_BACKEND_PRODUCT {
 						}
 						$markup_desc = sprintf( $markup_desc_format, abs( $markup ), $term->name );
 						
-						// Add term, markup, and description to markup table
+						// Add term, markup, and description to markup table for use below with each variation
     					$markup_table[$term->taxonomy][$term->slug]["markup"] = $markup;
-    					$markup_table[$term->taxonomy][$term->slug]["description"] = $markup_desc;
+						$markup_table[$term->taxonomy][$term->slug]["description"] = $markup_desc;
+						
+						// Save actual markup value for term as post metadata for use in product attribute dropdown
+						$meta_key   = $term->term_id . "_markup_amount";
+						$meta_value = sprintf( "%+01.2f", $markup );
+						if ( ! add_post_meta( $product_id, $meta_key, $meta_value, TRUE ) ) { 
+							update_post_meta( $product_id, $meta_key, $meta_value );
+						}
+
 					}
 				}
 			}

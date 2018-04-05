@@ -88,7 +88,7 @@ class MT2MBA_FRONTEND {
 							'<option value="' .
 							esc_attr( $term->slug ) . '"' .
 							selected( sanitize_title( $args['selected'] ), $term->name, false ) . '>' .
-							esc_html( apply_filters( 'woocommerce_variation_option_name', $term->name )) .
+							esc_html( apply_filters( 'woocommerce_variation_option_name', $term->name ) ) .
 							esc_html( $markup ) .
 							'</option>';
 					}
@@ -97,9 +97,10 @@ class MT2MBA_FRONTEND {
 				
 				// Need only add option, no markups available
 				foreach ( $options as $option ) {
-					$html .= PHP_EOL . '<option value="' . esc_attr( $option ) . '"' .
+					$html .= PHP_EOL . '<option value="' .
+						esc_attr( $option ) . '"' .
 						selected( $args['selected'], sanitize_title( $option ), false ) . '>' .
-						esc_html( apply_filters( 'woocommerce_variation_option_name', $option )) . 
+						esc_html( apply_filters( 'woocommerce_variation_option_name', $option ) ) .
 						'</option>';
 				}
 			}

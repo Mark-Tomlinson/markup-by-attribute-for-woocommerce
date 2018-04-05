@@ -61,7 +61,7 @@ class MT2MBA_BACKEND_ATTRB {
 		?>
 		<div class="form-field">
 			<label for="term_markup"><?php _e( 'Markup (or markdown)', 'mt2mba' ); ?></label>
-			<input type="text" placeholder="(+/-)0.00" name="term_markup" id="term_markup" value="">
+			<input type="text" placeholder="[+|-]0.00 or [+|-]00%" name="term_markup" id="term_markup" value="">
 			<p class="description"><?php _e( 'Markup or markdown associated with this option. Signed, floating point numeric
 				allowed.','mt2mba' ); ?></p>
 		</div>
@@ -81,7 +81,7 @@ class MT2MBA_BACKEND_ATTRB {
 		<tr class="form-field">
 			<th scope="row" valign="top"><label for="term_markup"><?php _e( 'Markup (or markdown)', 'mt2mba' ); ?></label></th>
 			<td>
-				<input type="text" placeholder="(+/-)0.00" name="term_markup" id="term_markup" value="<?php echo esc_attr( $term_meta ) ? esc_attr( $term_meta ) : ''; ?>">
+				<input type="text" placeholder="[+|-]0.00 or [+|-]00%" name="term_markup" id="term_markup" value="<?php echo esc_attr( $term_meta ) ? esc_attr( $term_meta ) : ''; ?>">
 				<p class="description"><?php _e( 'Markup or markdown associated with this option. Signed, floating point numeric allowed.','mt2mba' ); ?></p>
 			</td>
 		</tr>
@@ -99,8 +99,20 @@ class MT2MBA_BACKEND_ATTRB {
 		
 		if ( esc_attr( $_POST['term_markup'] <> 0 ) ) {
 
+			$term_markup = esc_attr( $_POST['term_markup']);
+			
 			// If term_markup has a value other than zero, add/update the value to the metadata table
-			$markup = sprintf( "%+01.2f", sanitize_text_field( $_POST['term_markup'] ) );
+			if ( strpos( $term_markup, "%" ) ) {
+
+				// If term_markup has a percentage sign, save as a formatted percent
+				$markup = sprintf( "%+02.1f%%", sanitize_text_field( $term_markup ) );
+
+			} else {
+
+				// If term_markup does not have percentage sign, save as a formatted floating point number
+				$markup = sprintf( "%+01.2f", sanitize_text_field( $term_markup ) );
+
+			}
 			update_term_meta( $term_id, "markup", $markup );
 			
 			// Future ...

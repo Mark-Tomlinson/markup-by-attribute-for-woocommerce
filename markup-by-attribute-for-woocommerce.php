@@ -4,7 +4,7 @@
  *
  * @package markup-by-attribute-for-woocommerce
  * @author Mark Tomlinson
- * @version 1.1.1
+ * @version 1.2.0
  * 
  * (c) Mark Tomlinson
  *
@@ -22,8 +22,9 @@
  * License URI:				https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:				markup-by-attribute-for-woocommerce
  * Domain Path:				/languages
+ * Tested up to:			4.9.5
  * WC requires at least:	3.0
- * WC tested up to:			3.3.1
+ * WC tested up to:			3.3.4
  *
  */
 

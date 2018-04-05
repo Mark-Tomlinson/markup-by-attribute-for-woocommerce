@@ -1,7 +1,7 @@
 === Markup by Attribute for WooCommerce ===
 Contributors: MarkTomlinson
 Donate link: https://www.paypal.me/MT2Dev/15
-Tags: WooCommerce, Attribute, Variation, Markup, Price
+Tags: WooCommerce, Attribute, Term, Variation, Markup, Markdown, Mark-up, Mark-down, Price
 Requires at least: 4.6
 Tested up to: 4.9.4
 Stable tag: 4.3
@@ -15,11 +15,13 @@ This plugin adds product variation markup by attribute to WooCommerce and adjust
 
 == Description ==
 
-WooCommerce does not have the native ability to specify a price markup or markdown in an attribute term and apply that markup or markdown when setting the price of variations. Various plugins attempt to mitigate the problem by applying metadata to simple products, but that creates its own set of problems. This plugin adds product variation price markup by attribute term to WooCommerce.
+WooCommerce does not have the native ability to specify a price markup or markdown in an attribute term and apply that markup or markdown when setting the price of variations. Various plugins attempt to mitigate the problem by applying metadata to simple products, but that creates its own set of problems -- especially in regard to managing inventory. This plugin adds product variation price markup by attribute term to WooCommerce.
 
-* Uses WooCommerce bulk edit actions "Set regular price" and "Set sale price".
-*  Writes a breakdown of the price modifications in the variation description so the itemization is visible to the customer.
-*  Puts the price increase (or decrease) in the options drop-down box along side of the terms.
+  * Can create a fixed value markup (such as $5), or a percentage markup (such as 5%).
+  * The markup value can be positive yeilding an increase in price, or negative yeilding a decrease in price.
+  * Uses familiar WooCommerce bulk edit actions "Set regular price" and "Set sale price".
+  * Writes a breakdown of the price modifications in the variation description so the itemization is visible to the customer.
+  * Puts the price increase (or decrease) in the options drop-down box along side of the terms.
 
 == Installation ==
 

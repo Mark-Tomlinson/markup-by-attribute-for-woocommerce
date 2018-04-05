@@ -68,8 +68,20 @@ class MT2MBA_BACKEND_PRODUCT {
 				// Loop through attribute terms
 				foreach ( get_terms( $pa_attrb->get_name() ) as $term ) {
 					
-					// Get markup from attribute term description
-					$markup = (float)get_term_meta( $term->term_id, 'markup', TRUE );
+					$markup = get_term_meta( $term->term_id, 'markup', TRUE );
+
+					// If term_markup has a value other than zero, add/update the value to the metadata table
+					if ( strpos( $markup, "%" ) ) {
+
+						// Markup is a percentage, calculate against original price
+						$markup = sprintf( "%+01.2f", $orig_price * floatval( $markup ) / 100 );
+
+					} else {
+
+						// Straight markup, get directly from attribute term description
+						$markup = (float)get_term_meta( $term->term_id, 'markup', TRUE );
+
+					}
 					
 					// If there is a markup (or markdown) present ...
 					if ( $markup <> 0 ) {
@@ -137,6 +149,7 @@ class MT2MBA_BACKEND_PRODUCT {
 
 					// And save
 					$variation->save( );
+
 				} // END if is_numeric( $variation_price )
 
 			}	// END variation loop

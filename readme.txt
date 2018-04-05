@@ -1,7 +1,7 @@
 === Markup by Attribute for WooCommerce ===
 Contributors:         MarkTomlinson
 Donate link:          https://www.paypal.me/MT2Dev/15
-Tags:                 WooCommerce, Attribute, Term, Variation, Markup, Markdown, Mark-up, Mark-down, Price
+Tags:                 WooCommerce, Attribute, Price, Variation, Markup, Markdown, Mark-up, Mark-down, Term
 Version:              1.2.0
 Requires at least:    4.6
 Tested up to:         4.9.5
@@ -40,19 +40,14 @@ WooCommerce does not have the native ability to specify a price markup or markdo
 
 3. The 'Install' button will change to an 'Activate' button. Use it to activate the plugin.
 
-== Using Markup by Attribute for WooCommerce ==
+= Using Markup by Attribute for WooCommerce =
 1. Install and activate the plugin according to the Installation instructions.
 
-2. Create variation attributes and terms if you haven't already. For instance, the attribute 'Style' may include the terms 'Turtleneck', 'V-neck', 'Button-down', and 'Polo'.
+2. Create variation attributes and terms if you haven't already. For instance, the attribute 'size' may include the terms 'X-Small', 'Small', 'Medium', 'Large', and 'X-Large'.
 
 3. While creating new terms or editing existing ones, add the markup.
   * For each term, consider whether a markup or markdown is needed. Adding a logo to a shirt might increase the cost by $5. Extra small shirts might be 10% less.
-  * Put the amount of the markup in the term's Markup field on either the 'Add new...' panel or the 'Edit...' panel. Examples of valid values are:
-    - -5
-    - 5.95
-    - +5.67
-    - 7.5%
-    - -12%
+  * Put the amount of the markup in the term's Markup field on either the 'Add new...' panel or the 'Edit...' panel. Examples of valid values include: -5, 5.95, +5.67, 7.5%, and -12%.
   * Strings that are not recognized as numbers (including percentages) will be ignored. Markups with several numbers below the decimal will be rounded to the second decimal place (hundreds) before being saved.
 
 5. Once you create your product variations, use the "Set regular price" and "Set sale price" as you normally would.
@@ -104,9 +99,7 @@ Thanks! The donation button assumes $15.00 USD. But feel free adjust that amount
 
 = 1.2.0 =
 * Now allows the use of percentage (5%) markups and markdowns as well as fixed values ($5).
-* Store actual markup value displayed in attribute drop-down with the product.
-  - This allows changing of the markup in the attribute without affecting the markup displayed with the product.
-  - This allows displaying the actual calculated markup value on product attribute drop-down when the markup is a percentage.
+* And it stores the actual markup value displayed in attribute drop-down with the product. This allows changing of the markup in the attribute without affecting the markup displayed with the product.
 
 = 1.1.1 =
 Prevents null prices (due to apparent bug in WooCommerce sale_price) from being adjusted with a markup.

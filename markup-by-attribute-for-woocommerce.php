@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of the Markup by Attribute WooCommerce plugin.
+ * This file is part of the Markup by Attribute for WooCommerce plugin by Mark Tomlinson
  *
  * @package markup-by-attribute-for-woocommerce
  * @author Mark Tomlinson

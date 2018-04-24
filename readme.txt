@@ -20,11 +20,11 @@ This plugin adds product variation markup by attribute to WooCommerce and adjust
 
 = Varying Prices on Product Variations is Tedious and Error-Prone =
 
-WooCommerce does not have ability to specify a price markup or markdown in an attribute term. If all "large" products cost 8% more, you have to manually calculate and change every "large" variation. Various plugins attempt to mitigate the problem by applying metadata to simple products, but that creates its own set of problems.  If a plugin treats 'size' as metadata, you lose the ability to manage inventory by size or to put certain sizes on sale.
+Want to add $5 to every blue product you sell? Maybe you sell jewelry with birthstones, and some stones just cost more than others. WooCommerce does not have ability to specify a price markup by individual attribute, so if all "large" products cost 8% more you have to manually calculate and change every "large" variation. Plugins that attempt to mitigate the problem by applying metadata to simple products create thier own set of problems with inventory control.
 
 = Markup by Attribute Adds 'Markup' to Attribute Terms =
 
-Want to add $5 to every blue product you sell? Maybe you sell jewelry with birthstones, and some stones just cost more than others. Markup by Attribute solves this problem by allowing you to add a markup (or markdown) to individual attribute terms. If the attribute is 'color', then Markup by Attribute allows you to add "+5.00" to Blue while leaving Green and Yellow alone. When you set regular and sale prices, every blue product will be $5.00 more.
+Markup by Attribute solves this problem by allowing you to add a markup (or markdown) to individual attribute terms. If the attribute is 'color', then Markup by Attribute allows you to add "+5.00" to Blue while leaving Green and Yellow alone. When you set regular and sale prices, every blue product will be $5.00 more.
 
 Markup by Attribute:
 
@@ -66,7 +66,7 @@ Ready to dive in?
 
 Note that steps 1, 3 and 4 below are standard WooCommerce Variable Product stuff. Step 2 is about the only **process change** you need to be concerned with. We've italicized some of the *outcome changes* you will notice in the other steps.
 
-1. Create variation attributes and terms -- if you haven't already.
+1. Create variation attributes and terms, if you haven't already.
   * For instance, the attribute 'size' may include the terms 'X-Small',  'Small', 'Medium', 'Large', and 'X-Large'.
   * The attribute 'color' may include the terms 'Orange', 'Red', 'Violet', 'Blue', 'Green', and 'Yellow'.
 

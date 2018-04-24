@@ -36,7 +36,7 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 
 	// Set plugin Version
 	define( 'MT2MBA_VERSION', '1.1.1' );
-	define( 'MT2MBA_MINIMUM_WP_VERSION', '4.0' );
+	define( 'MT2MBA_MINIMUM_WP_VERSION', '3.0' );
 	define( 'MT2MBA_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 
 	/* -------------------------
@@ -45,9 +45,18 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 
 	// Pull in correct code depending on whether we are in the shop (frontend) or on the admin page (backend).
 	if ( is_admin( ) ) {
-		/*
+		/**
 		 * Backend Code
 		 */
+		// Add Instructions link to plugin page
+		add_filter( "plugin_action_links_" . plugin_basename( __FILE__ ), function( $links ) {
+			$link = '<a id="mt2mba_instructions" href="https://wordpress.org/plugins/markup-by-attribute-for-woocommerce/#installation" target="_blank">' . __( 'Instructions' ) . '</a>';
+			array_push( $links, $link );
+			return $links;
+		} );
+		// Instantiate admin pointers
+		require_once( MT2MBA_PLUGIN_DIR . 'src/class-mt2-markup-backend-pointers.php' );
+		MT2MBA_BACKEND_POINTERS::init();
 		// Instantiate attribute admin
 		require_once( MT2MBA_PLUGIN_DIR . 'src/class-mt2-markup-backend-attrb.php' );
 		MT2MBA_BACKEND_ATTRB::init();

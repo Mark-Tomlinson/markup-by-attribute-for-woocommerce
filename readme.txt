@@ -121,6 +121,10 @@ Thanks! The donation button assumes $15.00 USD. But feel free adjust that amount
 
 == Changelog ==
 
+= 1.3.1 =
+
+Remove error_log() statement accidentally left in.
+
 = 1.3 =
 
 Improvements
@@ -154,7 +158,7 @@ Patches
 
 == Upgrade Notice ==
 
-= 1.3 =
+= 1.3.1 =
 
 * Includes clearer instructions and inline help.
 * Repairs how percentage markups are displayed.

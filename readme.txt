@@ -4,7 +4,7 @@ Plugin name:          Markup by Attribute
 Contributors:         MarkTomlinson
 Donate link:          https://www.paypal.me/MT2Dev/15
 Tags:                 WooCommerce, Attribute, Price, Variation, Markup, Markdown, Term
-Version:              1.2.0
+Version:              1.3.0
 Requires at least:    4.6
 Tested up to:         4.9.5
 Stable tag:           4.3

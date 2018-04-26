@@ -11,6 +11,8 @@ if ( !defined( 'ABSPATH' ) ) exit( );
 
 class MT2MBA_BACKEND_POINTERS {
 
+    var $pointer_title = 'Markup by Attribute';
+
 	/**
 	 * Initialization method visible before instantiation
 	 */
@@ -84,13 +86,13 @@ class MT2MBA_BACKEND_POINTERS {
 
     function mt2mba_admin_pointers_edit_term( $pointers ) {
 
-        $pointer_content = 
-            __( '<h3>Markup by Attribute</h3>' ,'plugindomain') .
-            __( '<p>Markups can be fixed values such as <code>5</code> or <code>5.95</code>. Or they can be percentages such as <code>5%</code> or <code>1.23%</code>. ' .
+        $pointer_content = sprintf( '<h3><em>%s</em></h3> <p>%s</p>',
+            __( $this->pointer_title ),
+            __( 'Markups can be fixed values such as <code>5</code> or <code>5.95</code>. Or they can be percentages such as <code>5%</code> or <code>1.23%</code>. ' .
             'Markups can start with a plus or minus sign such as <code>+5.95</code> or <code>-1.23%</code>.</p>' .
-            '<p>The markup will be applied during the product variation <em>Set regular price</em> and <em>Set sale price</em> bulk edit action.</p>',
-            'plugindomain');
-
+            '<p>The markup will be applied during the product variation <em>Set regular price</em> and <em>Set sale price</em> bulk edit action.',
+            'plugindomain')
+        );
         $pointers = array(
 
             'mt2-term_add_markup' => array(
@@ -115,11 +117,12 @@ class MT2MBA_BACKEND_POINTERS {
 
     function mt2mba_admin_pointers_plugins( $pointers ) {
 
-        $pointer_content = 
-            __( '<h3>Markup by Attribute</h3>' ,'plugindomain') .
-            __( '<p>Using this plugin is simple, but may be a little obscure. This link to the instructions may help get you started.</p>' .
-            '<p>We\'ll just leave the link right here.</p>',
-            'plugindomain');
+        $pointer_content = sprintf( '<h3><em>%s</em></h3> <p>%s</p>',
+            __( $this->pointer_title ),
+            __( 'Using this plugin is simple, but may be a little obscure. This link to the instructions may help get you started.</p>' .
+            '<p>We\'ll just leave the instructions link right here.',
+            'plugindomain')
+        );
 
         $pointers = array(
 

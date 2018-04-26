@@ -4,7 +4,7 @@
  *
  * @package markup-by-attribute-for-woocommerce
  * @author Mark Tomlinson
- * @version 1.2.0
+ * @version 1.3.0
  * 
  * (c) Mark Tomlinson
  *
@@ -35,7 +35,7 @@ if ( !defined( 'ABSPATH' ) ) exit( );
 if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
 
 	// Set plugin Version
-	define( 'MT2MBA_VERSION', '1.1.1' );
+	define( 'MT2MBA_VERSION', '1.3.0' );
 	define( 'MT2MBA_MINIMUM_WP_VERSION', '3.0' );
 	define( 'MT2MBA_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 

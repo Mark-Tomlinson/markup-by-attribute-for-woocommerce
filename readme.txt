@@ -123,8 +123,14 @@ Thanks! The donation button assumes $15.00 USD. But feel free adjust that amount
 
 = 1.3.0 =
 
+Improvements
+
 * Added class backend-pointers for inline instructions.
-* Added instructions link.
+* Added instructions link to Plugins page.
+
+Patches
+
+* Use only regular price markup in attribute drop-down on frontend. Percentage markups where appearing different in dropdown and variation description.
 
 = 1.2.0 =
 
@@ -150,7 +156,8 @@ Thanks! The donation button assumes $15.00 USD. But feel free adjust that amount
 
 = 1.3.0 =
 
-* Changed to include better instructions and inline help.
+* Includes clearer instructions and inline help.
+* Repairs how percentage markups are displayed.
 
 = 1.2.0 =
 

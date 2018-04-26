@@ -15,6 +15,6 @@ jQuery( document ).ready( function( $ ) {
             }
         } );
  
-        $(pointer.target).pointer( options ).pointer('open');
+        $(pointer.target).pointer( options ).pointer( 'open' );
     }
 } );

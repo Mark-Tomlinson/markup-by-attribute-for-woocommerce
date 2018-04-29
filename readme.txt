@@ -1,18 +1,18 @@
 === Markup by Attribute for WooCommerce ===
 
-Plugin name:          Markup by Attribute
-Contributors:         MarkTomlinson
-Donate link:          https://www.paypal.me/MT2Dev/15
-Tags:                 WooCommerce, Attribute, Price, Variation, Markup, Markdown, Term
-Version:              1.3.0
-Requires at least:    4.6
-Tested up to:         4.9.5
-Stable tag:           4.3
-Requires PHP:         5.2.4
-License:              GPLv3
-License URI:          https://www.gnu.org/licenses/gpl-3.0.html
+Plugin name: Markup by Attribute
+Contributors: MarkTomlinson
+Donate link: https://www.paypal.me/MT2Dev/15
+Tags: WooCommerce, Attribute, Price, Variation, Markup
+Version: 1.3.1
+Requires at least: 4.6
+Tested up to: 4.9.5
+Stable tag: 4.3
+Requires PHP: 5.2.4
+License: GPLv3
+License URI: https://www.gnu.org/licenses/gpl-3.0.html
 WC requires at least: 3.0
-WC tested up to:      3.3.4
+WC tested up to: 3.3.4
 
 This plugin adds product variation markup by attribute to WooCommerce and adjusts product variation regular and sale prices accordingly.
 
@@ -20,7 +20,7 @@ This plugin adds product variation markup by attribute to WooCommerce and adjust
 
 = Varying Prices on Product Variations is Tedious and Error-Prone =
 
-Want to add $5 to every blue product you sell? Maybe you sell jewelry with birthstones, and some stones just cost more than others. WooCommerce does not have ability to specify a price markup by individual attribute, so if all "large" products cost 8% more you have to manually calculate and change every "large" variation. Plugins that attempt to mitigate the problem by applying metadata to simple products create thier own set of problems with inventory control.
+Want to add $5 to every blue product you sell? Maybe you sell jewelry with birthstones, and some stones just cost more than others. If all "large" products cost 8% more you have to manually calculate and change every "large" variation of every product.
 
 = Markup by Attribute Adds 'Markup' to Attribute Terms =
 
@@ -134,7 +134,7 @@ Improvements
 
 Patches
 
-* Use only regular price markup in attribute drop-down on frontend. Percentage markups where appearing different in dropdown and variation description.
+* Use only regular price markup in attribute drop-down on the frontend. Percentage markups where appearing different in dropdown and variation description.
 
 = 1.2.0 =
 

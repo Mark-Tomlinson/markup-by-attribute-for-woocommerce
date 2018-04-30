@@ -83,7 +83,10 @@ class MT2MBA_FRONTEND {
 						if ( ! $markup = get_metadata( 'post', $product->get_id( ), $term->term_id . "_markup_amount", TRUE ) ) {
 							$markup = get_metadata( 'term', $term->term_id, 'markup', TRUE );
 						}
+<<<<<<< HEAD
 						error_log( $markup );
+=======
+>>>>>>> Onbording
 
 						// ... and format it properly or null it if empty
 						$markup = $markup ? " ($markup)" : '';

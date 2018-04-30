@@ -61,7 +61,11 @@ class MT2MBA_BACKEND_ATTRB {
 		?>
 		<div class="form-field">
 			<label for="term_markup"><?php _e( 'Markup (or markdown)', 'mt2mba' ); ?></label>
+<<<<<<< HEAD
 			<input type="text" placeholder="[+|-]0.00 or [+|-]00%" name="term_markup" id="term_markup" value="">
+=======
+			<input type="text" placeholder="[+|-]0.00 or [+|-]00%" name="term_markup" id="term_add_markup" value="">
+>>>>>>> Onbording
 			<p class="description"><?php _e( 'Markup or markdown associated with this option. Signed, floating point numeric
 				allowed.','mt2mba' ); ?></p>
 		</div>
@@ -81,7 +85,11 @@ class MT2MBA_BACKEND_ATTRB {
 		<tr class="form-field">
 			<th scope="row" valign="top"><label for="term_markup"><?php _e( 'Markup (or markdown)', 'mt2mba' ); ?></label></th>
 			<td>
+<<<<<<< HEAD
 				<input type="text" placeholder="[+|-]0.00 or [+|-]00%" name="term_markup" id="term_markup" value="<?php echo esc_attr( $term_meta ) ? esc_attr( $term_meta ) : ''; ?>">
+=======
+				<input type="text" placeholder="[+|-]0.00 or [+|-]00%" name="term_markup" id="term_edit_markup" value="<?php echo esc_attr( $term_meta ) ? esc_attr( $term_meta ) : ''; ?>">
+>>>>>>> Onbording
 				<p class="description"><?php _e( 'Markup or markdown associated with this option. Signed, floating point numeric allowed.','mt2mba' ); ?></p>
 			</td>
 		</tr>

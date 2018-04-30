@@ -32,14 +32,21 @@ class MT2MBA_BACKEND_POINTERS {
 	 */
 	public function on_loaded() {
         
+        // Enqueue the JQuery
         add_action( 'admin_enqueue_scripts', array( $this, 'mt2mba_admin_pointer_load' ), 1000 );
 
+        // Admin pointers for attribute term edit screen
         add_filter( 'mt2mba_admin_pointers-edit-term', array( $this, 'mt2mba_admin_pointers_edit_term' ) );
 
+        // Admin pointer for plugin page
         add_filter( 'mt2mba_admin_pointers-plugins', array( $this, 'mt2mba_admin_pointers_plugins' ) );
 
     }
  
+    /**
+     * Find pointers that have not been dismissed
+     * and add the scripts to those pages
+     */
     function mt2mba_admin_pointer_load( $hook_suffix ) {
  
         // Don't run on WP < 3.3
@@ -84,6 +91,9 @@ class MT2MBA_BACKEND_POINTERS {
         wp_localize_script( 'mt2mba-pointer', 'mt2mbaPointer', $valid_pointers );
     }
 
+    /**
+     * Define pointers for Add and Edit term pages
+     */
     function mt2mba_admin_pointers_edit_term( $pointers ) {
 
         $pointer_content = sprintf( '<h3><em>%s</em></h3> <p>%s</p>',
@@ -115,6 +125,9 @@ class MT2MBA_BACKEND_POINTERS {
         return $pointers;
     }
 
+    /**
+     * Define pointer for plugins page
+     */
     function mt2mba_admin_pointers_plugins( $pointers ) {
 
         $pointer_content = sprintf( '<h3><em>%s</em></h3> <p>%s</p>',

@@ -20,7 +20,7 @@ This plugin adds product variation markup by attribute to WooCommerce and adjust
 
 = Varying Prices on Product Variations is Tedious and Error-Prone =
 
-Want to add $5 to every blue product you sell? Maybe you sell jewelry with birthstones, and some stones just cost more than others. If all "large" products cost 8% more you have to manually calculate and change every "large" variation of every product.
+Want to add $5 to every blue product you sell? Maybe you sell jewelry with birthstones and some stones just cost more than others. If all "X-Large" products cost 7.5% more, you have to manually calculate and change every "X-Large" variation of every product.
 
 = Markup by Attribute Adds 'Markup' to Attribute Terms =
 

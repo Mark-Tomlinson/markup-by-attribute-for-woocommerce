@@ -4,7 +4,7 @@ Plugin name: Markup by Attribute
 Contributors: MarkTomlinson
 Donate link: https://www.paypal.me/MT2Dev/15
 Tags: WooCommerce, Attribute, Price, Variation, Markup
-Version: 1.3.1
+Version: 1.3.2
 Requires at least: 4.6
 Tested up to: 4.9.5
 Stable tag: 4.3
@@ -120,6 +120,10 @@ Thanks! The donation button assumes $15.00 USD. But feel free adjust that amount
 6. Markups are applied to sale prices just as they are to regular prices.
 
 == Changelog ==
+
+= 1.3.2 =
+
+Fix bug where default variation options were not being selected and 'Choose an Option' was always shown.
 
 = 1.3.1 =
 

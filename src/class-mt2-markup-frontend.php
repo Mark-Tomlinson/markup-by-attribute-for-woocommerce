@@ -91,7 +91,7 @@ class MT2MBA_FRONTEND {
 						$html .= PHP_EOL .
 							'<option value="' .
 							esc_attr( $term->slug ) . '"' .
-							selected( sanitize_title( $args['selected'] ), $term->name, false ) . '>' .
+							selected( sanitize_title( $args['selected'] ), $term->slug, false ) . '>' .
 							esc_html( apply_filters( 'woocommerce_variation_option_name', $term->name ) ) .
 							esc_html( $markup ) .
 							'</option>';

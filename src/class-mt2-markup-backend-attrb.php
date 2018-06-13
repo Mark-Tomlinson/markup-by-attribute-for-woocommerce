@@ -55,8 +55,8 @@ class MT2MBA_BACKEND_ATTRB {
 	/**
 	 * Build <DIV> to add markup to the 'Add New' attribute term panel
 	 */
-	function mt2mba_add_form_fields( $taxonomy ) {
-
+	function mt2mba_add_form_fields( $taxonomy )
+	{
 		// Build <DIV>
 		?>
 		<div class="form-field">
@@ -71,11 +71,10 @@ class MT2MBA_BACKEND_ATTRB {
 	/**
 	 * Build <TR> to add markup to the 'Edit' attribute term panel
 	 */
-	 function mt2mba_edit_form_fields( $term ) {
-
+	 function mt2mba_edit_form_fields( $term )
+	 {
 		// Retrieve the existing markup for this term (NULL results are valid)
 		$term_meta = get_term_meta( $term->term_id, "markup", TRUE );
-
 		// Build row and fill field with current markup
 		?>
 		<tr class="form-field">
@@ -91,8 +90,8 @@ class MT2MBA_BACKEND_ATTRB {
 	/**
  	 * Save the term's markup as metadata
  	 */
-	public function mt2mba_save_markup_to_metadata( $term_id ) {
-
+	public function mt2mba_save_markup_to_metadata( $term_id )
+	{
 		$term        = get_term( $term_id );
 		$description = $term->description;
 		$taxonomy    = sanitize_key( $term->taxonomy );

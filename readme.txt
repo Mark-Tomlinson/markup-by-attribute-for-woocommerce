@@ -6,7 +6,7 @@ Donate link: https://www.paypal.me/MT2Dev/15
 Tags: WooCommerce, Attribute, Price, Variation, Markup
 Version: 1.3.2
 Requires at least: 4.6
-Tested up to: 4.9.5
+Tested up to: 4.9.6
 Stable tag: 4.3
 Requires PHP: 5.2.4
 License: GPLv3
@@ -71,7 +71,6 @@ Note that steps 1, 3 and 4 below are standard WooCommerce Variable Product stuff
   * The attribute 'color' may include the terms 'Orange', 'Red', 'Violet', 'Blue', 'Green', and 'Yellow'.
 
 2. **While creating new terms or editing existing ones, add the markup.**
-  * **The Markup field is at the bottom of the 'Add new *attribute*' panel and the 'Edit *attribute*' screen of the Product => Attributes menu item.**
   * **For each term, consider whether a markup or markdown is needed. Adding a logo to a shirt might increase the cost by $5. Extra small shirts might be 10% less.**
   * **Put the amount of the markup in the term's Markup field on either the 'Add new *attribute*' panel or the 'Edit *attribute*' panel. Examples of valid values include: '-5', '5.95', '+5.67', '7.5%', and '-12%'.**
   * **Strings that are not recognized as numbers will be ignored. Numbers include 0 through 9, of course. But may also start with '+' or '-', include a decimal point, and end with a percent symbol ('%').**

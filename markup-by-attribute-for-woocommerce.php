@@ -32,8 +32,8 @@
 if ( !defined( 'ABSPATH' ) ) exit( );
 
 // If WooCommerce is active 
-if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
-
+if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) )
+{
 	// Set plugin Version
 	define( 'MT2MBA_VERSION', '1.3.2' );
 	define( 'MT2MBA_MINIMUM_WP_VERSION', '3.0' );
@@ -44,16 +44,36 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 	 * ------------------------- */
 
 	// Pull in correct code depending on whether we are in the shop (frontend) or on the admin page (backend).
-	if ( is_admin( ) ) {
-		/**
-		 * Backend Code
-		 */
-		// Add Instructions link to plugin page
-		add_filter( "plugin_action_links_" . plugin_basename( __FILE__ ), function( $links ) {
-			$link = '<a id="mt2mba_instructions" href="https://wordpress.org/plugins/markup-by-attribute-for-woocommerce/#installation" target="_blank">' . __( 'Instructions' ) . '</a>';
-			array_push( $links, $link );
+	if ( is_admin( ) )
+	{
+		// -------------
+		// Back end code
+		// -------------
+		// Function to add links to plugin page
+		function add_links( $links )
+		{
+			// Pop deactivation link from array
+			$deactivate_link = array_pop($links);
+			// Add Settings link
+			$links['settings'] =
+				'<a id="mt2mba_settings" href="admin.php?page=wc-settings&tab=products&section=mt2mba">' .
+				__( 'Settings' ) .
+				'</a>';
+			// Add Instructions link
+			$links['instructions'] =
+				'<a id="mt2mba_instructions" href="https://wordpress.org/plugins/markup-by-attribute-for-woocommerce/#installation" target="_blank">' .
+				__( 'Instructions' ) .
+				'</a>';
+			// Restore deactivation link to end of array
+			$links['deactivate'] = $deactivate_link;
+			
 			return $links;
-		} );
+		}
+		// Add settings and instruction links to plugin page
+		add_filter( "plugin_action_links_" . plugin_basename( __FILE__ ), 'add_links' );
+		// Instantiate settings
+		require_once( MT2MBA_PLUGIN_DIR . 'src/class-mt2-markup-backend-settings.php' );
+		MT2MBA_BACKEND_SETTINGS::init();
 		// Instantiate admin pointers
 		require_once( MT2MBA_PLUGIN_DIR . 'src/class-mt2-markup-backend-pointers.php' );
 		MT2MBA_BACKEND_POINTERS::init();
@@ -63,18 +83,12 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 		// Instantiate product admin
 		require_once( MT2MBA_PLUGIN_DIR . 'src/class-mt2-markup-backend-product.php' );
 		MT2MBA_BACKEND_PRODUCT::init();
-		/*
-		 * End Backend Code
-		 */
 	} else {
-		/*
-		 * Frontend Code
-		 */
+		// --------------
+		// Front end code
+		// --------------
 		require_once( MT2MBA_PLUGIN_DIR . 'src/class-mt2-markup-frontend.php' );
 		MT2MBA_FRONTEND::init( );
-		/*
-		 * End Frontend Code
-		 */
 	}
 }
 

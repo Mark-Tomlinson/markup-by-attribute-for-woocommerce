@@ -11,37 +11,23 @@ if ( !defined( 'ABSPATH' ) ) exit( );
 
 class MT2MBA_BACKEND_POINTERS {
 
-    var $pointer_title = 'Markup by Attribute';
+    private $pointer_title = 'Markup by Attribute';
 
 	/**
 	 * Initialization method visible before instantiation
 	 */
-	public static function init( ) {
-		
+    public static function init( )
+    {
 		// As a static method, it can not use '$this' and must use an
 		// instantiated version of itself
 		$self	= new self( );
-
-		// Set initialization method to run on 'wp_loaded'.
-		add_filter( 'wp_loaded', array( $self, 'on_loaded' ) );
-	}
-
-	/**
-	 * Hook into Wordpress and WooCommerce
-	 * Method runs on 'wp_loaded' hook
-	 */
-	public function on_loaded() {
-        
         // Enqueue the JQuery
-        add_action( 'admin_enqueue_scripts', array( $this, 'mt2mba_admin_pointer_load' ), 1000 );
-
+        add_action( 'admin_enqueue_scripts', array( $self, 'mt2mba_admin_pointer_load' ), 1000 );
         // Admin pointers for attribute term edit screen
-        add_filter( 'mt2mba_admin_pointers-edit-term', array( $this, 'mt2mba_admin_pointers_edit_term' ) );
-
+        add_filter( 'mt2mba_admin_pointers-edit-term', array( $self, 'mt2mba_admin_pointers_edit_term' ) );
         // Admin pointer for plugin page
-        add_filter( 'mt2mba_admin_pointers-plugins', array( $this, 'mt2mba_admin_pointers_plugins' ) );
-
-    }
+        add_filter( 'mt2mba_admin_pointers-plugins', array( $self, 'mt2mba_admin_pointers_plugins' ) );
+	}
  
     /**
      * Find pointers that have not been dismissed

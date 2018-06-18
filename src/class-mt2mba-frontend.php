@@ -14,8 +14,8 @@ class MT2MBA_FRONTEND {
 	/**
 	 * Initialization method visible before instantiation
 	 */
-	public static function init( ) {
-		
+	public static function init( )
+	{
 		// As a static method, it can not use '$this' and must use an
 		// instantiated version of itself
 		$self	= new self( );
@@ -28,18 +28,17 @@ class MT2MBA_FRONTEND {
 	 * Hook into Wordpress and WooCommerce
 	 * Method runs on 'wp_loaded' hook
 	 */
-	public function on_loaded( ) {
-
+	public function on_loaded( )
+	{
 		// Hook dropdown box build into product page
-		add_filter( 'woocommerce_dropdown_variation_attribute_options_html',
-				   array( $this, 'mt2mba_dropdown_options_markup_html' ), 10, 2);
+		add_filter( 'woocommerce_dropdown_variation_attribute_options_html', array( $this, 'mt2mba_dropdown_options_markup_html' ), 10, 2);
 	}
 
 	/*
 	 * The hooked function that will add the variation description to the dropdown options elements
 	 */
-	public function mt2mba_dropdown_options_markup_html( $html, $args ) {
-
+	public function mt2mba_dropdown_options_markup_html( $html, $args )
+	{
 		// Extract all needed content from $args
 		$options                = $args['options'];
 		$product                = $args['product'];
@@ -47,11 +46,12 @@ class MT2MBA_FRONTEND {
 		$name                   = $args['name'] ? $args['name'] : 'attribute_' . sanitize_title( $attribute );
 		$id                     = $args['id'] ? $args['id'] : sanitize_title( $attribute );
 		$class                  = $args['class'];
-		$show_option_none       = $args['show_option_none'] ? true : false;
+		$show_option_none       = $args['show_option_none'] ? TRUE : FALSE;
 		$show_option_none_text  = $args['show_option_none'] ? $args['show_option_none'] : __( 'Choose an option', 'woocommerce' ); 
 
 		// If $options is empty, get them from the product attributes
-		if ( empty( $options ) && !empty( $product ) && !empty( $attribute ) ) {
+		if ( empty( $options ) && !empty( $product ) && !empty( $attribute ) )
+		{
 			$attributes			= $product->get_variation_attributes();
 			$options			= $attributes[ $attribute ];
 		}
@@ -69,18 +69,20 @@ class MT2MBA_FRONTEND {
 			'<option value="">' . esc_html( $show_option_none_text ) . '</option>';
 
 		// Build <OPTION>s within <SELECT>
-		if ( !empty( $options ) ) {
-			if ( $product && taxonomy_exists( $attribute ) ) {
-				
+		if ( !empty( $options ) )
+		{
+			if ( $product && taxonomy_exists( $attribute ) )
+			{
 				// Need to add option with markup if present
 				$terms = wc_get_product_terms( $product->get_id( ), $attribute, array( 'fields' => 'all' ) );
-				foreach ( $terms as $term ) {
-					
+				foreach ( $terms as $term )
+				{
 					// Add markup if present
-					if ( in_array( $term->slug, $options ) ) {
-						
+					if ( in_array( $term->slug, $options ) )
+					{
 						// Add markup if metadata exists, else leave blank
-						if ( ! $markup = get_metadata( 'post', $product->get_id( ), $term->term_id . "_markup_amount", TRUE ) ) {
+						if ( ! $markup = get_metadata( 'post', $product->get_id( ), $term->term_id . "_markup_amount", TRUE ) )
+						{
 							$markup = get_metadata( 'term', $term->term_id, 'markup', TRUE );
 						}
 
@@ -97,10 +99,12 @@ class MT2MBA_FRONTEND {
 							'</option>';
 					}
 				}
-			} else {
-				
+			}
+			else
+			{
 				// Need only add option, no markups available
-				foreach ( $options as $option ) {
+				foreach ( $options as $option )
+				{
 					$html .= PHP_EOL . '<option value="' .
 						esc_attr( $option ) . '"' .
 						selected( $args['selected'], sanitize_title( $option ), false ) . '>' .

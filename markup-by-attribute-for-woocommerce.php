@@ -39,9 +39,13 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 	define( 'MT2MBA_MINIMUM_WP_VERSION', '3.0' );
 	define( 'MT2MBA_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 
-	/* -------------------------
-	 *       MAIN ROUTINE
-	 * ------------------------- */
+	// -------------------------
+	//       MAIN ROUTINE
+	// -------------------------
+
+	// Register class autoloader
+	require_once( MT2MBA_PLUGIN_DIR . 'src/class-mt2mba-autoloader.php' );
+	MT2MBA_AUTOLOADER::register();
 
 	// Pull in correct code depending on whether we are in the shop (frontend) or on the admin page (backend).
 	if ( is_admin( ) )
@@ -49,6 +53,7 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 		// -------------
 		// Back end code
 		// -------------
+
 		// Function to add links to plugin page
 		function add_links( $links )
 		{
@@ -71,24 +76,22 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 		}
 		// Add settings and instruction links to plugin page
 		add_filter( "plugin_action_links_" . plugin_basename( __FILE__ ), 'add_links' );
-		// Instantiate settings
-		require_once( MT2MBA_PLUGIN_DIR . 'src/class-mt2-markup-backend-settings.php' );
-		MT2MBA_BACKEND_SETTINGS::init();
+
 		// Instantiate admin pointers
-		require_once( MT2MBA_PLUGIN_DIR . 'src/class-mt2-markup-backend-pointers.php' );
-		MT2MBA_BACKEND_POINTERS::init();
+		new MT2MBA_BACKEND_POINTERS;
+
 		// Instantiate attribute admin
-		require_once( MT2MBA_PLUGIN_DIR . 'src/class-mt2-markup-backend-attrb.php' );
-		MT2MBA_BACKEND_ATTRB::init();
+		new MT2MBA_BACKEND_ATTRB;
+
 		// Instantiate product admin
-		require_once( MT2MBA_PLUGIN_DIR . 'src/class-mt2-markup-backend-product.php' );
-		MT2MBA_BACKEND_PRODUCT::init();
-	} else {
+		new MT2MBA_BACKEND_PRODUCT;
+	}
+	else
+	{
 		// --------------
 		// Front end code
 		// --------------
-		require_once( MT2MBA_PLUGIN_DIR . 'src/class-mt2-markup-frontend.php' );
-		MT2MBA_FRONTEND::init( );
+		new MT2MBA_FRONTEND;
 	}
 }
 

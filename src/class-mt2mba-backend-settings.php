@@ -9,7 +9,8 @@
 // Exit if accessed directly
 if ( !defined( 'ABSPATH' ) ) exit( );
 
-class MT2MBA_BACKEND_SETTINGS {
+class MT2MBA_BACKEND_SETTINGS
+{
 
     var $max_variations     =   50;	        // The default number or variation created per run.
     var $desc_behavior      =   'append';   // The default behavior for writing the pricing information into the variation description.
@@ -20,23 +21,15 @@ class MT2MBA_BACKEND_SETTINGS {
 	/**
 	 * Initialization method visible before instantiation
 	 */
-	public static function init( ) {
+    public static function init( )
+    {
 		// As a static method, it can not use '$this' and must use an
 		// instantiated version of itself
 		$self	= new self( );
-		// Set initialization method to run on 'wp_loaded'.
-		add_filter( 'wp_loaded', array( $self, 'on_loaded' ) );
-	}
-
-	/**
-	 * Hook into Wordpress and WooCommerce
-	 * Method runs on 'wp_loaded' hook
-	 */
-	public function on_loaded() {
 		// Hook mt2mba markup code into bulk actions
-        add_filter( 'woocommerce_get_sections_products', array( $this, 'mt2mba_add_settings_section' ) );
-        add_filter( 'woocommerce_get_settings_products', array( $this, 'mt2mba_all_settings' ), 10, 2 );
-    }
+        add_filter( 'woocommerce_get_sections_products', array( $self, 'mt2mba_add_settings_section' ) );
+        add_filter( 'woocommerce_get_settings_products', array( $self, 'mt2mba_all_settings' ), 10, 2 );
+	}
 
     // *******************
     // GETTERS AND SETTERS

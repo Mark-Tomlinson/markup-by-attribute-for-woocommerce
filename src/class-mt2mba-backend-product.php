@@ -9,8 +9,8 @@
 // Exit if accessed directly
 if ( !defined( 'ABSPATH' ) ) exit( );
 
-class MT2MBA_BACKEND_PRODUCT {
-
+class MT2MBA_BACKEND_PRODUCT
+{
 	/**
 	 * Initialization method visible before instantiation
 	 */
@@ -59,8 +59,8 @@ class MT2MBA_BACKEND_PRODUCT {
 		// Method is hooked into 'woocommerce_bulk_edit_variations', which runs with
 		// every bulk edit action. So we only want to execute it if the bulk action
 		// is setting the regular or sale price.
-		if ( $bulk_action == 'variable_regular_price' || $bulk_action == 'variable_sale_price' ) {
-
+		if ( $bulk_action == 'variable_regular_price' || $bulk_action == 'variable_sale_price' )
+		{
 			// Set string for testing and SET functions later
 			$price_type     = substr( $bulk_action, 9 );
 			$orig_price     = $data['value'];

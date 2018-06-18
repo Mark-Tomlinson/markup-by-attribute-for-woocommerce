@@ -1,24 +1,24 @@
 <?php
 /**
- * Filename:	class_markup_backend_attrb.php
+ * Contains markup capabilities related to the backend attribute admin page. Specifically, add metadata field for markup to product attribute terms.
  * 
- * Description:	Contains markup capabilities related to the backend attribute admin page. Specifically, add metadata field for markup to product attribute terms.
- * Author:     	Mark Tomlinson
+ * @author     	Mark Tomlinson
+ * 
  */
 
 // Exit if accessed directly
-if ( !defined( 'ABSPATH' ) ) exit( );
+if ( !defined( 'ABSPATH' ) ) exit();
 
-class MT2MBA_BACKEND_ATTRB {
-
+class MT2MBA_BACKEND_ATTRB
+{
 	/**
 	 * Initialization method visible before instantiation
 	 */
-	public static function init( ) {
-		
+	public static function init()
+	{
 		// As a static method, it can not use '$this' and must use an
 		// instantiated version of itself
-		$self	= new self( );
+		$self = new self();
 
 		// Set initialization method to run on 'wp_loaded'.
 		add_filter( 'wp_loaded', array( $self, 'on_loaded' ) );
@@ -28,8 +28,8 @@ class MT2MBA_BACKEND_ATTRB {
 	 * Hook into Wordpress and WooCommerce
 	 * Method runs on 'wp_loaded' hook
 	 */
-	public function on_loaded() {
-
+	public function on_loaded()
+	{
 		// Add markup field to all WooCommerce attributes
 		
 		// Get all attributes
@@ -54,6 +54,9 @@ class MT2MBA_BACKEND_ATTRB {
 
 	/**
 	 * Build <DIV> to add markup to the 'Add New' attribute term panel
+	 * 
+	 *  @param string $taxonomy
+	 * 
 	 */
 	function mt2mba_add_form_fields( $taxonomy )
 	{
@@ -70,6 +73,9 @@ class MT2MBA_BACKEND_ATTRB {
 	
 	/**
 	 * Build <TR> to add markup to the 'Edit' attribute term panel
+	 * 
+	 * @param string $term
+	 * 
 	 */
 	 function mt2mba_edit_form_fields( $term )
 	 {
@@ -88,8 +94,11 @@ class MT2MBA_BACKEND_ATTRB {
 	}
 
 	/**
- 	 * Save the term's markup as metadata
- 	 */
+	 * Save the term's markup as metadata
+	 * 
+	 * @param string $term_id
+	 * 
+	 */
 	public function mt2mba_save_markup_to_metadata( $term_id )
 	{
 		$term        = get_term( $term_id );
@@ -118,21 +127,15 @@ class MT2MBA_BACKEND_ATTRB {
 			// Update term description so terms with markups are visible in the term list
 			$description .= ' whateva';
 
-		} else {
-
+		}
+		else
+		{
 			// If term_markup is zero, delete the metadata
 			delete_term_meta( $term_id, "markup" );
-
-			// Future ...
-			// Remove markup from term description if included
-
 		}
 		
 		// Update term description
-		$args = array( 
-					'description' => $description,
-					);
-		//$ret	= wp_update_term( $term_id, $taxonomy, $args );
+		$args = array( 'description' => $description );
 	}
 
 }	// End  class MT2MBA_ATTRB_BACKEND

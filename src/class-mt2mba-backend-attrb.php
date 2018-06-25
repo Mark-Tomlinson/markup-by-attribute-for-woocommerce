@@ -36,7 +36,8 @@ class MT2MBA_BACKEND_ATTRB
 		$attribute_taxonomies = wc_get_attribute_taxonomies();
 
 		// Loop through attributes adding hooks
-		foreach ( $attribute_taxonomies as $attribute_taxonomy ) {
+		foreach ( $attribute_taxonomies as $attribute_taxonomy )
+		{
 			// Build taxonomy name
 			$taxonomy = 'pa_' . $attribute_taxonomy->attribute_name;
 
@@ -47,7 +48,7 @@ class MT2MBA_BACKEND_ATTRB
 			add_action( "{$taxonomy}_edit_form_fields", array( $this, 'mt2mba_edit_form_fields' ), 10, 2 );
 
 			// Hook save function into both the 'new' and 'edit' functions
-			add_action( "create_{$taxonomy}", array( $this, 'mt2mba_save_markup_to_metadata' ), 10, 2 );
+			add_action( "created_{$taxonomy}", array( $this, 'mt2mba_save_markup_to_metadata' ), 10, 2 );
 			add_action( "edited_{$taxonomy}", array( $this, 'mt2mba_save_markup_to_metadata' ), 10, 2 );
 		}
 	}
@@ -101,41 +102,51 @@ class MT2MBA_BACKEND_ATTRB
 	 */
 	public function mt2mba_save_markup_to_metadata( $term_id )
 	{
+		// Prevent recursion when wp_update_term is called later
+		if ( defined( 'MT2MBA_ATTRB_RECURSION' ) )
+		{
+			return;
+		}
+		define( 'MT2MBA_ATTRB_RECURSION', TRUE );
+
 		$term        = get_term( $term_id );
+		$markup_desc_beg = '&lt;Markup: ';
+		$markup_desc_end = '&gt;';
 		$description = $term->description;
 		$taxonomy    = sanitize_key( $term->taxonomy );
+		$utility     = new MT2MBA_UTILITY;
 		
-		if ( esc_attr( $_POST['term_markup'] <> 0 ) ) {
-
+		if ( esc_attr( $_POST['term_markup'] <> 0 ) )
+		{
 			$term_markup = esc_attr( $_POST['term_markup']);
 			
 			// If term_markup has a value other than zero, add/update the value to the metadata table
-			if ( strpos( $term_markup, "%" ) ) {
-
+			if ( strpos( $term_markup, "%" ) )
+			{
 				// If term_markup has a percentage sign, save as a formatted percent
 				$markup = sprintf( "%+02.1f%%", sanitize_text_field( $term_markup ) );
-
-			} else {
-
+			}
+			else
+			{
 				// If term_markup does not have percentage sign, save as a formatted floating point number
 				$markup = sprintf( "%+01.2f", sanitize_text_field( $term_markup ) );
-
 			}
 			update_term_meta( $term_id, "markup", $markup );
-			
-			// Future ...
 			// Update term description so terms with markups are visible in the term list
-			$description .= ' whateva';
-
+			$description = trim( $utility->remove_pricing_info( $markup_desc_beg, $markup_desc_end, $description ) );
+			$description .= PHP_EOL . $markup_desc_beg . $markup . $markup_desc_end;
+			$args = array( 'description' => trim( $description ) );
+			wp_update_term( $term_id, $taxonomy, $args );
 		}
 		else
 		{
 			// If term_markup is zero, delete the metadata
 			delete_term_meta( $term_id, "markup" );
+			// And remove description
+			$description = trim( $utility->remove_pricing_info( $markup_desc_beg, $markup_desc_end, $description ) );
+			$args = array( 'description' => trim( $description ) );
+			wp_update_term( $term_id, $taxonomy, $args );
 		}
-		
-		// Update term description
-		$args = array( 'description' => $description );
 	}
 
 }	// End  class MT2MBA_ATTRB_BACKEND

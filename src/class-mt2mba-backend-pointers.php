@@ -33,7 +33,8 @@ class MT2MBA_BACKEND_POINTERS {
      * Find pointers that have not been dismissed
      * and add the scripts to those pages
      */
-    function mt2mba_admin_pointer_load( $hook_suffix ) {
+    function mt2mba_admin_pointer_load( $hook_suffix )
+    {
  
         // Don't run on WP < 3.3
         if ( get_bloginfo( 'version' ) < '3.3' ) return;
@@ -52,8 +53,8 @@ class MT2MBA_BACKEND_POINTERS {
         $valid_pointers =array();
  
         // Check pointers and remove dismissed ones.
-        foreach ( $pointers as $pointer_id => $pointer ) {
- 
+        foreach ( $pointers as $pointer_id => $pointer )
+        {
             // Sanity check
             if ( in_array( $pointer_id, $dismissed ) || empty( $pointer )  || empty( $pointer_id ) || empty( $pointer['target'] ) || empty( $pointer['options'] ) )
                 continue;
@@ -80,8 +81,8 @@ class MT2MBA_BACKEND_POINTERS {
     /**
      * Define pointers for Add and Edit term pages
      */
-    function mt2mba_admin_pointers_edit_term( $pointers ) {
-
+    function mt2mba_admin_pointers_edit_term( $pointers )
+    {
         $pointer_content = sprintf( '<h3><em>%s</em></h3> <p>%s</p>',
             __( $this->pointer_title ),
             __( 'Markups can be fixed values such as <code>5</code> or <code>5.95</code>. Or they can be percentages such as <code>5%</code> or <code>1.23%</code>. ' .
@@ -90,7 +91,6 @@ class MT2MBA_BACKEND_POINTERS {
             'plugindomain')
         );
         $pointers = array(
-
             'mt2-term_add_markup' => array(
                 'target' => '#term_add_markup',
                 'options' => array(
@@ -114,8 +114,8 @@ class MT2MBA_BACKEND_POINTERS {
     /**
      * Define pointer for plugins page
      */
-    function mt2mba_admin_pointers_plugins( $pointers ) {
-
+    function mt2mba_admin_pointers_plugins( $pointers )
+    {
         $pointer_content = sprintf( '<h3><em>%s</em></h3> <p>%s</p>',
             __( $this->pointer_title ),
             __( 'Using this plugin is simple, but may be a little obscure. This link to the instructions may help get you started.</p>' .
@@ -124,7 +124,6 @@ class MT2MBA_BACKEND_POINTERS {
         );
 
         $pointers = array(
-
             'mt2-mt2mba-instructions' => array(
                 'target' => '#mt2mba_instructions',
                 'options' => array(

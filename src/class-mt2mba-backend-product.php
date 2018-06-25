@@ -38,19 +38,6 @@ class MT2MBA_BACKEND_PRODUCT
 		add_action( 'woocommerce_bulk_edit_variations', array( $this, 'mt2mba_apply_markup_to_price' ), 10, 4 );
 	}
 	
-	private function remove_pricing_info($beginning, $end, $string)
-	{
-		$beginningPos = strpos($string, $beginning);
-		$endPos = strrpos($string, $end);
-		if ($beginningPos === FALSE || $endPos === FALSE)
-		{
-			return $string;
-		}
-		$textToDelete = substr($string, $beginningPos, ($endPos + strlen($end)) - $beginningPos);
-	
-		return str_replace($textToDelete, '', $string);
-	  }
-
 	/**
 	 * Hook into bulk edit actions and adjust price after setting new one
 	 */
@@ -129,7 +116,8 @@ class MT2MBA_BACKEND_PRODUCT
 				$attributes      = $variation->get_attributes();
 				$description     = $variation->get_description();
 				// Trim out any previous markup information
-				$description     = trim( $this->remove_pricing_info( $markup_desc_beg, $markup_desc_end, $description ) );
+				$utility         = new MT2MBA_UTILITY;
+				$description     = trim( $utility->remove_pricing_info( $markup_desc_beg, $markup_desc_end, $description ) );
 
 				// There seems to be a bug in WooCommerce where sometimes sale_price isn't set
 				// In that case, we want to leave it alone and not calculate a markup

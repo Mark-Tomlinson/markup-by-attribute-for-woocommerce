@@ -124,6 +124,7 @@ Thanks! The donation button assumes $15.00 USD. But feel free adjust that amount
 * New Settings page allows for increasing the number of variations that can be created at a time (override WooCommerce's limit of 50).
 * New Settings page allows for modifying the way pricing markup is added to the variation descriptions (overwrite, append, or ignore).
 * Markup description now enclosed in <span> tags and can be modified with CSS ( #mba_markupinfo {} ).
+* Markup description added to the attribute term description and can be seen in the attribute term list.
 
 = 1.3.2 =
 

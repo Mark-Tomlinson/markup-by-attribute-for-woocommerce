@@ -102,19 +102,21 @@ class MT2MBA_BACKEND_ATTRB
 	 */
 	public function mt2mba_save_markup_to_metadata( $term_id )
 	{
-		// Prevent recursion when wp_update_term is called later
+		// Prevent recursion when wp_update_term() is called later
 		if ( defined( 'MT2MBA_ATTRB_RECURSION' ) )
 		{
 			return;
 		}
 		define( 'MT2MBA_ATTRB_RECURSION', TRUE );
 
-		$term        = get_term( $term_id );
-		$markup_desc_beg = '&lt;Markup: ';
-		$markup_desc_end = '&gt;';
-		$description = $term->description;
-		$taxonomy    = sanitize_key( $term->taxonomy );
-		$utility     = new MT2MBA_UTILITY;
+		$term            = get_term( $term_id );
+		$taxonomy        = sanitize_key( $term->taxonomy );
+		// Remove any previous markup information from description
+		$markup_desc_beg = '(Markup: ';
+		$markup_desc_end = ')';
+		$description     = $term->description;
+		$utility         = new MT2MBA_UTILITY;
+		$description     = trim( $utility->remove_pricing_info( $markup_desc_beg, $markup_desc_end, $description ) );
 		
 		if ( esc_attr( $_POST['term_markup'] <> 0 ) )
 		{
@@ -132,21 +134,17 @@ class MT2MBA_BACKEND_ATTRB
 				$markup = sprintf( "%+01.2f", sanitize_text_field( $term_markup ) );
 			}
 			update_term_meta( $term_id, "markup", $markup );
-			// Update term description so terms with markups are visible in the term list
-			$description = trim( $utility->remove_pricing_info( $markup_desc_beg, $markup_desc_end, $description ) );
+			// Update term description so markups are visible in the term list
 			$description .= PHP_EOL . $markup_desc_beg . $markup . $markup_desc_end;
-			$args = array( 'description' => trim( $description ) );
-			wp_update_term( $term_id, $taxonomy, $args );
 		}
 		else
 		{
 			// If term_markup is zero, delete the metadata
 			delete_term_meta( $term_id, "markup" );
-			// And remove description
-			$description = trim( $utility->remove_pricing_info( $markup_desc_beg, $markup_desc_end, $description ) );
-			$args = array( 'description' => trim( $description ) );
-			wp_update_term( $term_id, $taxonomy, $args );
 		}
+
+		// Rewrite description
+		wp_update_term( $term_id, $taxonomy, array( 'description' => trim( $description ) ) );
 	}
 
 }	// End  class MT2MBA_ATTRB_BACKEND

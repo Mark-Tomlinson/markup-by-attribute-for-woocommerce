@@ -1,9 +1,9 @@
 <?php
 /**
- * Filename:	class_markup_backend_product.php
+ * Contains markup capabilities related to the backend product admin page. Specifically, increase 
+ * the variation limit and supply code to override regular and sale prices based on options selected.
  * 
- * Description:	Contains markup capabilities related to the backend product admin page. Specifically, increase the variation limit and supply code to override regular and sale prices based on options selected.
- * Author:     	Mark Tomlinson
+ * @author  Mark Tomlinson
  */
 
 // Exit if accessed directly
@@ -37,20 +37,59 @@ class MT2MBA_BACKEND_PRODUCT
 		// Hook mt2mba markup code into bulk actions
 		add_action( 'woocommerce_bulk_edit_variations', array( $this, 'mt2mba_apply_markup_to_price' ), 10, 4 );
 	}
-	
+
+	/**
+	 * Unfortunately have to recreate the increase/decrease price logic found in class WC_AJAX
+	 * since those functions are private.
+	 * 
+	 * @param string $bulk_action	The selection from the variation bulk actions menu
+	 * @param string $data          The amount or percentage to increase or decrease by
+	 * @param float  $base_price    The original base price that we are changing
+	 * 
+	 */
+	private function recalc_base_price( $bulk_action, $data, $base_price )
+	{
+		// Indicate whether we are increasing or decreasing
+		$signed_data = ( strpos( $bulk_action, 'decrease' ) ) ? 0 - floatval( $data ) : floatval( $data );
+
+		if( strpos( $data, '%' ) )
+		{
+			return $base_price + ($base_price * $signed_data / 100);
+		}
+		else
+		{
+			return $base_price + $signed_data;
+		}
+	}
+
 	/**
 	 * Hook into bulk edit actions and adjust price after setting new one
+	 * 
+	 * @param string $bulk_action  The selection from the variation bulk actions menu
+	 * @param array  $data         Values passed in from JScript pop-up
+	 * @param string $product_id   ID of the variable product
+	 * @param array  $variations   List of variation IDs for the variable product
+	 * 
 	 */
 	public function mt2mba_apply_markup_to_price( $bulk_action, $data, $product_id, $variations )
 	{
+		// Set string for testing and SET functions later
+		$price_type     = substr( $bulk_action, 9, strpos( $bulk_action, '_price' ) - 3 );
+		
 		// Method is hooked into 'woocommerce_bulk_edit_variations', which runs with
 		// every bulk edit action. So we only want to execute it if the bulk action
 		// is setting the regular or sale price.
 		if ( $bulk_action == 'variable_regular_price' || $bulk_action == 'variable_sale_price' )
 		{
-			// Set string for testing and SET functions later
-			$price_type     = substr( $bulk_action, 9 );
-			$orig_price     = $data['value'];
+			// Get settings
+			$settings          = new MT2MBA_BACKEND_SETTINGS;
+			$desc_behavior     = $settings->get_desc_behavior();
+
+			// Catch original price
+			$orig_price        = $data[ 'value' ] ;
+			$orig_price_stored = FALSE;
+			// Clear out old metadata
+			delete_post_meta( $product_id, "base_$price_type" );
 
 			// -- Build markup table --
 			// Loop through product attributes
@@ -62,21 +101,29 @@ class MT2MBA_BACKEND_PRODUCT
 					$markup = get_term_meta( $term->term_id, 'markup', TRUE );
 
 					// If term_markup has a value other than zero, add/update the value to the metadata table
-					if ( strpos( $markup, "%" ) ) {
-
+					if ( strpos( $markup, "%" ) )
+					{
 						// Markup is a percentage, calculate against original price
 						$markup = sprintf( "%+01.2f", $orig_price * floatval( $markup ) / 100 );
-
-					} else {
-
-						// Straight markup, get directly from attribute term description
-						$markup = (float)get_term_meta( $term->term_id, 'markup', TRUE );
-
 					}
-					
+					else
+					{
+						// Straight markup, get directly from attribute term description
+						$markup = floatval( $markup );
+					}
+
+					// Set up post metadata key
+					$meta_key = $term->term_id . "_markup_amount";
+
 					// If there is a markup (or markdown) present ...
-					if ( $markup <> 0 ) {
-						
+					if ( $markup <> 0 )
+					{
+						// Store original price
+						if( ! $orig_price_stored )
+						{
+							update_post_meta( $product_id, "base_$price_type", $orig_price, TRUE );
+							$orig_price_stored = TRUE;
+						}
 						// Format a description of the markup
 						if ( $markup > 0 ) {
 							$markup_desc_format = "Add $%01.2f for %s";
@@ -90,12 +137,13 @@ class MT2MBA_BACKEND_PRODUCT
 						$markup_table[$term->taxonomy][$term->slug]["description"] = $markup_desc;
 						
 						// Save actual markup value for term as post metadata for use in product attribute dropdown
-						$meta_key   = $term->term_id . "_markup_amount";
 						$meta_value = sprintf( "%+01.2f", $markup );
-						if ( ! add_post_meta( $product_id, $meta_key, $meta_value, TRUE ) ) { 
-							update_post_meta( $product_id, $meta_key, $meta_value );
-						}
-
+						update_post_meta( $product_id, $meta_key, $meta_value, TRUE );
+					}
+					else
+					{
+						// If no markup present, remove any previous markup metadata
+						delete_post_meta( $product_id, $meta_key );
 					}
 				}
 			}
@@ -105,91 +153,106 @@ class MT2MBA_BACKEND_PRODUCT
 			foreach ( $variations as $variation_id )
 			{
 				$has_orig_price  = FALSE;
-				$markup_desc_beg = '<span id="mba_markupinfo">';
-				$markup_desc_end = '</span>';
-
-				$settings        = new MT2MBA_BACKEND_SETTINGS;
-				$desc_behavior   = $settings->get_desc_behavior();
 
 				$variation       = wc_get_product( $variation_id );
-				$variation_price = $variation->{ "get_$price_type" }( 'edit' );
 				$attributes      = $variation->get_attributes();
+
+				// Starting variation price is whatever was passed in
+				$variation_price = $orig_price;
+
+				// Trim any previous markup information out of description
 				$description     = $variation->get_description();
-				// Trim out any previous markup information
+				$markup_desc_beg = '<span id="mba_markupinfo">';
+				$markup_desc_end = '</span>';
 				$utility         = new MT2MBA_UTILITY;
 				$description     = trim( $utility->remove_pricing_info( $markup_desc_beg, $markup_desc_end, $description ) );
 
-				// There seems to be a bug in WooCommerce where sometimes sale_price isn't set
-				// In that case, we want to leave it alone and not calculate a markup
-				if ( is_numeric( $variation_price ) )
+				// Loop through each attribute within variation
+				foreach ( $attributes as $attribute_id => $term_id )
 				{
-					// Loop through each attribute within variation
-					foreach ( $attributes as $attribute_id => $term_id )
+					// Does this variation have a markup?
+					if ( isset( $markup_table[$attribute_id][$term_id] ) )
 					{
-						// Does this variation have a markup?
-						if ( isset( $markup_table[$attribute_id][$term_id] ) )
+						// Add markup to price
+						$markup = (float)$markup_table[$attribute_id][$term_id]["markup"];
+						$variation_price = $variation_price + $markup;
+
+						// Make sure markup wasn't a reduction that creates
+						// a negative price, then set price accordingly
+						if ( $variation_price > 0 )
 						{
+							$variation->{"set_$price_type"}( $variation_price );
+						}
+						else
+						{
+							$variation->{"set_$price_type"}( 0.00 );
+						}
 
-							// Add markup to price
-							$markup = (float)$markup_table[$attribute_id][$term_id]["markup"];
-							$variation_price = $variation_price + $markup;
-							// Make sure markup wasn't a reduction that creates
-							// a negative price, then set price accordingly
-							if ( $variation_price > 0 )
+						// Update description if Descritption Behavior is NOT 'ignore'.
+						if ( ! ($desc_behavior == 'ignore') )
+						{
+							// Build description (for regular price calculation only)
+							if ( $price_type == 'regular_price' )
 							{
-								$variation->{"set_$price_type"}( $variation_price );
-							} else {
-								$variation->{"set_$price_type"}( 0.00 );
-							}
-
-							// Update description if Descritption Behavior is NOT 'ignore'.
-							if ( ! ($desc_behavior == 'ignore') )
-							{
-								// Build description (for regular price calculation only)
-								if ( $price_type == 'regular_price' )
+								// Put regular price in description if absent
+								if ( ! $has_orig_price )
 								{
-									// Put regular price in description if absent
-									if ( ! $has_orig_price )
+									if ( $desc_behavior == 'overwrite' )
 									{
-										if ( $desc_behavior == 'overwrite' )
-										{
-											// Start with an empty description
-											$description = "";
-										}
-										// Set markup opening tag
-										$description .= PHP_EOL . $markup_desc_beg;
-										// Open description with original price
-										$description .= sprintf( "Product price $%01.2f", $orig_price ) . PHP_EOL;
-										// Flip flag
-										$has_orig_price = TRUE;
+										// Start with an empty description
+										$description = "";
 									}
-									// Add markup description to variation description
-									$description .= $markup_table[$attribute_id][$term_id]["description"] . PHP_EOL;
+									// Set markup opening tag
+									$description .= PHP_EOL . $markup_desc_beg;
+									// Open description with original price
+									$description .= sprintf( "Product price $%01.2f", $orig_price ) . PHP_EOL;
+									// Flip flag
+									$has_orig_price = TRUE;
 								}
+								// Add markup description to variation description
+								$description .= $markup_table[$attribute_id][$term_id]["description"] . PHP_EOL;
 							}
 						}
-					}	// End attribute loop
-
-					// Rewrite variation description if setting the regular price
-					if ( $price_type == 'regular_price' )
-					{
-						if ( strpos( $description, $markup_desc_beg ) )
-						{
-							// Close markup tags 
-							$description .= $markup_desc_end;
-						}
-						// Rewrite description
-						$variation->set_description( trim( $description ) );
 					}
+				}	// End attribute loop
 
-					// And save
-					$variation->save( );
-
-				} // END if is_numeric( $variation_price )
-
+				// Rewrite variation description if setting the regular price
+				if ( $price_type == 'regular_price' )
+				{
+					if ( strpos( $description, $markup_desc_beg ) )
+					{
+						// Close markup tags 
+						$description .= $markup_desc_end;
+					}
+					// Rewrite description
+					$variation->set_description( trim( $description ) );
+				}
+				// And save
+				$variation->save();
 			}	// END variation loop
-			
-		}	// END if bulk_action
+		}
+		else
+		{
+			// Bulk action is not setting a price. Is it to increase or decrease a price?
+			if( strpos( $bulk_action, 'price_increase' ) || strpos( $bulk_action, 'price_decrease' ) )
+			{
+				// If base price metadata is present, that means the product contains variables with attribute pricing.
+				if ( $base_price = get_metadata( 'post', $product_id, "base_$price_type", TRUE ) )
+				{
+					// Recalculate a new base price according to the bulk action.
+					// Bulk action could be any of
+					//     * variable_regular_price_increase
+					//     * variable_regular_price_decrease
+					//     * variable_sale_price_increase
+					//     * variable_sale_price_decrease
+					$new_data[ 'value' ] = $this->recalc_base_price( $bulk_action, $data[ 'value' ], $base_price );
+					// And then loop back through this very same function, changing the bulk action type to
+					// one of the two 'set price' options. This will reset the prices on all variations to the
+					// new base regular/sale price plus the attribute markup.
+					$this->mt2mba_apply_markup_to_price( "variable_$price_type", $new_data, $product_id, $variations );
+				}
+			}
+		}
 		
 	}	// END function mt2mba_apply_markup_to_price
 

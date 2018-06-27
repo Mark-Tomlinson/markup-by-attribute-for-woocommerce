@@ -125,6 +125,8 @@ Thanks! The donation button assumes $15.00 USD. But feel free adjust that amount
 * New Settings page allows for modifying the way pricing markup is added to the variation descriptions (overwrite, append, or ignore).
 * Markup description now enclosed in <span> tags and can be modified with CSS ( #mba_markupinfo {} ).
 * Markup description added to the attribute term description and can be seen in the attribute term list.
+* Corrected issue where Increase/Decrease Regular/Sale Price functions calculated based on variation price rather than base price, yeilding incorrect prices when percentages were used.
+* Corrected issue where Increase/Decrease Regular/Sale Price functions did not update variation descriptions.
 
 = 1.3.2 =
 

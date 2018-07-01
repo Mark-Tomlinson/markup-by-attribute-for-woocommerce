@@ -15,8 +15,8 @@ class MT2MBA_BACKEND_SETTINGS
     var $digits_below_fixed         =   2;              // The default number of digits below the decimal point for fixed amount markups.
     var $digits_below_percentage    =   1;              // The default number of digits below the decimal point for percentage markups.
     var $max_variations             =   50;             // The default number or variation created per run.
-    var $currency_symbol_before     =   '$';
-    var $currency_symbol_after      =   '';
+    var $currency_symbol_before     =   '$';            // The default currency symbol for before the markup.
+    var $currency_symbol_after      =   '';             // The default currency symbol for after the markup.
 
     var $error_msg                  =   '';
     var $format_desc                =   '<div class=\"description\">%s<\/div>';
@@ -24,8 +24,10 @@ class MT2MBA_BACKEND_SETTINGS
 
 	/**
 	 * Initialization method visible before instantiation
+     * @uses    mt2mba_add_settings_section()
+     * @uses    mt2mba_all_settings()
 	 */
-    public static function init( )
+    public static function init()
     {
 		// As a static method, it can not use '$this' and must use an
 		// instantiated version of itself
@@ -50,8 +52,7 @@ class MT2MBA_BACKEND_SETTINGS
         {
             $data = $this->dropdown_behavior;
         }
-        $ret = update_option( 'mt2mba_dropdown_behavior', $data );
-        if ( $ret )
+        if ( update_option( 'mt2mba_dropdown_behavior', $data ) )
         {
             return $data;
         }
@@ -60,7 +61,8 @@ class MT2MBA_BACKEND_SETTINGS
 
     /**
      * Get the Options Drop-down Behavior option (or default if not present)
-     * @return  string      Either 'add', or 'do_not_add'
+     * @uses    set_dropdown_behavior() Set the Options Drop-down Behavior option
+     * @return  string                  Either 'add', or 'do_not_add'
      */
     public function get_dropdown_behavior()
 	{
@@ -74,8 +76,8 @@ class MT2MBA_BACKEND_SETTINGS
     
     /**
      * Set the description behavior option
-     * @param   string  $bv The description writing behavior
-     * @return  string      The description writing behavior
+     * @param   string  $data   The description writing behavior
+     * @return  string          The description writing behavior
      */
 	public function set_desc_behavior( $data )
 	{
@@ -83,8 +85,7 @@ class MT2MBA_BACKEND_SETTINGS
         {
             $data = $this->desc_behavior;
         }
-        $ret = update_option( 'mt2mba_desc_behavior', $data );
-        if ( $ret )
+        if ( update_option( 'mt2mba_desc_behavior', $data ) );
         {
             return $data;
         }
@@ -93,9 +94,10 @@ class MT2MBA_BACKEND_SETTINGS
 
     /**
      * Get the Description Behavior option (or default if not present)
-     * @return  string      Either 'overwrite', 'append', or 'ignore'
+     * @uses    set_desc_behavior() Set the description behavior option
+     * @return  string              Either 'overwrite', 'append', or 'ignore'
      */
-    public function get_desc_behavior( )
+    public function get_desc_behavior()
 	{
         $data = get_option( 'mt2mba_desc_behavior' );
         if ( empty( $data ) )
@@ -107,8 +109,9 @@ class MT2MBA_BACKEND_SETTINGS
     
     /**
      * Set the Number of Digits Below the Decimal Point Option
-     * @param   int $mv Number of digits below the decimal point
-     * @return  int     Number of digits below the decimal point or FALSE if update fails
+     * @param   int $data   Number of digits below the decimal point
+     * @param   int $type   Whether this is for a 'fixed' number or 'percentage' markup
+     * @return  int         Number of digits below the decimal point or FALSE if update fails
      */
 	public function set_decimal_points( $data, $type )
 	{
@@ -116,8 +119,7 @@ class MT2MBA_BACKEND_SETTINGS
         {
             $data = $this->{"digits_below_$type"};
         }
-        $ret = update_option( "digits_below_$type", $data );
-        if ( $ret )
+        if( update_option( "digits_below_$type", $data ) );
         {
             return $data;
         }
@@ -126,8 +128,9 @@ class MT2MBA_BACKEND_SETTINGS
 
     /**
      * Get the number of decimal points option (or default if not present)
-     * @param   string  $type   Whether this is fixed or a percentage
-     * @return  int             The number of digits below the decimal point in the markup
+     * @param   string  $type           Whether this is for a 'fixed' number or 'percentage' markup
+     * @uses    set_decimal_points()    Set the Number of Digits Below the Decimal Point Option
+     * @return  int                     The number of digits below the decimal point in the markup
      */
     public function get_decimal_points( $type )
 	{
@@ -140,8 +143,9 @@ class MT2MBA_BACKEND_SETTINGS
 	}
     
     /**
-     * Get the number of decimal points option (or default if not present)
-     * @return  int     The number of digits below the decimal point in the markup
+     * Get the number of decimal points for fixed markups option (or default if not present)
+     * @uses    get_decimal_points()    Get the number of decimal points option (or default if not present)
+     * @return  int                     The number of digits below the decimal point in the markup
      */
     public function get_decimal_points_fixed()
 	{
@@ -149,8 +153,9 @@ class MT2MBA_BACKEND_SETTINGS
     }
     
     /**
-     * Get the number of decimal points option (or default if not present)
-     * @return  int     The number of digits below the decimal point in the markup
+     * Get the number of decimal points for percentage markups option (or default if not present)
+     * @uses    get_decimal_points()    Get the number of decimal points option (or default if not present)
+     * @return  int                     The number of digits below the decimal point in the markup
      */
     public function get_decimal_points_percentage()
 	{
@@ -168,8 +173,7 @@ class MT2MBA_BACKEND_SETTINGS
         {
             $data = $this->max_variations;
         }
-        $ret = update_option( 'mt2mba_variation_max', $data );
-        if ( $ret )
+        if ( update_option( 'mt2mba_variation_max', $data ) )
         {
             return $data;
         }
@@ -178,6 +182,8 @@ class MT2MBA_BACKEND_SETTINGS
 
     /**
      * Get the Max Variations option (and set it if not present)
+     * @uses    set_max_variations()   Set the Max Variations option
+     * @return  int                    Maximum variations per run
      */
     public function get_max_variations()
 	{
@@ -194,7 +200,9 @@ class MT2MBA_BACKEND_SETTINGS
     // *************
 
     /**
-     * Add section to Product settings
+     * Create 'Markup by Attribute' section on Product settings page
+     * @param   array   $sections   Array of sections on Product settings page
+     * @return  array               Array of sections on Product settings page with 'Markup by Attribute' added
      */
     function mt2mba_add_settings_section( $sections )
     {
@@ -203,7 +211,10 @@ class MT2MBA_BACKEND_SETTINGS
     }
 
     /**
-     * Add settings to the specific section we created before
+     * Add settings to the 'Markup by Attribute' section we created above
+     * @param   array   $settings           The current settings
+     * @param   string  $current_section    The ID of the current section
+     * @return  array                       The current settings page elements
      */
     function mt2mba_all_settings( $settings, $current_section )
     {
@@ -330,7 +341,7 @@ class MT2MBA_BACKEND_SETTINGS
 
             return $mt2mba_settings;
 
-        // If not, return the standard settings
+        // If not the correct section, return the standard settings
         }
         else
         {
@@ -338,39 +349,47 @@ class MT2MBA_BACKEND_SETTINGS
         }
     }
 
-    // --------------
+    // **************
     // ERROR HANDLING
-    // --------------
+    // **************
+    /**
+     * Validate that drop-down behavior is set
+     * @param   string  $input  The current selection
+     * @return  string          The current option or the default
+     */
     function validate_mt2mba_dropdown_behavior_field( $input )
     {
         if ( $input === NULL )
         {
             $this->error_msg .= sprintf( $this->format_error, "Please select an option for the options drop-down." );
             return get_option( 'mt2mba_dropdown_behavior' );
-        } else {
-            return $input;
         }
+        return $input;
     }
 
+    /**
+     * Validate that description writing behavior is set
+     * @param   string  $input  The current selection
+     * @return  string          The current option or the default
+     */
     function validate_mt2mba_desc_behavior_field( $input )
     {
         if ( $input === NULL )
         {
             $this->error_msg .= sprintf( $this->format_error, "Please select an option for the description behavior." );
             return get_option( 'mt2mba_variation_max' );
-        } else {
-            return $input;
         }
+        return $input;
     }
 
     /**
-     * Validate "Numbers Below Decimal Point". Must be numeric between 0 and 5.
-     * @param   int     $input  The number of numbers below the decimal point
+     * Validate number of digits below the decimal point. Must be numeric between 0 and 5.
+     * @param   int     $input  The number of digits below the decimal point
      * @param   string  $type   Whether this is for the fixed amount or percentage markup
+     * @return  int             The current option or the default
      */
     function validate_mt2mba_decimal_points_field( $input, $type )
     {
-        error_log($input . " " . $type);
         if( is_numeric( $input ) )
         {
             if( $input < 0 || $input > 5 )
@@ -385,11 +404,23 @@ class MT2MBA_BACKEND_SETTINGS
         return $input;
     }
 
+    /**
+     * Validate number of digits below the decimal point for fixed number markups.
+     * @param   int     $input                                  The number of digits below the decimal point
+     * @uses            validate_mt2mba_decimal_points_field()  Validate number of digits below the decimal point
+     * @return  int                                             The current option or the default
+     */
     function validate_mt2mba_decimal_points_fixed_field( $input )
     {
         return $this->validate_mt2mba_decimal_points_field( $input, 'fixed' );
     }
 
+    /**
+     * Validate number of digits below the decimal point for percentage markups.
+     * @param   int     $input                                  The number of digits below the decimal point
+     * @uses            validate_mt2mba_decimal_points_field()  Validate number of digits below the decimal point
+     * @return  int                                             The current option or the default
+     */
     function validate_mt2mba_decimal_points_percentage_field( $input )
     {
         return $this->validate_mt2mba_decimal_points_field( $input, 'percentage' );
@@ -398,21 +429,21 @@ class MT2MBA_BACKEND_SETTINGS
     /**
      * Validate currency symbol
      * @param  string   $input  Currency symbol
-     * @param  string   $ba     Whether this is the 'before' or 'after' symbol
+     * @param  string   $type   Whether this is the 'before' or 'after' symbol
      * @return string           Cleaned currency symbol
      */
-    function validate_mt2mba_symbol_field( $input, $ba )
+    function validate_mt2mba_symbol_field( $input, $type )
     {
         if ( strlen( $input ) > 1 )
         {
-            $this->error_msg .= sprintf( $this->format_error, "Currency symbol ($ba) can be only one character." );
-            return get_option( "mt2mba_symbol_$ba" );
+            $this->error_msg .= sprintf( $this->format_error, "Currency symbol ($type) can be only one character." );
+            return get_option( "mt2mba_symbol_$type" );
         }
         if( $input === ' ' )
         {
-            $this->error_msg .= sprintf( $this->format_error, "Currency symbol ($ba) can not be a space.</br>" .
+            $this->error_msg .= sprintf( $this->format_error, "Currency symbol ($type) can not be a space.</br>" .
                 "If you intended to have no currency symbol, delete the space." );
-            return get_option( "mt2mba_symbol_$ba" );
+            return get_option( "mt2mba_symbol_$type" );
         }
         return $input;
     }
@@ -439,13 +470,18 @@ class MT2MBA_BACKEND_SETTINGS
         return $this->validate_mt2mba_symbol_field( $input, 'after' );
     }
 
+    /**
+     * Validate The maximum number of variations that can be created per run
+     * @param  string   $input  The max variations 
+     * @return string           Cleaned max variations
+     */
     function validate_mt2mba_variation_max_field( $input )
     {
-        if ( is_numeric( $input ) )
+        if ( is_numeric( $input ) && $input > 1 )
         {
             return $input;
         } else {
-            $this->error_msg .= sprintf( $this->format_error, "Variation Max must be numeric.</br>Previous option retained." );
+            $this->error_msg .= sprintf( $this->format_error, "Variation Max must be a number, 1 or higher.</br>Previous option retained." );
             return get_option( 'mt2mba_variation_max' );
         }
     }

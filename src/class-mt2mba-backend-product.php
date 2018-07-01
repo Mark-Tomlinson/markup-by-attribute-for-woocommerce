@@ -83,13 +83,17 @@ class MT2MBA_BACKEND_PRODUCT
 		{
 			// Get settings
 			$settings          = new MT2MBA_BACKEND_SETTINGS;
+			$dropdown_behavior = $settings->get_dropdown_behavior();
 			$desc_behavior     = $settings->get_desc_behavior();
 
 			// Catch original price
 			$orig_price        = $data[ 'value' ] ;
 			$orig_price_stored = FALSE;
+
 			// Clear out old metadata
 			delete_post_meta( $product_id, "base_$price_type" );
+
+			// Format markup
 
 			// -- Build markup table --
 			// Loop through product attributes

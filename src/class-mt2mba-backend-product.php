@@ -4,7 +4,8 @@
  * the variation limit and supply code to override regular and sale prices based on options selected.
  * 
  * @author  Mark Tomlinson
- */
+ * 
+  */
 
 // Exit if accessed directly
 if ( !defined( 'ABSPATH' ) ) exit( );
@@ -14,12 +15,11 @@ class MT2MBA_BACKEND_PRODUCT
 	/**
 	 * Initialization method visible before instantiation
 	 */
-	public static function init( )
+	public static function init()
 	{
 		// As a static method, it can not use '$this' and must use an
 		// instantiated version of itself
 		$self	= new self( );
-
 		// Set initialization method to run on 'wp_loaded'.
 		add_filter( 'wp_loaded', array( $self, 'on_loaded' ) );
 	}
@@ -41,17 +41,16 @@ class MT2MBA_BACKEND_PRODUCT
 	/**
 	 * Unfortunately have to recreate the increase/decrease price logic found in class WC_AJAX
 	 * since those functions are private.
-	 * 
-	 * @param string $bulk_action	The selection from the variation bulk actions menu
-	 * @param string $data          The amount or percentage to increase or decrease by
-	 * @param float  $base_price    The original base price that we are changing
-	 * 
+	 * @param   string	$bulk_action	The selection from the variation bulk actions menu
+	 * @param   string  $data           The amount or percentage to increase or decrease by
+	 * @param   float   $base_price     The original base price that we are changing
+	 * @return	float                   The new base price (before markup)
 	 */
 	private function recalc_base_price( $bulk_action, $data, $base_price )
 	{
 		// Indicate whether we are increasing or decreasing
 		$signed_data = ( strpos( $bulk_action, 'decrease' ) ) ? 0 - floatval( $data ) : floatval( $data );
-
+		// Calc based on whether it is a percentage or fixed number
 		if( strpos( $data, '%' ) )
 		{
 			return $base_price + ($base_price * $signed_data / 100);
@@ -64,12 +63,10 @@ class MT2MBA_BACKEND_PRODUCT
 
 	/**
 	 * Hook into bulk edit actions and adjust price after setting new one
-	 * 
 	 * @param string $bulk_action  The selection from the variation bulk actions menu
 	 * @param array  $data         Values passed in from JScript pop-up
 	 * @param string $product_id   ID of the variable product
 	 * @param array  $variations   List of variation IDs for the variable product
-	 * 
 	 */
 	public function mt2mba_apply_markup_to_price( $bulk_action, $data, $product_id, $variations )
 	{
@@ -85,6 +82,8 @@ class MT2MBA_BACKEND_PRODUCT
 			$settings          = new MT2MBA_BACKEND_SETTINGS;
 			$dropdown_behavior = $settings->get_dropdown_behavior();
 			$desc_behavior     = $settings->get_desc_behavior();
+			$symbol_before     = $settings->get_currency_symbol_before();
+			$symbol_after      = $settings->get_currency_symbol_before();
 
 			// Catch original price
 			$orig_price        = $data[ 'value' ] ;

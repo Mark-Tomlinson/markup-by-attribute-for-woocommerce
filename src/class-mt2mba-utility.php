@@ -20,13 +20,10 @@ class MT2MBA_UTILITY
 
     /**
     * Remove pricing information from string
-    * 
     * @param  string $beginning    Marker at the begining of the string to be removed
     * @param  string $ending       Marker at the ending of the string to be removed
     * @param  string $string       The string to be processed
-    * 
     * @return string               The string minus the text to be removed and the begining and ending markers
-    * 
     */
     public function remove_pricing_info($beginning, $ending, $string)
 	{
@@ -38,8 +35,6 @@ class MT2MBA_UTILITY
 		}
 		$textToDelete = substr( $string, $beginningPos, ( $endingPos + strlen( $ending ) ) - $beginningPos );
 		return str_replace( $textToDelete, '', $string );
-	}
-
-}	// End  class MT2MBA_UTILITY
-
+    }
+}
 ?>

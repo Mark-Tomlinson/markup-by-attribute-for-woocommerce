@@ -1,9 +1,7 @@
 <?php
 /**
- * Filename:	class-mt2-markup-frontend.php
- * 
- * Description:	Set the dropdown box with available options and the associated markup.
- * Author:	 	Mark Tomlinson
+ * Set the dropdown box with available options and the associated markup.
+ * @author	Mark Tomlinson
  */
 
 // Exit if accessed directly
@@ -19,7 +17,6 @@ class MT2MBA_FRONTEND {
 		// As a static method, it can not use '$this' and must use an
 		// instantiated version of itself
 		$self	= new self( );
-
 		// Set initialization method to run on 'wp_loaded'.
 		add_filter( 'wp_loaded', array( $self, 'on_loaded' ) );
 	}
@@ -34,8 +31,11 @@ class MT2MBA_FRONTEND {
 		add_filter( 'woocommerce_dropdown_variation_attribute_options_html', array( $this, 'mt2mba_dropdown_options_markup_html' ), 10, 2);
 	}
 
-	/*
+	/**
 	 * The hooked function that will add the variation description to the dropdown options elements
+	 * @param	string	$html	The HTML of the options drop-down box
+	 * @param	array	$args   Array of available options
+	 * @return	string          The modified HTML of the options drop-down box
 	 */
 	public function mt2mba_dropdown_options_markup_html( $html, $args )
 	{
@@ -48,6 +48,15 @@ class MT2MBA_FRONTEND {
 		$class                  = $args['class'];
 		$show_option_none       = $args['show_option_none'] ? TRUE : FALSE;
 		$show_option_none_text  = $args['show_option_none'] ? $args['show_option_none'] : __( 'Choose an option', 'woocommerce' ); 
+
+		// Get settings
+		$settings               = new MT2MBA_BACKEND_SETTINGS;
+		$dropdown_behavior      = $settings->get_dropdown_behavior();
+		$symbol_before          = $settings->get_currency_symbol_before();
+		$symbol_after           = $settings->get_currency_symbol_after();
+		$decimal_points         = $settings->get_decimal_points();
+
+		$markup_format          = " (+%s%f%s)";
 
 		// If $options is empty, get them from the product attributes
 		if ( empty( $options ) && !empty( $product ) && !empty( $attribute ) )
@@ -87,7 +96,9 @@ class MT2MBA_FRONTEND {
 						}
 
 						// ... and format it properly or null it if empty
-						$markup = $markup ? " ($markup)" : '';
+//						$markup = $markup ? " ($markup)" : '';
+						$add_sub_sign = $markup > 0 ? "+" : "-";
+						$markup = $markup ? sprintf( " (%s%s%01.{$decimal_points}f%s)", $add_sub_sign, $symbol_before, abs( $markup ), $symbol_after ) : '';
 
 						// And build <OPTION> into $html
 						$html .= PHP_EOL .

@@ -4,6 +4,20 @@
  * @author      Mark Tomlinson
  * @copyright   Mark Tomlinson  2018
  * 
+ * 'mt2mba_dropdown_behavior'           String 'add' or 'do_not_add'
+ * 'mt2mba_desc_behavior'               String 'overwrite', 'append', or 'ignore'
+ * 'mt2mba_decimal_points'              Number 0 through 6
+ * 'mt2mba_symbol_before'               Character blank or a single character
+ * 'mt2mba_symbol_after'                Character blank or a single character
+ * 'mt2mba_variation_max'               Number 1 or higher
+ * 
+ * 'get_dropdown_behavior()'
+ * 'get_desc_behavior()'
+ * 'get_decimal_points()'
+ * 'get_currency_symbol_before()'
+ * 'get_currency_symbol_after()'
+ * 'get_max_variations()'
+
  */
 // Exit if accessed directly
 if ( !defined( 'ABSPATH' ) ) exit( );
@@ -12,8 +26,7 @@ class MT2MBA_BACKEND_SETTINGS
 {
     var $dropdown_behavior          =   'do_not_add';   // The default behavior for displaying the currency symbol in the options drop-down.
     var $desc_behavior              =   'append';       // The default behavior for writing the pricing information into the variation description.
-    var $digits_below_fixed         =   2;              // The default number of digits below the decimal point for fixed amount markups.
-    var $digits_below_percentage    =   1;              // The default number of digits below the decimal point for percentage markups.
+    var $digits_below_decimal       =   2;              // The default number of digits below the decimal point for fixed amount markups.
     var $max_variations             =   50;             // The default number or variation created per run.
     var $currency_symbol_before     =   '$';            // The default currency symbol for before the markup.
     var $currency_symbol_after      =   '';             // The default currency symbol for after the markup.
@@ -46,9 +59,9 @@ class MT2MBA_BACKEND_SETTINGS
      * @param   string  $bv The description writing behavior
      * @return  string      The description writing behavior or FALSE if the update failed
      */
-	public function set_dropdown_behavior( $data )
+	private function set_dropdown_behavior( $data )
 	{
-        if ( empty( $data ) )
+        if ( $data === '' )
         {
             $data = $this->dropdown_behavior;
         }
@@ -67,7 +80,7 @@ class MT2MBA_BACKEND_SETTINGS
     public function get_dropdown_behavior()
 	{
         $data = get_option( 'mt2mba_dropdown_behavior' );
-        if ( empty( $data ) )
+        if ( $data === FALSE )
         {
             $data = $this->set_dropdown_behavior( $this->dropdown_behavior );
         }
@@ -79,9 +92,9 @@ class MT2MBA_BACKEND_SETTINGS
      * @param   string  $data   The description writing behavior
      * @return  string          The description writing behavior
      */
-	public function set_desc_behavior( $data )
+	private function set_desc_behavior( $data )
 	{
-        if ( empty( $data ) )
+        if ( $data === '' )
         {
             $data = $this->desc_behavior;
         }
@@ -100,7 +113,7 @@ class MT2MBA_BACKEND_SETTINGS
     public function get_desc_behavior()
 	{
         $data = get_option( 'mt2mba_desc_behavior' );
-        if ( empty( $data ) )
+        if ( $data === FALSE )
         {
             $data = $this->set_desc_behavior( $this->desc_behavior );
         }
@@ -110,16 +123,15 @@ class MT2MBA_BACKEND_SETTINGS
     /**
      * Set the Number of Digits Below the Decimal Point Option
      * @param   int $data   Number of digits below the decimal point
-     * @param   int $type   Whether this is for a 'fixed' number or 'percentage' markup
      * @return  int         Number of digits below the decimal point or FALSE if update fails
      */
-	public function set_decimal_points( $data, $type )
+	private function set_decimal_points( $data )
 	{
-        if ( empty( $data ) )
+        if ( $data === '' )
         {
-            $data = $this->{"digits_below_$type"};
+            $data = $this->{"digits_below_decimal"};
         }
-        if( update_option( "digits_below_$type", $data ) );
+        if ( update_option( "mt2mba_decimal_points", $data ) );
         {
             return $data;
         }
@@ -128,38 +140,72 @@ class MT2MBA_BACKEND_SETTINGS
 
     /**
      * Get the number of decimal points option (or default if not present)
-     * @param   string  $type           Whether this is for a 'fixed' number or 'percentage' markup
      * @uses    set_decimal_points()    Set the Number of Digits Below the Decimal Point Option
      * @return  int                     The number of digits below the decimal point in the markup
      */
-    public function get_decimal_points( $type )
+    public function get_decimal_points()
 	{
-        $data = get_option( "mt2mba_decimal_points_$type" );
-        if ( empty( $data ) )
+        $data = get_option( "mt2mba_decimal_points" );
+        if ( $data === FALSE )
         {
-            $data = $this->set_decimal_points( $this->{"digits_below_$type"}, $type );
+            return $this->set_decimal_points( $this->{"digits_below_decimal"}, $data );
         }
         return $data;
 	}
     
     /**
-     * Get the number of decimal points for fixed markups option (or default if not present)
-     * @uses    get_decimal_points()    Get the number of decimal points option (or default if not present)
+     * Get the currency symbol
+     * @param   string  $data   The currency symbol
+     * @param   string  $type   Whether this is for 'before' or 'after' the markup
+     * @return  int             Cleaned currency symbol (or FALSE if update failed)
+     */
+	private function set_currency_symbol( $data, $type )
+	{
+        if ( $data === '' )
+        {
+            $data = $this->{"currency_symbol_$type"};
+        }
+        if ( update_option( "mt2mba_symbol_$type", $data ) );
+        {
+            return $data;
+        }
+        return FALSE;
+	}
+
+    /**
+     * Get the currency symbol
+     * @param   string  $type           Whether this is for 'before' or 'after' the markup
+     * @uses    set_currency_symbol()   Set the currency symbol
      * @return  int                     The number of digits below the decimal point in the markup
      */
-    public function get_decimal_points_fixed()
+    private function get_currency_symbol( $type )
 	{
-        return $this->get_decimal_points( 'fixed' );
+        $data = get_option( "mt2mba_symbol_$type" );
+        if ( $data === FALSE )
+        {
+            return $this->set_currency_symbol( $this->{"mt2mba_symbol_$type"}, $type );
+        }
+        return $data;
+	}
+    
+    /**
+     * Get the currency symbol before the markup
+     * @uses    get_currency_symbol()   Get the currency symbol
+     * @return  string                  The currency symbol
+     */
+    public function get_currency_symbol_before()
+	{
+        return $this->get_currency_symbol( 'before' );
     }
     
     /**
-     * Get the number of decimal points for percentage markups option (or default if not present)
-     * @uses    get_decimal_points()    Get the number of decimal points option (or default if not present)
-     * @return  int                     The number of digits below the decimal point in the markup
+     * Get the currency symbol after the markup
+     * @uses    get_currency_symbol()   Get the currency symbol
+     * @return  string                  The currency symbol
      */
-    public function get_decimal_points_percentage()
+    public function get_currency_symbol_after()
 	{
-        return $this->get_decimal_points( 'percentage' );
+        return $this->get_currency_symbol( 'after' );
     }
     
     /**
@@ -167,9 +213,9 @@ class MT2MBA_BACKEND_SETTINGS
      * @param   int $mv Maximum variations per run
      * @return  int     Maximum variations per run or FALSE
      */
-	public function set_max_variations( $data )
+	private function set_max_variations( $data )
 	{
-        if ( empty( $data ) )
+        if ( $data === '' )
         {
             $data = $this->max_variations;
         }
@@ -188,7 +234,7 @@ class MT2MBA_BACKEND_SETTINGS
     public function get_max_variations()
 	{
         $data = get_option( 'mt2mba_variation_max' );
-        if ( empty( $data ) )
+        if ( $data === FALSE )
         {
             $data = $this->set_max_variations( $this->max_variations );
         }
@@ -269,27 +315,15 @@ class MT2MBA_BACKEND_SETTINGS
                     'default'  => $this->desc_behavior,
                 );
             
-            // Number of Decimal Points for Fixed Number Markups
-            register_setting( 'mt2mba', 'mt2mba_decimal_points_fixed', array( $this, 'validate_mt2mba_decimal_points_fixed_field' ) );
-            $description = 'Number of digits that appear after the decimal point in fixed number markups. Valid values are 0 through 5.';
+            // Number of Decimal Points for Markups
+            register_setting( 'mt2mba', 'mt2mba_decimal_points', array( $this, 'validate_mt2mba_decimal_points_field' ) );
+            $description = 'Number of digits that appear after the decimal point in markups. Valid values are 0 through 6.';
             $mt2mba_settings[] = array
                 (
-                    'title'    => __( 'Digits Below Deciaml Point For Fixed Value Markups' ),
+                    'title'    => __( 'Digits Below Decimal Point For Markups' ),
                     'desc'     => __( sprintf($this->format_desc, $description ) ),
-                    'id'       => 'mt2mba_decimal_points_fixed',
-                    'default'  => $this->digits_below_fixed,
-                    'type'     => 'text',
-                );
-
-            // Number of Decimal Points for Percentage Markups
-            register_setting( 'mt2mba', 'mt2mba_decimal_points_percentage', array( $this, 'validate_mt2mba_decimal_points_percentage_field' ) );
-            $description = 'Number of digits that appear after the decimal point in percentage markups. Valid values are 0 through 5.';
-            $mt2mba_settings[] = array
-                (
-                    'title'    => __( 'Digits Below Deciaml Point For Percentage Markups' ),
-                    'desc'     => __( sprintf($this->format_desc, $description ) ),
-                    'id'       => 'mt2mba_decimal_points_percentage',
-                    'default'  => $this->digits_below_percentage,
+                    'id'       => 'mt2mba_decimal_points',
+                    'default'  => $this->digits_below_decimal,
                     'type'     => 'text',
                 );
 
@@ -388,42 +422,20 @@ class MT2MBA_BACKEND_SETTINGS
      * @param   string  $type   Whether this is for the fixed amount or percentage markup
      * @return  int             The current option or the default
      */
-    function validate_mt2mba_decimal_points_field( $input, $type )
+    function validate_mt2mba_decimal_points_field( $input )
     {
         if( is_numeric( $input ) )
         {
-            if( $input < 0 || $input > 5 )
+            if( $input < 0 || $input > 6 )
             {
-                $this->error_msg .= sprintf( $this->format_error, "Numbers Below Decimal Point for $type markups must be between 0 and 5.</br>Previous option retained." );
-                return get_option( "mt2mba_decimal_points_$type" );
+                $this->error_msg .= sprintf( $this->format_error, "Numbers Below Decimal Point must be between 0 and 6.</br>Previous option retained." );
+                return get_option( "mt2mba_decimal_points" );
             }
         } else {
-            $this->error_msg .= sprintf( $this->format_error, "Numbers Below Decimal Point for $type markups must be numeric.</br>Previous option retained." );
-            return get_option( "mt2mba_decimal_points_$type" );
+            $this->error_msg .= sprintf( $this->format_error, "Numbers Below Decimal Point must be numeric.</br>Previous option retained." );
+            return get_option( "mt2mba_decimal_points" );
         }
         return $input;
-    }
-
-    /**
-     * Validate number of digits below the decimal point for fixed number markups.
-     * @param   int     $input                                  The number of digits below the decimal point
-     * @uses            validate_mt2mba_decimal_points_field()  Validate number of digits below the decimal point
-     * @return  int                                             The current option or the default
-     */
-    function validate_mt2mba_decimal_points_fixed_field( $input )
-    {
-        return $this->validate_mt2mba_decimal_points_field( $input, 'fixed' );
-    }
-
-    /**
-     * Validate number of digits below the decimal point for percentage markups.
-     * @param   int     $input                                  The number of digits below the decimal point
-     * @uses            validate_mt2mba_decimal_points_field()  Validate number of digits below the decimal point
-     * @return  int                                             The current option or the default
-     */
-    function validate_mt2mba_decimal_points_percentage_field( $input )
-    {
-        return $this->validate_mt2mba_decimal_points_field( $input, 'percentage' );
     }
 
     /**
@@ -436,7 +448,7 @@ class MT2MBA_BACKEND_SETTINGS
     {
         if ( strlen( $input ) > 1 )
         {
-            $this->error_msg .= sprintf( $this->format_error, "Currency symbol ($type) can be only one character." );
+            $this->error_msg .= sprintf( $this->format_error, "Currency symbol ($type) can be only one character.</br>Previous option retained." );
             return get_option( "mt2mba_symbol_$type" );
         }
         if( $input === ' ' )

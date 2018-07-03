@@ -51,10 +51,18 @@ class MT2MBA_FRONTEND {
 
 		// Get settings
 		$settings               = new MT2MBA_BACKEND_SETTINGS;
-		$dropdown_behavior      = $settings->get_dropdown_behavior();
-		$symbol_before          = $settings->get_currency_symbol_before();
-		$symbol_after           = $settings->get_currency_symbol_after();
 		$decimal_points         = $settings->get_decimal_points();
+		// Get currency symbol if required
+		if ( $settings->get_dropdown_behavior() == 'add' )
+		{
+			$symbol_before      = $settings->get_currency_symbol_before();
+			$symbol_after       = $settings->get_currency_symbol_after();
+		}
+		else
+		{
+			$symbol_before      = '';
+			$symbol_after       = '';
+		}
 
 		$markup_format          = " (+%s%f%s)";
 
@@ -96,7 +104,6 @@ class MT2MBA_FRONTEND {
 						}
 
 						// ... and format it properly or null it if empty
-//						$markup = $markup ? " ($markup)" : '';
 						$add_sub_sign = $markup > 0 ? "+" : "-";
 						$markup = $markup ? sprintf( " (%s%s%01.{$decimal_points}f%s)", $add_sub_sign, $symbol_before, abs( $markup ), $symbol_after ) : '';
 

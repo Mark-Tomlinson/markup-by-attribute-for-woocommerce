@@ -2,7 +2,7 @@
 /**
  * Contains markup capabilities related to the backend product admin page. Specifically, increase 
  * the variation limit and supply code to override regular and sale prices based on options selected.
- * 
+ *
  * @author  Mark Tomlinson
  * 
   */
@@ -79,11 +79,13 @@ class MT2MBA_BACKEND_PRODUCT
 		if ( $bulk_action == 'variable_regular_price' || $bulk_action == 'variable_sale_price' )
 		{
 			// Get settings
-			$settings          = new MT2MBA_BACKEND_SETTINGS;
-			$dropdown_behavior = $settings->get_dropdown_behavior();
-			$desc_behavior     = $settings->get_desc_behavior();
-			$symbol_before     = $settings->get_currency_symbol_before();
-			$symbol_after      = $settings->get_currency_symbol_before();
+			$settings       = new MT2MBA_BACKEND_SETTINGS;
+			$desc_behavior  = $settings->get_desc_behavior();
+			$decimal_points	= $settings->get_decimal_points();
+			$symbol_before  = $settings->get_currency_symbol_before();
+			$symbol_after   = $settings->get_currency_symbol_after();
+			// Set markup format
+			$markup_format  = " (%s%s%01.{$decimal_points}f%s)";
 
 			// Catch original price
 			$orig_price        = $data[ 'value' ] ;
@@ -140,8 +142,9 @@ class MT2MBA_BACKEND_PRODUCT
 						$markup_table[$term->taxonomy][$term->slug]["description"] = $markup_desc;
 						
 						// Save actual markup value for term as post metadata for use in product attribute dropdown
-						$meta_value = sprintf( "%+01.2f", $markup );
-						update_post_meta( $product_id, $meta_key, $meta_value, TRUE );
+						$meta_value = sprintf( "%+g", $markup );
+						update_post_meta( $product_id, $meta_key, $meta_value );
+						error_log( $product_id . " " . $meta_key . " " . $meta_value );
 					}
 					else
 					{

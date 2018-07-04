@@ -63,8 +63,8 @@ class MT2MBA_FRONTEND {
 			$symbol_before      = '';
 			$symbol_after       = '';
 		}
-
-		$markup_format          = " (+%s%f%s)";
+		// Set markup format
+		$markup_format          = " (%s%s%01.{$decimal_points}f%s)";
 
 		// If $options is empty, get them from the product attributes
 		if ( empty( $options ) && !empty( $product ) && !empty( $attribute ) )
@@ -105,7 +105,7 @@ class MT2MBA_FRONTEND {
 
 						// ... and format it properly or null it if empty
 						$add_sub_sign = $markup > 0 ? "+" : "-";
-						$markup = $markup ? sprintf( " (%s%s%01.{$decimal_points}f%s)", $add_sub_sign, $symbol_before, abs( $markup ), $symbol_after ) : '';
+						$markup = $markup ? sprintf( $markup_format, $add_sub_sign, $symbol_before, abs( $markup ), $symbol_after ) : '';
 
 						// And build <OPTION> into $html
 						$html .= PHP_EOL .

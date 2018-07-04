@@ -126,12 +126,13 @@ class MT2MBA_BACKEND_ATTRB
 			if ( strpos( $term_markup, "%" ) )
 			{
 				// If term_markup has a percentage sign, save as a formatted percent
-				$markup = sprintf( "%+02.1f%%", sanitize_text_field( $term_markup ) );
+//				$markup = sprintf( "%+02.1f%%", sanitize_text_field( $term_markup ) );
+				$markup = sprintf( "%+g%%", sanitize_text_field( $term_markup ) );
 			}
 			else
 			{
 				// If term_markup does not have percentage sign, save as a formatted floating point number
-				$markup = sprintf( "%+01.2f", sanitize_text_field( $term_markup ) );
+				$markup = sprintf( "%+g", sanitize_text_field( $term_markup ) );
 			}
 			update_term_meta( $term_id, "markup", $markup );
 			// Update term description so markups are visible in the term list

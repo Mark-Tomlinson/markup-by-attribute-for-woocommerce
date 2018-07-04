@@ -34,6 +34,7 @@ class MT2MBA_BACKEND_SETTINGS
     var $error_msg                  =   '';
     var $format_desc                =   '<div class=\"description\">%s<\/div>';
     var $format_error               =   '<div class=\"error notice\"><p><strong>%s</strong></p></div>';
+    var $valid_currency_symbols     =   array('¤', '$', '£', '€', '¢', '¥', '₧', 'ƒ');
 
 	/**
 	 * Initialization method visible before instantiation
@@ -446,18 +447,15 @@ class MT2MBA_BACKEND_SETTINGS
      */
     function validate_mt2mba_symbol_field( $input, $type )
     {
-        if ( strlen( $input ) > 1 )
+        if ( in_array( $input, $this->valid_currency_symbols ) || $input === '' )
         {
-            $this->error_msg .= sprintf( $this->format_error, "Currency symbol ($type) can be only one character.</br>Previous option retained." );
-            return get_option( "mt2mba_symbol_$type" );
+            return $input;
         }
-        if( $input === ' ' )
-        {
-            $this->error_msg .= sprintf( $this->format_error, "Currency symbol ($type) can not be a space.</br>" .
-                "If you intended to have no currency symbol, delete the space." );
-            return get_option( "mt2mba_symbol_$type" );
-        }
-        return $input;
+
+        $this->error_msg .= sprintf( $this->format_error, "Currency symbol ($type) must be one of the following.</br>" .
+            implode( ', ', $this->valid_currency_symbols ) .
+            '</br>Previous option retained.' );
+        return get_option( "mt2mba_symbol_$type" );
     }
 
     /**

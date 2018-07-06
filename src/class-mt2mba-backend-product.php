@@ -79,23 +79,23 @@ class MT2MBA_BACKEND_PRODUCT
 		if ( $bulk_action == 'variable_regular_price' || $bulk_action == 'variable_sale_price' )
 		{
 			// Get settings
-			$settings       = new MT2MBA_BACKEND_SETTINGS;
-			$desc_behavior  = $settings->get_desc_behavior();
-			$decimal_points	= $settings->get_decimal_points();
-			$symbol_before  = $settings->get_currency_symbol_before();
-			$symbol_after   = $settings->get_currency_symbol_after();
+			$settings           = new MT2MBA_BACKEND_SETTINGS;
+			$desc_behavior      = $settings->get_desc_behavior();
+			$decimal_points	    = $settings->get_decimal_points();
+			$symbol_before      = $settings->get_currency_symbol_before();
+			$symbol_after       = $settings->get_currency_symbol_after();
 			// Set markup format
-			$markup_format  = " (%s%s%01.{$decimal_points}f%s)";
+			$currency_format	= "%s%01.{$decimal_points}f%s";
 
 			// Catch original price
 			$orig_price        = $data[ 'value' ] ;
 			$orig_price_stored = FALSE;
 
 			// Clear out old metadata
-			delete_post_meta( $product_id, "base_$price_type" );
-
-			// Format markup
-
+			delete_post_meta( $product_id, "base_price_{$price_type}" );
+			delete_post_meta( $product_id, '%_markup_amount' );
+			delete_post_meta( $product_id, 'mt2mba_%' );
+			
 			// -- Build markup table --
 			// Loop through product attributes
 			foreach ( wc_get_product( $product_id )->get_attributes() as $pa_attrb ) {
@@ -103,7 +103,7 @@ class MT2MBA_BACKEND_PRODUCT
 				// Loop through attribute terms
 				foreach ( get_terms( $pa_attrb->get_name() ) as $term ) {
 					
-					$markup = get_term_meta( $term->term_id, 'markup', TRUE );
+					$markup = get_term_meta( $term->term_id, 'mt2mba_markup', TRUE );
 
 					// If term_markup has a value other than zero, add/update the value to the metadata table
 					if ( strpos( $markup, "%" ) )
@@ -118,7 +118,7 @@ class MT2MBA_BACKEND_PRODUCT
 					}
 
 					// Set up post metadata key
-					$meta_key = $term->term_id . "_markup_amount";
+					$meta_key = 'mt2mba_' . $term->term_id . '_markup_amount';
 
 					// If there is a markup (or markdown) present ...
 					if ( $markup <> 0 )
@@ -126,25 +126,27 @@ class MT2MBA_BACKEND_PRODUCT
 						// Store original price
 						if( ! $orig_price_stored )
 						{
-							update_post_meta( $product_id, "base_$price_type", $orig_price, TRUE );
+							update_post_meta( $product_id, "mt2mba_base_{$price_type}", $orig_price );
 							$orig_price_stored = TRUE;
 						}
-						// Format a description of the markup
-						if ( $markup > 0 ) {
-							$markup_desc_format = "Add $%01.2f for %s";
-						} else {
-							$markup_desc_format = "Subtract $%01.2f for %s";
+						if ( $price_type == 'regular_price' )
+						{
+							// Format a description of the markup
+							if ( $markup > 0 ) {
+								$markup_desc_format = "Add ". $currency_format . " for %s";
+							} else {
+								$markup_desc_format = "Subtract ". $currency_format . " for %s";
+							}
+							$markup_desc = sprintf( $markup_desc_format, $symbol_before, abs( $markup ), $symbol_after, $term->name );
+						
+							// Add term, markup, and description to markup table for use below with each variation
+    						$markup_table[$term->taxonomy][$term->slug]["markup"] = $markup;
+							$markup_table[$term->taxonomy][$term->slug]["description"] = $markup_desc;
+							
+							// Save actual markup value for term as post metadata for use in product attribute dropdown
+							$meta_value = sprintf( "%+g", $markup );
+							update_post_meta( $product_id, $meta_key, $meta_value );
 						}
-						$markup_desc = sprintf( $markup_desc_format, abs( $markup ), $term->name );
-						
-						// Add term, markup, and description to markup table for use below with each variation
-    					$markup_table[$term->taxonomy][$term->slug]["markup"] = $markup;
-						$markup_table[$term->taxonomy][$term->slug]["description"] = $markup_desc;
-						
-						// Save actual markup value for term as post metadata for use in product attribute dropdown
-						$meta_value = sprintf( "%+g", $markup );
-						update_post_meta( $product_id, $meta_key, $meta_value );
-						error_log( $product_id . " " . $meta_key . " " . $meta_value );
 					}
 					else
 					{
@@ -153,7 +155,6 @@ class MT2MBA_BACKEND_PRODUCT
 					}
 				}
 			}
-
 			// -- Parse through variations and reprice --
 			// Loop through each variation
 			foreach ( $variations as $variation_id )
@@ -211,7 +212,7 @@ class MT2MBA_BACKEND_PRODUCT
 									// Set markup opening tag
 									$description .= PHP_EOL . $markup_desc_beg;
 									// Open description with original price
-									$description .= sprintf( "Product price $%01.2f", $orig_price ) . PHP_EOL;
+									$description .= sprintf( "Product price {$currency_format}", $symbol_before, $orig_price, $symbol_after ) . PHP_EOL;
 									// Flip flag
 									$has_orig_price = TRUE;
 								}
@@ -243,7 +244,7 @@ class MT2MBA_BACKEND_PRODUCT
 			if( strpos( $bulk_action, 'price_increase' ) || strpos( $bulk_action, 'price_decrease' ) )
 			{
 				// If base price metadata is present, that means the product contains variables with attribute pricing.
-				if ( $base_price = get_metadata( 'post', $product_id, "base_$price_type", TRUE ) )
+				if ( $base_price = get_metadata( 'post', $product_id, "mt2mba_base_{$price_type}", TRUE ) )
 				{
 					// Recalculate a new base price according to the bulk action.
 					// Bulk action could be any of
@@ -255,7 +256,7 @@ class MT2MBA_BACKEND_PRODUCT
 					// And then loop back through this very same function, changing the bulk action type to
 					// one of the two 'set price' options. This will reset the prices on all variations to the
 					// new base regular/sale price plus the attribute markup.
-					$this->mt2mba_apply_markup_to_price( "variable_$price_type", $new_data, $product_id, $variations );
+					$this->mt2mba_apply_markup_to_price( "variable_{$price_type}", $new_data, $product_id, $variations );
 				}
 			}
 		}

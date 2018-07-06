@@ -81,7 +81,7 @@ class MT2MBA_BACKEND_ATTRB
 	 function mt2mba_edit_form_fields( $term )
 	 {
 		// Retrieve the existing markup for this term (NULL results are valid)
-		$term_meta = get_term_meta( $term->term_id, "markup", TRUE );
+		$term_meta = get_term_meta( $term->term_id, "mt2mba_markup", TRUE );
 		// Build row and fill field with current markup
 		?>
 		<tr class="form-field">
@@ -118,6 +118,10 @@ class MT2MBA_BACKEND_ATTRB
 		$utility         = new MT2MBA_UTILITY;
 		$description     = trim( $utility->remove_pricing_info( $markup_desc_beg, $markup_desc_end, $description ) );
 		
+		// Remove old metadata, regardless of next step
+		delete_term_meta( $term_id, 'markup' );		// Old style
+		delete_term_meta( $term_id, 'mt2mba_markup' );
+
 		if ( esc_attr( $_POST['term_markup'] <> 0 ) )
 		{
 			$term_markup = esc_attr( $_POST['term_markup']);
@@ -134,14 +138,9 @@ class MT2MBA_BACKEND_ATTRB
 				// If term_markup does not have percentage sign, save as a formatted floating point number
 				$markup = sprintf( "%+g", sanitize_text_field( $term_markup ) );
 			}
-			update_term_meta( $term_id, "markup", $markup );
+			update_term_meta( $term_id, 'mt2mba_markup', $markup );
 			// Update term description so markups are visible in the term list
 			$description .= PHP_EOL . $markup_desc_beg . $markup . $markup_desc_end;
-		}
-		else
-		{
-			// If term_markup is zero, delete the metadata
-			delete_term_meta( $term_id, "markup" );
 		}
 
 		// Rewrite description

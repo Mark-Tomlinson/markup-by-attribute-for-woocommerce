@@ -98,9 +98,9 @@ class MT2MBA_FRONTEND {
 					if ( in_array( $term->slug, $options ) )
 					{
 						// Add markup if metadata exists, else leave blank
-						if ( ! $markup = get_metadata( 'post', $product->get_id( ), $term->term_id . "_markup_amount", TRUE ) )
+						if ( ! $markup = get_metadata( 'post', $product->get_id(), 'mt2mba_' . $term->term_id . '_markup_amount', TRUE ) )
 						{
-							$markup = get_metadata( 'term', $term->term_id, 'markup', TRUE );
+							$markup = get_metadata( 'term', $term->term_id, 'mt2mba_markup', TRUE );
 						}
 
 						// ... and format it properly or null it if empty

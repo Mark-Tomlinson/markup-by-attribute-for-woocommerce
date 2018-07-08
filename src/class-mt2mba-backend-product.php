@@ -92,7 +92,6 @@ class MT2MBA_BACKEND_PRODUCT
 			$orig_price_stored = FALSE;
 
 			// Clear out old metadata
-			delete_post_meta( $product_id, "base_price_{$price_type}" );
 			delete_post_meta( $product_id, '%_markup_amount' );
 			delete_post_meta( $product_id, 'mt2mba_%' );
 			
@@ -169,9 +168,11 @@ class MT2MBA_BACKEND_PRODUCT
 
 				// Trim any previous markup information out of description
 				$description     = $variation->get_description();
-				$markup_desc_beg = '<span id="mba_markupinfo">';
-				$markup_desc_end = '</span>';
-				$utility         = new MT2MBA_UTILITY;
+				global $markup_desc_beg;
+				global $markup_desc_end;
+//				$markup_desc_beg = '<span id="mba_markupinfo">';
+//				$markup_desc_end = '</span>';
+$utility         = new MT2MBA_UTILITY;
 				$description     = trim( $utility->remove_pricing_info( $markup_desc_beg, $markup_desc_end, $description ) );
 
 				// Loop through each attribute within variation

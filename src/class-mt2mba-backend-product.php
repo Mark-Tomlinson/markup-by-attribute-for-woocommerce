@@ -167,12 +167,10 @@ class MT2MBA_BACKEND_PRODUCT
 				$variation_price = $orig_price;
 
 				// Trim any previous markup information out of description
-				$description     = $variation->get_description();
 				global $markup_desc_beg;
 				global $markup_desc_end;
-//				$markup_desc_beg = '<span id="mba_markupinfo">';
-//				$markup_desc_end = '</span>';
-$utility         = new MT2MBA_UTILITY;
+				$utility         = new MT2MBA_UTILITY;
+				$description     = $variation->get_description();
 				$description     = trim( $utility->remove_pricing_info( $markup_desc_beg, $markup_desc_end, $description ) );
 
 				// Loop through each attribute within variation

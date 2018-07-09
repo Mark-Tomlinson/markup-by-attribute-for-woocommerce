@@ -39,11 +39,14 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 	define( 'MT2MBA_MINIMUM_WP_VERSION', '3.0' );
 	define( 'MT2MBA_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 
+    global $mt2mba_db_version;
+	$mt2mba_db_version  = '2.0';
+	global $mt2mba_price_meta;
+	$mt2mba_price_meta  = __( 'Product price ' );
 	global $markup_desc_beg;
-	$markup_desc_beg = '<span id="mba_markupinfo">';
+	$markup_desc_beg    = '<span id="mba_markupinfo">';
 	global $markup_desc_end;
-	$markup_desc_end = '</span>';
-
+	$markup_desc_end    = '</span>';
 
 	// -------------------------
 	//       MAIN ROUTINE
@@ -53,51 +56,10 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 	require_once( MT2MBA_PLUGIN_DIR . 'src/class-mt2mba-autoloader.php' );
 	MT2MBA_AUTOLOADER::register();
 
-	function mt2mba_activation()
-	{
-		// --------------------------------------------------------------
-		// Update database from version 1.x. Leave 1.x data for fallback.
-		// --------------------------------------------------------------
-		global $wpdb;
-		// Add prefix to attribute markup meta data
-		$results = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}termmeta WHERE meta_key LIKE 'markup'" );
-		foreach( $results as $row )
-		{
-			if( strpos($row->meta_key, 'mt2mba_' ) === FALSE )
-			{
-				add_term_meta( $row->term_id, "mt2mba_" . $row->meta_key, $row->meta_value, TRUE );
-			}
-		}
+	// Instantiate utility class. Done here in case upgrade required.
+	new MT2MBA_UTILITY;
 
-		// Add prefix to product markup meta data
-		$results = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}postmeta WHERE `meta_key` LIKE '%_markup_amount'" );
-		foreach( $results as $row )
-		{
-			if( strpos($row->meta_key, 'mt2mba_' ) === FALSE )
-			{
-				add_post_meta( $row->post_id, "mt2mba_" . $row->meta_key, $row->meta_value, TRUE );
-			}
-		}
-		// Bracket description and save base regular price
-		global $markup_desc_beg;
-		global $markup_desc_end;
-		$results = $wpdb->get_results( "SELECT * FROM `wp_postmeta` WHERE `meta_value` LIKE 'Product price %' AND `meta_value` NOT LIKE '{}'" );
-		foreach( $results as $row )
-		{
-			if( strpos( $row->meta_value, $markup_desc_beg ) === FALSE )
-			{
-				update_post_meta( $row->post_id, $row->meta_key, $markup_desc_beg . $row->meta_value . $markup_desc_end );
-			}
-			$beg = strpos($row->meta_value,$markup_desc_beg)+strlen($markup_desc_beg);
-			$end = strpos($row->value,PHP_EOL);
-			$base_price = substr($row->meta_value, $beg, $end-$beg);
-			error_log($base_price . " " . floatval($base_price));
-		}
-	}
-	
-	register_activation_hook( __FILE__, 'mt2mba_activation' );
-
-	// Pull in correct code depending on whether we are in the shop (frontend) or on the admin page (backend).
+    // Pull in correct code depending on whether we are in the shop (frontend) or on the admin page (backend).
 	if ( is_admin( ) )
 	{
 		// -------------

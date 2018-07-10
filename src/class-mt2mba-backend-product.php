@@ -139,8 +139,8 @@ class MT2MBA_BACKEND_PRODUCT
 							$markup_desc = sprintf( $markup_desc_format, $symbol_before, abs( $markup ), $symbol_after, $term->name );
 						
 							// Add term, markup, and description to markup table for use below with each variation
-    						$markup_table[$term->taxonomy][$term->slug]["markup"] = $markup;
-							$markup_table[$term->taxonomy][$term->slug]["description"] = $markup_desc;
+    						$markup_table[ $term->taxonomy ][ $term->slug ][ "markup" ] = $markup;
+							$markup_table[ $term->taxonomy ][ $term->slug ][ "description" ] = $markup_desc;
 							
 							// Save actual markup value for term as post metadata for use in product attribute dropdown
 							$meta_value = sprintf( "%+g", $markup );
@@ -177,10 +177,10 @@ class MT2MBA_BACKEND_PRODUCT
 				foreach ( $attributes as $attribute_id => $term_id )
 				{
 					// Does this variation have a markup?
-					if ( isset( $markup_table[$attribute_id][$term_id] ) )
+					if ( isset( $markup_table[ $attribute_id ][ $term_id ] ) )
 					{
 						// Add markup to price
-						$markup = (float)$markup_table[$attribute_id][$term_id]["markup"];
+						$markup = (float)$markup_table[ $attribute_id ][ $term_id ][ "markup" ];
 						$variation_price = $variation_price + $markup;
 
 						// Make sure markup wasn't a reduction that creates
@@ -191,7 +191,7 @@ class MT2MBA_BACKEND_PRODUCT
 						}
 						else
 						{
-							$variation->{"set_$price_type"}( 0.00 );
+							$variation->{"set_$price_type"}( 0.0 );
 						}
 
 						// Update description if Descritption Behavior is NOT 'ignore'.
@@ -216,7 +216,7 @@ class MT2MBA_BACKEND_PRODUCT
 									$has_orig_price = TRUE;
 								}
 								// Add markup description to variation description
-								$description .= $markup_table[$attribute_id][$term_id]["description"] . PHP_EOL;
+								$description .= $markup_table[ $attribute_id ][ $term_id ][ "description" ] . PHP_EOL;
 							}
 						}
 					}
@@ -259,9 +259,7 @@ class MT2MBA_BACKEND_PRODUCT
 				}
 			}
 		}
-		
 	}	// END function mt2mba_apply_markup_to_price
-
 
 }	// End  class MT2MBA_PRODUCT_BACKEND
 

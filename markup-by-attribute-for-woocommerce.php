@@ -35,12 +35,11 @@ if ( !defined( 'ABSPATH' ) ) exit( );
 if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) )
 {
 	// Set plugin Version
-	define( 'MT2MBA_VERSION', '1.3.2' );
+	define( 'MT2MBA_VERSION', '2.0.0' );
+	define( 'MT2MBA_DB_VERSION', '2.0.0' );
 	define( 'MT2MBA_MINIMUM_WP_VERSION', '3.0' );
 	define( 'MT2MBA_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 
-    global $mt2mba_db_version;
-	$mt2mba_db_version  = '2.0';
 	global $mt2mba_price_meta;
 	$mt2mba_price_meta  = __( 'Product price ' );
 	global $markup_desc_beg;

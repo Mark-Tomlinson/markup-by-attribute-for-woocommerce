@@ -39,11 +39,10 @@ class MT2MBA_UTILITY
 		// Update database from version 1.x. Leave 1.x data for fallback.
         // --------------------------------------------------------------
 		global $wpdb;
-        global $mt2mba_db_version;
         global $mt2mba_price_meta;
 
         // Failsafe
-        if ( get_site_option( 'mt2mba_db_version' ) == $mt2mba_db_version ) { return; }
+        if ( get_site_option( 'mt2mba_db_version' ) == MT2MBA_DB_VERSION ) { return; }
 
         // Add prefix to attribute markup meta data
 		$results = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}termmeta WHERE meta_key LIKE 'markup'" );
@@ -67,7 +66,8 @@ class MT2MBA_UTILITY
         
 		// Bracket description and save base regular price
 		global $markup_desc_beg;
-        global $markup_desc_end;
+		global $markup_desc_end;
+		$last_parent_id = '';
 
         $results = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}postmeta WHERE `meta_value` LIKE '%{$mt2mba_price_meta}%'" );
 		foreach( $results as $row )
@@ -76,22 +76,27 @@ class MT2MBA_UTILITY
 			{
                 update_post_meta( $row->post_id, $row->meta_key, $markup_desc_beg . $row->meta_value . $markup_desc_end );
 			}
-			$beg = strpos( $row->meta_value, $mt2mba_price_meta ) + strlen( $mt2mba_price_meta );
-			$end = strpos( $row->meta_value, PHP_EOL );
-            $base_price = preg_replace( '/[^\p{L}\p{N}\s\.]/u', '', substr( $row->meta_value, $beg, $end - $beg ) );
-            //update_post_meta( $row->post_id, 'mt2mba_base_regular_price', $base_price );
+			$v_product  = get_post( $row->post_id, 'ARRAY_A' );
+			if( $last_parent_id != $v_product[ 'post_parent' ] )
+			{
+				$beg            = strpos( $row->meta_value, $mt2mba_price_meta ) + strlen( $mt2mba_price_meta );
+				$end            = strpos( $row->meta_value, PHP_EOL );
+				$base_price     = preg_replace( '/[^\p{L}\p{N}\s\.]/u', '', substr( $row->meta_value, $beg, $end - $beg ) );
+				update_post_meta( $v_product[ 'post_parent' ], 'mt2mba_base_regular_price', $base_price );
+				$last_parent_id = $v_product[ 'post_parent' ];
+			}
         }
 
-        // Made it this far, update databse version
-        update_option( 'mt2mba_db_version', $mt2mba_db_version );
+        // Made it this far, update database version
+        update_option( 'mt2mba_db_version', MT2MBA_DB_VERSION );
 	}
 
     /**
     * Remove pricing information from string
-    * @param  string $beginning    Marker at the begining of the string to be removed
+    * @param  string $beginning    Marker at the beginning of the string to be removed
     * @param  string $ending       Marker at the ending of the string to be removed
     * @param  string $string       The string to be processed
-    * @return string               The string minus the text to be removed and the begining and ending markers
+    * @return string               The string minus the text to be removed and the beginning and ending markers
     */
     public function remove_pricing_info($beginning, $ending, $string)
 	{

@@ -104,7 +104,7 @@ class MT2MBA_UTILITY
 				$beg            = strpos( $row->meta_value, $mt2mba_price_meta ) + strlen( $mt2mba_price_meta );
 				$end            = strpos( $row->meta_value, PHP_EOL );
 				$base_price     = preg_replace( '/[^\p{L}\p{N}\s\.]/u', '', substr( $row->meta_value, $beg, $end - $beg ) );
-				update_post_meta( $v_product[ 'post_parent' ], 'mt2mba_base_regular_price', $base_price );
+				update_post_meta( $v_product[ 'post_parent' ], 'mt2mba_base_regular_price', (float) $base_price );
 				$last_parent_id = $v_product[ 'post_parent' ];
 			}
         }

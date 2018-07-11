@@ -128,6 +128,11 @@ class MT2MBA_BACKEND_PRODUCT
 							update_post_meta( $product_id, "mt2mba_base_{$price_type}", $orig_price );
 							$orig_price_stored = TRUE;
 						}
+
+						// Add term and markup to markup table for use below with each variation
+						$markup_table[ $term->taxonomy ][ $term->slug ][ "markup" ] = $markup;
+
+						// Variation escription and option markup are only set on the regular price; not the sale price
 						if ( $price_type == 'regular_price' )
 						{
 							// Format a description of the markup
@@ -138,8 +143,7 @@ class MT2MBA_BACKEND_PRODUCT
 							}
 							$markup_desc = sprintf( $markup_desc_format, $symbol_before, abs( $markup ), $symbol_after, $term->name );
 						
-							// Add term, markup, and description to markup table for use below with each variation
-    						$markup_table[ $term->taxonomy ][ $term->slug ][ "markup" ] = $markup;
+							// Add term and description to markup table for use below with each variation
 							$markup_table[ $term->taxonomy ][ $term->slug ][ "description" ] = $markup_desc;
 							
 							// Save actual markup value for term as post metadata for use in product attribute dropdown
@@ -167,11 +171,11 @@ class MT2MBA_BACKEND_PRODUCT
 				$variation_price = $orig_price;
 
 				// Trim any previous markup information out of description
-				global $markup_desc_beg;
-				global $markup_desc_end;
+				global $product_markup_desc_beg;
+				global $product_markup_desc_end;
 				$utility         = new MT2MBA_UTILITY;
 				$description     = $variation->get_description();
-				$description     = trim( $utility->remove_pricing_info( $markup_desc_beg, $markup_desc_end, $description ) );
+				$description     = trim( $utility->remove_bracketed_string( $product_markup_desc_beg, $product_markup_desc_end, $description ) );
 
 				// Loop through each attribute within variation
 				foreach ( $attributes as $attribute_id => $term_id )
@@ -180,7 +184,7 @@ class MT2MBA_BACKEND_PRODUCT
 					if ( isset( $markup_table[ $attribute_id ][ $term_id ] ) )
 					{
 						// Add markup to price
-						$markup = (float)$markup_table[ $attribute_id ][ $term_id ][ "markup" ];
+						$markup = (float) $markup_table[ $attribute_id ][ $term_id ][ "markup" ];
 						$variation_price = $variation_price + $markup;
 
 						// Make sure markup wasn't a reduction that creates
@@ -209,7 +213,7 @@ class MT2MBA_BACKEND_PRODUCT
 										$description = "";
 									}
 									// Set markup opening tag
-									$description .= PHP_EOL . $markup_desc_beg;
+									$description .= PHP_EOL . $product_markup_desc_beg;
 									// Open description with original price
 									$description .= sprintf( "Product price {$currency_format}", $symbol_before, $orig_price, $symbol_after ) . PHP_EOL;
 									// Flip flag
@@ -225,10 +229,10 @@ class MT2MBA_BACKEND_PRODUCT
 				// Rewrite variation description if setting the regular price
 				if ( $price_type == 'regular_price' )
 				{
-					if ( strpos( $description, $markup_desc_beg ) )
+					if ( strpos( $description, $product_markup_desc_beg ) )
 					{
 						// Close markup tags 
-						$description .= $markup_desc_end;
+						$description .= $product_markup_desc_end;
 					}
 					// Rewrite description
 					$variation->set_description( trim( $description ) );

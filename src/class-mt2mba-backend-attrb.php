@@ -65,7 +65,7 @@ class MT2MBA_BACKEND_ATTRB
 		?>
 		<div class="form-field">
 			<label for="term_markup"><?php _e( 'Markup (or markdown)', 'mt2mba' ); ?></label>
-			<input type="text" placeholder="[+|-]0.00 or [+|-]00%" name="term_markup" id="term_add_markup" value="">
+			<input type="text" placeholder="[ +|- ]0.00 or [ +|- ]00%" name="term_markup" id="term_add_markup" value="">
 			<p class="description"><?php _e( 'Markup or markdown associated with this option. Signed, floating point numeric
 				allowed.','mt2mba' ); ?></p>
 		</div>
@@ -87,7 +87,7 @@ class MT2MBA_BACKEND_ATTRB
 		<tr class="form-field">
 			<th scope="row" valign="top"><label for="term_markup"><?php _e( 'Markup (or markdown)', 'mt2mba' ); ?></label></th>
 			<td>
-				<input type="text" placeholder="[+|-]0.00 or [+|-]00%" name="term_markup" id="term_edit_markup" value="<?php echo esc_attr( $term_meta ) ? esc_attr( $term_meta ) : ''; ?>">
+				<input type="text" placeholder="[ +|- ]0.00 or [ +|- ]00%" name="term_markup" id="term_edit_markup" value="<?php echo esc_attr( $term_meta ) ? esc_attr( $term_meta ) : ''; ?>">
 				<p class="description"><?php _e( 'Markup or markdown associated with this option. Signed, floating point numeric allowed.','mt2mba' ); ?></p>
 			</td>
 		</tr>
@@ -96,9 +96,7 @@ class MT2MBA_BACKEND_ATTRB
 
 	/**
 	 * Save the term's markup as metadata
-	 * 
 	 * @param string $term_id
-	 * 
 	 */
 	public function mt2mba_save_markup_to_metadata( $term_id )
 	{
@@ -112,25 +110,23 @@ class MT2MBA_BACKEND_ATTRB
 		$term            = get_term( $term_id );
 		$taxonomy        = sanitize_key( $term->taxonomy );
 		// Remove any previous markup information from description
-		$markup_desc_beg = '(Markup: ';
-		$markup_desc_end = ')';
+		global $attrb_markup_desc_beg;
+		global $attrb_markup_desc_end;
 		$description     = $term->description;
 		$utility         = new MT2MBA_UTILITY;
-		$description     = trim( $utility->remove_pricing_info( $markup_desc_beg, $markup_desc_end, $description ) );
+		$description     = trim( $utility->remove_bracketed_string( $attrb_markup_desc_beg, $attrb_markup_desc_end, $description ) );
 		
 		// Remove old metadata, regardless of next step
-		delete_term_meta( $term_id, 'markup' );		// Old style
 		delete_term_meta( $term_id, 'mt2mba_markup' );
 
-		if ( esc_attr( $_POST['term_markup'] <> 0 ) )
+		if ( esc_attr( $_POST[ 'term_markup' ] <> 0 ) )
 		{
-			$term_markup = esc_attr( $_POST['term_markup']);
+			$term_markup = esc_attr( $_POST[ 'term_markup' ]);
 			
 			// If term_markup has a value other than zero, add/update the value to the metadata table
 			if ( strpos( $term_markup, "%" ) )
 			{
 				// If term_markup has a percentage sign, save as a formatted percent
-//				$markup = sprintf( "%+02.1f%%", sanitize_text_field( $term_markup ) );
 				$markup = sprintf( "%+g%%", sanitize_text_field( $term_markup ) );
 			}
 			else
@@ -140,7 +136,7 @@ class MT2MBA_BACKEND_ATTRB
 			}
 			update_term_meta( $term_id, 'mt2mba_markup', $markup );
 			// Update term description so markups are visible in the term list
-			$description .= PHP_EOL . $markup_desc_beg . $markup . $markup_desc_end;
+			$description .= PHP_EOL . $attrb_markup_desc_beg . $markup . $attrb_markup_desc_end;
 		}
 
 		// Rewrite description

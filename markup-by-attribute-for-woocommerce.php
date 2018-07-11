@@ -15,7 +15,7 @@
  * Plugin Name:          Markup by Attribute for WooCommerce - MT² Tech
  * Plugin URI:           https://wordpress.org/plugins/markup-by-attribute-for-woocommerce/
  * Description:          This plugin adds product variation markup by attribute to WooCommerce -- the ability to add a markup (or markdown) to an attribute term and have that change the regular and sale price of the associated product variations.
- * Version:              1.3.2
+ * Version:              2.0
  * Author:               Mark Tomlinson
  * Author URI:           https://profiles.wordpress.org/marktomlinson
  * License:              GPL2
@@ -35,17 +35,20 @@ if ( !defined( 'ABSPATH' ) ) exit( );
 if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) )
 {
 	// Set plugin Version
-	define( 'MT2MBA_VERSION', '2.0.0' );
-	define( 'MT2MBA_DB_VERSION', '2.0.0' );
-	define( 'MT2MBA_MINIMUM_WP_VERSION', '3.0' );
+	define( 'MT2MBA_VERSION', 2.0 );
+	define( 'MT2MBA_DB_VERSION', 2.0 );
 	define( 'MT2MBA_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 
 	global $mt2mba_price_meta;
-	$mt2mba_price_meta  = __( 'Product price ' );
-	global $markup_desc_beg;
-	$markup_desc_beg    = '<span id="mba_markupinfo">';
-	global $markup_desc_end;
-	$markup_desc_end    = '</span>';
+	$mt2mba_price_meta          = __( 'Product price ' );
+	global $product_markup_desc_beg;
+	$product_markup_desc_beg    = __( '<span id="mba_markupinfo">' );
+	global $product_markup_desc_end;
+	$product_markup_desc_end    = __( '</span>' );
+	global $attrb_markup_desc_beg;
+	$attrb_markup_desc_beg      = __( '(Markup: ' );
+	global $attrb_markup_desc_end;
+	$attrb_markup_desc_end      = __( ')' );
 
 	// -------------------------
 	//       MAIN ROUTINE

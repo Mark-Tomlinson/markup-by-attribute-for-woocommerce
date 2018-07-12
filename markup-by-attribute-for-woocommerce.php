@@ -22,9 +22,9 @@
  * License URI:          https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:          markup-by-attribute-for-woocommerce
  * Domain Path:	         /languages
- * Tested up to:         4.9.5
+ * Tested up to:         4.9.7
  * WC requires at least: 3.0
- * WC tested up to:      3.3.4
+ * WC tested up to:      3.4.3
  *
  */
 
@@ -42,7 +42,7 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 	global $mt2mba_price_meta;
 	$mt2mba_price_meta          = __( 'Product price ' );
 	global $product_markup_desc_beg;
-	$product_markup_desc_beg    = __( '<span id="mba_markupinfo">' );
+	$product_markup_desc_beg    = __( '<span id="mbainfo">' );
 	global $product_markup_desc_end;
 	$product_markup_desc_end    = __( '</span>' );
 	global $attrb_markup_desc_beg;

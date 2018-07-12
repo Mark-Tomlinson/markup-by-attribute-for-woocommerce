@@ -1,9 +1,7 @@
 <?php
 /**
- * Filename:	class_markup_backend_pointers.php
- * 
- * Description:	Contains admin pointers to assist in onboarding
- * Author:     	Mark Tomlinson
+ * Contains admin pointers to assist in onboarding
+ * @author  Mark Tomlinson
  */
 
 // Exit if accessed directly
@@ -35,8 +33,7 @@ class MT2MBA_BACKEND_POINTERS {
      */
     function mt2mba_admin_pointer_load( $hook_suffix )
     {
- 
-        // Don't run on WP < 3.3
+         // Don't run on WP < 3.3
         if ( get_bloginfo( 'version' ) < '3.3' ) return;
 
         // Get pointers for this screen

@@ -46,15 +46,13 @@ class MT2MBA_UTILITY
 		// --------------------------------------------------------------
 		// Update database from version 1.x. Leave 1.x data for fallback.
         // --------------------------------------------------------------
-		global $wpdb;
 	
         // Failsafe
-		if ( get_site_option( 'mt2mba_db_version' ) >= MT2MBA_DB_VERSION )
-		{
-			return;
-		}
+		if ( get_site_option( 'mt2mba_db_version' ) >= MT2MBA_DB_VERSION ) return;
 
-        // Add prefix to attribute markup meta data key
+		global $wpdb;
+
+		// Add prefix to attribute markup meta data key
 		$results = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}termmeta WHERE meta_key LIKE 'markup'" );
 		foreach( $results as $row )
 		{
@@ -114,7 +112,7 @@ class MT2MBA_UTILITY
 	}
 
     /**
-    * Remove pricing information from string
+    * Remove bracketed substring from string
     * @param  string $beginning    Marker at the beginning of the string to be removed
     * @param  string $ending       Marker at the ending of the string to be removed
     * @param  string $string       The string to be processed
@@ -124,11 +122,11 @@ class MT2MBA_UTILITY
 	{
 		$beginningPos = strpos( $string, $beginning, 0 );
 		$endingPos    = strpos( $string, $ending, $beginningPos );
-		if ( $beginningPos === FALSE || $endingPos === FALSE )
-		{
-			return $string;
-		}
+		
+		if ( $beginningPos === FALSE || $endingPos === FALSE ) return $string;
+
 		$textToDelete = substr( $string, $beginningPos, ( $endingPos + strlen( $ending ) ) - $beginningPos );
+		
 		return str_replace( $textToDelete, '', $string );
     }
 }

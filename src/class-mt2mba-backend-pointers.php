@@ -11,21 +11,21 @@ class MT2MBA_BACKEND_POINTERS {
 
     private $pointer_title = 'Markup by Attribute';
 
-	/**
-	 * Initialization method visible before instantiation
-	 */
+    /**
+     * Initialization method visible before instantiation
+     */
     public static function init( )
     {
-		// As a static method, it can not use '$this' and must use an
-		// instantiated version of itself
-		$self	= new self( );
+        // As a static method, it can not use '$this' and must use an
+        // instantiated version of itself
+        $self    = new self( );
         // Enqueue the JQuery
         add_action( 'admin_enqueue_scripts', array( $self, 'mt2mba_admin_pointer_load' ), 1000 );
         // Admin pointers for attribute term edit screen
         add_filter( 'mt2mba_admin_pointers-edit-term', array( $self, 'mt2mba_admin_pointers_edit_term' ) );
         // Admin pointer for plugin page
         add_filter( 'mt2mba_admin_pointers-plugins', array( $self, 'mt2mba_admin_pointers_plugins' ) );
-	}
+    }
  
     /**
      * Find pointers that have not been dismissed
@@ -39,8 +39,8 @@ class MT2MBA_BACKEND_POINTERS {
         // Get pointers for this screen
         $screen = get_current_screen();
         $screen_id = strpos( $screen->id, 'edit-pa_' ) === FALSE ? $screen->id : 'edit-term';
- 		$pointer_filter = 'mt2mba_admin_pointers-' . $screen_id;
- 		
+         $pointer_filter = 'mt2mba_admin_pointers-' . $screen_id;
+         
         $pointers = apply_filters( $pointer_filter, array() );
  
         if ( ! $pointers || ! is_array( $pointers ) ) return;
@@ -133,6 +133,6 @@ class MT2MBA_BACKEND_POINTERS {
         return $pointers;
     }
 
-}	// End  class MT2MBA_BACKEND_POINTERS
+}    // End  class MT2MBA_BACKEND_POINTERS
 
 ?>

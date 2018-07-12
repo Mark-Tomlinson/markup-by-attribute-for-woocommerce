@@ -59,7 +59,8 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 	MT2MBA_AUTOLOADER::register();
 
 	// Instantiate utility class. Done here in case upgrade required.
-	new MT2MBA_UTILITY;
+	global $mt2mba_utility;
+	$mt2mba_utility = new MT2MBA_UTILITY;
 
     // Pull in correct code depending on whether we are in the shop (frontend) or on the admin page (backend).
 	if ( is_admin( ) )

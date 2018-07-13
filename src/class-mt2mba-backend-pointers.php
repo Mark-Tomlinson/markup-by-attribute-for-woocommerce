@@ -1,9 +1,7 @@
 <?php
 /**
- * Filename:	class_markup_backend_pointers.php
- * 
- * Description:	Contains admin pointers to assist in onboarding
- * Author:     	Mark Tomlinson
+ * Contains admin pointers to assist in onboarding
+ * @author  Mark Tomlinson
  */
 
 // Exit if accessed directly
@@ -11,52 +9,38 @@ if ( !defined( 'ABSPATH' ) ) exit( );
 
 class MT2MBA_BACKEND_POINTERS {
 
-    var $pointer_title = 'Markup by Attribute';
+    private $pointer_title = 'Markup by Attribute';
 
-	/**
-	 * Initialization method visible before instantiation
-	 */
-	public static function init( ) {
-		
-		// As a static method, it can not use '$this' and must use an
-		// instantiated version of itself
-		$self	= new self( );
-
-		// Set initialization method to run on 'wp_loaded'.
-		add_filter( 'wp_loaded', array( $self, 'on_loaded' ) );
-	}
-
-	/**
-	 * Hook into Wordpress and WooCommerce
-	 * Method runs on 'wp_loaded' hook
-	 */
-	public function on_loaded() {
-        
+    /**
+     * Initialization method visible before instantiation
+     */
+    public static function init( )
+    {
+        // As a static method, it can not use '$this' and must use an
+        // instantiated version of itself
+        $self    = new self( );
         // Enqueue the JQuery
-        add_action( 'admin_enqueue_scripts', array( $this, 'mt2mba_admin_pointer_load' ), 1000 );
-
+        add_action( 'admin_enqueue_scripts', array( $self, 'mt2mba_admin_pointer_load' ), 1000 );
         // Admin pointers for attribute term edit screen
-        add_filter( 'mt2mba_admin_pointers-edit-term', array( $this, 'mt2mba_admin_pointers_edit_term' ) );
-
+        add_filter( 'mt2mba_admin_pointers-edit-term', array( $self, 'mt2mba_admin_pointers_edit_term' ) );
         // Admin pointer for plugin page
-        add_filter( 'mt2mba_admin_pointers-plugins', array( $this, 'mt2mba_admin_pointers_plugins' ) );
-
+        add_filter( 'mt2mba_admin_pointers-plugins', array( $self, 'mt2mba_admin_pointers_plugins' ) );
     }
  
     /**
      * Find pointers that have not been dismissed
      * and add the scripts to those pages
      */
-    function mt2mba_admin_pointer_load( $hook_suffix ) {
- 
-        // Don't run on WP < 3.3
+    function mt2mba_admin_pointer_load( $hook_suffix )
+    {
+         // Don't run on WP < 3.3
         if ( get_bloginfo( 'version' ) < '3.3' ) return;
 
         // Get pointers for this screen
         $screen = get_current_screen();
         $screen_id = strpos( $screen->id, 'edit-pa_' ) === FALSE ? $screen->id : 'edit-term';
- 		$pointer_filter = 'mt2mba_admin_pointers-' . $screen_id;
- 		
+         $pointer_filter = 'mt2mba_admin_pointers-' . $screen_id;
+         
         $pointers = apply_filters( $pointer_filter, array() );
  
         if ( ! $pointers || ! is_array( $pointers ) ) return;
@@ -66,8 +50,8 @@ class MT2MBA_BACKEND_POINTERS {
         $valid_pointers =array();
  
         // Check pointers and remove dismissed ones.
-        foreach ( $pointers as $pointer_id => $pointer ) {
- 
+        foreach ( $pointers as $pointer_id => $pointer )
+        {
             // Sanity check
             if ( in_array( $pointer_id, $dismissed ) || empty( $pointer )  || empty( $pointer_id ) || empty( $pointer['target'] ) || empty( $pointer['options'] ) )
                 continue;
@@ -94,8 +78,8 @@ class MT2MBA_BACKEND_POINTERS {
     /**
      * Define pointers for Add and Edit term pages
      */
-    function mt2mba_admin_pointers_edit_term( $pointers ) {
-
+    function mt2mba_admin_pointers_edit_term( $pointers )
+    {
         $pointer_content = sprintf( '<h3><em>%s</em></h3> <p>%s</p>',
             __( $this->pointer_title ),
             __( 'Markups can be fixed values such as <code>5</code> or <code>5.95</code>. Or they can be percentages such as <code>5%</code> or <code>1.23%</code>. ' .
@@ -104,7 +88,6 @@ class MT2MBA_BACKEND_POINTERS {
             'plugindomain')
         );
         $pointers = array(
-
             'mt2-term_add_markup' => array(
                 'target' => '#term_add_markup',
                 'options' => array(
@@ -128,8 +111,8 @@ class MT2MBA_BACKEND_POINTERS {
     /**
      * Define pointer for plugins page
      */
-    function mt2mba_admin_pointers_plugins( $pointers ) {
-
+    function mt2mba_admin_pointers_plugins( $pointers )
+    {
         $pointer_content = sprintf( '<h3><em>%s</em></h3> <p>%s</p>',
             __( $this->pointer_title ),
             __( 'Using this plugin is simple, but may be a little obscure. This link to the instructions may help get you started.</p>' .
@@ -138,7 +121,6 @@ class MT2MBA_BACKEND_POINTERS {
         );
 
         $pointers = array(
-
             'mt2-mt2mba-instructions' => array(
                 'target' => '#mt2mba_instructions',
                 'options' => array(
@@ -151,6 +133,6 @@ class MT2MBA_BACKEND_POINTERS {
         return $pointers;
     }
 
-}	// End  class MT2MBA_BACKEND_POINTERS
+}    // End  class MT2MBA_BACKEND_POINTERS
 
 ?>

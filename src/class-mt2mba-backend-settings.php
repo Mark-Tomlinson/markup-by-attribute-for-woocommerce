@@ -4,20 +4,6 @@
  * @author      Mark Tomlinson
  * @copyright   Mark Tomlinson  2018
  * 
- * 'mt2mba_dropdown_behavior'           String 'add' or 'do_not_add'
- * 'mt2mba_desc_behavior'               String 'overwrite', 'append', or 'ignore'
- * 'mt2mba_decimal_points'              Number 0 through 6
- * 'mt2mba_symbol_before'               Character blank or a single character
- * 'mt2mba_symbol_after'                Character blank or a single character
- * 'mt2mba_variation_max'               Number 1 or higher
- * 
- * 'get_dropdown_behavior()'
- * 'get_desc_behavior()'
- * 'get_decimal_points()'
- * 'get_currency_symbol_before()'
- * 'get_currency_symbol_after()'
- * 'get_max_variations()'
-
  */
 // Exit if accessed directly
 if ( !defined( 'ABSPATH' ) ) exit( );
@@ -270,14 +256,21 @@ class MT2MBA_BACKEND_SETTINGS
          */
         if ( $current_section == 'mt2mba' )
         {
-            $mt2mba_settings = array();
+//            global $mt2mba_utility;
+//            $opt_formatted = $mt2mba_utility->format_option_markup( -1.234567 );
+//            $desc_formatted = $mt2mba_utility->format_description_markup( 12.345678, 'XX-Large' );
 
+            $mt2mba_settings = array();
             // Begin New Product Settings Section
             $mt2mba_settings[] = array
                 (
                     'name' => __( 'Markup by Attribute' ),
                     'type' => 'title', 
-                    'desc' => __( 'The following options are used to configure variation markups by attribute.' . $this->error_msg ),
+                    'desc' => __( 'The following options are used to configure variation markups by attribute.' .
+//                    PHP_EOL . "Current options drop-down format:     \"[ X-Small{$opt_formatted} ]\"" .
+//                    PHP_EOL . "Current markup description format:    \"{$desc_formatted}\"" .
+                    $this->error_msg
+                        ),
                     'id' => 'mt2mba',
                 );
             

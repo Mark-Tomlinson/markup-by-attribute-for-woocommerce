@@ -3,8 +3,8 @@
  * This file is part of the Markup by Attribute for WooCommerce plugin by Mark Tomlinson
  *
  * @package markup-by-attribute-for-woocommerce
- * @author Mark Tomlinson
- * @version 1.3.2
+ * @author  Mark Tomlinson
+ * @version 2.0
  * 
  * (c) Mark Tomlinson
  *

@@ -7,7 +7,7 @@ Tags: WooCommerce, Attribute, Price, Variation, Markup
 Version: 2.1
 Requires at least: 4.6
 Tested up to: 4.9.7
-Stable tag: 4.3
+Stable tag: trunk
 Requires PHP: 5.2.4
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html

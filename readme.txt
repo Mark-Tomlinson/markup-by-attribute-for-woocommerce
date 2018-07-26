@@ -30,7 +30,7 @@ Markup by Attribute:
 
 * Can create a fixed value markup (such as $5), or a percentage markup (such as 5%).
 * The markup value can be positive yielding an increase in price, or negative yielding a decrease in price.
-* Uses familiar WooCommerce bulk edit actions `Set regular price` and `Set sale price`.
+* Uses familiar WooCommerce bulk edit actions "Set regular price" and "Set sale price".
 * Puts the price increase (or decrease) in the options drop-down box along side of the terms so customers can make informed decisions.
 * Writes a breakdown of the price modifications in the variation description so the itemization is visible to the customer.
 
@@ -48,15 +48,15 @@ Markup by Attribute:
 
 2. Unzip the plugin files to the `/wp-content/plugins/markup-by-attribute-for-woocommerce` directory.
 
-3. Activate the plugin through the `Plugins` page in WordPress.
+3. Activate the plugin through the 'Plugins' page in WordPress.
 
 = Automated Installation =
 
-1. Locate the Markup by Attribute for WooCommerce plugin on the `Plugins` => `Add New` page in WordPress using the search box.
+1. Locate the Markup by Attribute for WooCommerce plugin on the 'Plugins' => 'Add New' page in WordPress using the search box.
 
-2. Install the plugin using the `[Install]` button.
+2. Install the plugin using the 'Install' button.
 
-3. The `[Install]` button will change to an `[Activate]` button. Use it to activate the plugin.
+3. The 'Install' button will change to an 'Activate' button. Use it to activate the plugin.
 
 = Using Markup by Attribute for WooCommerce =
 
@@ -67,34 +67,30 @@ Ready to dive in?
 Note that steps 1, 3 and 4 below are standard WooCommerce Variable Product stuff. Step 2 is about the only **process change** you need to be concerned with. We've italicized some of the *outcome changes* you will notice in the other steps.
 
 1. Create variation attributes and terms, if you haven't already.
-    * For instance, the attribute 'size' may include the terms 'X-Small',  'Small', 'Medium', 'Large', and 'X-Large'.
-    * The attribute 'color' may include the terms 'Orange', 'Red', 'Violet', 'Blue', 'Green', and 'Yellow'.
+  * For instance, the attribute 'size' may include the terms 'X-Small',  'Small', 'Medium', 'Large', and 'X-Large'.
+  * The attribute 'color' may include the terms 'Orange', 'Red', 'Violet', 'Blue', 'Green', and 'Yellow'.
 
 2. **While creating new terms or editing existing ones, add the markup.**
-    * **For each term, consider whether a markup or markdown is needed. Adding a logo to a shirt might increase the cost by $5. Extra small shirts might be 10% less.**
-    * **Put the amount of the markup in the term's Markup field on either the `Add new *attribute*` panel or the `Edit *attribute*` panel. Examples of valid values include: '-5', '5.95', '+5.678', '7.5%', and '-12%'.**
-    * **Strings that are not recognized as numbers will be ignored. Numbers include 0 through 9, of course. But may also start with '+' or '-', include a decimal point, and end with a percent symbol ('%').**
+  * **For each term, consider whether a markup or markdown is needed. Adding a logo to a shirt might increase the cost by $5. Extra small shirts might be 10% less.**
+  * **Put the amount of the markup in the term's Markup field on either the 'Add new *attribute*' panel or the 'Edit *attribute*' panel. Examples of valid values include: '-5', '5.95', '+5.678', '7.5%', and '-12%'.**
+  * **Strings that are not recognized as numbers will be ignored. Numbers include 0 through 9, of course. But may also start with '+' or '-', include a decimal point, and end with a percent symbol ('%').**
   
 3. Create product variations. (You probably have already done this).
-    * Change the product type to `Variable product`.
-    * Select the attribute(s) you added the markups to on the Attributes tab. Be sure to check the `[X] Used for variations` checkbox.
-    * On the Variations tab, select `Create variations from all attributes` and click [Go].
+  * Change the product type to 'Variable product'.
+  * Select the attribute(s) you added the markups to on the Attributes tab. Be sure to check the '[X] Used for variations' checkbox.
+  * On the Variations tab, select 'Create variations from all attributes' and click [Go].
 
 4. Once you create your product variations, use the "Set regular price" and "Set sale price" bulk edit functions as you normally would.
-    * **Even if you've already done this before installing Markup by Attribute, you will need to do it again to apply the markup.**
-    * *The markup will be applied to the price according to the term associated with the variation.*
-    * *A description of the markup will be added to the variation description.*
-
-            <span id="mbainfo">
-            Product Price $18.95
-            Add $5.00 for Logo
-            </span>
-
-    * *Because the markup description is bracketed in <span> tags, CSS can be used to modify its appearance on the product page.*
-
-            #mbainfo { color: darkblue; }
-
-    * *If you change the markup at a later date, repeat this step to recalculate the markup for this product. Or do not repeat the step to leave the previous markups unchanged.*
+  * **Even if you've already done this before installing Markup by Attribute, you will need to do it again to apply the markup.**
+  * *The markup will be applied to the price according to the term associated with the variation.*
+  * *A description of the markup will be added to the variation description.*
+    <span id="mbainfo">
+    Product Price $18.95
+    Add $5.00 for Logo
+    </span>
+  * *Because the markup description is bracketed in <span> tags, CSS can be used to modify its appearance on the product page.*
+    \#mbainfo { color: darkblue; }
+  * *If you change the markup at a later date, repeat this step to recalculate the markup for this product. Or do not repeat the step to leave the previous markups unchanged.*
 
 == Frequently Asked Questions ==
 
@@ -104,11 +100,11 @@ Not at this time. I will be adding internationalization in a future release. I w
 
 = If I change the markup for an attribute, how will product prices change? =
 
-Markup by Attribute works within the framework provided by WooCommerce and sets product variation markups (or markdowns) during the `Set regular price` and `Set sale price` actions. Therefore, you must locate the products affected by this change and reset the regular and sale prices. I'm working on adding an "Attribute" column to the Product list to facilitate this type of activity.
+Markup by Attribute works within the framework provided by WooCommerce and sets product variation markups (or markdowns) during the 'Set regular price' and 'Set sale price' actions. Therefore, you must locate the products affected by this change and reset the regular and sale prices. I'm working on adding an "Attribute" column to the Product list to facilitate this type of activity.
 
 = What if I change an attribute's markups but do not want to change products marked up previously? =
 
-Then do nothing. Prices, descriptions, and option drop-downs for products will remain at whatever value they were set to last time you ran the `Set regular price` or `Set sale price` bulk variation activities.
+Then do nothing. Prices, descriptions, and option drop-downs for products will remain at whatever value they were set to last time you ran the 'Set regular price' or 'Set sale price' bulk variation activities.
 
 = I'd like to donate. =
 
@@ -116,8 +112,8 @@ Thanks! The donation button assumes $15.00 USD. But feel free adjust that amount
 
 == Screenshots ==
 
-1. Note the addition of the "Markup (or markdown)" field on the bottom of the `Add new *attribute*` panel of the attribute editor.
-2. Note the addition of the "Markup (or markdown)" field on the bottom of the `Edit *attribute*` screen of the attribute editor.
+1. Note the addition of the "Markup (or markdown)" field on the bottom of the 'Add new *attribute*' panel of the attribute editor.
+2. Note the addition of the "Markup (or markdown)" field on the bottom of the 'Edit *attribute*' screen of the attribute editor.
 3. The regular price is $18.95. Markup by Attribute added $6 for a logo and $1.42 for extra large.
 4. The customer sees the full range of sale prices available and how much each option costs, plus a clear description of the breakdown.
 5. Markdowns (negative markups) can be used as well.
@@ -128,9 +124,8 @@ Thanks! The donation button assumes $15.00 USD. But feel free adjust that amount
 
 = 2.1 =
 * Organize `Settings` page with sub-headings.
-* Provide link to wiki from `Settings` page.
-* Expand wiki to include help with settings.
-* Improve readme.txt readability.
+* Provide link to wiki.
+* Expand wiki.
 
 = 2.0 =
 * New Settings page allows for increasing the number of variations that can be created at a time (override WooCommerce's limit of 50).
@@ -146,7 +141,7 @@ Thanks! The donation button assumes $15.00 USD. But feel free adjust that amount
 
 = 1.3.2 =
 
-Fix bug where default variation options were not being selected and `Choose an Option` was always shown.
+Fix bug where default variation options were not being selected and 'Choose an Option' was always shown.
 
 = 1.3.1 =
 

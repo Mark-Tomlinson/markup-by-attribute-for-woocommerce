@@ -130,6 +130,7 @@ Thanks! The donation button assumes $15.00 USD. But feel free adjust that amount
 
 = 2.2 =
 * Fix Plugin name and Description.
+* Fix markup calculation on sale prices when using a percentage markup (percent of regular price, not sale price).
 
 = 2.1 =
 * Organize `Settings` page with sub-headings.

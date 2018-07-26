@@ -102,18 +102,6 @@ class MT2MBA_BACKEND_PRODUCT
                     
                     $markup = get_term_meta( $term->term_id, 'mt2mba_markup', TRUE );
 
-                    // If term_markup has a value other than zero, add/update the value to the metadata table
-                    if ( strpos( $markup, "%" ) )
-                    {
-                        // Markup is a percentage, calculate against original price
-                        $markup = sprintf( "%+01.2f", $orig_price * floatval( $markup ) / 100 );
-                    }
-                    else
-                    {
-                        // Straight markup, get directly from attribute term description
-                        $markup = floatval( $markup );
-                    }
-
                     // Set up post metadata key
                     $meta_key = 'mt2mba_' . $term->term_id . '_markup_amount';
 
@@ -126,15 +114,31 @@ class MT2MBA_BACKEND_PRODUCT
                             update_post_meta( $product_id, "mt2mba_base_{$price_type}", $orig_price );
                             $orig_price_stored = TRUE;
                         }
-                        // Add term and markup to markup table for use below with each variation
-                        $markup_table[ $term->taxonomy ][ $term->slug ][ "markup" ] = $markup;
                         // Variation description and option markup are only set on the regular price; not the sale price
                         if ( $price_type == 'regular_price' )
                         {
+                            // If term_markup has a value other than zero, add/update the value to the metadata table
+                            if ( strpos( $markup, "%" ) )
+                            {
+                                // Markup is a percentage, calculate against original price
+                                $markup = sprintf( "%+01.2f", $orig_price * floatval( $markup ) / 100 );
+                            }
+                            else
+                            {
+                                // Straight markup, get directly from attribute term description
+                                $markup = floatval( $markup );
+                            }
+                            // Add term and markup to markup table for use below with each variation
+                            $markup_table[ $term->taxonomy ][ $term->slug ][ "markup" ] = $markup;
                             // Add term and description to markup table for use below with each variation
                             $markup_table[ $term->taxonomy ][ $term->slug ][ "description" ] = $mt2mba_utility->format_description_markup( $markup, $term->name );
                             // Save actual markup value for term as post metadata for use in product attribute dropdown
                             update_post_meta( $product_id, $meta_key, sprintf( "%+g", $markup ) );
+                        }
+                        else
+                        {
+                            // If calculating sale price, retrive markup set for regular price.
+                            $markup_table[ $term->taxonomy ][ $term->slug ][ "markup" ] = get_metadata( 'post', $product_id, $meta_key, TRUE );
                         }
                     }
                     else
@@ -144,6 +148,7 @@ class MT2MBA_BACKEND_PRODUCT
                     }
                 }
             }
+
             // -- Parse through variations and reprice --
             // Loop through each variation
             foreach ( $variations as $variation_id )
@@ -167,6 +172,7 @@ class MT2MBA_BACKEND_PRODUCT
                 foreach ( $attributes as $attribute_id => $term_id )
                 {
                     // Does this variation have a markup?
+//                    if ( $markup = get_metadata( 'post', $product_id, $meta_key, TRUE ) )
                     if ( isset( $markup_table[ $attribute_id ][ $term_id ] ) )
                     {
                         // Add markup to price

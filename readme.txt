@@ -129,7 +129,7 @@ Thanks! The donation button assumes $15.00 USD. But feel free adjust that amount
 * Markup description now enclosed in <span> tags and can be modified with CSS ( #mbainfo {} ).
 * Markup description added to the attribute term description and can be seen in the attribute term list.
 * Markup now saved as a floating point number and not limited in digits below the decimal point.
-* Corrected issue where Increase/Decrease Regular/Sale Price functions calculated based on variation price rather than base price, yielding incorrect prices when percentages were used.
+* Corrected issue where Increase/Decrease Regular/Sale Price functions calculated based on variation price rather than base price, yeilding incorrect prices when percentages were used.
 * Corrected issue where Increase/Decrease Regular/Sale Price functions did not update variation descriptions.
 * Corrected issue where markup in the options drop-down was calculated from sale price.
 * Database and code changes to enhance supportability.

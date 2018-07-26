@@ -83,12 +83,12 @@ Note that steps 1, 3 and 4 below are standard WooCommerce Variable Product stuff
 4. Once you create your product variations, use the "Set regular price" and "Set sale price" bulk edit functions as you normally would.
   * **Even if you've already done this before installing Markup by Attribute, you will need to do it again to apply the markup.**
   * *The markup will be applied to the price according to the term associated with the variation.*
-  * *A description of the markup will be added to the variation description.*
+  * *The a description of the markup will be added to the variation description.*
     <span id="mbainfo">
     Product Price $18.95
     Add $5.00 for Logo
     </span>
-  * *Because the markup description is bracketed in <span> tags, CSS can be used to modify its appearance on the product page.*
+  * *Becaue the markup description is bracketed in <span> tags, CSS can be used to modify its apperance on the product page.*
     #mbainfo { color: darkblue; }
   * *If you change the markup at a later date, repeat this step to recalculate the markup for this product. Or do not repeat the step to leave the previous markups unchanged.*
 

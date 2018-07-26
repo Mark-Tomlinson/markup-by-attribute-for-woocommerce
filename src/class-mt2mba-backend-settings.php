@@ -261,30 +261,19 @@ class MT2MBA_BACKEND_SETTINGS
 //            $desc_formatted = $mt2mba_utility->format_description_markup( 12.345678, 'XX-Large' );
 
             $mt2mba_settings = array();
-
-            // Begin Markup by Attribute settings
+            // Begin New Product Settings Section
             $mt2mba_settings[] = array
                 (
-                    'name'     => __( 'Markup by Attribute' ),
-                    'type'     => 'title', 
-                    'desc'     => __( 'The following options are used to configure variation markups by attribute.' .
-                      PHP_EOL . __( 'Additional help can be found at the <a href="https://github.com/Mark-Tomlinson/markup-by-attribute-for-woocommerce/wiki" target="_blank">Markup by Attribute wiki</a> on the <code>Settings</code> page.' ) .
+                    'name' => __( 'Markup by Attribute' ),
+                    'type' => 'title', 
+                    'desc' => __( 'The following options are used to configure variation markups by attribute.' .
 //                    PHP_EOL . "Current options drop-down format:     \"[ X-Small{$opt_formatted} ]\"" .
 //                    PHP_EOL . "Current markup description format:    \"{$desc_formatted}\"" .
                     $this->error_msg
                         ),
-                    'id'       => 'mt2mba',
+                    'id' => 'mt2mba',
                 );
-            // --------------------------------------------------
-            // Start section 'Display'
-            $mt2mba_settings[] = array
-                (
-                    'title'    => __( 'Markup Display' ),
-                    'type'     => 'title',
-                    'desc'     => __( 'Determine how markup information is displayed to the customer.' ),
-                    'id'       => 'mt2mba_display',
-                );
-
+            
             // Symbol in Drop-down?
             register_setting( 'mt2mba', 'mt2mba_dropdown_behavior', array( $this, 'validate_mt2mba_dropdown_behavior_field' ) );
             $description = 'Should Markup-by-Attribute add the currency symbol to the markup in the options drop-down box?';
@@ -320,23 +309,6 @@ class MT2MBA_BACKEND_SETTINGS
                     'default'  => $this->desc_behavior,
                 );
             
-            // End section
-            $mt2mba_settings[] = array
-                (
-                    'type'     => 'sectionend',
-                    'id'       => 'mt2mba_display',
-                );
-
-            // --------------------------------------------------
-            // Start section 'Currency'
-            $mt2mba_settings[] = array
-                (
-                    'title'    => __( 'Currency Format' ),
-                    'type'     => 'title',
-                    'desc'     => __( 'Determine how currency is displayed.' ),
-                    'id'       => 'mt2mba_currency',
-                );
-
             // Number of Decimal Points for Markups
             register_setting( 'mt2mba', 'mt2mba_decimal_points', array( $this, 'validate_mt2mba_decimal_points_field' ) );
             $description = 'Number of digits that appear after the decimal point in markups. Valid values are 0 through 6.';
@@ -373,28 +345,12 @@ class MT2MBA_BACKEND_SETTINGS
                     'type'     => 'text',
                 );
 
-            // End section
-            $mt2mba_settings[] = array
-                (
-                    'type'     => 'sectionend',
-                    'id'       => 'mt2mba_currency',
-                );
-
-            // --------------------------------------------------
-            // Start section 'Other'
-            $mt2mba_settings[] = array
-                (
-                    'title'    => __( 'Other Settings' ),
-                    'type'     => 'title',
-                    'id'       => 'mt2mba_other',
-                );
-
             // Variation Max
             register_setting( 'mt2mba', 'mt2mba_variation_max', array( $this, 'validate_mt2mba_variation_max_field' ) );
             $description = 'Use Cautiously: WooCommerce limits the number of linked variations you can create at a time to 50 to prevent server overload.  ' .
                 'To create more, you can run \'Create variations from all attributes\' again, but this creates variations out of order.  ' .
                 'If you will have more than 50 variations of a product AND the order in the admin console is important, then set this number higher.';
-                $mt2mba_settings[] = array
+            $mt2mba_settings[] = array
                 (
                     'title'    => __( 'Variation Max' ),
                     'name'     => 'mt2mba_variation_max',
@@ -404,19 +360,11 @@ class MT2MBA_BACKEND_SETTINGS
                     'type'     => 'text',
                 );
 
-            // End section 'Other'
+            // End section
             $mt2mba_settings[] = array
                 (
-                    'type'     => 'sectionend',
-                    'id'       => 'mt2mba_other'
-                );
-
-            // --------------------------------------------------
-            // End Markup by Attribute settings
-            $mt2mba_settings[] = array
-                (
-                    'type'     => 'sectionend',
-                    'id'       => 'mt2mba'
+                    'type' => 'sectionend',
+                    'id' => 'mt2mba'
                 );
 
             return $mt2mba_settings;

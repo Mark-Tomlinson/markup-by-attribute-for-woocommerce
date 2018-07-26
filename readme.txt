@@ -92,17 +92,20 @@ Note that steps 1, 3 and 4 below are standard WooCommerce Variable Product stuff
             Add $5.00 for Logo
             </span>
 
-    * *Because the markup description is bracketed in <span> tags, CSS can be used to modify its appearance on the product page.*
+    * *TIP: Because the markup description is bracketed in <span> tags, CSS can be used to modify its appearance on the product page.*
 
             #mbainfo { color: darkblue; }
 
-    * *If you change the markup at a later date, repeat this step to recalculate the markup for this product. Or do not repeat the step to leave the previous markups unchanged.*
+    * *TIP: If you change the markup at a later date, repeat this step to recalculate the markup for this product. Or do not repeat the step to leave the previous markups unchanged.*
+    * *TIP: Always set the regular price before setting a sale price. Percentage markups are calculated on the regular price, so they can not be applied to a sale price if the regular price has not been set.*
 
 == Frequently Asked Questions ==
 
 = Does this support languages other than English? =
 
-Not at this time. I will be adding internationalization in a future release. I would appreciate your assistance translating it if you want it in another language.
+Not at this time. I will be adding internationalization in a future release. I would appreciate your assistance in translating it if you want it in another language.
+
+However, a currency other than the US Dollar is supported. The settings page for Markup by Attribute allows changing the currency symbol and changing its placement.
 
 = If I change the markup for an attribute, how will product prices change? =
 
@@ -114,7 +117,7 @@ Then do nothing. Prices, descriptions, and option drop-downs for products will r
 
 = I'd like to donate. =
 
-Thanks! The donation button assumes $15.00 USD. But feel free adjust that amount up or down as you feel it's appropriate. I'm a retired guy who's living off his savings, so every little bit helps. Besides, I need the motivation!
+Thanks! The donation button assumes $15.00 USD. But feel free to adjust that amount up or down as you feel it's appropriate. I'm a retired guy who's living off his savings, so every little bit helps. Besides, I need the motivation!
 
 == Screenshots ==
 
@@ -124,30 +127,30 @@ Thanks! The donation button assumes $15.00 USD. But feel free adjust that amount
 4. The customer sees the full range of sale prices available and how much each option costs, plus a clear description of the breakdown.
 5. Markdowns (negative markups) can be used as well.
 6. Markups are applied to sale prices just as they are to regular prices.
-7. Settings page allows configuration of how the markup is displayed.
+7. The settings page allows configuration of how the markup is displayed.
 
 == Changelog ==
 
 = 2.2 =
 * Fix Plugin name and Description.
-* Fix markup calculation on sale prices when using a percentage markup (percent of regular price, not sale price).
+* Fix markup calculation on sale prices when using a percentage markup (percent of the regular price, not sale price).
 
 = 2.1 =
 * Organize `Settings` page with sub-headings.
-* Provide link to wiki from `Settings` page.
+* Provide a link to the wiki from `Settings` page.
 * Expand wiki to include help with settings.
 * Improve readme.txt readability.
 
 = 2.0 =
-* New Settings page allows for increasing the number of variations that can be created at a time (override WooCommerce's limit of 50).
-* New Settings page allows for modifying the way pricing markup is added to the variation descriptions (overwrite, append, or ignore).
-* New settings page allows configuration of the way the markup is displayed, includiing number of decimals and currency symbol.
+* The new Settings page allows for increasing the number of variations that can be created at a time (override WooCommerce's limit of 50).
+* The new Settings page allows for modifying the way pricing markup is added to the variation descriptions (overwrite, append, or ignore).
+* The new settings page allows configuration of the way the markup is displayed, including the number of decimals and the currency symbol.
 * Markup description now enclosed in <span> tags and can be modified with CSS ( #mbainfo {} ).
 * Markup description added to the attribute term description and can be seen in the attribute term list.
 * Markup now saved as a floating point number and not limited in digits below the decimal point.
 * Corrected issue where Increase/Decrease Regular/Sale Price functions calculated based on variation price rather than base price, yielding incorrect prices when percentages were used.
 * Corrected issue where Increase/Decrease Regular/Sale Price functions did not update variation descriptions.
-* Corrected issue where markup in the options drop-down was calculated from sale price.
+* Corrected issue where markup in the options drop-down was calculated from the sale price.
 * Database and code changes to enhance supportability.
 
 = 1.3.2 =

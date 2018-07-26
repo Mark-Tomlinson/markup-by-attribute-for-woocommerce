@@ -89,7 +89,7 @@ Note that steps 1, 3 and 4 below are standard WooCommerce Variable Product stuff
     Add $5.00 for Logo
     </span>
   * *Because the markup description is bracketed in <span> tags, CSS can be used to modify its appearance on the product page.*
-    #mbainfo { color: darkblue; }
+    \#mbainfo { color: darkblue; }
   * *If you change the markup at a later date, repeat this step to recalculate the markup for this product. Or do not repeat the step to leave the previous markups unchanged.*
 
 == Frequently Asked Questions ==
@@ -122,7 +122,12 @@ Thanks! The donation button assumes $15.00 USD. But feel free adjust that amount
 
 == Changelog ==
 
-= 2.0.0 =
+= 2.1 =
+* Organize `Settings` page with sub-headings.
+* Provide link to wiki.
+* Expand wiki.
+
+= 2.0 =
 * New Settings page allows for increasing the number of variations that can be created at a time (override WooCommerce's limit of 50).
 * New Settings page allows for modifying the way pricing markup is added to the variation descriptions (overwrite, append, or ignore).
 * New settings page allows configuration of the way the markup is displayed, includiing number of decimals and currency symbol.

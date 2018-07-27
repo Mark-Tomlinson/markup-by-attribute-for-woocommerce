@@ -134,6 +134,7 @@ Thanks! The donation button assumes $15.00 USD. But feel free to adjust that amo
 = 2.2 =
 * Fix Plugin name and Description.
 * Fix markup calculation on sale prices when using a percentage markup (percent of the regular price, not sale price).
+* Clear Markup by Attribute meta data from database on variation deletion.
 
 = 2.1 =
 * Organize `Settings` page with sub-headings.

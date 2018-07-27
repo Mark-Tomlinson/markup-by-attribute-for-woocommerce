@@ -89,10 +89,9 @@ class MT2MBA_BACKEND_PRODUCT
             $orig_price        = $data[ 'value' ] ;
             $orig_price_stored = FALSE;
 
-            // Clear out old metadata
-            delete_post_meta( $product_id, '%_markup_amount' );
-            delete_post_meta( $product_id, 'mt2mba_%' );
-            
+            // Clear out old base price meta data
+            delete_post_meta( $product_id, "mt2mba_base_{$price_type}" );
+
             // -- Build markup table --
             // Loop through product attributes
             foreach ( wc_get_product( $product_id )->get_attributes() as $pa_attrb ) {
@@ -111,12 +110,14 @@ class MT2MBA_BACKEND_PRODUCT
                         // Store original price
                         if ( ! $orig_price_stored )
                         {
-                            update_post_meta( $product_id, "mt2mba_base_{$price_type}", $orig_price );
-                            $orig_price_stored = TRUE;
+                            $orig_price_stored = update_post_meta( $product_id, "mt2mba_base_{$price_type}", $orig_price );
                         }
                         // Variation description and option markup are only set on the regular price; not the sale price
                         if ( $price_type == 'regular_price' )
                         {
+                            // Clear out old markup metadata
+                            delete_post_meta( $product_id, $meta_key );
+
                             // If term_markup has a value other than zero, add/update the value to the metadata table
                             if ( strpos( $markup, "%" ) )
                             {
@@ -172,7 +173,6 @@ class MT2MBA_BACKEND_PRODUCT
                 foreach ( $attributes as $attribute_id => $term_id )
                 {
                     // Does this variation have a markup?
-//                    if ( $markup = get_metadata( 'post', $product_id, $meta_key, TRUE ) )
                     if ( isset( $markup_table[ $attribute_id ][ $term_id ] ) )
                     {
                         // Add markup to price
@@ -235,7 +235,8 @@ class MT2MBA_BACKEND_PRODUCT
         }
         else
         {
-            // Bulk action is not setting a price. Is it to increase or decrease a price?
+            // Bulk action is not setting a price.
+            // Is it to increase or decrease a price?
             if ( strpos( $bulk_action, 'price_increase' ) || strpos( $bulk_action, 'price_decrease' ) )
             {
                 // If base price metadata is present, that means the product contains variables with attribute pricing.
@@ -253,6 +254,13 @@ class MT2MBA_BACKEND_PRODUCT
                     // new base regular/sale price plus the attribute markup.
                     $this->mt2mba_apply_markup_to_price( "variable_{$price_type}", $new_data, $product_id, $variations );
                 }
+            }
+            // Is it to delete all variations?
+            if ( $bulk_action == 'delete_all' )
+            {
+                // Clear out old metadata
+                global $wpdb;
+                $wpdb->query( "DELETE FROM {$wpdb->postmeta} WHERE post_id = '{$product_id}' AND meta_key LIKE 'mt2mba_%'" );
             }
         }
     }    // END function mt2mba_apply_markup_to_price

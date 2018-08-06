@@ -9,7 +9,7 @@ Contributors:         MarkTomlinson
 Donate link:          https://www.paypal.me/MT2Dev/15
 License:              GPLv3
 License URI:          https://www.gnu.org/licenses/gpl-3.0.html
-Version:              2.2
+Version:              2.3
 Stable tag:           trunk
 Requires at least:    4.6
 Tested up to:         4.9.8
@@ -131,6 +131,11 @@ Thanks! The donation button assumes $15.00 USD. But feel free to adjust that amo
 7. The settings page allows configuration of how the markup is displayed.
 
 == Changelog ==
+
+= 2.3 =
+* Add option to not display markup in drop-down.
+* Add missing Author: tag.
+* Ensure documentation is clear that this works on "global" attributes.
 
 = 2.2 =
 * Fix Plugin name and Description.

@@ -112,12 +112,13 @@ class MT2MBA_UTILITY
     }
 
     /**
-    * Remove bracketed substring from string
-    * @param  string $beginning    Marker at the beginning of the string to be removed
-    * @param  string $ending       Marker at the ending of the string to be removed
-    * @param  string $string       The string to be processed
-    * @return string               The string minus the text to be removed and the beginning and ending markers
-    */
+     * Remove bracketed substring from string
+     *
+     * @param  string $beginning    Marker at the beginning of the string to be removed
+     * @param  string $ending       Marker at the ending of the string to be removed
+     * @param  string $string       The string to be processed
+     * @return string               The string minus the text to be removed and the beginning and ending markers
+     */
     public function remove_bracketed_string($beginning, $ending, $string)
     {
         $beginningPos = strpos( $string, $beginning, 0 );
@@ -148,6 +149,7 @@ class MT2MBA_UTILITY
 
     /**
      * Format the markup that appears in the options drop-down box
+     * 
      * @param    float    $markup    Signed markup amount
      * @return  string               Formatted markup
      */

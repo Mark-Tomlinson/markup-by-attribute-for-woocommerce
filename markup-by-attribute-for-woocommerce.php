@@ -36,7 +36,7 @@ if ( !defined( 'ABSPATH' ) ) exit( );
 if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) )
 {
 	// Set plugin Version
-	define( 'MT2MBA_VERSION', 2.0 );
+	define( 'MT2MBA_VERSION', 2.3 );
 	define( 'MT2MBA_DB_VERSION', 2.0 );
 	define( 'MT2MBA_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 

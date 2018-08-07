@@ -4,7 +4,7 @@
  *
  * @package     markup-by-attribute-for-woocommerce
  * @author      Mark Tomlinson
- * @version     2.1
+ * @version     2.3
  * @copyright   Mark Tomlinson  2018
  *
  * For the full copyright and license information, please view the LICENSE
@@ -20,7 +20,7 @@
  * Donate link:          https://www.paypal.me/MT2Dev/15
  * License:              GPLv3
  * License URI:          https://www.gnu.org/licenses/gpl-3.0.html
- * Version:              2.2
+ * Version:              2.3
  * Stable tag:           trunk
  * Requires at least:    4.6
  * Tested up to:         4.9.8

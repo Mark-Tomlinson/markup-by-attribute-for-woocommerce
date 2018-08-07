@@ -20,7 +20,7 @@ class MT2MBA_BACKEND_SETTINGS
     var $error_msg                  =   '';
     var $format_desc                =   '<div class=\"description\">%s<\/div>';
     var $format_error               =   '<div class=\"error notice\"><p><strong>%s</strong></p></div>';
-    var $valid_currency_symbols     =   array('¤', '$', '£', '€', '¢', '¥', '₧', 'ƒ');
+    var $valid_currency_symbols     =   array( '¤', '$', '£', '€', '¢', '¥', '₧', 'ƒ' );
 
     /**
      * Initialization method visible before instantiation
@@ -268,7 +268,7 @@ class MT2MBA_BACKEND_SETTINGS
                     'name'     => __( 'Markup by Attribute' ),
                     'type'     => 'title', 
                     'desc'     => __( 'The following options are used to configure variation markups by attribute.' .
-                      PHP_EOL . __( 'Additional help can be found at the <a href="https://github.com/Mark-Tomlinson/markup-by-attribute-for-woocommerce/wiki" target="_blank">Markup by Attribute wiki</a> on the <code>Settings</code> page.' ) .
+                      PHP_EOL . __( 'Additional help can be found in the <a href="https://github.com/Mark-Tomlinson/markup-by-attribute-for-woocommerce/wiki" target="_blank">Markup by Attribute wiki</a> on the <code>Settings</code> page.' ) .
 //                    PHP_EOL . "Current options drop-down format:     \"[ X-Small{$opt_formatted} ]\"" .
 //                    PHP_EOL . "Current markup description format:    \"{$desc_formatted}\"" .
                     $this->error_msg
@@ -285,19 +285,20 @@ class MT2MBA_BACKEND_SETTINGS
                     'id'       => 'mt2mba_display',
                 );
 
-            // Symbol in Drop-down?
+            // Format markup in Drop-down
             register_setting( 'mt2mba', 'mt2mba_dropdown_behavior', array( $this, 'validate_mt2mba_dropdown_behavior_field' ) );
-            $description = 'Should Markup-by-Attribute add the currency symbol to the markup in the options drop-down box?';
+            $description = 'Should Markup-by-Attribute add the markup to the options drop-down box, and should the currency symbol be displayed?';
             $mt2mba_settings[] = array
                 (
-                    'title'    => __( 'Currency in Option Drop-down' ),
+                    'title'    => __( 'Option Drop-down Behavior' ),
                     'desc'     => __( sprintf($this->format_desc, $description ) ),
                     'id'       => 'mt2mba_dropdown_behavior',
                     'type'     => 'radio',
                     'options'  => array
                         (
-                            'add' => 'Add the currency symbol to the markup in the options drop-down box.',
-                            'do_not_add' => 'Do NOT add the currency symbol to the markup in the options drop-down box.',
+                            'hide'          => 'Do NOT show the markup in the options drop-down box.',
+                            'add'           => 'Show the markup WITH the currency symbol in the options drop-down box.',
+                            'do_not_add'    => 'Show the markup WITHOUT the currency symbol in the options drop-down box.',
                         ),
                     'default'  => $this->dropdown_behavior,
                 );
@@ -313,9 +314,9 @@ class MT2MBA_BACKEND_SETTINGS
                     'type'     => 'radio',
                     'options'  => array
                         (
-                            'overwrite' => 'Overwrite the variation description with price information.',
-                            'append' => 'Add pricing information to the end of the existing description.',
-                            'ignore' => 'Do not add pricing information to the description field.',
+                            'ignore'        => 'Do NOT add pricing information to the description field.',
+                            'append'        => 'Add pricing information to the end of the existing description.',
+                            'overwrite'     => 'Overwrite the variation description with price information.',
                         ),
                     'default'  => $this->desc_behavior,
                 );

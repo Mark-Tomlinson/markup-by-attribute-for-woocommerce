@@ -27,7 +27,7 @@ Want to add $5 to every blue product you sell? Maybe you sell jewelry with birth
 
 = Markup by Attribute Adds 'Markup' to Attribute Terms =
 
-Markup by Attribute solves this problem by allowing you to add a markup (or markdown) to individual attribute terms. If the attribute is 'color', then Markup by Attribute allows you to add "+5" to Blue while leaving Green and Yellow alone. When you set regular and sale prices, every blue product will be $5.00 more.
+Markup by Attribute solves this problem by allowing you to add a markup (or markdown) to global attribute terms. If the attribute is 'color', then Markup by Attribute allows you to add "+5" to Blue while leaving Green and Yellow alone. When you set regular and sale prices, every blue product will be $5.00 more.
 
 Markup by Attribute:
 
@@ -63,13 +63,15 @@ Markup by Attribute:
 
 = Using Markup by Attribute for WooCommerce =
 
-These instructions assume you are familiar with WooCommerce Product Attributes and Product Variations. If not, you may want to review the WooCommerce documentation on [Product Attributes](https://docs.woocommerce.com/document/managing-product-taxonomies/#section-6) and [Variable Products](https://docs.woocommerce.com/document/variable-product/). Set up a few variable products to get the hang of it. Then come back here.  We'll wait.
+These instructions assume you are familiar with WooCommerce global Product Attributes and Product Variations. If not, you may want to review the WooCommerce documentation on [Product Attributes](https://docs.woocommerce.com/document/managing-product-taxonomies/#section-6) and [Variable Products](https://docs.woocommerce.com/document/variable-product/).
+
+Set up a few variable products to get the hang of it. Then come back here.  We'll wait.
 
 Ready to dive in?
 
 Note that steps 1, 3 and 4 below are standard WooCommerce Variable Product stuff. Step 2 is about the only **process change** you need to be concerned with. We've italicized some of the *outcome changes* you will notice in the other steps.
 
-1. Create variation attributes and terms, if you haven't already.
+1. Create global attributes and terms, if you haven't already.
     * For instance, the attribute 'size' may include the terms 'X-Small',  'Small', 'Medium', 'Large', and 'X-Large'.
     * The attribute 'color' may include the terms 'Orange', 'Red', 'Violet', 'Blue', 'Green', and 'Yellow'.
 
@@ -133,14 +135,14 @@ Thanks! The donation button assumes $15.00 USD. But feel free to adjust that amo
 == Changelog ==
 
 = 2.3 =
-* Add option to not display markup in drop-down.
+* Add option to not display markup in the options drop-down box.
 * Add missing Author: tag.
 * Ensure documentation is clear that this works on "global" attributes.
 
 = 2.2 =
 * Fix Plugin name and Description.
 * Fix markup calculation on sale prices when using a percentage markup (percent of the regular price, not sale price).
-* Clear Markup by Attribute meta data from database on variation deletion.
+* Clear Markup by Attribute metadata from the database on variation deletion.
 
 = 2.1 =
 * Organize `Settings` page with sub-headings.

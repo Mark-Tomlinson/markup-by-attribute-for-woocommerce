@@ -140,7 +140,7 @@ class MT2MBA_UTILITY
             $settings = new MT2MBA_BACKEND_SETTINGS;
             define( 'MT2MBA_DECIMAL_POINTS', $settings->get_decimal_points() );
             define( 'MT2MBA_DESC_BEHAVIOR', $settings->get_desc_behavior() );
-            define( 'MT2MBA_OPTION_SYMBOL_ADD', $settings->get_dropdown_behavior() );
+            define( 'MT2MBA_DROPDOWN_BEHAVIOR', $settings->get_dropdown_behavior() );
             define( 'MT2MBA_SYMBOL_BEFORE', $settings->get_currency_symbol_before() );
             define( 'MT2MBA_SYMBOL_AFTER', $settings->get_currency_symbol_after() );
         }
@@ -149,7 +149,7 @@ class MT2MBA_UTILITY
     /**
      * Format the markup that appears in the options drop-down box
      * @param    float    $markup    Signed markup amount
-     * @return  string          Formatted markup
+     * @return  string               Formatted markup
      */
     function format_option_markup( $markup )
     {
@@ -160,14 +160,14 @@ class MT2MBA_UTILITY
             $decimal_points = MT2MBA_DECIMAL_POINTS;
             $markup_format  = " (%s%s%01.{$decimal_points}f%s)";
             $add_sub_sign   = $markup > 0 ? "+" : "-";
-            if ( MT2MBA_OPTION_SYMBOL_ADD == 'add' )
+            if ( MT2MBA_DROPDOWN_BEHAVIOR == 'add' )
             {
                 // Return formatted with symbol
                 return sprintf( $markup_format, $add_sub_sign, MT2MBA_SYMBOL_BEFORE, abs( $markup ), MT2MBA_SYMBOL_AFTER );
             }
             // Return formatted without symbol
             return sprintf( $markup_format, $add_sub_sign, '', abs( $markup ), '' );
-        }
+         }
         // No markup; return empty string
         return '';
     }

@@ -162,6 +162,14 @@ class MT2MBA_UTILITY
             $decimal_points = MT2MBA_DECIMAL_POINTS;
             $markup_format  = " (%s%s%01.{$decimal_points}f%s)";
             $add_sub_sign   = $markup > 0 ? "+" : "-";
+            // There are instances where the markup for the product is not in the database.
+            // Where this is the case and the markup is a percentage, show only the percentage.
+            if ( strpos( $markup, '%' ) )
+            {
+                // Return formatted with percentage
+                return sprintf( $markup_format, $add_sub_sign, '', abs( $markup ), '%' );
+            }
+            
             if ( MT2MBA_DROPDOWN_BEHAVIOR == 'add' )
             {
                 // Return formatted with symbol

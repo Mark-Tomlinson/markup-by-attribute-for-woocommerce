@@ -87,8 +87,10 @@ class MT2MBA_FRONTEND {
                     if ( in_array( $term->slug, $options ) )
                     {
                         // Add markup if metadata exists, else leave blank
-                        $markup = get_metadata( 'post', $product->get_id(), 'mt2mba_' . $term->term_id . '_markup_amount', TRUE );
-
+                        if ( ! $markup = get_metadata( 'post', $product->get_id(), 'mt2mba_' . $term->term_id . '_markup_amount', TRUE ) )
+                        {
+                            $markup = get_metadata( 'term', $term->term_id, 'mt2mba_markup', TRUE );
+                        }
                         // And build <OPTION> into $html
                         $html .= PHP_EOL .
                             '<option value="' . esc_attr( $term->slug ) . '"' .

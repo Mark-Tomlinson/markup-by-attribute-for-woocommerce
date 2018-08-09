@@ -138,6 +138,7 @@ Thanks! The donation button assumes $15.00 USD. But feel free to adjust that amo
 * Add option to not display markup in the options drop-down box.
 * Add missing Author: tag.
 * Ensure documentation is clear that this works on "global" attributes.
+* Version 2.3 exposes a problem in an earlier version's database conversion where percentage markups show incorrectly in the option drop-down (For instance, a 10% markup on $40 shows as $10 instead of $4). To patch around it, version 2.3 will put the percentage in the drop-down instead of the actual markup. These items will need to have thier regular prices reset in order to have the actual markup appear.
 
 = 2.2 =
 * Fix Plugin name and Description.

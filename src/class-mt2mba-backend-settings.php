@@ -256,10 +256,6 @@ class MT2MBA_BACKEND_SETTINGS
          */
         if ( $current_section == 'mt2mba' )
         {
-//            global $mt2mba_utility;
-//            $opt_formatted = $mt2mba_utility->format_option_markup( -1.234567 );
-//            $desc_formatted = $mt2mba_utility->format_description_markup( 12.345678, 'XX-Large' );
-
             $mt2mba_settings = array();
 
             // Begin Markup by Attribute settings

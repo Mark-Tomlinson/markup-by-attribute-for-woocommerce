@@ -131,20 +131,64 @@ class MT2MBA_UTILITY
         return str_replace( $textToDelete, '', $string );
     }
 
+    function mt2mba_price( $price, $args = array() )
+    {
+        $args = apply_filters(
+          'wc_price_args', wp_parse_args(
+            $args, array(
+              'ex_tax_label'       => false,
+              'currency'           => '',
+              'decimal_separator'  => wc_get_price_decimal_separator(),
+              'thousand_separator' => wc_get_price_thousand_separator(),
+              'decimals'           => wc_get_price_decimals(),
+              'price_format'       => get_woocommerce_price_format(),
+            )
+          )
+        );
+      
+        $unformatted_price = $price;
+        $negative          = $price < 0;
+        $price             = apply_filters( 'raw_woocommerce_price', floatval( $negative ? $price * -1 : $price ) );
+        $price             = apply_filters( 'formatted_woocommerce_price', number_format( $price, $args['decimals'], $args['decimal_separator'], $args['thousand_separator'] ), $price, $args['decimals'], $args['decimal_separator'], $args['thousand_separator'] );
+      
+        if ( apply_filters( 'woocommerce_price_trim_zeros', false ) && $args['decimals'] > 0 ) {
+          $price = wc_trim_zeros( $price );
+        }
+      
+        $formatted_price = ( $negative ? '-' : '' ) . sprintf( $args['price_format'], get_woocommerce_currency_symbol( $args['currency'] ), $price );
+        $return          = $formatted_price;
+      
+        if ( $args['ex_tax_label'] && wc_tax_enabled() ) {
+          $return .= WC()->countries->ex_tax_or_vat();
+        }
+      
+        return apply_filters( 'wc_price', $return, $price, $args, $unformatted_price );
+    }
+
     /**
      * Get options and set globals
      */
     function get_mba_globals()
     {
-        if ( !defined ( 'MT2MBA_DECIMAL_POINTS' ) )
+        if ( !defined ( 'MT2MBA_THOUSAND_SEPARATOR' ) )
         {
             $settings = new MT2MBA_BACKEND_SETTINGS;
-            define( 'MT2MBA_DECIMAL_POINTS', $settings->get_decimal_points() );
             define( 'MT2MBA_DESC_BEHAVIOR', $settings->get_desc_behavior() );
             define( 'MT2MBA_DROPDOWN_BEHAVIOR', $settings->get_dropdown_behavior() );
-            define( 'MT2MBA_SYMBOL_BEFORE', $settings->get_currency_symbol_before() );
-            define( 'MT2MBA_SYMBOL_AFTER', $settings->get_currency_symbol_after() );
+            define( 'MT2MBA_DECIMAL_POINTS', wc_get_price_decimals() );
+            define( 'MT2MBA_PRICE_FORMAT', get_woocommerce_price_format() );
+            define( 'MT2MBA_CURRENCY_SYMBOL', get_woocommerce_currency_symbol( get_woocommerce_currency() ) );
+            define( 'MT2MBA_DECIMAL_SEPARATOR', wc_get_price_decimal_separator() );
+            define( 'MT2MBA_THOUSAND_SEPARATOR', wc_get_price_thousand_separator() );
         }
+    }
+
+    /**
+     * Clean up the price or markup and reformat according to currency options
+     */
+    function clean_up_price( $price )
+    {
+        return number_format( floatval( abs( $price ) ), MT2MBA_DECIMAL_POINTS, MT2MBA_DECIMAL_SEPARATOR, MT2MBA_THOUSAND_SEPARATOR );
     }
 
     /**
@@ -157,26 +201,30 @@ class MT2MBA_UTILITY
     {
         if ( $markup <> 0 )
         {
+            // Get globals
             $this->get_mba_globals();
-            // Set markup format
-            $decimal_points = MT2MBA_DECIMAL_POINTS;
-            $markup_format  = " (%s%s%01.{$decimal_points}f%s)";
-            $add_sub_sign   = $markup > 0 ? "+" : "-";
+
+            // Set sign
+            $sign = $markup < 0 ? "-" : "+";
             // There are instances where the markup for the product is not in the database.
             // Where this is the case and the markup is a percentage, show only the percentage.
             if ( strpos( $markup, '%' ) )
             {
                 // Return formatted with percentage
-                return sprintf( $markup_format, $add_sub_sign, '', abs( $markup ), '%' );
+                $markup = trim( html_entity_decode( $sign . sprintf( MT2MBA_PRICE_FORMAT, '', $this->clean_up_price( $markup ) ) ) ) . '%';
             }
-            
-            if ( MT2MBA_DROPDOWN_BEHAVIOR == 'add' )
+            elseif ( MT2MBA_DROPDOWN_BEHAVIOR == 'add' )
             {
                 // Return formatted with symbol
-                return sprintf( $markup_format, $add_sub_sign, MT2MBA_SYMBOL_BEFORE, abs( $markup ), MT2MBA_SYMBOL_AFTER );
+                $markup = html_entity_decode( $sign . sprintf( MT2MBA_PRICE_FORMAT, MT2MBA_CURRENCY_SYMBOL, $this->clean_up_price( $markup ) ) );
             }
-            // Return formatted without symbol
-            return sprintf( $markup_format, $add_sub_sign, '', abs( $markup ), '' );
+            else
+            {
+                // Return formatted without symbol
+                $markup = trim( html_entity_decode( $sign . sprintf( MT2MBA_PRICE_FORMAT, '', $this->clean_up_price( $markup ) ) ) );
+            }
+            return " (" . $markup . ")";
+
          }
         // No markup; return empty string
         return '';
@@ -192,14 +240,16 @@ class MT2MBA_UTILITY
     {
         if ( $markup <> 0 )
         {
+            // Get globals
             $this->get_mba_globals();
-            // Set markup format
-            $decimal_points     = MT2MBA_DECIMAL_POINTS;
-            $currency_format    = "%s%01.{$decimal_points}f%s";
-            $add_sub_sign       = $markup > 0 ? __("Add") . ' ' : __("Subtract") . ' ';
-            $markup_format      = $add_sub_sign . " %s%01.{$decimal_points}f%s " . __('for') . " %s";
-            // Return formatted with symbol
-            return sprintf( $markup_format, MT2MBA_SYMBOL_BEFORE, abs( $markup ), MT2MBA_SYMBOL_AFTER, $term );
+
+            $sign = $markup < 0 ? __('Subtract') : __('Add');
+            return html_entity_decode
+                (
+                    $sign . ' ' .
+                    sprintf( MT2MBA_PRICE_FORMAT, MT2MBA_CURRENCY_SYMBOL, $this->clean_up_price( $markup ) ) .
+                    ' ' . __('for') . ' ' . $term
+                );
         }
         // No markup; return empty string
         return '';

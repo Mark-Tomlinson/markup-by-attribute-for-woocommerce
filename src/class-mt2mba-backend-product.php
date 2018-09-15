@@ -82,12 +82,23 @@ class MT2MBA_BACKEND_PRODUCT
             global $mt2mba_utility;
             $mt2mba_utility->get_mba_globals();
 
-            $decimal_points     = MT2MBA_DECIMAL_POINTS;
-            $currency_format    = "%s%01.{$decimal_points}f%s";
-
+            $decimal_points       = MT2MBA_DECIMAL_POINTS;
+            $currency_format      = "%s%01.{$decimal_points}f%s";
+            
             // Catch original price
-            $orig_price        = $data[ 'value' ] ;
-            $orig_price_stored = FALSE;
+            $orig_price           = floatval( $data[ 'value' ] );
+            $orig_price_formatted = apply_filters
+                (
+                    'formatted_woocommerce_price',
+                    number_format
+                    (
+                        $orig_price,
+                        wc_get_price_decimals(),
+                        wc_get_price_decimal_separator(),
+                        wc_get_price_thousand_separator()
+                    )
+                );
+            $orig_price_stored   = FALSE;
 
             // Clear out old base price meta data
             delete_post_meta( $product_id, "mt2mba_base_{$price_type}" );
@@ -207,7 +218,12 @@ class MT2MBA_BACKEND_PRODUCT
                                     // Set markup opening tag
                                     $description .= PHP_EOL . $product_markup_desc_beg;
                                     // Open description with original price
-                                    $description .= sprintf( "Product price {$currency_format}", MT2MBA_SYMBOL_BEFORE, $orig_price, MT2MBA_SYMBOL_AFTER ) . PHP_EOL;
+                                    $description .= html_entity_decode
+                                        (
+                                            "Product price " .
+                                            sprintf( get_woocommerce_price_format(), get_woocommerce_currency_symbol( get_woocommerce_currency() ), $orig_price_formatted ) .
+                                            PHP_EOL
+                                        );
                                     // Flip flag
                                     $has_orig_price = TRUE;
                                 }

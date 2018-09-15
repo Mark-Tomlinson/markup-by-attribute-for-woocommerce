@@ -264,11 +264,8 @@ class MT2MBA_BACKEND_SETTINGS
                     'name'     => __( 'Markup by Attribute' ),
                     'type'     => 'title', 
                     'desc'     => __( 'The following options are used to configure variation markups by attribute.' .
-                      PHP_EOL . __( 'Additional help can be found in the <a href="https://github.com/Mark-Tomlinson/markup-by-attribute-for-woocommerce/wiki" target="_blank">Markup by Attribute wiki</a> on the <code>Settings</code> page.' ) .
-//                    PHP_EOL . "Current options drop-down format:     \"[ X-Small{$opt_formatted} ]\"" .
-//                    PHP_EOL . "Current markup description format:    \"{$desc_formatted}\"" .
-                    $this->error_msg
-                        ),
+                        PHP_EOL . __( 'Additional help can be found in the <a href="https://github.com/Mark-Tomlinson/markup-by-attribute-for-woocommerce/wiki" target="_blank">Markup by Attribute wiki</a> on the <code>Settings</code> page.' ) .
+                        $this->error_msg ),
                     'id'       => 'mt2mba',
                 );
             // --------------------------------------------------

@@ -7,7 +7,7 @@
 class MT2MBA_AUTOLOADER
 {
     /**
-     * Registers MyPlugin_Autoloader as an SPL autoloader.
+     * Registers class-mt2mba-autoloader as an SPL autoloader.
      *
      * @param boolean $prepend
      */
@@ -24,7 +24,7 @@ class MT2MBA_AUTOLOADER
     }
 
     /**
-     * Handles autoloading of MyPlugin classes.
+     * Handles autoloading of Markup-by-Attribute classes.
      *
      * @param string $class
      */

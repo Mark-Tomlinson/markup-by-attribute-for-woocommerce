@@ -43,69 +43,80 @@ class MT2MBA_UTILITY
      */
     function mt2mba_db_upgrade()
     {
-        // --------------------------------------------------------------
-        // Update database from version 1.x. Leave 1.x data for fallback.
-        // --------------------------------------------------------------
     
         // Failsafe
-        if ( get_site_option( 'mt2mba_db_version' ) >= MT2MBA_DB_VERSION ) return;
+        $current_db_version = get_site_option( 'mt2mba_db_version', 1 );
+        if ( $current_db_version >= MT2MBA_DB_VERSION ) return;
 
         global $wpdb;
 
-        // Add prefix to attribute markup meta data key
-        $results = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}termmeta WHERE meta_key LIKE 'markup'" );
-        foreach( $results as $row )
+        // --------------------------------------------------------------
+        // Update database from version 1.x. Leave 1.x data for fallback.
+        // --------------------------------------------------------------
+        if ( $current_db_version < 2.0 )
         {
-            if ( strpos($row->meta_key, 'mt2mba_' ) === FALSE )
+            // Add prefix to attribute markup meta data key
+            $results = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}termmeta WHERE meta_key LIKE 'markup'" );
+            foreach( $results as $row )
             {
-                add_term_meta( $row->term_id, "mt2mba_" . $row->meta_key, $row->meta_value, TRUE );
+                if ( strpos($row->meta_key, 'mt2mba_' ) === FALSE )
+                {
+                    add_term_meta( $row->term_id, "mt2mba_" . $row->meta_key, $row->meta_value, TRUE );
+                }
             }
-        }
 
-        // Add markup description to attribute terms
-        global $attrb_markup_desc_beg;
-        global $attrb_markup_desc_end;
-        $results = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}termmeta WHERE meta_key LIKE 'mt2mba_markup'" );
-        foreach( $results as $row )
-        {
-            $term = get_term( (integer) $row->term_id );
-            $description = trim( $this->remove_bracketed_string( $attrb_markup_desc_beg, $attrb_markup_desc_end, trim( $term->description ) ) );
-            $description .= PHP_EOL . $attrb_markup_desc_beg . $row->meta_value . $attrb_markup_desc_end;
-            wp_update_term( $row->term_id, $term->taxonomy, array( 'description' => trim( $description ) ) );
-        }
-
-        // Add prefix to product markup meta data
-        $results = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}postmeta WHERE `meta_key` LIKE '%_markup_amount'" );
-        foreach( $results as $row )
-        {
-            if ( strpos($row->meta_key, 'mt2mba_' ) === FALSE )
+            // Add markup description to attribute terms
+            global $attrb_markup_desc_beg;
+            global $attrb_markup_desc_end;
+            $results = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}termmeta WHERE meta_key LIKE 'mt2mba_markup'" );
+            foreach( $results as $row )
             {
-                add_post_meta( $row->post_id, "mt2mba_" . $row->meta_key, $row->meta_value, TRUE );
+                $term = get_term( (integer) $row->term_id );
+                $description = trim( $this->remove_bracketed_string( $attrb_markup_desc_beg, $attrb_markup_desc_end, trim( $term->description ) ) );
+                $description .= PHP_EOL . $attrb_markup_desc_beg . $row->meta_value . $attrb_markup_desc_end;
+                wp_update_term( $row->term_id, $term->taxonomy, array( 'description' => trim( $description ) ) );
             }
-        }
+
+            // Add prefix to product markup meta data
+            $results = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}postmeta WHERE `meta_key` LIKE '%_markup_amount'" );
+            foreach( $results as $row )
+            {
+                if ( strpos($row->meta_key, 'mt2mba_' ) === FALSE )
+                {
+                    add_post_meta( $row->post_id, "mt2mba_" . $row->meta_key, $row->meta_value, TRUE );
+                }
+            }
         
-        // Bracket description and save base regular price
-        global $mt2mba_price_meta;
-        global $product_markup_desc_beg;
-        global $product_markup_desc_end;
-        $last_parent_id = '';
-        $results = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}postmeta WHERE `meta_value` LIKE '%{$mt2mba_price_meta}%'" );
-        foreach( $results as $row )
-        {
-            if ( ( strpos( $row->meta_value, $product_markup_desc_beg ) === FALSE ) && ( strpos( $row->meta_value, $mt2mba_price_meta ) !== FALSE ) )
+            // Bracket description and save base regular price
+            global $mt2mba_price_meta;
+            global $product_markup_desc_beg;
+            global $product_markup_desc_end;
+            $last_parent_id = '';
+            $results = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}postmeta WHERE `meta_value` LIKE '%{$mt2mba_price_meta}%'" );
+            foreach( $results as $row )
             {
-                update_post_meta( $row->post_id, $row->meta_key, $product_markup_desc_beg . $row->meta_value . $product_markup_desc_end );
-            }
-            $v_product  = get_post( $row->post_id, 'ARRAY_A' );
-            if ( $last_parent_id != $v_product[ 'post_parent' ] )
-            {
-                $beg            = strpos( $row->meta_value, $mt2mba_price_meta ) + strlen( $mt2mba_price_meta );
-                $end            = strpos( $row->meta_value, PHP_EOL );
-                $base_price     = preg_replace( '/[^\p{L}\p{N}\s\.]/u', '', substr( $row->meta_value, $beg, $end - $beg ) );
-                update_post_meta( $v_product[ 'post_parent' ], 'mt2mba_base_regular_price', (float) $base_price );
-                $last_parent_id = $v_product[ 'post_parent' ];
+                if ( ( strpos( $row->meta_value, $product_markup_desc_beg ) === FALSE ) && ( strpos( $row->meta_value, $mt2mba_price_meta ) !== FALSE ) )
+                {
+                    update_post_meta( $row->post_id, $row->meta_key, $product_markup_desc_beg . $row->meta_value . $product_markup_desc_end );
+                }
+                $v_product  = get_post( $row->post_id, 'ARRAY_A' );
+                if ( $last_parent_id != $v_product[ 'post_parent' ] )
+                {
+                    $beg            = strpos( $row->meta_value, $mt2mba_price_meta ) + strlen( $mt2mba_price_meta );
+                    $end            = strpos( $row->meta_value, PHP_EOL );
+                    $base_price     = preg_replace( '/[^\p{L}\p{N}\s\.]/u', '', substr( $row->meta_value, $beg, $end - $beg ) );
+                    update_post_meta( $v_product[ 'post_parent' ], 'mt2mba_base_regular_price', (float) $base_price );
+                    $last_parent_id = $v_product[ 'post_parent' ];
+                }
             }
         }
+
+        // -----------------------------------------------
+        // Clean database for conversion from version 2.3.
+        // -----------------------------------------------
+        $wpdb->delete( "{$wpdb->prefix}options", array( 'option_name'=>'mt2mba_decimal_points' ) );
+        $wpdb->delete( "{$wpdb->prefix}options", array( 'option_name'=>'mt2mba_symbol_before' ) );
+        $wpdb->delete( "{$wpdb->prefix}options", array( 'option_name'=>'mt2mba_symbol_after' ) );
 
         // Made it this far, update database version
         update_option( 'mt2mba_db_version', MT2MBA_DB_VERSION );
@@ -175,9 +186,9 @@ class MT2MBA_UTILITY
             $settings = new MT2MBA_BACKEND_SETTINGS;
             define( 'MT2MBA_DESC_BEHAVIOR', $settings->get_desc_behavior() );
             define( 'MT2MBA_DROPDOWN_BEHAVIOR', $settings->get_dropdown_behavior() );
-            define( 'MT2MBA_DECIMAL_POINTS', wc_get_price_decimals() );
             define( 'MT2MBA_PRICE_FORMAT', get_woocommerce_price_format() );
             define( 'MT2MBA_CURRENCY_SYMBOL', get_woocommerce_currency_symbol( get_woocommerce_currency() ) );
+            define( 'MT2MBA_DECIMAL_POINTS', wc_get_price_decimals() );
             define( 'MT2MBA_DECIMAL_SEPARATOR', wc_get_price_decimal_separator() );
             define( 'MT2MBA_THOUSAND_SEPARATOR', wc_get_price_thousand_separator() );
         }

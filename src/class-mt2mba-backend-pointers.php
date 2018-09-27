@@ -39,7 +39,7 @@ class MT2MBA_BACKEND_POINTERS {
         // Get pointers for this screen
         $screen = get_current_screen();
         $screen_id = strpos( $screen->id, 'edit-pa_' ) === FALSE ? $screen->id : 'edit-term';
-         $pointer_filter = 'mt2mba_admin_pointers-' . $screen_id;
+        $pointer_filter = 'mt2mba_admin_pointers-' . $screen_id;
          
         $pointers = apply_filters( $pointer_filter, array() );
  
@@ -69,7 +69,7 @@ class MT2MBA_BACKEND_POINTERS {
         wp_enqueue_style( 'wp-pointer' );
  
         // Add pointers script to queue. Add custom script.
-        wp_enqueue_script( 'mt2mba-pointer', plugins_url( 'js/jq-mt2-markup-pointers.js', __FILE__ ), array( 'wp-pointer' ) );
+        wp_enqueue_script( 'mt2mba-pointer', plugins_url( 'js/jq-mt2mba-pointers.js', __FILE__ ), array( 'wp-pointer' ) );
 
         // Add pointer options to script.
         wp_localize_script( 'mt2mba-pointer', 'mt2mbaPointer', $valid_pointers );

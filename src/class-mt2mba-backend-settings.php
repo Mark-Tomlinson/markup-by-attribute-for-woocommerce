@@ -12,10 +12,7 @@ class MT2MBA_BACKEND_SETTINGS
 {
     var $dropdown_behavior          =   'do_not_add';   // The default behavior for displaying the currency symbol in the options drop-down.
     var $desc_behavior              =   'append';       // The default behavior for writing the pricing information into the variation description.
-    var $digits_below_decimal       =   2;              // The default number of digits below the decimal point for fixed amount markups.
     var $max_variations             =   50;             // The default number or variation created per run.
-    var $currency_symbol_before     =   '$';            // The default currency symbol for before the markup.
-    var $currency_symbol_after      =   '';             // The default currency symbol for after the markup.
 
     var $error_msg                  =   '';
     var $format_desc                =   '<div class=\"description\">%s<\/div>';
@@ -106,95 +103,7 @@ class MT2MBA_BACKEND_SETTINGS
         }
         return $data;
     }
-    
-    /**
-     * Set the Number of Digits Below the Decimal Point Option
-     * @param   int $data   Number of digits below the decimal point
-     * @return  int         Number of digits below the decimal point or FALSE if update fails
-     */
-    private function set_decimal_points( $data )
-    {
-        if ( $data === '' )
-        {
-            $data = $this->{"digits_below_decimal"};
-        }
-        if ( update_option( "mt2mba_decimal_points", $data ) );
-        {
-            return $data;
-        }
-        return FALSE;
-    }
 
-    /**
-     * Get the number of decimal points option (or default if not present)
-     * @uses    set_decimal_points()    Set the Number of Digits Below the Decimal Point Option
-     * @return  int                     The number of digits below the decimal point in the markup
-     */
-    public function get_decimal_points()
-    {
-        $data = get_option( "mt2mba_decimal_points" );
-        if ( $data === FALSE )
-        {
-            return $this->set_decimal_points( $this->{"digits_below_decimal"}, $data );
-        }
-        return $data;
-    }
-    
-    /**
-     * Get the currency symbol
-     * @param   string  $data   The currency symbol
-     * @param   string  $type   Whether this is for 'before' or 'after' the markup
-     * @return  int             Cleaned currency symbol (or FALSE if update failed)
-     */
-    private function set_currency_symbol( $data, $type )
-    {
-        if ( $data === '' )
-        {
-            $data = $this->{"currency_symbol_$type"};
-        }
-        if ( update_option( "mt2mba_symbol_$type", $data ) );
-        {
-            return $data;
-        }
-        return FALSE;
-    }
-
-    /**
-     * Get the currency symbol
-     * @param   string  $type           Whether this is for 'before' or 'after' the markup
-     * @uses    set_currency_symbol()   Set the currency symbol
-     * @return  int                     The number of digits below the decimal point in the markup
-     */
-    private function get_currency_symbol( $type )
-    {
-        $data = get_option( "mt2mba_symbol_$type" );
-        if ( $data === FALSE )
-        {
-            return $this->set_currency_symbol( $this->{"mt2mba_symbol_$type"}, $type );
-        }
-        return $data;
-    }
-    
-    /**
-     * Get the currency symbol before the markup
-     * @uses    get_currency_symbol()   Get the currency symbol
-     * @return  string                  The currency symbol
-     */
-    public function get_currency_symbol_before()
-    {
-        return $this->get_currency_symbol( 'before' );
-    }
-    
-    /**
-     * Get the currency symbol after the markup
-     * @uses    get_currency_symbol()   Get the currency symbol
-     * @return  string                  The currency symbol
-     */
-    public function get_currency_symbol_after()
-    {
-        return $this->get_currency_symbol( 'after' );
-    }
-    
     /**
      * Set the Max Variations option
      * @param   int $mv Maximum variations per run
@@ -322,59 +231,6 @@ class MT2MBA_BACKEND_SETTINGS
                 );
 
             // --------------------------------------------------
-            // Start section 'Currency'
-            $mt2mba_settings[] = array
-                (
-                    'title'    => __( 'Currency Format' ),
-                    'type'     => 'title',
-                    'desc'     => __( 'Determine how currency is displayed.' ),
-                    'id'       => 'mt2mba_currency',
-                );
-
-            // Number of Decimal Points for Markups
-            register_setting( 'mt2mba', 'mt2mba_decimal_points', array( $this, 'validate_mt2mba_decimal_points_field' ) );
-            $description = 'Number of digits that appear after the decimal point in markups. Valid values are 0 through 6.';
-            $mt2mba_settings[] = array
-                (
-                    'title'    => __( 'Digits Below Decimal Point For Markups' ),
-                    'desc'     => __( sprintf($this->format_desc, $description ) ),
-                    'id'       => 'mt2mba_decimal_points',
-                    'default'  => $this->digits_below_decimal,
-                    'type'     => 'text',
-                );
-
-            // Currency Symbol Before
-            register_setting( 'mt2mba', 'mt2mba_symbol_before', array( $this, 'validate_mt2mba_symbol_before_field' ) );
-            $description = 'What currency symbol should appear before the markup?  Leave blank for none.';
-            $mt2mba_settings[] = array
-                (
-                    'title'    => __( 'Currency Symbol Before Markup' ),
-                    'desc'     => __( sprintf($this->format_desc, $description ) ),
-                    'id'       => 'mt2mba_symbol_before',
-                    'default'  => $this->currency_symbol_before,
-                    'type'     => 'text',
-                );
-
-            // Currency Symbol After
-            register_setting( 'mt2mba', 'mt2mba_symbol_after', array( $this, 'validate_mt2mba_symbol_after_field' ) );
-            $description = 'What currency symbol should appear after the markup?  Leave blank for none.';
-            $mt2mba_settings[] = array
-                (
-                    'title'    => __( 'Currency Symbol After Markup' ),
-                    'desc'     => __( sprintf($this->format_desc, $description ) ),
-                    'id'       => 'mt2mba_symbol_after',
-                    'default'  => $this->currency_symbol_after,
-                    'type'     => 'text',
-                );
-
-            // End section
-            $mt2mba_settings[] = array
-                (
-                    'type'     => 'sectionend',
-                    'id'       => 'mt2mba_currency',
-                );
-
-            // --------------------------------------------------
             // Start section 'Other'
             $mt2mba_settings[] = array
                 (
@@ -454,69 +310,6 @@ class MT2MBA_BACKEND_SETTINGS
             return get_option( 'mt2mba_variation_max' );
         }
         return $input;
-    }
-
-    /**
-     * Validate number of digits below the decimal point. Must be numeric between 0 and 5.
-     * @param   int     $input  The number of digits below the decimal point
-     * @param   string  $type   Whether this is for the fixed amount or percentage markup
-     * @return  int             The current option or the default
-     */
-    function validate_mt2mba_decimal_points_field( $input )
-    {
-        if ( is_numeric( $input ) )
-        {
-            if ( $input < 0 || $input > 6 )
-            {
-                $this->error_msg .= sprintf( $this->format_error, "Numbers Below Decimal Point must be between 0 and 6.</br>Previous option retained." );
-                return get_option( "mt2mba_decimal_points" );
-            }
-        } else {
-            $this->error_msg .= sprintf( $this->format_error, "Numbers Below Decimal Point must be numeric.</br>Previous option retained." );
-            return get_option( "mt2mba_decimal_points" );
-        }
-        return $input;
-    }
-
-    /**
-     * Validate currency symbol
-     * @param  string   $input  Currency symbol
-     * @param  string   $type   Whether this is the 'before' or 'after' symbol
-     * @return string           Cleaned currency symbol
-     */
-    function validate_mt2mba_symbol_field( $input, $type )
-    {
-        if ( in_array( $input, $this->valid_currency_symbols ) || $input === '' )
-        {
-            return $input;
-        }
-
-        $this->error_msg .= sprintf( $this->format_error, "Currency symbol ($type) must be one of the following.</br>" .
-            implode( ', ', $this->valid_currency_symbols ) .
-            '</br>Previous option retained.' );
-        return get_option( "mt2mba_symbol_$type" );
-    }
-
-    /**
-     * Validate currency symbol before markup
-     * @param  string   $input                          Currency symbol
-     * @uses            validate_mt2mba_symbol_field()  Generic symbol validator
-     * @return string                                   Cleaned currency symbol
-     */
-    function validate_mt2mba_symbol_before_field( $input )
-    {
-        return $this->validate_mt2mba_symbol_field( $input, 'before' );
-    }
-
-    /**
-     * Validate currency symbol after markup
-     * @param  string   $input                          Currency symbol
-     * @uses            validate_mt2mba_symbol_field()  Generic symbol validator
-     * @return string                                   Cleaned currency symbol
-     */
-    function validate_mt2mba_symbol_after_field( $input )
-    {
-        return $this->validate_mt2mba_symbol_field( $input, 'after' );
     }
 
     /**

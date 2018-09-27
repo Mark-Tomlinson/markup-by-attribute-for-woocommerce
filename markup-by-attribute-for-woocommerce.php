@@ -20,7 +20,7 @@
  * Donate link:          https://www.paypal.me/MT2Dev/15
  * License:              GPLv3
  * License URI:          https://www.gnu.org/licenses/gpl-3.0.html
- * Version:              2.3
+ * Version:              2.4
  * Stable tag:           trunk
  * Requires at least:    4.6
  * Tested up to:         4.9.8
@@ -36,8 +36,9 @@ if ( !defined( 'ABSPATH' ) ) exit( );
 if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) )
 {
 	// Set plugin Version
-	define( 'MT2MBA_VERSION', 2.3 );
-	define( 'MT2MBA_DB_VERSION', 2.0 );
+	define( 'MT2MBA_VERSION', 2.4 );
+	define( 'MT2MBA_DB_VERSION', 2.1 );
+	define( 'MT2MBA_SITE_URL', get_bloginfo( 'wpurl' ) );
 	define( 'MT2MBA_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 
 	global $mt2mba_price_meta;
@@ -50,6 +51,15 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 	$attrb_markup_desc_beg      = __( '(Markup: ' );
 	global $attrb_markup_desc_end;
 	$attrb_markup_desc_end      = __( ')' );
+
+	$warning_messages           = array(
+		// Version 2.4 Upgrade notice
+		'ver2_4' => 'PLEASE NOTE: As of version 2.4, Markup-by-Attribute no longer has it\'s own currency format settings. ' .
+		'It now uses the <a href="' . MT2MBA_SITE_URL . '/wp-admin/admin.php?page=wc-settings">WooCommerce currency options</a>.<br />' .
+		'Please ensure your WooCommerce currency options are correct.',
+		// Test message
+		//'testing' => 'Testing',
+	);
 
 	// -------------------------
 	//       MAIN ROUTINE
@@ -70,7 +80,9 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 		// Back end code
 		// -------------
 
-		// Function to add links to plugin page
+		/**
+		 * Function to add links to plugin page
+		 */
 		function add_links( $links )
 		{
 			// Pop deactivation link from array
@@ -90,10 +102,17 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 			
 			return $links;
 		}
-		
+		  
 		// Add settings and instruction links to plugin page
 		add_filter( "plugin_action_links_" . plugin_basename( __FILE__ ), 'add_links' );
 
+		// Instantiate admin notices
+		$obj_notice = new MT2MBA_BACKEND_NOTICES;
+		foreach( $warning_messages as $message_key => $message )
+		{
+			$obj_notice->warning( $message, $message_key );
+		}
+		
 		// Instantiate admin pointers
 		new MT2MBA_BACKEND_POINTERS;
 

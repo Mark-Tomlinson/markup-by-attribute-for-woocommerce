@@ -4,7 +4,7 @@
  *
  * @package     markup-by-attribute-for-woocommerce
  * @author      Mark Tomlinson
- * @version     2.3
+ * @version     2.4
  * @copyright   Mark Tomlinson  2018
  *
  * For the full copyright and license information, please view the LICENSE

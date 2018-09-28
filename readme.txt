@@ -9,7 +9,7 @@ Contributors:         MarkTomlinson
 Donate link:          https://www.paypal.me/MT2Dev/15
 License:              GPLv3
 License URI:          https://www.gnu.org/licenses/gpl-3.0.html
-Version:              2.3
+Version:              2.4
 Stable tag:           trunk
 Requires at least:    4.6
 Tested up to:         4.9.8
@@ -34,8 +34,8 @@ Markup by Attribute:
 * Can create a fixed value markup (such as $5), or a percentage markup (such as 5%).
 * The markup value can be positive yielding an increase in price, or negative yielding a decrease in price.
 * Uses familiar WooCommerce bulk edit actions `Set regular price` and `Set sale price`.
-* Puts the price increase (or decrease) in the options drop-down box along side of the terms so customers can make informed decisions.
-* Writes a breakdown of the price modifications in the variation description so the itemization is visible to the customer.
+* Puts the price increase (or decrease) in the options drop-down box along side of the terms so customers can make informed decisions. (Or, optionally, does not).
+* Can write a breakdown of the price modifications in the variation description so the itemization is visible to the customer.
 
 == Installation ==
 
@@ -71,7 +71,7 @@ Ready to dive in?
 
 Note that steps 1, 3 and 4 below are standard WooCommerce Variable Product stuff. Step 2 is about the only **process change** you need to be concerned with. We've italicized some of the *outcome changes* you will notice in the other steps.
 
-1. Create global attributes and terms, if you haven't already.
+1. Create global attributes and terms, if you haven’t already. Global attributes are created on the `Products` >> `Attributes` page. (Markup by Attribute is not intended for attributes created on individual product admin pages, and will not work on those).
     * For instance, the attribute 'size' may include the terms 'X-Small',  'Small', 'Medium', 'Large', and 'X-Large'.
     * The attribute 'color' may include the terms 'Orange', 'Red', 'Violet', 'Blue', 'Green', and 'Yellow'.
 
@@ -106,9 +106,9 @@ Note that steps 1, 3 and 4 below are standard WooCommerce Variable Product stuff
 
 = Does this support languages other than English? =
 
-Not at this time. I will be adding internationalization in a future release. I would appreciate your assistance in translating it if you want it in another language.
+Not at this time. I will be adding internationalization in a future release. I would appreciate your assistance in translating it if you want it in another language. I may require a lot of 'hand-holding' since I am not familiar with translation template files, yet.
 
-However, a currency other than the US Dollar is supported. The settings page for Markup by Attribute allows changing the currency symbol and changing its placement.
+However, currencies other than the US Dollar are supported via the WooCommerce General Settings.
 
 = If I change the markup for an attribute, how will product prices change? =
 
@@ -134,53 +134,52 @@ Thanks! The donation button assumes $15.00 USD. But feel free to adjust that amo
 
 == Changelog ==
 
+= 2.4 =
+* Feature: Use the WooCommerce currency formatting settings.
+* Fix: Re-ensure documentation is clear that this works on "global" attributes.
+
 = 2.3 =
-* Add option to not display markup in the options drop-down box.
-* Add missing Author: tag.
-* Ensure documentation is clear that this works on "global" attributes.
-* Version 2.3 exposes a problem in an earlier version's database conversion where percentage markups show incorrectly in the option drop-down (For instance, a 10% markup on $40 shows as $10 instead of $4). To patch around it, version 2.3 will put the percentage in the drop-down instead of the actual markup. These items will need to have thier regular prices reset in order to have the actual markup appear.
+* Feature: Add option to not display markup in the options drop-down box.
+* Fix: Add missing Author: tag.
+* Fix: Ensure documentation is clear that this works on "global" attributes.
+* Fix: Version 2.3 exposes a problem in an earlier version's database conversion where percentage markups show incorrectly in the options drop-down (For instance, a 10% markup on $40 shows as $10 instead of $4). To patch around it, version 2.3 will put the percentage in the drop-down instead of the actual markup. These items will need to have their regular prices reset in order to have the actual markup appear.
 
 = 2.2 =
-* Fix Plugin name and Description.
-* Fix markup calculation on sale prices when using a percentage markup (percent of the regular price, not sale price).
-* Clear Markup by Attribute metadata from the database on variation deletion.
+* Fix: Plugin name and Description.
+* Fix: Markup calculation on sale prices when using a percentage markup (percent of the regular price, not sale price).
+* Fix: Clear Markup by Attribute metadata from the database on variation deletion.
 
 = 2.1 =
-* Organize `Settings` page with sub-headings.
-* Provide a link to the wiki from `Settings` page.
-* Expand wiki to include help with settings.
-* Improve readme.txt readability.
+* Feature: Organize `Settings` page with sub-headings.
+* Feature: Provide a link to the wiki from `Settings` page.
+* Feature: Expand wiki to include help with settings.
+* Fix: Improve readme.txt readability.
 
 = 2.0 =
-* The new Settings page allows for increasing the number of variations that can be created at a time (override WooCommerce's limit of 50).
-* The new Settings page allows for modifying the way pricing markup is added to the variation descriptions (overwrite, append, or ignore).
-* The new settings page allows configuration of the way the markup is displayed, including the number of decimals and the currency symbol.
-* Markup description now enclosed in <span> tags and can be modified with CSS ( #mbainfo {} ).
-* Markup description added to the attribute term description and can be seen in the attribute term list.
-* Markup now saved as a floating point number and not limited in digits below the decimal point.
-* Corrected issue where Increase/Decrease Regular/Sale Price functions calculated based on variation price rather than base price, yielding incorrect prices when percentages were used.
-* Corrected issue where Increase/Decrease Regular/Sale Price functions did not update variation descriptions.
-* Corrected issue where markup in the options drop-down was calculated from the sale price.
-* Database and code changes to enhance supportability.
+* Feature: The new Settings page allows for increasing the number of variations that can be created at a time (override WooCommerce's limit of 50).
+* Feature: The new Settings page allows for modifying the way pricing markup is added to the variation descriptions (overwrite, append, or ignore).
+* Feature: The new settings page allows configuration of the way the markup is displayed, including the number of decimals and the currency symbol.
+* Feature: Markup description now enclosed in <span> tags and can be modified with CSS ( #mbainfo {} ).
+* Feature: Markup description added to the attribute term description and can be seen in the attribute term list.
+* Feature: Markup now saved as a floating point number and not limited in digits below the decimal point.
+* Feature: Database and code changes to enhance supportability.
+* Fix: Corrected issue where Increase/Decrease Regular/Sale Price functions calculated based on variation price rather than base price, yielding incorrect prices when percentages were used.
+* Fix: Corrected issue where Increase/Decrease Regular/Sale Price functions did not update variation descriptions.
+* Fix: Corrected issue where markup in the options drop-down was calculated from the sale price.
 
 = 1.3.2 =
 
-Fix bug where default variation options were not being selected and `Choose an Option` was always shown.
+Fix: Eliminate bug where default variation options were not being selected and `Choose an Option` was always shown.
 
 = 1.3.1 =
 
-Remove error_log() statement accidentally left in.
+Fix: Remove error_log() statement accidentally left in.
 
 = 1.3 =
 
-Improvements
-
-* Added class backend-pointers for inline instructions.
-* Added instructions link to Plugins page.
-
-Patches
-
-* Use only regular price markup in attribute drop-down on the frontend. Percentage markups where appearing different in dropdown and variation description.
+* Feature: Added class backend-pointers for inline instructions.
+* Feature: Added instructions link to Plugins page.
+* Fix: Use only regular price markup in attribute drop-down on the frontend. Percentage markups where appearing different in dropdown and variation description.
 
 = 1.2.0 =
 

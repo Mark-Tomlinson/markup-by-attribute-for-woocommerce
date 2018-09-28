@@ -42,9 +42,9 @@ class MT2MBA_BACKEND_PRODUCT
      * Unfortunately have to recreate the increase/decrease price logic found in class WC_AJAX
      * since those functions are private.
      * @param   string    $bulk_action    The selection from the variation bulk actions menu
-     * @param   string  $data           The amount or percentage to increase or decrease by
-     * @param   float   $base_price     The original base price that we are changing
-     * @return    float                   The new base price (before markup)
+     * @param   string    $data           The amount or percentage to increase or decrease by
+     * @param   float     $base_price     The original base price that we are changing
+     * @return  float                     The new base price (before markup)
      */
     private function recalc_base_price( $bulk_action, $data, $base_price )
     {
@@ -149,7 +149,7 @@ class MT2MBA_BACKEND_PRODUCT
                         }
                         else
                         {
-                            // If calculating sale price, retrive markup set for regular price.
+                            // If calculating sale price, retrieve markup set for regular price.
                             $markup_table[ $term->taxonomy ][ $term->slug ][ "markup" ] = get_metadata( 'post', $product_id, $meta_key, TRUE );
                         }
                     }
@@ -201,7 +201,7 @@ class MT2MBA_BACKEND_PRODUCT
                             $variation->{"set_$price_type"}( 0.0 );
                         }
 
-                        // Update description if Descritption Behavior is NOT 'ignore'.
+                        // Update description if Description Behavior is NOT 'ignore'.
                         if ( ! ( MT2MBA_DESC_BEHAVIOR == 'ignore' ) )
                         {
                             // Build description (for regular price calculation only)

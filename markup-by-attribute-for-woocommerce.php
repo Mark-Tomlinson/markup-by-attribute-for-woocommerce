@@ -26,7 +26,7 @@
  * Tested up to:         4.9.8
  * Requires PHP:         5.2.4
  * WC requires at least: 3.0
- * WC tested up to:      3.4.4
+ * WC tested up to:      3.4.5
  */
 
 // Exit if accessed directly
@@ -51,15 +51,6 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 	$attrb_markup_desc_beg      = __( '(Markup: ' );
 	global $attrb_markup_desc_end;
 	$attrb_markup_desc_end      = __( ')' );
-
-	$warning_messages           = array(
-		// Version 2.4 Upgrade notice
-		'ver2_4' => 'PLEASE NOTE: As of version 2.4, Markup-by-Attribute no longer has it\'s own currency format settings. ' .
-		'It now uses the <a href="' . MT2MBA_SITE_URL . '/wp-admin/admin.php?page=wc-settings">WooCommerce currency options</a>.<br />' .
-		'Please ensure your WooCommerce currency options are correct.',
-		// Test message
-		//'testing' => 'Testing',
-	);
 
 	// -------------------------
 	//       MAIN ROUTINE
@@ -107,11 +98,7 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 		add_filter( "plugin_action_links_" . plugin_basename( __FILE__ ), 'add_links' );
 
 		// Instantiate admin notices
-		$obj_notice = new MT2MBA_BACKEND_NOTICES;
-		foreach( $warning_messages as $message_key => $message )
-		{
-			$obj_notice->warning( $message, $message_key );
-		}
+		new MT2MBA_BACKEND_NOTICES;
 		
 		// Instantiate admin pointers
 		new MT2MBA_BACKEND_POINTERS;

@@ -70,7 +70,7 @@ class MT2MBA_BACKEND_POINTERS {
         // Add pointers style to queue.
         wp_enqueue_style( 'wp-pointer' );
  
-        // Add pointers script to queue. Add custom script.
+        // Add pointers JScript to queue. Add custom script.
         wp_enqueue_script( 'mt2mba-pointer', plugins_url( 'js/jq-mt2mba-pointers.js', __FILE__ ), array( 'wp-pointer' ) );
 
         // Add pointer options to script.
@@ -83,14 +83,14 @@ class MT2MBA_BACKEND_POINTERS {
     function mt2mba_admin_pointers_edit_term( $pointers )
     {
         $pointer_content = sprintf( '<h3><em>%s</em></h3> <p>%s</p>',
-            $this->pointer_title,
+            MT2MBA_PLUGIN_NAME,
             __( 'Markups can be fixed values such as <code>5</code> or <code>5.95</code>. Or they can be percentages such as <code>5%</code> or <code>1.23%</code>. ' .
             'Markups can start with a plus or minus sign such as <code>+5.95</code> or <code>-1.23%</code>.</p>' .
             '<p>The markup will be applied during the product variation <em>Set regular price</em> and <em>Set sale price</em> bulk edit action.',
             'markup-by-attribute' )
         );
         $pointers = array(
-            'mt2-term_add_markup' => array(
+            'mt2mba-term_add_markup' => array(
                 'target' => '#term_add_markup',
                 'options' => array(
                     'content' => $pointer_content,
@@ -98,7 +98,7 @@ class MT2MBA_BACKEND_POINTERS {
                 )
             ),
 
-            'mt2-term_edit_markup' => array(
+            'mt2mba-term_edit_markup' => array(
                 'target' => '#term_edit_markup',
                 'options' => array(
                     'content' => $pointer_content,
@@ -116,14 +116,14 @@ class MT2MBA_BACKEND_POINTERS {
     function mt2mba_admin_pointers_plugins( $pointers )
     {
         $pointer_content = sprintf( '<h3><em>%s</em></h3> <p>%s</p>',
-        $this->pointer_title,
+        MT2MBA_PLUGIN_NAME,
         __( 'Using this plugin is simple, but may be a little obscure. This link to the instructions may help get you started.</p>' .
         '<p>We\'ll just leave the instructions link right here.',
         'markup-by-attribute' )
         );
 
         $pointers = array(
-            'mt2-mt2mba-instructions' => array(
+            'mt2mba-instructions' => array(
                 'target' => '#mt2mba_instructions',
                 'options' => array(
                     'content' => $pointer_content,

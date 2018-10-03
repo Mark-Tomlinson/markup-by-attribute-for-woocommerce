@@ -30,7 +30,7 @@ class MT2MBA_AUTOLOADER
      */
     public static function autoload( $class )
     {
-        if ( 0 !== strpos( $class, 'MT2MBA' ) )     // Change string to match plugin class prefix
+        if ( 0 !== strpos( $class, MT2MBA_PLUGIN_PREFIX ) )     // Change string to match plugin class prefix
         {
             return;
         }

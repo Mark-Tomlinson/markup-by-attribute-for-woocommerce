@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Markup by Attribute for WooCommerce\n"
 "Report-Msgid-Bugs-To: Mark Tomlinson\n"
-"POT-Creation-Date: 2018-10-03 23:14+0000\n"
+"POT-Creation-Date: 2018-10-03 22:49+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -18,31 +18,27 @@ msgstr ""
 "X-Loco-Project-Id: 55432\n"
 "X-Loco-Api-Version: 1.0.20 20180914-1"
 
-#: markup-by-attribute-for-woocommerce.php:37
-msgid "xyz"
-msgstr ""
-
-#: markup-by-attribute-for-woocommerce.php:43
+#: markup-by-attribute-for-woocommerce.php:41
 msgctxt "Global"
 msgid "text-Plugin-name"
 msgstr ""
 
-#: markup-by-attribute-for-woocommerce.php:51
+#: markup-by-attribute-for-woocommerce.php:49
 msgctxt "Global"
 msgid "text-Product-price"
 msgstr ""
 
-#: markup-by-attribute-for-woocommerce.php:57
+#: markup-by-attribute-for-woocommerce.php:55
 msgctxt "Global"
 msgid "text-Markup"
 msgstr ""
 
-#: markup-by-attribute-for-woocommerce.php:90
+#: markup-by-attribute-for-woocommerce.php:88
 msgctxt "Plugin page"
 msgid "text-Settings"
 msgstr ""
 
-#: markup-by-attribute-for-woocommerce.php:95
+#: markup-by-attribute-for-woocommerce.php:93
 msgctxt "Plugin page"
 msgid "text-Instructions"
 msgstr ""

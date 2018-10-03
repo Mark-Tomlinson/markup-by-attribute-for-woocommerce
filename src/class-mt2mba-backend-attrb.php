@@ -1,6 +1,7 @@
 <?php
 /**
- * Contains markup capabilities related to the backend attribute admin page. Specifically, add metadata field for markup to product attribute terms.
+ * Contains markup capabilities related to the backend attribute admin page. Specifically,
+ * add metadata field for markup to product attribute terms.
  * 
  * @author         Mark Tomlinson
  * 
@@ -11,6 +12,9 @@ if ( !defined( 'ABSPATH' ) ) exit();
 
 class MT2MBA_BACKEND_ATTRB
 {
+    private $field_label;
+    private $field_description;
+    
     /**
      * Initialization method visible before instantiation
      */
@@ -31,7 +35,17 @@ class MT2MBA_BACKEND_ATTRB
     public function on_loaded()
     {
         // Add markup field to all WooCommerce attributes
-        
+
+        // Define label and content.
+        $this->field_label        = __(
+            'Markup (or markdown)',
+            'markup-by-attribute'
+            );
+        $this->field_description  = __(
+            'Markup or markdown associated with this option. Signed, floating point numeric allowed.',
+            'markup-by-attribute'
+            );
+
         // Get all attributes
         $attribute_taxonomies = wc_get_attribute_taxonomies();
 
@@ -64,10 +78,9 @@ class MT2MBA_BACKEND_ATTRB
         // Build <DIV>
         ?>
         <div class="form-field">
-            <label for="term_markup"><?php _e( 'Markup (or markdown)', 'mt2mba' ); ?></label>
+            <label for="term_markup"><?php echo( $this->field_label ); ?></label>
             <input type="text" placeholder="[ +|- ]0.00 or [ +|- ]00%" name="term_markup" id="term_add_markup" value="">
-            <p class="description"><?php _e( 'Markup or markdown associated with this option. Signed, floating point numeric
-                allowed.','mt2mba' ); ?></p>
+            <p class="description"><?php echo( $this->field_description ); ?></p>
         </div>
         <?php
     }
@@ -85,10 +98,10 @@ class MT2MBA_BACKEND_ATTRB
         // Build row and fill field with current markup
         ?>
         <tr class="form-field">
-            <th scope="row" valign="top"><label for="term_markup"><?php _e( 'Markup (or markdown)', 'mt2mba' ); ?></label></th>
+            <th scope="row" valign="top"><label for="term_markup"><?php echo( $this->field_label ); ?></label></th>
             <td>
                 <input type="text" placeholder="[ +|- ]0.00 or [ +|- ]00%" name="term_markup" id="term_edit_markup" value="<?php echo esc_attr( $term_meta ) ? esc_attr( $term_meta ) : ''; ?>">
-                <p class="description"><?php _e( 'Markup or markdown associated with this option. Signed, floating point numeric allowed.','mt2mba' ); ?></p>
+                <p class="description"><?php echo( $this->field_description ); ?></p>
             </td>
         </tr>
         <?php

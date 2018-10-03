@@ -9,7 +9,7 @@ if ( !defined( 'ABSPATH' ) ) exit( );
 
 class MT2MBA_BACKEND_POINTERS {
 
-    private $pointer_title = 'Markup by Attribute';
+    private $pointer_title;
 
     /**
      * Initialization method visible before instantiation
@@ -19,6 +19,8 @@ class MT2MBA_BACKEND_POINTERS {
         // As a static method, it can not use '$this' and must use an
         // instantiated version of itself
         $self    = new self( );
+        // Set pointer titles (Had to do it here to allow translation)
+        $self->pointer_title = __( 'Markup by Attribute', 'markup-by-attribute' );
         // Enqueue the JQuery
         add_action( 'admin_enqueue_scripts', array( $self, 'mt2mba_admin_pointer_load' ), 1000 );
         // Admin pointers for attribute term edit screen
@@ -81,10 +83,11 @@ class MT2MBA_BACKEND_POINTERS {
     function mt2mba_admin_pointers_edit_term( $pointers )
     {
         $pointer_content = sprintf( '<h3><em>%s</em></h3> <p>%s</p>',
-            __( $this->pointer_title ),
+            $this->pointer_title,
             __( 'Markups can be fixed values such as <code>5</code> or <code>5.95</code>. Or they can be percentages such as <code>5%</code> or <code>1.23%</code>. ' .
             'Markups can start with a plus or minus sign such as <code>+5.95</code> or <code>-1.23%</code>.</p>' .
-            '<p>The markup will be applied during the product variation <em>Set regular price</em> and <em>Set sale price</em> bulk edit action.' )
+            '<p>The markup will be applied during the product variation <em>Set regular price</em> and <em>Set sale price</em> bulk edit action.',
+            'markup-by-attribute' )
         );
         $pointers = array(
             'mt2-term_add_markup' => array(
@@ -113,9 +116,10 @@ class MT2MBA_BACKEND_POINTERS {
     function mt2mba_admin_pointers_plugins( $pointers )
     {
         $pointer_content = sprintf( '<h3><em>%s</em></h3> <p>%s</p>',
-            __( $this->pointer_title ),
-            __( 'Using this plugin is simple, but may be a little obscure. This link to the instructions may help get you started.</p>' .
-            '<p>We\'ll just leave the instructions link right here.' )
+        $this->pointer_title,
+        __( 'Using this plugin is simple, but may be a little obscure. This link to the instructions may help get you started.</p>' .
+        '<p>We\'ll just leave the instructions link right here.',
+        'markup-by-attribute' )
         );
 
         $pointers = array(

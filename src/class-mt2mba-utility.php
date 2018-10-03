@@ -254,12 +254,12 @@ class MT2MBA_UTILITY
             // Get globals
             $this->get_mba_globals();
 
-            $sign = $markup < 0 ? __('Subtract') : __('Add');
+            $sign = $markup < 0 ? __('Subtract', 'markup-by-attribute') : __('Add', 'markup-by-attribute');
             return html_entity_decode
                 (
                     $sign . ' ' .
                     sprintf( MT2MBA_PRICE_FORMAT, MT2MBA_CURRENCY_SYMBOL, $this->clean_up_price( $markup ) ) .
-                    ' ' . __('for') . ' ' . $term
+                    ' ' . __('for', 'markup-by-attribute' ) . ' ' . $term
                 );
         }
         // No markup; return empty string

@@ -82,12 +82,13 @@ class MT2MBA_BACKEND_PRODUCT
             global $mt2mba_utility;
             $mt2mba_utility->get_mba_globals();
 
-            $decimal_points       = MT2MBA_DECIMAL_POINTS;
-            $currency_format      = "%s%01.{$decimal_points}f%s";
+            $decimal_points         = MT2MBA_DECIMAL_POINTS;
+//            $currency_format        = "%s%01.{$decimal_points}f%s";
+            $product_price_label    = __( 'Product price', 'markup-by-attribute' ) . ' ';
             
             // Catch original price
-            $orig_price           = floatval( $data[ 'value' ] );
-            $orig_price_formatted = apply_filters
+            $orig_price             = floatval( $data[ 'value' ] );
+            $orig_price_formatted   = apply_filters
                 (
                     'formatted_woocommerce_price',
                     number_format
@@ -98,7 +99,7 @@ class MT2MBA_BACKEND_PRODUCT
                         wc_get_price_thousand_separator()
                     )
                 );
-            $orig_price_stored   = FALSE;
+            $orig_price_stored     = FALSE;
 
             // Clear out old base price meta data
             delete_post_meta( $product_id, "mt2mba_base_{$price_type}" );
@@ -220,8 +221,12 @@ class MT2MBA_BACKEND_PRODUCT
                                     // Open description with original price
                                     $description .= html_entity_decode
                                         (
-                                            "Product price " .
-                                            sprintf( get_woocommerce_price_format(), get_woocommerce_currency_symbol( get_woocommerce_currency() ), $orig_price_formatted ) .
+                                            $product_price_label .
+                                            sprintf(
+                                                get_woocommerce_price_format(),
+                                                get_woocommerce_currency_symbol( get_woocommerce_currency() ),
+                                                $orig_price_formatted
+                                            ) .
                                             PHP_EOL
                                         );
                                     // Flip flag

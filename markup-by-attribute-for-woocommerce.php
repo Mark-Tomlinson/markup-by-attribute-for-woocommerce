@@ -22,6 +22,8 @@
  * License URI:          https://www.gnu.org/licenses/gpl-3.0.html
  * Version:              2.4
  * Stable tag:           trunk
+ * Text Domain:          markup-by-attribute
+ * Domain path:          /languages
  * Requires at least:    4.6
  * Tested up to:         4.9.8
  * Requires PHP:         5.2.4
@@ -42,15 +44,15 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 	define( 'MT2MBA_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 
 	global $mt2mba_price_meta;
-	$mt2mba_price_meta          = __( 'Product price ' );
+	$mt2mba_price_meta          = __( 'Product price', 'markup-by-attribute' ) . ' ';
 	global $product_markup_desc_beg;
-	$product_markup_desc_beg    = __( '<span id="mbainfo">' );
+	$product_markup_desc_beg    = '<span id="mbainfo">';
 	global $product_markup_desc_end;
-	$product_markup_desc_end    = __( '</span>' );
+	$product_markup_desc_end    = '</span>';
 	global $attrb_markup_desc_beg;
-	$attrb_markup_desc_beg      = __( '(Markup: ' );
+	$attrb_markup_desc_beg      = '(' . __( 'Markup', 'markup-by-attribute' ) . ': ';
 	global $attrb_markup_desc_end;
-	$attrb_markup_desc_end      = __( ')' );
+	$attrb_markup_desc_end      = ')';
 
 	// -------------------------
 	//       MAIN ROUTINE
@@ -81,12 +83,12 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 			// Add Settings link
 			$links['settings'] =
 				'<a id="mt2mba_settings" href="admin.php?page=wc-settings&tab=products&section=mt2mba">' .
-				__( 'Settings' ) .
+				__( 'Settings', 'markup-by-attribute' ) .
 				'</a>';
 			// Add Instructions link
 			$links['instructions'] =
 				'<a id="mt2mba_instructions" href="https://wordpress.org/plugins/markup-by-attribute-for-woocommerce/#installation" target="_blank">' .
-				__( 'Instructions' ) .
+				__( 'Instructions', 'markup-by-attribute' ) .
 				'</a>';
 			// Restore deactivation link to end of array
 			$links['deactivate'] = $deactivate_link;

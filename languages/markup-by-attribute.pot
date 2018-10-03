@@ -1,0 +1,70 @@
+# Loco Gettext template
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Markup by Attribute for WooCommerce\n"
+"Report-Msgid-Bugs-To: Mark Tomlinson\n"
+"POT-Creation-Date: 2018-10-03 05:08+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: \n"
+"Language: \n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Source-Locale: en-US\n"
+"X-Loco-Project-Id: 55432\n"
+"X-Loco-Api-Version: 1.0.20 20180914-1"
+
+msgid "Markup by Attribute"
+msgstr ""
+
+msgid "Product price"
+msgstr ""
+
+msgctxt "Settings Page"
+msgid ""
+"The following options are used to configure variation markups by attribute. "
+"Additional help can be found in the <a href=\"https://github.com/Mark-"
+"Tomlinson/markup-by-attribute-for-woocommerce/wiki\">Markup by Attribute "
+"wiki</a> on the <code>Settings</code> page."
+msgstr ""
+
+msgid "Markup"
+msgstr ""
+
+msgid "Settings"
+msgstr ""
+
+msgid "Instructions"
+msgstr ""
+
+msgctxt "Settings Page"
+msgid "Markup Display"
+msgstr ""
+
+msgctxt "Settings Page"
+msgid "Determine how markup information is displayed to the customer."
+msgstr ""
+
+msgctxt "Settings Page"
+msgid ""
+"Should Markup-by-Attribute add the markup to the options drop-down box, and "
+"should the currency symbol be displayed?<br /><em>This setting takes effect "
+"immediately.</em>"
+msgstr ""
+
+msgctxt "Settings Page"
+msgid "Do NOT show the markup in the options drop-down box."
+msgstr ""
+
+msgctxt "Settings Page"
+msgid "Show the markup WITH the currency symbol in the options drop-down box."
+msgstr ""
+
+msgctxt "Settings Page"
+msgid ""
+"Show the markup WITHOUT the currency symbol in the options drop-down box."
+msgstr ""

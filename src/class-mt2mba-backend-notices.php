@@ -12,16 +12,8 @@ class MT2MBA_BACKEND_NOTICES {
     private static  $_instance;
     private         $admin_notices;
     const           TYPES               = 'error,warning,info,success';
-    private         $plugin_name        = 'Markup-by-Attribute';
-    private         $warning_messages   = array(
-		// Version 2.4 Upgrade notice
-		'ver2_4_upgrade' => 'PLEASE NOTE: As of version 2.4, Markup-by-Attribute no longer has it\'s own currency format settings. ' .
-        'It now uses the <a href="' . MT2MBA_SITE_URL . '/wp-admin/admin.php?page=wc-settings">WooCommerce currency settings</a>.<br/>' .
-		'You may still control the markup display behavior of the options drop-down and the product description with the ' .
-        '<a href="' . MT2MBA_SITE_URL . '/wp-admin/admin.php?page=wc-settings&tab=products&section=mt2mba">Markup-by-Attribute settings</a>.',
-		// Next message
-//		'key' => 'message',
-	);
+    private         $plugin_name;
+    private         $warning_messages;
 
     /**
      * Initialization method visible before instantiation
@@ -31,7 +23,9 @@ class MT2MBA_BACKEND_NOTICES {
         // As a static method, it can not use '$this' and must use an
         // instantiated version of itself
         $self = new self();
-        // Set initialization method to run on 'wp_loaded'.
+        // Set notice title (Done here to allow for translation)
+        $self->plugin_name = __( 'Markup by Attribute', 'markup-by-attribute' );
+
         add_action( 'admin_init', array( &$self, 'action_admin_init' ) );
         add_action( 'admin_notices', array( &$self, 'action_admin_notices' ) );
         add_action( 'admin_enqueue_scripts', array( &$self, 'action_admin_enqueue_scripts' ) );
@@ -42,6 +36,17 @@ class MT2MBA_BACKEND_NOTICES {
         }
         // Need to figure out how to move this to main module. But right now the 'warning'
         // method does not work correctly when invoked from outside of this class.
+        $self->warning_messages = array(
+            // Version 2.4 Upgrade notice
+            'ver2_4_upgrade' => __( 'PLEASE NOTE: As of version 2.4, Markup-by-Attribute no longer has it\'s own currency format settings. It now uses the' .
+            ' <a href="' . MT2MBA_SITE_URL . '/wp-admin/admin.php?page=wc-settings">WooCommerce currency settings</a>.<br/>' .
+            'You may still control the markup display behavior of the options drop-down and the product description with the ' .
+            '<a href="' . MT2MBA_SITE_URL . '/wp-admin/admin.php?page=wc-settings&tab=products&section=mt2mba">Markup-by-Attribute settings</a>.',
+            'markup-by-attribute' ),
+            // Next message
+    	//	'key' => __( 'message', 'markup-by-attribute' ),
+        );
+
         foreach( $self->warning_messages as $message_key => $message )
 		{
 			$self->warning( $message, $message_key );

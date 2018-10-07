@@ -148,7 +148,7 @@ class MT2MBA_BACKEND_SETTINGS
      */
     function mt2mba_add_settings_section( $sections )
     {
-        $sections['mt2mba'] = __( 'Markup by Attribute', 'markup-by-attribute' );
+        $sections['mt2mba'] = MT2MBA_PLUGIN_NAME;
         return $sections;
     }
 
@@ -170,10 +170,11 @@ class MT2MBA_BACKEND_SETTINGS
             // Begin Markup by Attribute settings
             $mt2mba_settings[] = array
                 (
-                    'name'     => __( 'Markup by Attribute', 'markup-by-attribute' ),
+                    'name'     => MT2MBA_PLUGIN_NAME,
                     'type'     => 'title', 
-                    'desc'     => __( 'The following options are used to configure variation markups by attribute.', 'markup-by-attribute' ) .
-                        PHP_EOL . __( 'Additional help can be found in the <a href="https://github.com/Mark-Tomlinson/markup-by-attribute-for-woocommerce/wiki" target="_blank">Markup by Attribute wiki</a> on the <code>Settings</code> page.', 'markup-by-attribute' ) .
+                    'desc'     => __( 
+                        'The following options are used to configure variation markups by attribute.<br/>Additional help can be found in the <a href="https://github.com/Mark-Tomlinson/markup-by-attribute-for-woocommerce/wiki" target="_blank">Markup by Attribute wiki</a> on the <code>Settings</code> page.',
+                        'markup-by-attribute' ) .
                         $this->error_msg,
                     'id'       => 'mt2mba',
                 );
@@ -189,8 +190,8 @@ class MT2MBA_BACKEND_SETTINGS
 
             // Format markup in Drop-down
             register_setting( 'mt2mba', 'mt2mba_dropdown_behavior', array( $this, 'validate_mt2mba_dropdown_behavior_field' ) );
-            $description = __( 'Should Markup-by-Attribute add the markup to the options drop-down box, and should the currency symbol be displayed?<br/>' .
-                '<em>This setting takes effect immediately.</em>',
+            $description = __(
+                'Should Markup-by-Attribute add the markup to the options drop-down box, and should the currency symbol be displayed?<br/><em>This setting takes effect immediately.</em>',
                 'markup-by-attribute' );
             $mt2mba_settings[] = array
                 (
@@ -209,8 +210,8 @@ class MT2MBA_BACKEND_SETTINGS
 
             // Description Behavior
             register_setting( 'mt2mba', 'mt2mba_desc_behavior', array( $this, 'validate_mt2mba_desc_behavior_field' ) );
-            $description = __( 'How should Markup-by-Attribute handle adding price markup information to the variation description?<br/>' .
-                '<em>This setting takes effect when you recalculate the regular price for a product.</em>',
+            $description = __(
+                'How should Markup-by-Attribute handle adding price markup information to the variation description?<br/><em>This setting takes effect when you recalculate the regular price for a product.</em>',
                 'markup-by-attribute' );
             $mt2mba_settings[] = array
                 (
@@ -245,11 +246,10 @@ class MT2MBA_BACKEND_SETTINGS
 
             // Variation Max
             register_setting( 'mt2mba', 'mt2mba_variation_max', array( $this, 'validate_mt2mba_variation_max_field' ) );
-            $description = __( 'Use Cautiously: WooCommerce limits the number of linked variations you can create at a time to 50 to prevent server overload.  ' .
-                'To create more, you can run \'Create variations from all attributes\' again, but this creates variations out of order.  ' .
-                'If you will have more than 50 variations of a product AND the order in the admin console is important, then set this number higher.',
+            $description = __(
+                'Use Cautiously: WooCommerce limits the number of linked variations you can create at a time to 50 to prevent server overload.  To create more, you can run \'Create variations from all attributes\' again, but this creates variations out of order.  If you will have more than 50 variations of a product AND the order in the admin console is important, then set this number higher.',
                 'markup-by-attribute' );
-                $mt2mba_settings[] = array
+            $mt2mba_settings[] = array
                 (
                     'title'    => __( 'Variation Max', 'markup-by-attribute' ),
                     'name'     => 'mt2mba_variation_max',
@@ -328,7 +328,7 @@ class MT2MBA_BACKEND_SETTINGS
         {
             return $input;
         } else {
-            $this->error_msg .= sprintf( $this->format_error, __( "Variation Max must be a number, 1 or higher. </br> Previous option retained.", 'markup-by-attribute' ) );
+            $this->error_msg .= sprintf( $this->format_error, __( "Variation Max must be a number, 1 or higher.</br>Previous option retained.", 'markup-by-attribute' ) );
             return get_option( 'mt2mba_variation_max' );
         }
     }

@@ -22,8 +22,7 @@ class MT2MBA_BACKEND_ATTRB
     {
         // As a static method, it can not use '$this' and must use an
         // instantiated version of itself
-        $self = new self();
-
+        $self    = new self( );
         // Set initialization method to run on 'wp_loaded'.
         add_filter( 'wp_loaded', array( $self, 'on_loaded' ) );
     }
@@ -34,17 +33,9 @@ class MT2MBA_BACKEND_ATTRB
      */
     public function on_loaded()
     {
-        // Add markup field to all WooCommerce attributes
-
         // Define label and content.
-        $this->field_label        = __(
-            'Markup (or markdown)',
-            'markup-by-attribute'
-            );
-        $this->field_description  = __(
-            'Markup or markdown associated with this option. Signed, floating point numeric allowed.',
-            'markup-by-attribute'
-            );
+        $this->field_label        = __( 'Markup (or markdown)', 'markup-by-attribute' );
+        $this->field_description  = __( 'Markup or markdown associated with this option. Signed, floating point numeric allowed.', 'markup-by-attribute' );
 
         // Get all attributes
         $attribute_taxonomies = wc_get_attribute_taxonomies();

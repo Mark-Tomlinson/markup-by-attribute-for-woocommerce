@@ -142,40 +142,6 @@ class MT2MBA_UTILITY
         return str_replace( $textToDelete, '', $string );
     }
 
-    function mt2mba_price( $price, $args = array() )
-    {
-        $args = apply_filters(
-          'wc_price_args', wp_parse_args(
-            $args, array(
-              'ex_tax_label'       => false,
-              'currency'           => '',
-              'decimal_separator'  => wc_get_price_decimal_separator(),
-              'thousand_separator' => wc_get_price_thousand_separator(),
-              'decimals'           => wc_get_price_decimals(),
-              'price_format'       => get_woocommerce_price_format(),
-            )
-          )
-        );
-      
-        $unformatted_price = $price;
-        $negative          = $price < 0;
-        $price             = apply_filters( 'raw_woocommerce_price', floatval( $negative ? $price * -1 : $price ) );
-        $price             = apply_filters( 'formatted_woocommerce_price', number_format( $price, $args['decimals'], $args['decimal_separator'], $args['thousand_separator'] ), $price, $args['decimals'], $args['decimal_separator'], $args['thousand_separator'] );
-      
-        if ( apply_filters( 'woocommerce_price_trim_zeros', false ) && $args['decimals'] > 0 ) {
-          $price = wc_trim_zeros( $price );
-        }
-      
-        $formatted_price = ( $negative ? '-' : '' ) . sprintf( $args['price_format'], get_woocommerce_currency_symbol( $args['currency'] ), $price );
-        $return          = $formatted_price;
-      
-        if ( $args['ex_tax_label'] && wc_tax_enabled() ) {
-          $return .= WC()->countries->ex_tax_or_vat();
-        }
-      
-        return apply_filters( 'wc_price', $return, $price, $args, $unformatted_price );
-    }
-
     /**
      * Get options and set globals
      */
@@ -254,12 +220,12 @@ class MT2MBA_UTILITY
             // Get globals
             $this->get_mba_globals();
 
-            $sign = $markup < 0 ? __('Subtract', 'markup-by-attribute') : __('Add', 'markup-by-attribute');
+            // Translators; %1$s is the formated price of the option, %2$s is the option name
+            $desc_format = $markup < 0 ? __('Subtract %1$s for %2$s', 'markup-by-attribute') : __('Add %1$s for %2$s', 'markup-by-attribute');
+
             return html_entity_decode
                 (
-                    $sign . ' ' .
-                    sprintf( MT2MBA_PRICE_FORMAT, MT2MBA_CURRENCY_SYMBOL, $this->clean_up_price( $markup ) ) .
-                    ' ' . __('for', 'markup-by-attribute' ) . ' ' . $term
+                    sprintf( $desc_format, sprintf( MT2MBA_PRICE_FORMAT, MT2MBA_CURRENCY_SYMBOL, $this->clean_up_price( $markup ) ), $term )
                 );
         }
         // No markup; return empty string

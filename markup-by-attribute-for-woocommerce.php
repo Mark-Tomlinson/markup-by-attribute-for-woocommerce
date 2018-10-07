@@ -37,22 +37,28 @@ if ( !defined( 'ABSPATH' ) ) exit( );
 // If WooCommerce is active 
 if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) )
 {
-	define( 'MT2MBA_PLUGIN_PREFIX', 'MT2MBA' );
-	define( 'MT2MBA_PLUGIN_NAME', _x( 'text-Plugin-name', 'Global', 'markup-by-attribute' ) );
+	// Load translations
+	load_plugin_textdomain( 'markup-by-attribute', FALSE, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
+	
 	// Set plugin Version
 	define( 'MT2MBA_VERSION', 2.4 );
 	define( 'MT2MBA_DB_VERSION', 2.1 );
-	define( 'MT2MBA_SITE_URL', get_bloginfo( 'wpurl' ) );
-	define( 'MT2MBA_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 
+	// Set plugin info
+	define( 'MT2MBA_SITE_URL', get_bloginfo( 'wpurl' ) );
+	define( 'MT2MBA_PLUGIN_PREFIX', 'MT2MBA' );
+	define( 'MT2MBA_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+	define( 'MT2MBA_PLUGIN_NAME', __( 'Markup by Attribute', 'markup-by-attribute' ) );
+
+	// Strings used in multiple classes
 	global $mt2mba_price_meta;
-	$mt2mba_price_meta          = _x( 'text-Product-price', 'Global', 'markup-by-attribute' ) . ' ';
+	$mt2mba_price_meta          = __( 'Product price', 'markup-by-attribute' ) . ' ';
 	global $product_markup_desc_beg;
 	$product_markup_desc_beg    = '<span id="mbainfo">';
 	global $product_markup_desc_end;
 	$product_markup_desc_end    = '</span>';
 	global $attrb_markup_desc_beg;
-	$attrb_markup_desc_beg      = '(' . _x( 'text-Markup', 'Global', 'markup-by-attribute' ) . ': ';
+	$attrb_markup_desc_beg      = '(' . __( 'Markup:', 'markup-by-attribute' ) . ' ';
 	global $attrb_markup_desc_end;
 	$attrb_markup_desc_end      = ')';
 
@@ -85,12 +91,12 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 			// Add Settings link
 			$links['settings'] =
 				'<a id="mt2mba_settings" href="admin.php?page=wc-settings&tab=products&section=mt2mba">' .
-				_x( 'text-Settings', 'Plugin page', 'markup-by-attribute' ) .
+				__( 'Settings', 'markup-by-attribute' ) .
 				'</a>';
 			// Add Instructions link
 			$links['instructions'] =
 				'<a id="mt2mba_instructions" href="https://wordpress.org/plugins/markup-by-attribute-for-woocommerce/#installation" target="_blank">' .
-				_x( 'text-Instructions', 'Plugin page', 'markup-by-attribute' ) .
+				__( 'Instructions', 'markup-by-attribute' ) .
 				'</a>';
 			// Restore deactivation link to end of array
 			$links['deactivate'] = $deactivate_link;

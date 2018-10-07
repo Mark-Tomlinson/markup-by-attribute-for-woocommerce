@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Markup by Attribute for WooCommerce - MT² Tech\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-07 03:07+0000\n"
+"POT-Creation-Date: 2018-10-07 02:48+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -18,19 +18,20 @@ msgstr ""
 msgid "Markup by Attribute"
 msgstr ""
 
-#: markup-by-attribute-for-woocommerce.php:55
+#: markup-by-attribute-for-woocommerce.php:54
+#: src/class-mt2mba-backend-product.php:224
 msgid "Product price"
 msgstr ""
 
-#: markup-by-attribute-for-woocommerce.php:61
-msgid "Markup:"
+#: markup-by-attribute-for-woocommerce.php:60
+msgid "Markup"
 msgstr ""
 
-#: markup-by-attribute-for-woocommerce.php:94
+#: markup-by-attribute-for-woocommerce.php:93
 msgid "Settings"
 msgstr ""
 
-#: markup-by-attribute-for-woocommerce.php:99
+#: markup-by-attribute-for-woocommerce.php:98
 msgid "Instructions"
 msgstr ""
 

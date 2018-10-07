@@ -7,12 +7,11 @@
 // Exit if accessed directly
 if ( !defined( 'ABSPATH' ) ) exit( );
 
-class MT2MBA_BACKEND_NOTICES {
-
+class MT2MBA_BACKEND_NOTICES
+{
     private static  $_instance;
     private         $admin_notices;
     const           TYPES               = 'error,warning,info,success';
-    private         $plugin_name;
     private         $warning_messages;
 
     /**
@@ -22,35 +21,51 @@ class MT2MBA_BACKEND_NOTICES {
     {
         // As a static method, it can not use '$this' and must use an
         // instantiated version of itself
-        $self = new self();
+        $self    = new self( );
+        // Set initialization method to run on 'wp_loaded'.
+        add_filter( 'wp_loaded', array( $self, 'on_loaded' ) );
+    }
+
+    /**
+     * Initialization method visible before instantiation
+     */
+    public function on_loaded()
+    {
         // Set notice title (Done here to allow for translation)
-        $self->plugin_name = __( 'Markup by Attribute', 'markup-by-attribute' );
+        add_action( 'admin_init', array( &$this, 'action_admin_init' ) );
+        add_action( 'admin_notices', array( &$this, 'action_admin_notices' ) );
+        add_action( 'admin_enqueue_scripts', array( &$this, 'action_admin_enqueue_scripts' ) );
+                         
+        add_filter( 'gettext', array( $this, 'ctf_filter_gettext' ), 99, 3 );
 
-        add_action( 'admin_init', array( &$self, 'action_admin_init' ) );
-        add_action( 'admin_notices', array( &$self, 'action_admin_notices' ) );
-        add_action( 'admin_enqueue_scripts', array( &$self, 'action_admin_enqueue_scripts' ) );
-
-        $self->admin_notices = new stdClass();
-        foreach ( explode( ',', self::TYPES ) as $type ) {
-            $self->admin_notices->{$type} = array();
+        $this->admin_notices = new stdClass();
+        foreach ( explode( ',', self::TYPES ) as $type )
+        {
+            $this->admin_notices->{$type} = array();
         }
         // Need to figure out how to move this to main module. But right now the 'warning'
         // method does not work correctly when invoked from outside of this class.
-        $self->warning_messages = array(
+        $this->warning_messages = array(
             // Version 2.4 Upgrade notice
-            'ver2_4_upgrade' => __( 'PLEASE NOTE: As of version 2.4, Markup-by-Attribute no longer has it\'s own currency format settings. It now uses the' .
-            ' <a href="' . MT2MBA_SITE_URL . '/wp-admin/admin.php?page=wc-settings">WooCommerce currency settings</a>.<br/>' .
-            'You may still control the markup display behavior of the options drop-down and the product description with the ' .
-            '<a href="' . MT2MBA_SITE_URL . '/wp-admin/admin.php?page=wc-settings&tab=products&section=mt2mba">Markup-by-Attribute settings</a>.',
-            'markup-by-attribute' ),
+            'ver2_4_upgrade' => sprintf( '%1$s %2$s %3$s %4$s',
+                __( 'PLEASE NOTE: As of version 2.4, Markup-by-Attribute no longer has it\'s own currency format settings. It now uses the', 'markup-by-attribute' ),
+                sprintf( __( '<a href="%s/wp-admin/admin.php?page=wc-settings">WooCommerce currency settings</a>.<br/>', 'markup-by-attribute' ), MT2MBA_SITE_URL ),
+                __( 'You may still control the markup display behavior of the options drop-down and the product description with the', 'markup-by-attribute' ),
+                sprintf( __( '<a href="%s/wp-admin/admin.php?page=wc-settings&tab=products&section=mt2mba">Markup-by-Attribute settings</a>.', 'markup-by-attribute' ), MT2MBA_SITE_URL )
+            )
             // Next message
     	//	'key' => __( 'message', 'markup-by-attribute' ),
         );
 
-        foreach( $self->warning_messages as $message_key => $message )
+        foreach( $this->warning_messages as $message_key => $message )
 		{
-			$self->warning( $message, $message_key );
+			$this->warning( $message, $message_key );
 		}
+    }
+
+    function ctf_filter_gettext( $translated = 'trans', $original = 'orig', $domain = 'domain' ) {
+//        error_log($translated . ' | ' . $original . ' | ' . $domain);
+        return $translated;
     }
 
     /**
@@ -142,12 +157,12 @@ class MT2MBA_BACKEND_NOTICES {
                     ?><div
                         class="notice mt2mba-notice notice-<?php echo $type;
 
-                        if ( $admin_notice->dismiss_option ) {
+                        if ( $admin_notice->dismiss_option )
+                        {
                             echo ' is-dismissible" data-dismiss-url="' . esc_url( $dismiss_url );
                         } ?>">
-
-                        <h3><?php echo "$this->plugin_name $type"; ?></h3>
-                        <p><?php echo $admin_notice->message; ?></p>
+                        <h3><?php echo( MT2MBA_PLUGIN_NAME . ' ' . $type ); ?></h3>
+                        <p><?php echo( $admin_notice->message ); ?></p>
 
                     </div><?php
                 }

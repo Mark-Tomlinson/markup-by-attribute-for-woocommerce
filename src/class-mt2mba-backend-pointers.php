@@ -20,7 +20,7 @@ class MT2MBA_BACKEND_POINTERS {
         // instantiated version of itself
         $self    = new self( );
         // Set pointer titles (Had to do it here to allow translation)
-        $self->pointer_title = __( 'Markup by Attribute', 'markup-by-attribute' );
+//        $self->pointer_title = __( 'Markup by Attribute', 'markup-by-attribute' );
         // Enqueue the JQuery
         add_action( 'admin_enqueue_scripts', array( $self, 'mt2mba_admin_pointer_load' ), 1000 );
         // Admin pointers for attribute term edit screen
@@ -82,25 +82,30 @@ class MT2MBA_BACKEND_POINTERS {
      */
     function mt2mba_admin_pointers_edit_term( $pointers )
     {
-        $pointer_content = sprintf( '<h3><em>%s</em></h3> <p>%s</p>',
+        $pointer_content = sprintf
+        (
+            '<h3><em>%s</em></h3><p>%s</p>',
             MT2MBA_PLUGIN_NAME,
-            __( 'Markups can be fixed values such as <code>5</code> or <code>5.95</code>. Or they can be percentages such as <code>5%</code> or <code>1.23%</code>. ' .
-            'Markups can start with a plus or minus sign such as <code>+5.95</code> or <code>-1.23%</code>.</p>' .
-            '<p>The markup will be applied during the product variation <em>Set regular price</em> and <em>Set sale price</em> bulk edit action.',
+            __( 'Markups can be fixed values such as <code>5</code> or <code>5.95</code>. Or they can be percentages such as <code>5%</code> or <code>1.23%</code>. Markups can start with a plus or minus sign such as <code>+5.95</code> or <code>-1.23%</code>.<br/>The markup will be applied during the product variation <em>Set regular price</em> and <em>Set sale price</em> bulk edit action.',
             'markup-by-attribute' )
         );
-        $pointers = array(
-            'mt2mba-term_add_markup' => array(
+        $pointers = array
+        (
+            'mt2mba-term_add_markup' => array
+            (
                 'target' => '#term_add_markup',
-                'options' => array(
+                'options' => array
+                (
                     'content' => $pointer_content,
                     'position' => array( 'edge' => 'left', 'align' => 'middle' )
                 )
             ),
 
-            'mt2mba-term_edit_markup' => array(
+            'mt2mba-term_edit_markup' => array
+            (
                 'target' => '#term_edit_markup',
-                'options' => array(
+                'options' => array
+                (
                     'content' => $pointer_content,
                     'position' => array( 'edge' => 'top', 'align' => 'middle' )
                 )
@@ -115,17 +120,21 @@ class MT2MBA_BACKEND_POINTERS {
      */
     function mt2mba_admin_pointers_plugins( $pointers )
     {
-        $pointer_content = sprintf( '<h3><em>%s</em></h3> <p>%s</p>',
-        MT2MBA_PLUGIN_NAME,
-        __( 'Using this plugin is simple, but may be a little obscure. This link to the instructions may help get you started.</p>' .
-        '<p>We\'ll just leave the instructions link right here.',
-        'markup-by-attribute' )
+        $pointer_content = sprintf
+        (
+            '<h3>%s</h3><p>%s</p>',
+            MT2MBA_PLUGIN_NAME,
+            __( 'Using this plugin is simple, but might be a little obscure. This link to the instructions may help get you started.<br/>We\'ll just leave the instructions link right here.',
+                'markup-by-attribute' )
         );
 
-        $pointers = array(
-            'mt2mba-instructions' => array(
+        $pointers = array
+        (
+            'mt2mba-instructions' => array
+            (
                 'target' => '#mt2mba_instructions',
-                'options' => array(
+                'options' => array
+                (
                     'content' => $pointer_content,
                     'position' => array( 'edge' => 'left', 'align' => 'middle' )
                 )

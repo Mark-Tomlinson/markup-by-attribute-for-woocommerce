@@ -82,10 +82,6 @@ class MT2MBA_BACKEND_PRODUCT
             global $mt2mba_utility;
             $mt2mba_utility->get_mba_globals();
 
-            $decimal_points         = MT2MBA_DECIMAL_POINTS;
-//            $currency_format        = "%s%01.{$decimal_points}f%s";
-            $product_price_label    = __( 'Product price', 'markup-by-attribute' ) . ' ';
-            
             // Catch original price
             $orig_price             = floatval( $data[ 'value' ] );
             $orig_price_formatted   = apply_filters
@@ -175,6 +171,7 @@ class MT2MBA_BACKEND_PRODUCT
                 $variation_price = $orig_price;
 
                 // Trim any previous markup information out of description
+                global $mt2mba_price_meta;
                 global $product_markup_desc_beg;
                 global $product_markup_desc_end;
                 $utility         = new MT2MBA_UTILITY;
@@ -221,7 +218,7 @@ class MT2MBA_BACKEND_PRODUCT
                                     // Open description with original price
                                     $description .= html_entity_decode
                                         (
-                                            $product_price_label .
+                                            $mt2mba_price_meta .
                                             sprintf(
                                                 get_woocommerce_price_format(),
                                                 get_woocommerce_currency_symbol( get_woocommerce_currency() ),

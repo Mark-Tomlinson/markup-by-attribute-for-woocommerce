@@ -20,7 +20,6 @@ class MT2MBA_BACKEND_POINTERS {
         // instantiated version of itself
         $self    = new self( );
         // Set pointer titles (Had to do it here to allow translation)
-//        $self->pointer_title = __( 'Markup by Attribute', 'markup-by-attribute' );
         // Enqueue the JQuery
         add_action( 'admin_enqueue_scripts', array( $self, 'mt2mba_admin_pointer_load' ), 1000 );
         // Admin pointers for attribute term edit screen
@@ -71,6 +70,7 @@ class MT2MBA_BACKEND_POINTERS {
         wp_enqueue_style( 'wp-pointer' );
  
         // Add pointers JScript to queue. Add custom script.
+        error_log( plugins_url( 'js/jq-mt2mba-pointers.js', __FILE__ ) );
         wp_enqueue_script( 'mt2mba-pointer', plugins_url( 'js/jq-mt2mba-pointers.js', __FILE__ ), array( 'wp-pointer' ) );
 
         // Add pointer options to script.

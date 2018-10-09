@@ -7,7 +7,7 @@
 // Exit if accessed directly
 if ( !defined( 'ABSPATH' ) ) exit( );
 
-class MT2MBA_FRONTEND {
+class MT2MBA_FRONTEND_OPTIONS {
 
     /**
      * Initialization method visible before instantiation

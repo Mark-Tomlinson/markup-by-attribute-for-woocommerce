@@ -43,7 +43,6 @@ class MT2MBA_UTILITY
      */
     function mt2mba_db_upgrade()
     {
-    
         // Failsafe
         $current_db_version = get_site_option( 'mt2mba_db_version', 1 );
         if ( $current_db_version >= MT2MBA_DB_VERSION ) return;
@@ -122,6 +121,7 @@ class MT2MBA_UTILITY
         update_option( 'mt2mba_db_version', MT2MBA_DB_VERSION );
     }
 
+
     /**
      * Remove bracketed substring from string
      *
@@ -130,7 +130,7 @@ class MT2MBA_UTILITY
      * @param  string $string       The string to be processed
      * @return string               The string minus the text to be removed and the beginning and ending markers
      */
-    public function remove_bracketed_string($beginning, $ending, $string)
+    public function remove_bracketed_string( $beginning, $ending, $string )
     {
         $beginningPos = strpos( $string, $beginning, 0 );
         $endingPos    = strpos( $string, $ending, $beginningPos );
@@ -163,7 +163,7 @@ class MT2MBA_UTILITY
     /**
      * Clean up the price or markup and reformat according to currency options
      */
-    function clean_up_price( $price )
+    public function clean_up_price( $price )
     {
         return number_format( floatval( abs( $price ) ), MT2MBA_DECIMAL_POINTS, MT2MBA_DECIMAL_SEPARATOR, MT2MBA_THOUSAND_SEPARATOR );
     }

@@ -30,13 +30,13 @@ class MT2MBA_AUTOLOADER
      */
     public static function autoload( $class )
     {
-        if ( 0 !== strpos( $class, MT2MBA_PLUGIN_PREFIX ) )     // Change string to match plugin class prefix
+        if ( 0 !== strpos( $class, MT2MBA_PLUGIN_PREFIX ) )
         {
             return;
         }
         else
         {
-            if ( is_file( $file = dirname( __FILE__ ) . '/class-' . strtolower( str_replace( array( '_', "\0" ), array( '-', '' ), $class ).'.php' ) ) )
+            if ( is_file( $file = strtolower( dirname( __FILE__ ) . str_replace( '_', '/', str_replace( MT2MBA_PLUGIN_PREFIX, '/src', $class ) ) . '.php' ) ) )
             {
                 require_once $file;
                 $class::init();

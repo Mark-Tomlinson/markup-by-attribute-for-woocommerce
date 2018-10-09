@@ -37,79 +37,41 @@ if ( !defined( 'ABSPATH' ) ) exit( );
 // If WooCommerce is active 
 if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) )
 {
-	// Load translations
+  	// Load translations
 	load_plugin_textdomain( 'markup-by-attribute', FALSE, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
-	
-	// Set plugin Version
+
+	// Set plugin information
+	define( 'MT2MBA_PLUGIN_PREFIX', 'MT2MBA' );
 	define( 'MT2MBA_VERSION', 2.4 );
 	define( 'MT2MBA_DB_VERSION', 2.1 );
-
-	// Set plugin info
 	define( 'MT2MBA_SITE_URL', get_bloginfo( 'wpurl' ) );
-	define( 'MT2MBA_PLUGIN_PREFIX', 'MT2MBA' );
 	define( 'MT2MBA_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 	define( 'MT2MBA_PLUGIN_NAME', __( 'Markup by Attribute', 'markup-by-attribute' ) );
 
-	// Strings used in multiple classes
-	global $mt2mba_price_meta;
-	$mt2mba_price_meta          = __( 'Product price', 'markup-by-attribute' ) . ' ';
-	global $product_markup_desc_beg;
-	$product_markup_desc_beg    = '<span id="mbainfo">';
-	global $product_markup_desc_end;
-	$product_markup_desc_end    = '</span>';
-	global $attrb_markup_desc_beg;
-	$attrb_markup_desc_beg      = '(' . __( 'Markup:', 'markup-by-attribute' ) . ' ';
-	global $attrb_markup_desc_end;
-	$attrb_markup_desc_end      = ')';
-
-	// -------------------------
-	//       MAIN ROUTINE
-	// -------------------------
-
 	// Register class autoloader
-	require_once( MT2MBA_PLUGIN_DIR . 'src/class-mt2mba-autoloader.php' );
+	require_once( MT2MBA_PLUGIN_DIR . '/autoloader.php' );
 	MT2MBA_AUTOLOADER::register();
 
-	// Instantiate utility class. Done here in case upgrade required.
-	global $mt2mba_utility;
-	$mt2mba_utility = new MT2MBA_UTILITY;
+	// Add settings and instruction links to plugin page
+    add_filter( "plugin_action_links_" . plugin_basename( __FILE__ ), 'add_links' );
 
-    // Pull in correct code depending on whether we are in the shop (frontend) or on the admin page (backend).
+    // Instantiate utility class. Done here in case upgrade required.
+	global $mt2mba_utility;
+    $mt2mba_utility = new MT2MBA_UTILITY;
+
+	// Pull in correct code depending on whether we are in the shop (frontend) or on the admin page (backend).
 	if ( is_admin( ) )
 	{
 		// -------------
 		// Back end code
 		// -------------
 
-		/**
-		 * Function to add links to plugin page
-		 */
-		function add_links( $links )
-		{
-			// Pop deactivation link from array
-			$deactivate_link = array_pop($links);
-			// Add Settings link
-			$links['settings'] =
-				'<a id="mt2mba_settings" href="admin.php?page=wc-settings&tab=products&section=mt2mba">' .
-				__( 'Settings', 'markup-by-attribute' ) .
-				'</a>';
-			// Add Instructions link
-			$links['instructions'] =
-				'<a id="mt2mba_instructions" href="https://wordpress.org/plugins/markup-by-attribute-for-woocommerce/#installation" target="_blank">' .
-				__( 'Instructions', 'markup-by-attribute' ) .
-				'</a>';
-			// Restore deactivation link to end of array
-			$links['deactivate'] = $deactivate_link;
-			
-			return $links;
-		}
-		  
-		// Add settings and instruction links to plugin page
-		add_filter( "plugin_action_links_" . plugin_basename( __FILE__ ), 'add_links' );
+		// Set up glabals used throughout backend
+		create_admin_globals();
 
 		// Instantiate admin notices
 		new MT2MBA_BACKEND_NOTICES;
-		
+	
 		// Instantiate admin pointers
 		new MT2MBA_BACKEND_POINTERS;
 
@@ -124,8 +86,52 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 		// --------------
 		// Front end code
 		// --------------
-		new MT2MBA_FRONTEND;
+		new MT2MBA_FRONTEND_OPTIONS;
 	}
+}
+
+
+/**
+* Add links to plugin page
+* 
+* @param   array   $links  Usually just the 'Deactivate' link
+* @return  array           Settings and instructions links plus any that came in
+* 
+*/
+function add_links( $links )
+{
+	// Add Settings link
+	$mt2mba_links['settings'] =
+		'<a id="mt2mba_settings" href="admin.php?page=wc-settings&tab=products&section=mt2mba">' .
+		__( 'Settings', 'markup-by-attribute' ) .
+		'</a>';
+	// Add Instructions link
+	$mt2mba_links['instructions'] =
+		'<a id="mt2mba_instructions" href="https://wordpress.org/plugins/markup-by-attribute-for-woocommerce/#installation" target="_blank">' .
+		__( 'Instructions', 'markup-by-attribute' ) .
+		'</a>';
+	// Restore deactivation link to end of array
+	
+	return array_merge( $mt2mba_links, $links );
+}
+
+
+/**
+ * Set up globals used in admin classes
+ * 
+ */
+function create_admin_globals()
+{
+	global $mt2mba_price_meta;
+	$mt2mba_price_meta          = __( 'Product price', 'markup-by-attribute' ) . ' ';
+	global $product_markup_desc_beg;
+	$product_markup_desc_beg    = '<span id="mbainfo">';
+	global $product_markup_desc_end;
+	$product_markup_desc_end    = '</span>';
+	global $attrb_markup_desc_beg;
+	$attrb_markup_desc_beg      = '(' . __( 'Markup:', 'markup-by-attribute' ) . ' ';
+	global $attrb_markup_desc_end;
+	$attrb_markup_desc_end      = ')';
 }
 
 ?>

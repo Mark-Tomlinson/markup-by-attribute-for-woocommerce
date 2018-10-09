@@ -46,6 +46,7 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 	define( 'MT2MBA_DB_VERSION', 2.1 );
 	define( 'MT2MBA_SITE_URL', get_bloginfo( 'wpurl' ) );
 	define( 'MT2MBA_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+	define( 'MT2MBA_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 	define( 'MT2MBA_PLUGIN_NAME', __( 'Markup by Attribute', 'markup-by-attribute' ) );
 
 	// Register class autoloader

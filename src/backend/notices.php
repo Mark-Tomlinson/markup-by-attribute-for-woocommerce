@@ -174,10 +174,11 @@ class MT2MBA_BACKEND_NOTICES
      * Enqueue the JScript to clear notices.
      */
     public function action_admin_enqueue_scripts() {
-        wp_enqueue_script( 'jquery' );
-        wp_enqueue_script(
-            'jq-mt2mba-clear-notices',
-            plugins_url( 'js/jq-mt2mba-clear-notices.js', __FILE__ ),
+//        wp_enqueue_script( 'jquery' );
+        wp_enqueue_script
+        (
+            'mt2mba-clear-notices',
+            MT2MBA_PLUGIN_URL . 'src/js/jq-mt2mba-clear-notices.js',
             array( 'jquery' )
         );
     }

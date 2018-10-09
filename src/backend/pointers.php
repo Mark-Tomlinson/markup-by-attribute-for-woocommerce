@@ -31,6 +31,9 @@ class MT2MBA_BACKEND_POINTERS {
     /**
      * Find pointers that have not been dismissed
      * and add the scripts to those pages
+     * 
+     * @oaran 
+     * 
      */
     function mt2mba_admin_pointer_load( $hook_suffix )
     {
@@ -70,8 +73,12 @@ class MT2MBA_BACKEND_POINTERS {
         wp_enqueue_style( 'wp-pointer' );
  
         // Add pointers JScript to queue. Add custom script.
-        error_log( plugins_url( 'js/jq-mt2mba-pointers.js', __FILE__ ) );
-        wp_enqueue_script( 'mt2mba-pointer', plugins_url( 'js/jq-mt2mba-pointers.js', __FILE__ ), array( 'wp-pointer' ) );
+        wp_enqueue_script
+        (
+            'mt2mba-pointer',
+            MT2MBA_PLUGIN_URL . 'src/js/jq-mt2mba-pointers.js',
+            array( 'wp-pointer' )
+        );
 
         // Add pointer options to script.
         wp_localize_script( 'mt2mba-pointer', 'mt2mbaPointer', $valid_pointers );

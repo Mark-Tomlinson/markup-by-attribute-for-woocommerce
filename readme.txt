@@ -9,13 +9,13 @@ Contributors:         MarkTomlinson
 Donate link:          https://www.paypal.me/MT2Dev/15
 License:              GPLv3
 License URI:          https://www.gnu.org/licenses/gpl-3.0.html
-Version:              2.4
+Version:              3.0
 Stable tag:           trunk
 Requires at least:    4.6
 Tested up to:         4.9.8
 Requires PHP:         5.2.4
 WC requires at least: 3.0
-WC tested up to:      3.4.5
+WC tested up to:      3.4.6
 
 This plugin adds product variation markup by attribute to WooCommerce and adjusts product variation regular and sale prices accordingly.
 
@@ -133,6 +133,13 @@ Thanks! The donation button assumes $15.00 USD. But feel free to adjust that amo
 7. The settings page allows configuration of how the markup is displayed.
 
 == Changelog ==
+
+= 3.0 =
+* Feature: Now supports Internationalization and translation.
+* Maintenance: Restructured libraries and renamed files and classes for better organization.
+* Maintenance: Rebuilt admin notice class for supportability and improved performance.
+* Manitenance: Reorganized main module for understandability.
+* Maintenance: General code clean-up and redundancy removal.
 
 = 2.4 =
 * Feature: Use the WooCommerce currency formatting settings.

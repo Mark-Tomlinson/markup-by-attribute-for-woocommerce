@@ -32,7 +32,7 @@ class MT2MBA_BACKEND_POINTERS {
      * Find pointers that have not been dismissed
      * and add the scripts to those pages
      * 
-     * @oaran 
+     * @param   string  $hook_suffix    Unused
      * 
      */
     function mt2mba_admin_pointer_load( $hook_suffix )

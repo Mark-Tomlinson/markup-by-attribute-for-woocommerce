@@ -9,10 +9,7 @@ if ( !defined( 'ABSPATH' ) ) exit( );
 
 class MT2MBA_BACKEND_NOTICES
 {
-    private static  $_instance;
-    private         $admin_notices;
-    const           TYPES               = 'error,warning,info,success';
-    private         $warning_messages;
+//    private static  $_instance;
 
     /**
      * Initialization method visible before instantiation
@@ -31,54 +28,52 @@ class MT2MBA_BACKEND_NOTICES
      */
     public function on_loaded()
     {
-        // Set notice title (Done here to allow for translation)
-        add_action( 'admin_init', array( &$this, 'action_admin_init' ) );
-        add_action( 'admin_notices', array( &$this, 'action_admin_notices' ) );
-        add_action( 'admin_enqueue_scripts', array( &$this, 'action_admin_enqueue_scripts' ) );
-                         
-        add_filter( 'gettext', array( $this, 'ctf_filter_gettext' ), 99, 3 );
-
-        $this->admin_notices = new stdClass();
-        foreach ( explode( ',', self::TYPES ) as $type )
-        {
-            $this->admin_notices->{$type} = array();
-        }
-        // Need to figure out how to move this to main module. But right now the 'warning'
-        // method does not work correctly when invoked from outside of this class.
-        $this->warning_messages = array(
-            // Version 2.4 Upgrade notice
-            'ver2_4_upgrade' => sprintf( '%1$s %2$s %3$s %4$s',
-                __( 'PLEASE NOTE: As of version 2.4, Markup-by-Attribute no longer has it\'s own currency format settings. It now uses the', 'markup-by-attribute' ),
-                sprintf( __( '<a href="%s/wp-admin/admin.php?page=wc-settings">WooCommerce currency settings</a>.<br/>', 'markup-by-attribute' ), MT2MBA_SITE_URL ),
-                __( 'You may still control the markup display behavior of the options drop-down and the product description with the', 'markup-by-attribute' ),
-                sprintf( __( '<a href="%s/wp-admin/admin.php?page=wc-settings&tab=products&section=mt2mba">Markup-by-Attribute settings</a>.', 'markup-by-attribute' ), MT2MBA_SITE_URL )
-            )
-            // Next message
-    	//	'key' => __( 'message', 'markup-by-attribute' ),
-        );
-
-        foreach( $this->warning_messages as $message_key => $message )
-		{
-			$this->warning( $message, $message_key );
-		}
-    }
-
-    function ctf_filter_gettext( $translated = 'trans', $original = 'orig', $domain = 'domain' ) {
-//        error_log($translated . ' | ' . $original . ' | ' . $domain);
-        return $translated;
+        //  Enqueue notice dismissal JScript
+        add_action( 'admin_enqueue_scripts', array( $this, 'action_admin_enqueue_scripts' ) );
+        //  Action to set the message dismissal option
+        add_action( 'admin_init', array( $this, 'action_admin_init' ) );
     }
 
     /**
-     * Sanity check
+     * Enqueue the JScript to clear notices.
+     */
+    public function action_admin_enqueue_scripts()
+    {
+        wp_enqueue_script
+        (
+            'jq-mt2mba-clear-notices',
+            MT2MBA_PLUGIN_URL . 'src/js/jq-mt2mba-clear-notices.js',
+            array( 'jquery' )
+        );
+    }
+
+    /**
+     * If admin page is called with 'mt2mba_dismiss=' in the query string,
+     * add 'dismissed' code to database
      */
     public function action_admin_init()
     {
         $dismiss_option = filter_input( INPUT_GET, 'mt2mba_dismiss', FILTER_SANITIZE_STRING );
-        if ( is_string( $dismiss_option ) )
-        {
-            update_option( "mt2mba_dismissed_{$dismiss_option}", TRUE );
+        if ( is_string( $dismiss_option ) ) {
+            update_option( "mt2mba_dismissed_$dismiss_option", true );
             wp_die();
         }
+    }
+
+    /**
+     * Display admin notices sent in as an array
+     * 
+     * @param   array   $admin_notices  A two dimensional array; array( notice_type => array( notice_id => notice ) )
+     */
+    public function send_notice_array( $admin_notices )
+    {
+        foreach( $admin_notices as $type => $notices )
+        {
+            foreach( $notices as $notices_id => $notices )
+            {
+                $this->{$type}( $notices, $notices_id );
+            };
+        };
     }
 
     /**
@@ -129,57 +124,29 @@ class MT2MBA_BACKEND_NOTICES
      */
     private function notice( $type, $message, $dismiss_option )
     {
-        $notice                 = new stdClass();
-        $notice->message        = $message;
-        $notice->dismiss_option = $dismiss_option;
-
-        $this->admin_notices->{$type}[] = $notice;
-    }
-
-    /**
-     * Loop through notice types and notices, displaying each if not already dismissed
-     */
-    public function action_admin_notices()
-    {
-        foreach ( explode( ',', self::TYPES ) as $type )
-        {
-            foreach ( $this->admin_notices->{$type} as $admin_notice )
+        add_action
+        (
+            'admin_notices',
+            function() use ( $type, $message, $dismiss_option )
             {
-                $dismiss_url = add_query_arg(
-                    array(
-                        'mt2mba_dismiss' => $admin_notice->dismiss_option
-                    ),
+                $dismiss_url = add_query_arg
+                (
+                    array( 'mt2mba_dismiss' => $dismiss_option ),
                     admin_url()
                 );
-
-                if ( ! get_option( "mt2mba_dismissed_{$admin_notice->dismiss_option}" ) )
+                if ( ! get_option( "mt2mba_dismissed_{$dismiss_option}" ) )
                 {
                     ?><div
                         class="notice mt2mba-notice notice-<?php echo $type;
-
-                        if ( $admin_notice->dismiss_option )
+                        if ( $dismiss_option )
                         {
                             echo ' is-dismissible" data-dismiss-url="' . esc_url( $dismiss_url );
                         } ?>">
-                        <h3><?php echo( MT2MBA_PLUGIN_NAME . ' ' . $type ); ?></h3>
-                        <p><?php echo( $admin_notice->message ); ?></p>
-
+                        <strong><em><?php echo( MT2MBA_PLUGIN_NAME . ' ' . $type ); ?></em></strong>
+                        <p><?php echo( $message ); ?></p>
                     </div><?php
-                }
-            }
-        }
-    }
-
-    /**
-     * Enqueue the JScript to clear notices.
-     */
-    public function action_admin_enqueue_scripts() {
-//        wp_enqueue_script( 'jquery' );
-        wp_enqueue_script
-        (
-            'mt2mba-clear-notices',
-            MT2MBA_PLUGIN_URL . 'src/js/jq-mt2mba-clear-notices.js',
-            array( 'jquery' )
+                }   //  End if
+            }   //  End function
         );
     }
 

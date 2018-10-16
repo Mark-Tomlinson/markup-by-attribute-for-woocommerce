@@ -20,7 +20,7 @@
  * Donate link:          https://www.paypal.me/MT2Dev/15
  * License:              GPLv3
  * License URI:          https://www.gnu.org/licenses/gpl-3.0.html
- * Version:              2.4
+ * Version:              3.0
  * Stable tag:           trunk
  * Text Domain:          markup-by-attribute
  * Domain path:          /languages
@@ -28,7 +28,7 @@
  * Tested up to:         4.9.8
  * Requires PHP:         5.2.4
  * WC requires at least: 3.0
- * WC tested up to:      3.4.5
+ * WC tested up to:      3.4.6
  */
 
 // Exit if accessed directly
@@ -42,12 +42,34 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 
 	// Set plugin information
 	define( 'MT2MBA_PLUGIN_PREFIX', 'MT2MBA' );
-	define( 'MT2MBA_VERSION', 2.4 );
+	define( 'MT2MBA_VERSION', 3.0 );
 	define( 'MT2MBA_DB_VERSION', 2.1 );
 	define( 'MT2MBA_SITE_URL', get_bloginfo( 'wpurl' ) );
 	define( 'MT2MBA_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 	define( 'MT2MBA_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 	define( 'MT2MBA_PLUGIN_NAME', __( 'Markup by Attribute', 'markup-by-attribute' ) );
+
+	$admin_messages = array
+	(	//	Update with dismissible info and warning messages that get displayed at startup
+		'info' => array
+		(
+			// Version 2.4 Upgrade notice
+			'ver2_4_upgrade' => sprintf
+			(
+				'%1$s %2$s %3$s %4$s',
+				__( 'PLEASE NOTE: As of version 2.4, Markup-by-Attribute no longer has it\'s own currency format settings. It now uses the', 'markup-by-attribute' ),
+				sprintf( __( '<a href="%s/wp-admin/admin.php?page=wc-settings">WooCommerce currency settings</a>.<br/>', 'markup-by-attribute' ), MT2MBA_SITE_URL ),
+				__( 'You may still control the markup display behavior of the options drop-down and the product description with the', 'markup-by-attribute' ),
+				sprintf( __( '<a href="%s/wp-admin/admin.php?page=wc-settings&tab=products&section=mt2mba">Markup-by-Attribute settings</a>.', 'markup-by-attribute' ), MT2MBA_SITE_URL )
+			),
+		),
+		'warning' => array
+		(
+			//	Warning message #1
+//			'unique_message_identifier' => __( 'message', 'markup-by-attribute' ),
+		),
+	);
+
 
 	// Register class autoloader
 	require_once( MT2MBA_PLUGIN_DIR . '/autoloader.php' );
@@ -71,8 +93,9 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 		create_admin_globals();
 
 		// Instantiate admin notices
-		new MT2MBA_BACKEND_NOTICES;
-	
+		$notices = new MT2MBA_BACKEND_NOTICES;
+		$notices->send_notice_array( $admin_messages );
+
 		// Instantiate admin pointers
 		new MT2MBA_BACKEND_POINTERS;
 

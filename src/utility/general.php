@@ -65,14 +65,12 @@ class MT2MBA_UTILITY_GENERAL
             }
 
             // Add markup description to attribute terms
-            global $attrb_markup_desc_beg;
-            global $attrb_markup_desc_end;
             $results = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}termmeta WHERE meta_key LIKE 'mt2mba_markup'" );
             foreach( $results as $row )
             {
                 $term = get_term( (integer) $row->term_id );
-                $description = trim( $this->remove_bracketed_string( $attrb_markup_desc_beg, $attrb_markup_desc_end, trim( $term->description ) ) );
-                $description .= PHP_EOL . $attrb_markup_desc_beg . $row->meta_value . $attrb_markup_desc_end;
+                $description = trim( $this->remove_bracketed_string( ATTRB_MARKUP_DESC_BEG, ATTRB_MARKUP_DESC_END, trim( $term->description ) ) );
+                $description .= PHP_EOL . ATTRB_MARKUP_DESC_BEG . $row->meta_value . ATTRB_MARKUP_DESC_END;
                 wp_update_term( $row->term_id, $term->taxonomy, array( 'description' => trim( $description ) ) );
             }
 
@@ -87,21 +85,18 @@ class MT2MBA_UTILITY_GENERAL
             }
         
             // Bracket description and save base regular price
-            global $mt2mba_price_meta;
-            global $product_markup_desc_beg;
-            global $product_markup_desc_end;
             $last_parent_id = '';
-            $results = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}postmeta WHERE `meta_value` LIKE '%{$mt2mba_price_meta}%'" );
+            $results = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}postmeta WHERE `meta_value` LIKE '%" . MT2MBA_PRICE_META . "%'" );
             foreach( $results as $row )
             {
-                if ( ( strpos( $row->meta_value, $product_markup_desc_beg ) === FALSE ) && ( strpos( $row->meta_value, $mt2mba_price_meta ) !== FALSE ) )
+                if ( ( strpos( $row->meta_value, PRODUCT_MARKUP_DESC_BEG ) === FALSE ) && ( strpos( $row->meta_value, MT2MBA_PRICE_META ) !== FALSE ) )
                 {
-                    update_post_meta( $row->post_id, $row->meta_key, $product_markup_desc_beg . $row->meta_value . $product_markup_desc_end );
+                    update_post_meta( $row->post_id, $row->meta_key, PRODUCT_MARKUP_DESC_BEG . $row->meta_value . PRODUCT_MARKUP_DESC_END );
                 }
                 $v_product  = get_post( $row->post_id, 'ARRAY_A' );
                 if ( $last_parent_id != $v_product[ 'post_parent' ] )
                 {
-                    $beg            = strpos( $row->meta_value, $mt2mba_price_meta ) + strlen( $mt2mba_price_meta );
+                    $beg            = strpos( $row->meta_value, MT2MBA_PRICE_META ) + strlen( MT2MBA_PRICE_META );
                     $end            = strpos( $row->meta_value, PHP_EOL );
                     $base_price     = preg_replace( '/[^\p{L}\p{N}\s\.]/u', '', substr( $row->meta_value, $beg, $end - $beg ) );
                     update_post_meta( $v_product[ 'post_parent' ], 'mt2mba_base_regular_price', (float) $base_price );

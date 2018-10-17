@@ -171,12 +171,9 @@ class MT2MBA_BACKEND_PRODUCT
                 $variation_price = $orig_price;
 
                 // Trim any previous markup information out of description
-                global $mt2mba_price_meta;
-                global $product_markup_desc_beg;
-                global $product_markup_desc_end;
-                $utility         = new MT2MBA_UTILITY;
+                global           $mt2mba_utility;
                 $description     = $variation->get_description();
-                $description     = trim( $utility->remove_bracketed_string( $product_markup_desc_beg, $product_markup_desc_end, $description ) );
+                $description     = trim( $mt2mba_utility->remove_bracketed_string( PRODUCT_MARKUP_DESC_BEG, PRODUCT_MARKUP_DESC_END, $description ) );
 
                 // Loop through each attribute within variation
                 foreach ( $attributes as $attribute_id => $term_id )
@@ -214,12 +211,13 @@ class MT2MBA_BACKEND_PRODUCT
                                         $description = "";
                                     }
                                     // Set markup opening tag
-                                    $description .= PHP_EOL . $product_markup_desc_beg;
+                                    $description .= PHP_EOL . PRODUCT_MARKUP_DESC_BEG;
                                     // Open description with original price
                                     $description .= html_entity_decode
                                         (
-                                            $mt2mba_price_meta .
-                                            sprintf(
+                                            MT2MBA_PRICE_META .
+                                            sprintf
+                                            (
                                                 get_woocommerce_price_format(),
                                                 get_woocommerce_currency_symbol( get_woocommerce_currency() ),
                                                 $orig_price_formatted
@@ -239,10 +237,10 @@ class MT2MBA_BACKEND_PRODUCT
                 // Rewrite variation description if setting the regular price
                 if ( $price_type == 'regular_price' )
                 {
-                    if ( strpos( $description, $product_markup_desc_beg ) )
+                    if ( strpos( $description, PRODUCT_MARKUP_DESC_BEG ) )
                     {
                         // Close markup tags 
-                        $description .= $product_markup_desc_end;
+                        $description .= PRODUCT_MARKUP_DESC_END;
                     }
                     // Rewrite description
                     $variation->set_description( trim( $description ) );

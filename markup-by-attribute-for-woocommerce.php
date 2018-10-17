@@ -41,13 +41,20 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 	load_plugin_textdomain( 'markup-by-attribute', FALSE, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
 
 	// Set plugin information
-	define( 'MT2MBA_PLUGIN_PREFIX', 'MT2MBA' );
-	define( 'MT2MBA_VERSION', 3.0 );
-	define( 'MT2MBA_DB_VERSION', 2.1 );
-	define( 'MT2MBA_SITE_URL', get_bloginfo( 'wpurl' ) );
-	define( 'MT2MBA_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
-	define( 'MT2MBA_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
-	define( 'MT2MBA_PLUGIN_NAME', __( 'Markup by Attribute', 'markup-by-attribute' ) );
+	define( 'MT2MBA_PLUGIN_PREFIX',     'MT2MBA'                                            );
+	define( 'MT2MBA_VERSION',           3.0                                                 );
+	define( 'MT2MBA_DB_VERSION',        2.1                                                 );
+	define( 'MT2MBA_SITE_URL',          get_bloginfo( 'wpurl')                              );
+	define( 'MT2MBA_PLUGIN_DIR',        plugin_dir_path( __FILE__ )                         );
+	define( 'MT2MBA_PLUGIN_URL',        plugin_dir_url( __FILE__ )                          );
+	define( 'MT2MBA_PLUGIN_BASENAME',   plugin_basename( __FILE__ )                         );
+	define( 'MT2MBA_PLUGIN_NAME',       __( 'Markup by Attribute', 'markup-by-attribute' )	);
+
+	define( 'MT2MBA_PRICE_META',        __( 'Product price', 'markup-by-attribute' ) . ' '  );
+	define( 'PRODUCT_MARKUP_DESC_BEG',	'<span id="mbainfo">'                               );
+	define( 'PRODUCT_MARKUP_DESC_END',  '</span>'                                           );
+	define( 'ATTRB_MARKUP_DESC_BEG',    '(' . __( 'Markup:', 'markup-by-attribute' ) . ' '  );
+	define( 'ATTRB_MARKUP_DESC_END',    ')'                                                 );
 
 	$admin_messages = array
 	(	//	Update with dismissible info and warning messages that get displayed at startup
@@ -62,7 +69,9 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 				__( 'You may still control the markup display behavior of the options drop-down and the product description with the', 'markup-by-attribute' ),
 				sprintf( __( '<a href="%s/wp-admin/admin.php?page=wc-settings&tab=products&section=mt2mba">Markup-by-Attribute settings</a>.', 'markup-by-attribute' ), MT2MBA_SITE_URL )
 			),
-		),
+			//	Info message #2
+//			'unique_message_identifier' => __( 'message', 'markup-by-attribute' ),
+),
 		'warning' => array
 		(
 			//	Warning message #1
@@ -76,7 +85,7 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 	MT2MBA_AUTOLOADER::register();
 
 	// Add settings and instruction links to plugin page
-    add_filter( "plugin_action_links_" . plugin_basename( __FILE__ ), 'add_links' );
+    add_filter( "plugin_action_links_" . MT2MBA_PLUGIN_BASENAME, 'add_links' );
 
     // Instantiate utility class. Done here in case upgrade required.
 	global $mt2mba_utility;
@@ -88,9 +97,6 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 		// -------------
 		// Back end code
 		// -------------
-
-		// Set up glabals used throughout backend
-		create_admin_globals();
 
 		// Instantiate admin notices
 		$notices = new MT2MBA_UTILITY_NOTICES;
@@ -137,25 +143,6 @@ function add_links( $links )
 	// Restore deactivation link to end of array
 	
 	return array_merge( $mt2mba_links, $links );
-}
-
-
-/**
- * Set up globals used in admin classes
- * 
- */
-function create_admin_globals()
-{
-	global $mt2mba_price_meta;
-	$mt2mba_price_meta          = __( 'Product price', 'markup-by-attribute' ) . ' ';
-	global $product_markup_desc_beg;
-	$product_markup_desc_beg    = '<span id="mbainfo">';
-	global $product_markup_desc_end;
-	$product_markup_desc_end    = '</span>';
-	global $attrb_markup_desc_beg;
-	$attrb_markup_desc_beg      = '(' . __( 'Markup:', 'markup-by-attribute' ) . ' ';
-	global $attrb_markup_desc_end;
-	$attrb_markup_desc_end      = ')';
 }
 
 ?>

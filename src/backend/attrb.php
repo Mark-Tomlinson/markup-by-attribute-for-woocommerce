@@ -111,14 +111,12 @@ class MT2MBA_BACKEND_ATTRB
         }
         define( 'MT2MBA_ATTRB_RECURSION', TRUE );
 
+        global           $mt2mba_utility;
         $term            = get_term( $term_id );
         $taxonomy        = sanitize_key( $term->taxonomy );
         // Remove any previous markup information from description
-        global $attrb_markup_desc_beg;
-        global $attrb_markup_desc_end;
         $description     = $term->description;
-        $utility         = new MT2MBA_UTILITY;
-        $description     = trim( $utility->remove_bracketed_string( $attrb_markup_desc_beg, $attrb_markup_desc_end, $description ) );
+        $description     = trim( $mt2mba_utility->remove_bracketed_string( ATTRB_MARKUP_DESC_BEG, ATTRB_MARKUP_DESC_END, $description ) );
         
         // Remove old metadata, regardless of next step
         delete_term_meta( $term_id, 'mt2mba_markup' );
@@ -140,7 +138,7 @@ class MT2MBA_BACKEND_ATTRB
             }
             update_term_meta( $term_id, 'mt2mba_markup', $markup );
             // Update term description so markups are visible in the term list
-            $description .= PHP_EOL . $attrb_markup_desc_beg . $markup . $attrb_markup_desc_end;
+            $description .= PHP_EOL . ATTRB_MARKUP_DESC_BEG . $markup . ATTRB_MARKUP_DESC_END;
         }
 
         // Rewrite description

@@ -7,7 +7,7 @@
 // Exit if accessed directly
 if ( !defined( 'ABSPATH' ) ) exit( );
 
-class MT2MBA_BACKEND_NOTICES
+class MT2MBA_UTILITY_NOTICES
 {
 //    private static  $_instance;
 
@@ -150,6 +150,6 @@ class MT2MBA_BACKEND_NOTICES
         );
     }
 
-}    // End  class MT2MBA_BACKEND_NOTICES
+}    // End  class MT2MBA_UTILITY_NOTICES
 
 ?>

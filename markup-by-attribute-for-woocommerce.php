@@ -80,7 +80,7 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 
     // Instantiate utility class. Done here in case upgrade required.
 	global $mt2mba_utility;
-    $mt2mba_utility = new MT2MBA_UTILITY;
+    $mt2mba_utility = new MT2MBA_UTILITY_GENERAL;
 
 	// Pull in correct code depending on whether we are in the shop (frontend) or on the admin page (backend).
 	if ( is_admin( ) )
@@ -93,11 +93,11 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 		create_admin_globals();
 
 		// Instantiate admin notices
-		$notices = new MT2MBA_BACKEND_NOTICES;
+		$notices = new MT2MBA_UTILITY_NOTICES;
 		$notices->send_notice_array( $admin_messages );
 
 		// Instantiate admin pointers
-		new MT2MBA_BACKEND_POINTERS;
+		new MT2MBA_UTILITY_POINTERS;
 
 		// Instantiate attribute admin
 		new MT2MBA_BACKEND_ATTRB;

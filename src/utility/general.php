@@ -9,7 +9,7 @@
 // Exit if accessed directly
 if ( !defined( 'ABSPATH' ) ) exit( );
 
-class MT2MBA_UTILITY
+class MT2MBA_UTILITY_GENERAL
 {
     /**
      * Initialization method visible before instantiation
@@ -231,5 +231,6 @@ class MT2MBA_UTILITY
         // No markup; return empty string
         return '';
     }
-}
+    
+}   //  End class MT2MBA_UTILITY_GENERAL
 ?>

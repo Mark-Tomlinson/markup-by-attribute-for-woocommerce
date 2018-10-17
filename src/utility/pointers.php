@@ -7,7 +7,7 @@
 // Exit if accessed directly
 if ( !defined( 'ABSPATH' ) ) exit( );
 
-class MT2MBA_BACKEND_POINTERS {
+class MT2MBA_UTILITY_POINTERS {
 
     private $pointer_title;
 
@@ -151,6 +151,6 @@ class MT2MBA_BACKEND_POINTERS {
         return $pointers;
     }
 
-}    // End  class MT2MBA_BACKEND_POINTERS
+}    // End  class MT2MBA_UTILITY_POINTERS
 
 ?>

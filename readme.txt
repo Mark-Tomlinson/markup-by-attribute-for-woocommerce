@@ -141,6 +141,11 @@ Thanks! The donation button assumes $15.00 USD. But feel free to adjust that amo
 * Manitenance: Reorganized main module for understandability.
 * Maintenance: General code clean-up and redundancy removal.
 
+= 2.5 =
+* Fix: Corrected "Requires PHP" version number in readme.txt.
+* Fix: Updated "WC tested up to" version number in readme.txt.
+* Fix: Eliminated unused "Docs" folder
+
 = 2.4 =
 * Feature: Use the WooCommerce currency formatting settings.
 * Fix: Re-ensure documentation is clear that this works on "global" attributes.

@@ -20,13 +20,13 @@
  * Donate link:          https://www.paypal.me/MT2Dev/15
  * License:              GPLv3
  * License URI:          https://www.gnu.org/licenses/gpl-3.0.html
- * Version:              2.4
+ * Version:              2.5
  * Stable tag:           trunk
  * Requires at least:    4.6
  * Tested up to:         4.9.8
- * Requires PHP:         5.2.4
+ * Requires PHP:         5.6
  * WC requires at least: 3.0
- * WC tested up to:      3.4.5
+ * WC tested up to:      3.5.0
  */
 
 // Exit if accessed directly

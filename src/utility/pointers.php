@@ -51,7 +51,7 @@ class MT2MBA_UTILITY_POINTERS {
 
         // Get dismissed pointers
         $dismissed = explode( ',', (string) get_user_meta( get_current_user_id(), 'dismissed_wp_pointers', true ) );
-        $valid_pointers =array();
+        $valid_pointers = array();
  
         // Check pointers and remove dismissed ones.
         foreach ( $pointers as $pointer_id => $pointer )

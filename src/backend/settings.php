@@ -190,9 +190,9 @@ class MT2MBA_BACKEND_SETTINGS
 
             // Format markup in Drop-down
             register_setting( 'mt2mba', 'mt2mba_dropdown_behavior', array( $this, 'validate_mt2mba_dropdown_behavior_field' ) );
-            $description = __(
-                'Should Markup-by-Attribute add the markup to the options drop-down box, and should the currency symbol be displayed?<br/><em>This setting takes effect immediately.</em>',
-                'markup-by-attribute' );
+            $description =
+                __( 'Should Markup-by-Attribute add the markup to the options drop-down box, and should the currency symbol be displayed?', 'markup-by-attribute' ) . '<br/>' .
+                '<em>' . __( 'This setting affects all products and takes effect immediately.', 'markup-by-attribute' ) . '</em>';
             $mt2mba_settings[] = array
                 (
                     'title'    => __( 'Option Drop-down Behavior', 'markup-by-attribute' ),
@@ -210,9 +210,9 @@ class MT2MBA_BACKEND_SETTINGS
 
             // Description Behavior
             register_setting( 'mt2mba', 'mt2mba_desc_behavior', array( $this, 'validate_mt2mba_desc_behavior_field' ) );
-            $description = __(
-                'How should Markup-by-Attribute handle adding price markup information to the variation description?<br/><em>This setting takes effect when you recalculate the regular price for a product.</em>',
-                'markup-by-attribute' );
+            $description =
+                __( 'How should Markup-by-Attribute handle adding price markup information to the variation description?', 'markup-by-attribute' ) . ' <br/>' .
+                '<em>' . __( 'This setting affects products individually and takes effect when you recalculate the regular price for the product.', 'markup-by-attribute' ) . '</em>';
             $mt2mba_settings[] = array
                 (
                     'title'    => __( 'Description Behavior', 'markup-by-attribute' ),

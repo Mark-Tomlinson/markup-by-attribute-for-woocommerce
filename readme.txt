@@ -61,54 +61,47 @@ Markup by Attribute:
 
 3. The `[Install]` button will change to an `[Activate]` button. Use it to activate the plugin.
 
-= Using Markup by Attribute for WooCommerce =
+## Using Markup by Attribute for WooCommerce
 
-These instructions assume you are familiar with WooCommerce global Product Attributes and Product Variations. If not, you may want to review the WooCommerce documentation on [Product Attributes](https://docs.woocommerce.com/document/managing-product-taxonomies/#section-6) and [Variable Products](https://docs.woocommerce.com/document/variable-product/).
+NOTE: These instructions assume you are familiar with WooCommerce global Product Attributes. If not, you may want to review the WooCommerce documentation on [Product Attributes](https://docs.woocommerce.com/document/managing-product-taxonomies/#section-6).
+
+NOTE: These instructions assume you are familiar with WooCommerce Product Variations. If not, you may want to review the WooCommerce documentation on [Variable Products](https://docs.woocommerce.com/document/variable-product/).
 
 Set up a few variable products to get the hang of it. Then come back here.  We'll wait.
 
-Ready to dive in?
+## Three Easy Steps
 
-Note that steps 1, 3 and 4 below are standard WooCommerce Variable Product stuff. Step 2 is about the only **process change** you need to be concerned with. We've italicized some of the *outcome changes* you will notice in the other steps.
+1.  **While creating new global attribute terms or editing existing ones, add the markup.**
+    * If the option needs a markup, put the amount of the markup in the term’s Markup field on either the `Add new attribute` panel or the `Edit attribute` panel.
+    * Examples of valid values include: ‘-5’, ‘5.95’, ‘+5.678’, ‘7.5%’, and ‘-12%’.
+1.  **Create product variations as you normally would.**
+    * Markup by Attribute requires variable products because it changes the price of each variation.
+1.  **Use the `Set regular price` and `Set sale price` bulk edit functions as you normally would.**  (_NOTE: If you’ve already set the prices before installing Markup by Attribute, you will need to do it again to apply the markup_).
+    * The markup will be applied to the price according to the attribute terms associated with the variation.
+    * A description of the markup will be added to the variation description.
+      ```
+      Product Price 18.95
+      Add 2.00 for Logo
+      ```
+    * _TIP_: If you change the markup at a later date, repeat this step to recalculate the markup for this product. Or do not repeat the step to leave the previous markups unchanged.
+    * _TIP_: Always set the regular price before setting a sale price. Percentage markups are calculated on the regular price, so they can not be applied to a sale price if the regular price has not been set.
 
-1. Create global attributes and terms, if you haven’t already. Global attributes are created on the `Products` >> `Attributes` page. (Markup by Attribute is not intended for attributes created on individual product admin pages, and will not work on those).
-    * For instance, the attribute 'size' may include the terms 'X-Small',  'Small', 'Medium', 'Large', and 'X-Large'.
-    * The attribute 'color' may include the terms 'Orange', 'Red', 'Violet', 'Blue', 'Green', and 'Yellow'.
+## Advanced
 
-2. **While creating new terms or editing existing ones, add the markup.**
-    * **For each term, consider whether a markup or markdown is needed. Adding a logo to a shirt might increase the cost by $5. Extra small shirts might be 10% less.**
-    * **Put the amount of the markup in the term's Markup field on either the `Add new *attribute*` panel or the `Edit *attribute*` panel. Examples of valid values include: '-5', '5.95', '+5.678', '7.5%', and '-12%'.**
-    * **Strings that are not recognized as numbers will be ignored. Numbers include 0 through 9, of course. But may also start with '+' or '-', include a decimal point, and end with a percent symbol ('%').**
-  
-3. Create product variations. (You probably have already done this).
-    * Change the product type to `Variable product`.
-    * Select the attribute(s) you added the markups to on the Attributes tab. Be sure to check the `[X] Used for variations` checkbox.
-    * On the Variations tab, select `Create variations from all attributes` and click [Go].
-
-4. Once you create your product variations, use the "Set regular price" and "Set sale price" bulk edit functions as you normally would.
-    * **Even if you've already done this before installing Markup by Attribute, you will need to do it again to apply the markup.**
-    * *The markup will be applied to the price according to the term associated with the variation.*
-    * *A description of the markup will be added to the variation description.*
-
-            <span id="mbainfo">
-            Product Price $18.95
-            Add $5.00 for Logo
-            </span>
-
-    * *TIP: Because the markup description is bracketed in <span> tags, CSS can be used to modify its appearance on the product page.*
-
-            #mbainfo { color: darkblue; }
-
-    * *TIP: If you change the markup at a later date, repeat this step to recalculate the markup for this product. Or do not repeat the step to leave the previous markups unchanged.*
-    * *TIP: Always set the regular price before setting a sale price. Percentage markups are calculated on the regular price, so they can not be applied to a sale price if the regular price has not been set.*
+Because the markup description is bracketed in `<span>` tags, CSS can be used to modify its appearance on the product page. Simply modify the id "#mbainfo".
+```
+#mbainfo {
+   color: salmon;
+}
+```
 
 == Frequently Asked Questions ==
 
 = Does this support languages other than English? =
 
-Not at this time. I will be adding internationalization in a future release. I would appreciate your assistance in translating it if you want it in another language. I may require a lot of 'hand-holding' since I am not familiar with translation template files, yet.
+Yes. However, the developer only speaks American English.  I can provide 'Google Translate' versions of other languages, but I would prefer it if a native speaker translated the text. The .POT file is found in the /languages folder of the plugin. If you don't have access to your server, you can also find it on [GitHub](https://github.com/Mark-Tomlinson/markup-by-attribute-for-woocommerce).
 
-However, currencies other than the US Dollar are supported via the WooCommerce General Settings.
+What's a .POT file? If you'd like to help but don't know how to use a template file, don't worry. A .POT file is a text file that contains all the English phrases found in Markup by Attribute.  You can simply open it and translate what you read there.  Send me the translations and I will incoorperate them in the next release.
 
 = If I change the markup for an attribute, how will product prices change? =
 

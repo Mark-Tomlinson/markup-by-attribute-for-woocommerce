@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Markup by Attribute for WooCommerce - MT² Tech\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-31 16:56+0000\n"
+"POT-Creation-Date: 2018-10-07 03:07+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -18,49 +18,49 @@ msgstr ""
 msgid "Markup by Attribute"
 msgstr ""
 
-#: markup-by-attribute-for-woocommerce.php:53
+#: markup-by-attribute-for-woocommerce.php:55
 msgid "Product price"
 msgstr ""
 
-#: markup-by-attribute-for-woocommerce.php:56
+#: markup-by-attribute-for-woocommerce.php:61
 msgid "Markup:"
 msgstr ""
 
-#: markup-by-attribute-for-woocommerce.php:67
+#: markup-by-attribute-for-woocommerce.php:94
+msgid "Settings"
+msgstr ""
+
+#: markup-by-attribute-for-woocommerce.php:99
+msgid "Instructions"
+msgstr ""
+
+#: src/class-mt2mba-backend-notices.php:51
 msgid ""
 "PLEASE NOTE: As of version 2.4, Markup-by-Attribute no longer has it's own "
 "currency format settings. It now uses the"
 msgstr ""
 
-#: markup-by-attribute-for-woocommerce.php:68
+#: src/class-mt2mba-backend-notices.php:52
 #, php-format
 msgid ""
 "<a href=\"%s/wp-admin/admin.php?page=wc-settings\">WooCommerce currency "
 "settings</a>.<br/>"
 msgstr ""
 
-#: markup-by-attribute-for-woocommerce.php:69
+#: src/class-mt2mba-backend-notices.php:53
 msgid ""
 "You may still control the markup display behavior of the options drop-down "
 "and the product description with the"
 msgstr ""
 
-#: markup-by-attribute-for-woocommerce.php:70
+#: src/class-mt2mba-backend-notices.php:54
 #, php-format
 msgid ""
 "<a href=\"%s/wp-admin/admin.php?page=wc-"
 "settings&tab=products&section=mt2mba\">Markup-by-Attribute settings</a>."
 msgstr ""
 
-#: markup-by-attribute-for-woocommerce.php:136
-msgid "Settings"
-msgstr ""
-
-#: markup-by-attribute-for-woocommerce.php:141
-msgid "Instructions"
-msgstr ""
-
-#: src/utility/pointers.php:96
+#: src/class-mt2mba-backend-pointers.php:89
 msgid ""
 "Markups can be fixed values such as <code>5</code> or <code>5.95</code>. Or "
 "they can be percentages such as <code>5%</code> or <code>1.23%</code>. "
@@ -70,34 +70,24 @@ msgid ""
 "action."
 msgstr ""
 
-#: src/utility/pointers.php:134
+#: src/class-mt2mba-backend-pointers.php:127
 msgid ""
 "Using this plugin is simple, but might be a little obscure. This link to the "
 "instructions may help get you started.<br/>We'll just leave the instructions "
 "link right here."
 msgstr ""
 
-#: src/utility/general.php:219
-#, php-format
-msgid "Subtract %1$s for %2$s"
-msgstr ""
-
-#: src/utility/general.php:219
-#, php-format
-msgid "Add %1$s for %2$s"
-msgstr ""
-
-#: src/backend/attrb.php:37
+#: src/class-mt2mba-backend-attrb.php:37
 msgid "Markup (or markdown)"
 msgstr ""
 
-#: src/backend/attrb.php:38
+#: src/class-mt2mba-backend-attrb.php:38
 msgid ""
 "Markup or markdown associated with this option. Signed, floating point "
 "numeric allowed."
 msgstr ""
 
-#: src/backend/settings.php:175
+#: src/class-mt2mba-backend-settings.php:175
 msgid ""
 "The following options are used to configure variation markups by attribute."
 "<br/>Additional help can be found in the <a href=\"https://github.com/Mark-"
@@ -105,74 +95,66 @@ msgid ""
 "Markup by Attribute wiki</a> on the <code>Settings</code> page."
 msgstr ""
 
-#: src/backend/settings.php:185
+#: src/class-mt2mba-backend-settings.php:185
 msgid "Markup Display"
 msgstr ""
 
-#: src/backend/settings.php:187
+#: src/class-mt2mba-backend-settings.php:187
 msgid "Determine how markup information is displayed to the customer."
 msgstr ""
 
-#: src/backend/settings.php:194
+#: src/class-mt2mba-backend-settings.php:193
 msgid ""
 "Should Markup-by-Attribute add the markup to the options drop-down box, and "
-"should the currency symbol be displayed?"
+"should the currency symbol be displayed?<br/><em>This setting takes effect "
+"immediately.</em>"
 msgstr ""
 
-#: src/backend/settings.php:195
-msgid "This setting affects all products and takes effect immediately."
-msgstr ""
-
-#: src/backend/settings.php:198
+#: src/class-mt2mba-backend-settings.php:198
 msgid "Option Drop-down Behavior"
 msgstr ""
 
-#: src/backend/settings.php:204
+#: src/class-mt2mba-backend-settings.php:204
 msgid "Do NOT show the markup in the options drop-down box."
 msgstr ""
 
-#: src/backend/settings.php:205
+#: src/class-mt2mba-backend-settings.php:205
 msgid "Show the markup WITH the currency symbol in the options drop-down box."
 msgstr ""
 
-#: src/backend/settings.php:206
+#: src/class-mt2mba-backend-settings.php:206
 msgid ""
 "Show the markup WITHOUT the currency symbol in the options drop-down box."
 msgstr ""
 
-#: src/backend/settings.php:214
+#: src/class-mt2mba-backend-settings.php:213
 msgid ""
 "How should Markup-by-Attribute handle adding price markup information to the "
-"variation description?"
+"variation description?<br/><em>This setting takes effect when you "
+"recalculate the regular price for a product.</em>"
 msgstr ""
 
-#: src/backend/settings.php:215
-msgid ""
-"This setting affects products individually and takes effect when you "
-"recalculate the regular price for the product."
-msgstr ""
-
-#: src/backend/settings.php:218
+#: src/class-mt2mba-backend-settings.php:218
 msgid "Description Behavior"
 msgstr ""
 
-#: src/backend/settings.php:224
+#: src/class-mt2mba-backend-settings.php:224
 msgid "Do NOT add pricing information to the description field."
 msgstr ""
 
-#: src/backend/settings.php:225
+#: src/class-mt2mba-backend-settings.php:225
 msgid "Add pricing information to the end of the existing description."
 msgstr ""
 
-#: src/backend/settings.php:226
+#: src/class-mt2mba-backend-settings.php:226
 msgid "Overwrite the variation description with price information."
 msgstr ""
 
-#: src/backend/settings.php:242
+#: src/class-mt2mba-backend-settings.php:242
 msgid "Other Settings"
 msgstr ""
 
-#: src/backend/settings.php:249
+#: src/class-mt2mba-backend-settings.php:249
 msgid ""
 "Use Cautiously: WooCommerce limits the number of linked variations you can "
 "create at a time to 50 to prevent server overload.  To create more, you can "
@@ -182,21 +164,31 @@ msgid ""
 "number higher."
 msgstr ""
 
-#: src/backend/settings.php:254
+#: src/class-mt2mba-backend-settings.php:254
 msgid "Variation Max"
 msgstr ""
 
-#: src/backend/settings.php:299
+#: src/class-mt2mba-backend-settings.php:299
 msgid "Please select an option for the options drop-down."
 msgstr ""
 
-#: src/backend/settings.php:314
+#: src/class-mt2mba-backend-settings.php:314
 msgid "Please select an option for the description behavior."
 msgstr ""
 
-#: src/backend/settings.php:331
+#: src/class-mt2mba-backend-settings.php:331
 msgid ""
 "Variation Max must be a number, 1 or higher.</br>Previous option retained."
+msgstr ""
+
+#: src/class-mt2mba-utility.php:224
+#, php-format
+msgid "Subtract %1$s for %2$s"
+msgstr ""
+
+#: src/class-mt2mba-utility.php:224
+#, php-format
+msgid "Add %1$s for %2$s"
 msgstr ""
 
 #. Name of the plugin

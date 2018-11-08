@@ -61,7 +61,7 @@ Markup by Attribute:
 
 3. The `[Install]` button will change to an `[Activate]` button. Use it to activate the plugin.
 
-## Using Markup by Attribute for WooCommerce
+= Using Markup by Attribute for WooCommerce =
 
 NOTE: These instructions assume you are familiar with WooCommerce global Product Attributes. If not, you may want to review the WooCommerce documentation on [Product Attributes](https://docs.woocommerce.com/document/managing-product-taxonomies/#section-6).
 
@@ -69,7 +69,7 @@ NOTE: These instructions assume you are familiar with WooCommerce Product Variat
 
 Set up a few variable products to get the hang of it. Then come back here.  We'll wait.
 
-## Three Easy Steps
+# Three Easy Steps #
 
 1.  **While creating new global attribute terms or editing existing ones, add the markup.**
     * If the option needs a markup, put the amount of the markup in the term’s Markup field on either the `Add new attribute` panel or the `Edit attribute` panel.
@@ -87,14 +87,14 @@ Set up a few variable products to get the hang of it. Then come back here.  We'l
     * _TIP_: If you change the markup at a later date, repeat this step to recalculate the markup for this product. Or do not repeat the step to leave the previous markups unchanged.
     * _TIP_: Always set the regular price before setting a sale price. Percentage markups are calculated on the regular price, so they can not be applied to a sale price if the regular price has not been set.
 
-## Advanced
+# Advanced #
 
 Because the markup description is bracketed in `<span>` tags, CSS can be used to modify its appearance on the product page. Simply modify the id "#mbainfo".
-```
-#mbainfo {
-   color: salmon;
-}
-```
+    ```
+    #mbainfo {
+        color: salmon;
+    }
+    ```
 
 == Frequently Asked Questions ==
 

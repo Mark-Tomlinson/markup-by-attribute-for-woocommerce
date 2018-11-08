@@ -9,7 +9,7 @@
 // Exit if accessed directly
 if ( !defined( 'ABSPATH' ) ) exit( );
 
-class MT2MBA_UTILITY
+class MT2MBA_UTILITY_GENERAL
 {
     /**
      * Initialization method visible before instantiation
@@ -43,7 +43,6 @@ class MT2MBA_UTILITY
      */
     function mt2mba_db_upgrade()
     {
-    
         // Failsafe
         $current_db_version = get_site_option( 'mt2mba_db_version', 1 );
         if ( $current_db_version >= MT2MBA_DB_VERSION ) return;
@@ -66,14 +65,12 @@ class MT2MBA_UTILITY
             }
 
             // Add markup description to attribute terms
-            global $attrb_markup_desc_beg;
-            global $attrb_markup_desc_end;
             $results = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}termmeta WHERE meta_key LIKE 'mt2mba_markup'" );
             foreach( $results as $row )
             {
                 $term = get_term( (integer) $row->term_id );
-                $description = trim( $this->remove_bracketed_string( $attrb_markup_desc_beg, $attrb_markup_desc_end, trim( $term->description ) ) );
-                $description .= PHP_EOL . $attrb_markup_desc_beg . $row->meta_value . $attrb_markup_desc_end;
+                $description = trim( $this->remove_bracketed_string( ATTRB_MARKUP_DESC_BEG, ATTRB_MARKUP_DESC_END, trim( $term->description ) ) );
+                $description .= PHP_EOL . ATTRB_MARKUP_DESC_BEG . $row->meta_value . ATTRB_MARKUP_DESC_END;
                 wp_update_term( $row->term_id, $term->taxonomy, array( 'description' => trim( $description ) ) );
             }
 
@@ -88,21 +85,18 @@ class MT2MBA_UTILITY
             }
         
             // Bracket description and save base regular price
-            global $mt2mba_price_meta;
-            global $product_markup_desc_beg;
-            global $product_markup_desc_end;
             $last_parent_id = '';
-            $results = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}postmeta WHERE `meta_value` LIKE '%{$mt2mba_price_meta}%'" );
+            $results = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}postmeta WHERE `meta_value` LIKE '%" . MT2MBA_PRICE_META . "%'" );
             foreach( $results as $row )
             {
-                if ( ( strpos( $row->meta_value, $product_markup_desc_beg ) === FALSE ) && ( strpos( $row->meta_value, $mt2mba_price_meta ) !== FALSE ) )
+                if ( ( strpos( $row->meta_value, PRODUCT_MARKUP_DESC_BEG ) === FALSE ) && ( strpos( $row->meta_value, MT2MBA_PRICE_META ) !== FALSE ) )
                 {
-                    update_post_meta( $row->post_id, $row->meta_key, $product_markup_desc_beg . $row->meta_value . $product_markup_desc_end );
+                    update_post_meta( $row->post_id, $row->meta_key, PRODUCT_MARKUP_DESC_BEG . $row->meta_value . PRODUCT_MARKUP_DESC_END );
                 }
                 $v_product  = get_post( $row->post_id, 'ARRAY_A' );
                 if ( $last_parent_id != $v_product[ 'post_parent' ] )
                 {
-                    $beg            = strpos( $row->meta_value, $mt2mba_price_meta ) + strlen( $mt2mba_price_meta );
+                    $beg            = strpos( $row->meta_value, MT2MBA_PRICE_META ) + strlen( MT2MBA_PRICE_META );
                     $end            = strpos( $row->meta_value, PHP_EOL );
                     $base_price     = preg_replace( '/[^\p{L}\p{N}\s\.]/u', '', substr( $row->meta_value, $beg, $end - $beg ) );
                     update_post_meta( $v_product[ 'post_parent' ], 'mt2mba_base_regular_price', (float) $base_price );
@@ -122,6 +116,7 @@ class MT2MBA_UTILITY
         update_option( 'mt2mba_db_version', MT2MBA_DB_VERSION );
     }
 
+
     /**
      * Remove bracketed substring from string
      *
@@ -130,7 +125,7 @@ class MT2MBA_UTILITY
      * @param  string $string       The string to be processed
      * @return string               The string minus the text to be removed and the beginning and ending markers
      */
-    public function remove_bracketed_string($beginning, $ending, $string)
+    public function remove_bracketed_string( $beginning, $ending, $string )
     {
         $beginningPos = strpos( $string, $beginning, 0 );
         $endingPos    = strpos( $string, $ending, $beginningPos );
@@ -140,40 +135,6 @@ class MT2MBA_UTILITY
         $textToDelete = substr( $string, $beginningPos, ( $endingPos + strlen( $ending ) ) - $beginningPos );
         
         return str_replace( $textToDelete, '', $string );
-    }
-
-    function mt2mba_price( $price, $args = array() )
-    {
-        $args = apply_filters(
-          'wc_price_args', wp_parse_args(
-            $args, array(
-              'ex_tax_label'       => false,
-              'currency'           => '',
-              'decimal_separator'  => wc_get_price_decimal_separator(),
-              'thousand_separator' => wc_get_price_thousand_separator(),
-              'decimals'           => wc_get_price_decimals(),
-              'price_format'       => get_woocommerce_price_format(),
-            )
-          )
-        );
-      
-        $unformatted_price = $price;
-        $negative          = $price < 0;
-        $price             = apply_filters( 'raw_woocommerce_price', floatval( $negative ? $price * -1 : $price ) );
-        $price             = apply_filters( 'formatted_woocommerce_price', number_format( $price, $args['decimals'], $args['decimal_separator'], $args['thousand_separator'] ), $price, $args['decimals'], $args['decimal_separator'], $args['thousand_separator'] );
-      
-        if ( apply_filters( 'woocommerce_price_trim_zeros', false ) && $args['decimals'] > 0 ) {
-          $price = wc_trim_zeros( $price );
-        }
-      
-        $formatted_price = ( $negative ? '-' : '' ) . sprintf( $args['price_format'], get_woocommerce_currency_symbol( $args['currency'] ), $price );
-        $return          = $formatted_price;
-      
-        if ( $args['ex_tax_label'] && wc_tax_enabled() ) {
-          $return .= WC()->countries->ex_tax_or_vat();
-        }
-      
-        return apply_filters( 'wc_price', $return, $price, $args, $unformatted_price );
     }
 
     /**
@@ -197,7 +158,7 @@ class MT2MBA_UTILITY
     /**
      * Clean up the price or markup and reformat according to currency options
      */
-    function clean_up_price( $price )
+    public function clean_up_price( $price )
     {
         return number_format( floatval( abs( $price ) ), MT2MBA_DECIMAL_POINTS, MT2MBA_DECIMAL_SEPARATOR, MT2MBA_THOUSAND_SEPARATOR );
     }
@@ -254,16 +215,17 @@ class MT2MBA_UTILITY
             // Get globals
             $this->get_mba_globals();
 
-            $sign = $markup < 0 ? __('Subtract') : __('Add');
+            // Translators; %1$s is the formated price of the option, %2$s is the option name
+            $desc_format = $markup < 0 ? __('Subtract %1$s for %2$s', 'markup-by-attribute') : __('Add %1$s for %2$s', 'markup-by-attribute');
+
             return html_entity_decode
                 (
-                    $sign . ' ' .
-                    sprintf( MT2MBA_PRICE_FORMAT, MT2MBA_CURRENCY_SYMBOL, $this->clean_up_price( $markup ) ) .
-                    ' ' . __('for') . ' ' . $term
+                    sprintf( $desc_format, sprintf( MT2MBA_PRICE_FORMAT, MT2MBA_CURRENCY_SYMBOL, $this->clean_up_price( $markup ) ), $term )
                 );
         }
         // No markup; return empty string
         return '';
     }
-}
+    
+}   //  End class MT2MBA_UTILITY_GENERAL
 ?>

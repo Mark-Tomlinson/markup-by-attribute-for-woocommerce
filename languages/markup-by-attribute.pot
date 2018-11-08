@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Markup by Attribute for WooCommerce - MT² Tech\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-31 16:56+0000\n"
+"POT-Creation-Date: 2018-11-05 03:59+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -33,10 +33,7 @@ msgid ""
 msgstr ""
 
 #: markup-by-attribute-for-woocommerce.php:68
-#, php-format
-msgid ""
-"<a href=\"%s/wp-admin/admin.php?page=wc-settings\">WooCommerce currency "
-"settings</a>.<br/>"
+msgid "WooCommerce currency settings"
 msgstr ""
 
 #: markup-by-attribute-for-woocommerce.php:69
@@ -46,10 +43,7 @@ msgid ""
 msgstr ""
 
 #: markup-by-attribute-for-woocommerce.php:70
-#, php-format
-msgid ""
-"<a href=\"%s/wp-admin/admin.php?page=wc-"
-"settings&tab=products&section=mt2mba\">Markup-by-Attribute settings</a>."
+msgid "Markup-by-Attribute settings"
 msgstr ""
 
 #: markup-by-attribute-for-woocommerce.php:136
@@ -98,81 +92,81 @@ msgid ""
 msgstr ""
 
 #: src/backend/settings.php:175
+#, php-format
 msgid ""
 "The following options are used to configure variation markups by attribute."
-"<br/>Additional help can be found in the <a href=\"https://github.com/Mark-"
-"Tomlinson/markup-by-attribute-for-woocommerce/wiki\" target=\"_blank\">"
+"<br/>Additional help can be found in the <a href=\"%1$s\" target=\"_blank\">"
 "Markup by Attribute wiki</a> on the <code>Settings</code> page."
 msgstr ""
 
-#: src/backend/settings.php:185
+#: src/backend/settings.php:187
 msgid "Markup Display"
 msgstr ""
 
-#: src/backend/settings.php:187
+#: src/backend/settings.php:189
 msgid "Determine how markup information is displayed to the customer."
 msgstr ""
 
-#: src/backend/settings.php:194
+#: src/backend/settings.php:196
 msgid ""
 "Should Markup-by-Attribute add the markup to the options drop-down box, and "
 "should the currency symbol be displayed?"
 msgstr ""
 
-#: src/backend/settings.php:195
+#: src/backend/settings.php:197
 msgid "This setting affects all products and takes effect immediately."
 msgstr ""
 
-#: src/backend/settings.php:198
+#: src/backend/settings.php:200
 msgid "Option Drop-down Behavior"
 msgstr ""
 
-#: src/backend/settings.php:204
+#: src/backend/settings.php:206
 msgid "Do NOT show the markup in the options drop-down box."
 msgstr ""
 
-#: src/backend/settings.php:205
+#: src/backend/settings.php:207
 msgid "Show the markup WITH the currency symbol in the options drop-down box."
 msgstr ""
 
-#: src/backend/settings.php:206
+#: src/backend/settings.php:208
 msgid ""
 "Show the markup WITHOUT the currency symbol in the options drop-down box."
 msgstr ""
 
-#: src/backend/settings.php:214
+#: src/backend/settings.php:216
 msgid ""
 "How should Markup-by-Attribute handle adding price markup information to the "
 "variation description?"
 msgstr ""
 
-#: src/backend/settings.php:215
+#: src/backend/settings.php:217
 msgid ""
 "This setting affects products individually and takes effect when you "
 "recalculate the regular price for the product."
 msgstr ""
 
-#: src/backend/settings.php:218
+#: src/backend/settings.php:220
 msgid "Description Behavior"
 msgstr ""
 
-#: src/backend/settings.php:224
+#: src/backend/settings.php:226
 msgid "Do NOT add pricing information to the description field."
 msgstr ""
 
-#: src/backend/settings.php:225
+#: src/backend/settings.php:227
 msgid "Add pricing information to the end of the existing description."
 msgstr ""
 
-#: src/backend/settings.php:226
+#: src/backend/settings.php:228
 msgid "Overwrite the variation description with price information."
 msgstr ""
 
-#: src/backend/settings.php:242
+#: src/backend/settings.php:244
 msgid "Other Settings"
 msgstr ""
 
-#: src/backend/settings.php:249
+#: src/backend/settings.php:251
 msgid ""
 "Use Cautiously: WooCommerce limits the number of linked variations you can "
 "create at a time to 50 to prevent server overload.  To create more, you can "
@@ -182,19 +176,19 @@ msgid ""
 "number higher."
 msgstr ""
 
-#: src/backend/settings.php:254
+#: src/backend/settings.php:256
 msgid "Variation Max"
 msgstr ""
 
-#: src/backend/settings.php:299
+#: src/backend/settings.php:301
 msgid "Please select an option for the options drop-down."
 msgstr ""
 
-#: src/backend/settings.php:314
+#: src/backend/settings.php:316
 msgid "Please select an option for the description behavior."
 msgstr ""
 
-#: src/backend/settings.php:331
+#: src/backend/settings.php:333
 msgid ""
 "Variation Max must be a number, 1 or higher.</br>Previous option retained."
 msgstr ""

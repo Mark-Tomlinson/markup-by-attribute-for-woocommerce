@@ -17,7 +17,6 @@ class MT2MBA_BACKEND_SETTINGS
     var $error_msg                  =   '';
     var $format_desc                =   '<div class=\"description\">%s<\/div>';
     var $format_error               =   '<div class=\"error notice\"><p><strong>%s</strong></p></div>';
-    var $valid_currency_symbols     =   array( '¤', '$', '£', '€', '¢', '¥', '₧', 'ƒ' );
 
     /**
      * Initialization method visible before instantiation
@@ -171,10 +170,10 @@ class MT2MBA_BACKEND_SETTINGS
             $mt2mba_settings[] = array
                 (
                     'name'     => MT2MBA_PLUGIN_NAME,
-                    'type'     => 'title', 
-                    'desc'     => __( 
-                        'The following options are used to configure variation markups by attribute.<br/>Additional help can be found in the <a href="https://github.com/Mark-Tomlinson/markup-by-attribute-for-woocommerce/wiki" target="_blank">Markup by Attribute wiki</a> on the <code>Settings</code> page.',
-                        'markup-by-attribute' ) .
+                    'type'     => 'title',
+                    'desc'     => sprintf (
+                        __( 'The following options are used to configure variation markups by attribute.<br/>Additional help can be found in the <a href="%1$s" target="_blank">Markup by Attribute wiki</a> on the <code>Settings</code> page.', 'markup-by-attribute' ),
+                        'https://github.com/Mark-Tomlinson/markup-by-attribute-for-woocommerce/wiki' ),
                         $this->error_msg,
                     'id'       => 'mt2mba',
                 );

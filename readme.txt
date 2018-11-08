@@ -76,6 +76,7 @@ Set up a few variable products to get the hang of it. Then come back here.  We'l
     * Examples of valid values include: ‘-5’, ‘5.95’, ‘+5.678’, ‘7.5%’, and ‘-12%’.
 1.  **Create product variations as you normally would.**
     * Markup by Attribute requires variable products because it changes the price of each variation.
+    * It is recommended that you use the `Create variations from all attributes` function to ensure all variations are represented.
 1.  **Use the `Set regular price` and `Set sale price` bulk edit functions as you normally would.**  (_NOTE: If you’ve already set the prices before installing Markup by Attribute, you will need to do it again to apply the markup_).
     * The markup will be applied to the price according to the attribute terms associated with the variation.
     * A description of the markup will be added to the variation description.
@@ -101,7 +102,7 @@ Because the markup description is bracketed in `<span>` tags, CSS can be used to
 
 Yes. However, the developer only speaks American English.  I can provide 'Google Translate' versions of other languages, but I would prefer it if a native speaker translated the text. The .POT file is found in the /languages folder of the plugin. If you don't have access to your server, you can also find it on [GitHub](https://github.com/Mark-Tomlinson/markup-by-attribute-for-woocommerce).
 
-What's a .POT file? If you'd like to help but don't know how to use a template file, don't worry. A .POT file is a text file that contains all the English phrases found in Markup by Attribute.  You can simply open it and translate what you read there.  Send me the translations and I will incoorperate them in the next release.
+What's a .POT file? If you'd like to help but don't know how to use a template file, don't worry. A .POT file is a text file that contains all the English phrases found in Markup by Attribute.  You can simply open it and translate what you read there.  Send me the translations and I will incorporate them in the next release.
 
 = If I change the markup for an attribute, how will product prices change? =
 
@@ -129,9 +130,10 @@ Thanks! The donation button assumes $15.00 USD. But feel free to adjust that amo
 
 = 3.0 =
 * Feature: Now supports Internationalization and translation.
+* Maintenance: Simplified usage directions in readme.txt.
 * Maintenance: Restructured libraries and renamed files and classes for better organization.
 * Maintenance: Rebuilt admin notice class for supportability and improved performance.
-* Manitenance: Reorganized main module for understandability.
+* Maintenance: Reorganized main module for understandability.
 * Maintenance: General code clean-up and redundancy removal.
 
 = 2.5 =
@@ -167,7 +169,7 @@ Thanks! The donation button assumes $15.00 USD. But feel free to adjust that amo
 * Feature: Markup description now enclosed in <span> tags and can be modified with CSS ( #mbainfo {} ).
 * Feature: Markup description added to the attribute term description and can be seen in the attribute term list.
 * Feature: Markup now saved as a floating point number and not limited in digits below the decimal point.
-* Feature: Database and code changes to enhance supportability.
+* Feature: Database and code change to enhance supportability.
 * Fix: Corrected issue where Increase/Decrease Regular/Sale Price functions calculated based on variation price rather than base price, yielding incorrect prices when percentages were used.
 * Fix: Corrected issue where Increase/Decrease Regular/Sale Price functions did not update variation descriptions.
 * Fix: Corrected issue where markup in the options drop-down was calculated from the sale price.
@@ -189,7 +191,7 @@ Fix: Remove error_log() statement accidentally left in.
 = 1.2.0 =
 
 * Change backend-attrb and backend-product to allow percentage markup.
-* Change backend-product and frontend to store actual product-attribute markups in postmeta.
+* Change backend-product and frontend to store actual product-attribute markups in post meta.
 
 = 1.1.1 =
 

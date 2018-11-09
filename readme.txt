@@ -10,6 +10,7 @@ Donate link:          https://www.paypal.me/MT2Dev/15
 License:              GPLv3
 License URI:          https://www.gnu.org/licenses/gpl-3.0.html
 Version:              3.0
+Build:                181108.03
 Stable tag:           trunk
 Requires at least:    4.6
 Tested up to:         4.9.8
@@ -103,6 +104,8 @@ Because the markup description is bracketed in `<span>` tags, CSS can be used to
 Yes. However, the developer only speaks American English.  I can provide 'Google Translate' versions of other languages, but I would prefer it if a native speaker translated the text. The .POT file is found in the /languages folder of the plugin. If you don't have access to your server, you can also find it on [GitHub](https://github.com/Mark-Tomlinson/markup-by-attribute-for-woocommerce).
 
 What's a .POT file? If you'd like to help but don't know how to use a template file, don't worry. A .POT file is a text file that contains all the English phrases found in Markup by Attribute.  You can simply open it and translate what you read there.  Send me the translations and I will incorporate them in the next release.
+
+Many thanks to [Zjadlbymcos](https://github.com/Zjadlbymcos) on GitHub for his Polish Translation.
 
 = If I change the markup for an attribute, how will product prices change? =
 

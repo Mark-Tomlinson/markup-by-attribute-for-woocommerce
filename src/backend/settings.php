@@ -12,6 +12,7 @@ class MT2MBA_BACKEND_SETTINGS
 {
     var $dropdown_behavior          =   'do_not_add';   // The default behavior for displaying the currency symbol in the options drop-down.
     var $desc_behavior              =   'append';       // The default behavior for writing the pricing information into the variation description.
+    var $round_markup               =   'no';           // The default behavior for rounding percentage markups.
     var $max_variations             =   50;             // The default number or variation created per run.
 
     var $error_msg                  =   '';
@@ -104,6 +105,39 @@ class MT2MBA_BACKEND_SETTINGS
     }
 
     /**
+     * Set the Round Markup option
+     * @param   boolean $data   Whether percentage markups will be rounded
+     * @return  boolean         Whether percentage markups will be rounded
+     */
+    private function set_round_markup( $data )
+    {
+        if ( $data === '' )
+        {
+            $data = $this->round_markup;
+        }
+        if ( update_option( 'mt2mba_round_markup', $data ) )
+        {
+            return $data;
+        }
+        return FALSE;
+    }
+
+    /**
+     * Get the Round Markup option (and set it if not present)
+     * @uses    set_round_markup()  Set the Round Markup option
+     * @return  boolean             Whether percentage markups will be rounded
+     */
+    public function get_round_markup()
+    {
+        $data = get_option( 'mt2mba_round_markup' );
+        if ( ! isset ( $data ) )
+        {
+            $data = $this->set_round_markup( $this->round_markup );
+        }
+        return $data;
+    }
+
+    /**
      * Set the Max Variations option
      * @param   int $mv Maximum variations per run
      * @return  int     Maximum variations per run or FALSE
@@ -177,15 +211,6 @@ class MT2MBA_BACKEND_SETTINGS
                         $this->error_msg,
                     'id'       => 'mt2mba',
                 );
-            // --------------------------------------------------
-            // Start section 'Display'
-            $mt2mba_settings[] = array
-                (
-                    'title'    => __( 'Markup Display', 'markup-by-attribute' ),
-                    'type'     => 'title',
-                    'desc'     => __( 'Determine how markup information is displayed to the customer.', 'markup-by-attribute' ),
-                    'id'       => 'mt2mba_display',
-                );
 
             // Format markup in Drop-down
             register_setting( 'mt2mba', 'mt2mba_dropdown_behavior', array( $this, 'validate_mt2mba_dropdown_behavior_field' ) );
@@ -227,20 +252,19 @@ class MT2MBA_BACKEND_SETTINGS
                     'default'  => $this->desc_behavior,
                 );
             
-            // End section
+            // Round off percentage markups
+            register_setting( 'mt2mba', 'mt2mba_round_markup' );
+            $description = __(
+                'Some stores want prices with specific numbers below the decimal place (such as xx.00 or xx.95). Rounding percentage markups will keep the value below the decimal.',
+                'markup-by-attribute' );
             $mt2mba_settings[] = array
                 (
-                    'type'     => 'sectionend',
-                    'id'       => 'mt2mba_display',
-                );
-
-            // --------------------------------------------------
-            // Start section 'Other'
-            $mt2mba_settings[] = array
-                (
-                    'title'    => __( 'Other Settings', 'markup-by-attribute' ),
-                    'type'     => 'title',
-                    'id'       => 'mt2mba_other',
+                    'title'    => __( 'Round Markup', 'markup-by-attribute' ),
+                    'name'     => 'mt2mba_round_markup',
+                    'desc'     => sprintf($this->format_desc, $description ),
+                    'id'       => 'mt2mba_round_markup',
+                    'default'  => $this->round_markup,
+                    'type'     => 'checkbox',
                 );
 
             // Variation Max
@@ -256,13 +280,6 @@ class MT2MBA_BACKEND_SETTINGS
                     'id'       => 'mt2mba_variation_max',
                     'default'  => $this->max_variations,
                     'type'     => 'text',
-                );
-
-            // End section 'Other'
-            $mt2mba_settings[] = array
-                (
-                    'type'     => 'sectionend',
-                    'id'       => 'mt2mba_other'
                 );
 
             // --------------------------------------------------

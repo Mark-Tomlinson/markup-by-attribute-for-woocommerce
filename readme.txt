@@ -9,14 +9,14 @@ Contributors:         MarkTomlinson
 Donate link:          https://www.paypal.me/MT2Dev/15
 License:              GPLv3
 License URI:          https://www.gnu.org/licenses/gpl-3.0.html
-Version:              3.0
-Build:                181108.03
+Version:              3.1
+Build:                201846.04
 Stable tag:           trunk
 Requires at least:    4.6
 Tested up to:         4.9.8
 Requires PHP:         5.6
 WC requires at least: 3.0
-WC tested up to:      3.5.0
+WC tested up to:      3.5.1
 
 This plugin adds product variation markup by attribute to WooCommerce and adjusts product variation regular and sale prices accordingly.
 
@@ -37,6 +37,7 @@ Markup by Attribute:
 * Uses familiar WooCommerce bulk edit actions `Set regular price` and `Set sale price`.
 * Puts the price increase (or decrease) in the options drop-down box along side of the terms so customers can make informed decisions. (Or, optionally, does not).
 * Can write a breakdown of the price modifications in the variation description so the itemization is visible to the customer.
+* Has been tested with Gutenberg and is fully compatible.
 
 == Installation ==
 
@@ -130,6 +131,10 @@ Thanks! The donation button assumes $15.00 USD. But feel free to adjust that amo
 7. The settings page allows configuration of how the markup is displayed.
 
 == Changelog ==
+
+= 3.1 =
+* Feature: Added ability to round percentage markups so prices will retain digits below decimal. For shops that want to end all prices with .00, .95, .99  or whatever. Requested feature from shop where all prices end in .00.
+* Feature: Fully tested with Gutenberg.
 
 = 3.0 =
 * Feature: Now supports Internationalization and translation.

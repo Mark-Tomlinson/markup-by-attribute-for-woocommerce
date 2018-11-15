@@ -130,7 +130,16 @@ class MT2MBA_BACKEND_PRODUCT
                             if ( strpos( $markup, "%" ) )
                             {
                                 // Markup is a percentage, calculate against original price
-                                $markup = sprintf( "%+01.2f", $orig_price * floatval( $markup ) / 100 );
+                                // If rounding the markup
+                                if ( MT2MBA_ROUND_MARKUP == 'yes' )
+                                {
+                                    $markup = round ( $orig_price * floatval( $markup ) / 100, 0 );
+                                }
+                                else
+                                {
+                                    $markup = $orig_price * floatval( $markup ) / 100;
+                                };
+                                $markup = sprintf( "%+01.2f", $markup );
                             }
                             else
                             {

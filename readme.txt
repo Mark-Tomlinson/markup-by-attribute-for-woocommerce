@@ -10,7 +10,7 @@ Donate link:          https://www.paypal.me/MT2Dev/15
 License:              GPLv3
 License URI:          https://www.gnu.org/licenses/gpl-3.0.html
 Version:              3.1
-Build:                201846.04
+Build:                201847.01
 Stable tag:           trunk
 Requires at least:    4.6
 Tested up to:         4.9.8
@@ -65,11 +65,7 @@ Markup by Attribute:
 
 = Using Markup by Attribute for WooCommerce =
 
-NOTE: These instructions assume you are familiar with WooCommerce global Product Attributes. If not, you may want to review the WooCommerce documentation on [Product Attributes](https://docs.woocommerce.com/document/managing-product-taxonomies/#section-6).
-
-NOTE: These instructions assume you are familiar with WooCommerce Product Variations. If not, you may want to review the WooCommerce documentation on [Variable Products](https://docs.woocommerce.com/document/variable-product/).
-
-Set up a few variable products to get the hang of it. Then come back here.  We'll wait.
+_NOTE:_ These instructions assume you are familiar with WooCommerce global Product Attributes and with WooCommerce Product Variations. If not, you may want to review the WooCommerce documentation on [Product Attributes](https://docs.woocommerce.com/document/managing-product-taxonomies/#section-6) and [Variable Products](https://docs.woocommerce.com/document/variable-product/).
 
 # Three Easy Steps #
 
@@ -135,6 +131,7 @@ Thanks! The donation button assumes $15.00 USD. But feel free to adjust that amo
 = 3.1 =
 * Feature: Added ability to round percentage markups so prices will retain digits below decimal. For shops that want to end all prices with .00, .95, .99  or whatever. Requested feature from shop where all prices end in .00.
 * Feature: Fully tested with Gutenberg.
+* Feature: Added Polish language files.
 
 = 3.0 =
 * Feature: Now supports Internationalization and translation.

@@ -23,7 +23,7 @@
  * Text Domain:          markup-by-attribute
  * Domain path:          /languages
  * Version:              3.1
- * Build:                201846.04
+ * Build:                201847.01
  * Stable tag:           trunk
  * Requires at least:    4.6
  * Tested up to:         4.9.8
@@ -43,7 +43,8 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 
 	// Set plugin information
 	define( 'MT2MBA_PLUGIN_PREFIX',     'MT2MBA'                                            );
-	define( 'MT2MBA_VERSION',           3.0                                                 );
+	define( 'MT2MBA_VERSION',           3.1                                                 );
+	define( 'MT2MBA_BUILD',             201847.01                                           );
 	define( 'MT2MBA_DB_VERSION',        2.1                                                 );
 	define( 'MT2MBA_SITE_URL',          get_bloginfo( 'wpurl')                              );
 	define( 'MT2MBA_PLUGIN_DIR',        plugin_dir_path( __FILE__ )                         );

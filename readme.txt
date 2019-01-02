@@ -115,7 +115,9 @@ Then do nothing. Prices, descriptions, and option drop-downs for products will r
 
 = I'd like to donate. =
 
-Thanks! The donation button assumes $15.00 USD. But feel free to adjust that amount up or down as you feel it's appropriate. I'm a retired guy who's living off his savings, so every little bit helps. Besides, I need the motivation!
+Thanks! The donation button assumes $15.00 USD. But feel free to adjust that amount up or down as you feel it's appropriate. I'm a retired guy who's living off his savings, so every little bit helps.
+
+If you use Markup-by-Attribute and want to see me continuing support for it, I encourage you to encourage me with a small donation.
 
 == Screenshots ==
 

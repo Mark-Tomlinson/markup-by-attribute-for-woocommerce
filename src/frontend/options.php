@@ -34,8 +34,8 @@ class MT2MBA_FRONTEND_OPTIONS {
     /**
      * The hooked function that will add the variation description to the dropdown options elements
      * @param    string    $html    The HTML of the options drop-down box
-     * @param    array    $args   Array of available options
-     * @return    string          The modified HTML of the options drop-down box
+     * @param    array     $args    Array of available options
+     * @return   string             The modified HTML of the options drop-down box
      */
     public function mt2mba_dropdown_options_markup_html( $html, $args )
     {
@@ -64,7 +64,8 @@ class MT2MBA_FRONTEND_OPTIONS {
         // Open <SELECT> and set 'Choose an option' <OPTION> text
         $html =
             PHP_EOL .
-            '<select id="' . esc_attr( $id ) . '" ' .
+            '<select ' .
+            'id="' . esc_attr( $id ) . '" ' .
             'class="' . esc_attr( $class ) . '" ' .
             'name="' . esc_attr( $name ) . '" ' .
             'data-attribute_name="attribute_'    . esc_attr( sanitize_title( $attribute ) ) . '" ' .
@@ -75,39 +76,49 @@ class MT2MBA_FRONTEND_OPTIONS {
         // Build <OPTION>s within <SELECT>
         if ( !empty( $options ) )
         {
-            if ( $product &&                            // Product is present
-                 taxonomy_exists( $attribute ) &&       // attribute is global
-                 MT2MBA_DROPDOWN_BEHAVIOR != 'hide' )   // and we're not hiding the markup
+            if ( $product &&                    // product exists
+                taxonomy_exists( $attribute ) ) // attribute is global
             {
-                // Need to add option with markup if present
                 $terms = wc_get_product_terms( $product->get_id( ), $attribute, array( 'fields' => 'all' ) );
+                // Need to add option with markup if present
                 foreach ( $terms as $term )
                 {
                     // Add markup if present
                     if ( in_array( $term->slug, $options ) )
                     {
-                        // Add markup if metadata exists, else leave blank
-                        if ( ! $markup = get_metadata( 'post', $product->get_id(), 'mt2mba_' . $term->term_id . '_markup_amount', TRUE ) )
+                        if ( MT2MBA_DROPDOWN_BEHAVIOR == 'hide' )    // we're hiding the markup
                         {
-                            $markup = get_metadata( 'term', $term->term_id, 'mt2mba_markup', TRUE );
+                            $html .= PHP_EOL .
+                                '<option value="' . esc_attr( $term->slug ) . '"' .
+                                selected( sanitize_title( $args['selected'] ), $term->slug, FALSE ) . '>' .
+                                esc_html( apply_filters( 'woocommerce_variation_option_name', $term->name ) ) .
+                                '</option>';
                         }
-                        // And build <OPTION> into $html
-                        $html .= PHP_EOL .
-                            '<option value="' . esc_attr( $term->slug ) . '"' .
-                            selected( sanitize_title( $args['selected'] ), $term->slug, FALSE ) . '>' .
-                            esc_html( apply_filters( 'woocommerce_variation_option_name', $term->name ) ) .
-                            esc_html( $mt2mba_utility->format_option_markup( $markup ) ) .
-                            '</option>';
+                        else    // we're not hiding the markup
+                        {
+                            // Add markup if metadata exists, else leave blank
+                            if ( ! $markup = get_metadata( 'post', $product->get_id(), 'mt2mba_' . $term->term_id . '_markup_amount', TRUE ) )
+                            {
+                                $markup = get_metadata( 'term', $term->term_id, 'mt2mba_markup', TRUE );
+                            }
+                            // And build <OPTION> into $html
+                            $html .= PHP_EOL .
+                                '<option value="' . esc_attr( $term->slug ) . '"' .
+                                selected( sanitize_title( $args['selected'] ), $term->slug, FALSE ) . '>' .
+                                esc_html( apply_filters( 'woocommerce_variation_option_name', $term->name ) ) .
+                                esc_html( $mt2mba_utility->format_option_markup( $markup ) ) .
+                                '</option>';
+                        }
                     }
                 }
             }
             else
             {
-                // Need only add option, no markups available or not to be displayed
+                // Need only add option as slug, no markups available or not to be displayed
                 foreach ( $options as $option )
                 {
-                    $html .= PHP_EOL . '<option value="' .
-                        esc_attr( $option ) . '"' .
+                    $html .= PHP_EOL .
+                        '<option value="' . esc_attr( $option ) . '"' .
                         selected( $args['selected'], sanitize_title( $option ), FALSE ) . '>' .
                         esc_html( apply_filters( 'woocommerce_variation_option_name', $option ) ) .
                         '</option>';

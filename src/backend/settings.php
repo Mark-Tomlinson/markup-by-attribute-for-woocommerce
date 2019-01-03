@@ -13,6 +13,7 @@ class MT2MBA_BACKEND_SETTINGS
     var $dropdown_behavior          =   'do_not_add';   // The default behavior for displaying the currency symbol in the options drop-down.
     var $desc_behavior              =   'append';       // The default behavior for writing the pricing information into the variation description.
     var $round_markup               =   'no';           // The default behavior for rounding percentage markups.
+    var $calc_on_sale_price         =   'no';           // The default behavior for using the sale price for percentage markups.
     var $max_variations             =   50;             // The default number or variation created per run.
 
     var $error_msg                  =   '';
@@ -138,6 +139,39 @@ class MT2MBA_BACKEND_SETTINGS
     }
 
     /**
+     * Set the Calc on Sale Price option
+     * @param   boolean $data   Whether percentage markups will calculated from sale price
+     * @return  boolean         Whether percentage markups will calculated from sale price
+     */
+    private function set_calc_on_sale_price( $data )
+    {
+        if ( $data === '' )
+        {
+            $data = $this->calc_on_sale_price;
+        }
+        if ( update_option( 'mt2mba_calc_on_sale_price', $data ) )
+        {
+            return $data;
+        }
+        return FALSE;
+    }
+
+    /**
+     * Get the Calc on Sale Price option (and set it if not present)
+     * @uses    set_round_markup()  Set the Calc on Sale Price option
+     * @return  boolean             Whether percentage markups will calculated from sale price
+     */
+    public function get_calc_on_sale_price()
+    {
+        $data = get_option( 'mt2mba_calc_on_sale_price' );
+        if ( ! isset ( $data ) )
+        {
+            $data = $this->set_calc_on_sale_price( $this->calc_on_sale_price );
+        }
+        return $data;
+    }
+
+    /**
      * Set the Max Variations option
      * @param   int $mv Maximum variations per run
      * @return  int     Maximum variations per run or FALSE
@@ -205,14 +239,22 @@ class MT2MBA_BACKEND_SETTINGS
                 (
                     'name'     => MT2MBA_PLUGIN_NAME,
                     'type'     => 'title',
-                    'desc'     => sprintf (
-                        __( 'The following options are used to configure variation markups by attribute.<br/>Additional help can be found in the <a href="%1$s" target="_blank">Markup by Attribute wiki</a> on the <code>Settings</code> page.', 'markup-by-attribute' ),
-                        'https://github.com/Mark-Tomlinson/markup-by-attribute-for-woocommerce/wiki' ),
-                        $this->error_msg,
+                    'desc'     => __( 'The following options are used to configure variation markups by attribute.', 'markup-by-attribute' ) . ' ' .
+                    sprintf
+                    (
+                        __( 'Additional help can be found in the <a href="%1$s" target="_blank">Markup by Attribute wiki</a> on the <code>Settings</code> page.', 'markup-by-attribute' ),
+                        'https://github.com/Mark-Tomlinson/markup-by-attribute-for-woocommerce/wiki'
+                    ) . '<br/>' .
+                    sprintf
+                    (
+                        __( 'If you find this plugin helpful, please consider <a href="%1$s" target="_blank">a small donation</a>.', 'markup-by-attribute' ),
+                        'https://github.com/Mark-Tomlinson/markup-by-attribute-for-woocommerce/wiki/Donate'
+                    ) .
+                $this->error_msg,
                     'id'       => 'mt2mba',
                 );
 
-            // Format markup in Drop-down
+            // Format of markup in Drop-down
             register_setting( 'mt2mba', 'mt2mba_dropdown_behavior', array( $this, 'validate_mt2mba_dropdown_behavior_field' ) );
             $description =
                 __( 'Should Markup-by-Attribute add the markup to the options drop-down box, and should the currency symbol be displayed?', 'markup-by-attribute' ) . '<br/>' .
@@ -252,6 +294,22 @@ class MT2MBA_BACKEND_SETTINGS
                     'default'  => $this->desc_behavior,
                 );
             
+            // Calculate percentage markups on sale price
+            register_setting( 'mt2mba', 'mt2mba_calc_on_sale_price' );
+            $description = 
+                __( 'Price adjustments are calculated based on the normal price of the product, even if the sales price is present.', 'markup-by-attribute' ) . ' ' .
+                __( 'This option tells Markup-by-Attribute to use the sale price for percentage markups.', 'markup-by-attribute' ) . '<br/>' .
+                '<i>' . __( 'Keep in mind that regular price adjustments will always be displayed in the Attribute drop-down menu and in the product description regardless of this setting.', 'markup-by-attribute' ) . '</i>';
+            $mt2mba_settings[] = array
+                (
+                    'title'    => __( 'Use Sale Price for Markup', 'markup-by-attribute' ),
+                    'name'     => 'mt2mba_calc_on_sale_price',
+                    'desc'     => sprintf($this->format_desc, $description ),
+                    'id'       => 'mt2mba_calc_on_sale_price',
+                    'default'  => $this->calc_on_sale_price,
+                    'type'     => 'checkbox',
+                );
+
             // Round off percentage markups
             register_setting( 'mt2mba', 'mt2mba_round_markup' );
             $description = __(
@@ -287,7 +345,7 @@ class MT2MBA_BACKEND_SETTINGS
             $mt2mba_settings[] = array
                 (
                     'type'     => 'sectionend',
-                    'id'       => 'mt2mba'
+                    'id'       => 'mt2mba',
                 );
 
             return $mt2mba_settings;

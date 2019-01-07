@@ -134,6 +134,7 @@ If you use Markup-by-Attribute and want to see me continuing support for it, I e
 = 3.2 =
 * Feature: Add option to calculate percentage markups from sale prices rather than regular prices.
 * Fix: Option 'Do NOT show the markup in the options drop-down box' showed slug in drop-down box instead of term name. Corrected to always show name for global attributes.
+* Maintenance: Renamed Attrb.php to Term.php since it actually affects the terms and not the general attribute.
 * Maintenance: Added donation language to Settings page.
 
 = 3.1 =

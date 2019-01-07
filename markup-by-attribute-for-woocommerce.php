@@ -23,7 +23,7 @@
  * Text Domain:            markup-by-attribute
  * Domain path:            /languages
  * Version:                3.2
- * Build:                  201901.01
+ * Build:                  201901.02
  * Stable tag:             trunk
  * Requires at least:      4.6
  * Tested up to:           5.0.2
@@ -109,7 +109,7 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 		new MT2MBA_UTILITY_POINTERS;
 
 		// Instantiate attribute admin
-		new MT2MBA_BACKEND_ATTRB;
+		new MT2MBA_BACKEND_TERM;
 
 		// Instantiate product admin
 		new MT2MBA_BACKEND_PRODUCT;
@@ -119,6 +119,8 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 		// --------------
 		// Front end code
 		// --------------
+
+		// Instantiate options drop-down box
 		new MT2MBA_FRONTEND_OPTIONS;
 	}
 }

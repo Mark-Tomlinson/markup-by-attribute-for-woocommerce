@@ -254,6 +254,14 @@ class MT2MBA_BACKEND_SETTINGS
                     'id'       => 'mt2mba',
                 );
 
+            // Start section 'Display'
+            $mt2mba_settings[] = array
+                (
+                    'title'    => __( 'Markup Display' ),
+                    'type'     => 'title',
+                    'id'       => 'mt2mba_display',
+                );
+
             // Format of markup in Drop-down
             register_setting( 'mt2mba', 'mt2mba_dropdown_behavior', array( $this, 'validate_mt2mba_dropdown_behavior_field' ) );
             $description =
@@ -294,6 +302,22 @@ class MT2MBA_BACKEND_SETTINGS
                     'default'  => $this->desc_behavior,
                 );
             
+            // End section
+            $mt2mba_settings[] = array
+                (
+                    'type'     => 'sectionend',
+                    'id'       => 'mt2mba_display',
+                );
+
+            // --------------------------------------------------
+            // Start section 'Markup Calculation'
+            $mt2mba_settings[] = array
+                (
+                    'title'    => __( 'Markup Calculation' ),
+                    'type'     => 'title',
+                    'id'       => 'mt2mba_calc',
+                );
+
             // Calculate percentage markups on sale price
             register_setting( 'mt2mba', 'mt2mba_calc_on_sale_price' );
             $description = 
@@ -325,6 +349,22 @@ class MT2MBA_BACKEND_SETTINGS
                     'type'     => 'checkbox',
                 );
 
+            // End section 'Markup Calculation' 
+            $mt2mba_settings[] = array
+                (
+                    'type'     => 'sectionend',
+                    'id'       => 'mt2mba_calc',
+                );
+
+            // --------------------------------------------------
+            // Start section 'Other'
+            $mt2mba_settings[] = array
+                (
+                    'title'    => __( 'Other' ),
+                    'type'     => 'title',
+                    'id'       => 'mt2mba_other',
+                );
+
             // Variation Max
             register_setting( 'mt2mba', 'mt2mba_variation_max', array( $this, 'validate_mt2mba_variation_max_field' ) );
             $description = __(
@@ -338,6 +378,13 @@ class MT2MBA_BACKEND_SETTINGS
                     'id'       => 'mt2mba_variation_max',
                     'default'  => $this->max_variations,
                     'type'     => 'text',
+                );
+
+            // End section 'Other' 
+            $mt2mba_settings[] = array
+                (
+                    'type'     => 'sectionend',
+                    'id'       => 'mt2mba_other',
                 );
 
             // --------------------------------------------------

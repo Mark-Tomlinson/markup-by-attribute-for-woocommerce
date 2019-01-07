@@ -1,7 +1,7 @@
 <?php
 /**
- * Contains markup capabilities related to the backend attribute admin page. Specifically,
- * add metadata field for markup to product attribute terms.
+ * Contains markup capabilities related to the backend attribute term admin page.
+ * Specifically, add metadata field for markup to product attribute terms.
  * 
  * @author         Mark Tomlinson
  * 
@@ -10,10 +10,10 @@
 // Exit if accessed directly
 if ( !defined( 'ABSPATH' ) ) exit();
 
-class MT2MBA_BACKEND_ATTRB
+class MT2MBA_BACKEND_TERM
 {
-    private $field_label;
-    private $field_description;
+    private $markup_label;
+    private $markup_description;
     
     /**
      * Initialization method visible before instantiation
@@ -33,9 +33,9 @@ class MT2MBA_BACKEND_ATTRB
      */
     public function on_loaded()
     {
-        // Define label and content.
-        $this->field_label        = __( 'Markup (or markdown)', 'markup-by-attribute' );
-        $this->field_description  = __( 'Markup or markdown associated with this option. Signed, floating point numeric allowed.', 'markup-by-attribute' );
+        // Define labels and contents.
+        $this->markup_label        = __( 'Markup (or markdown)', 'markup-by-attribute' );
+        $this->markup_description  = __( 'Markup or markdown associated with this option. Signed, floating point numeric allowed.', 'markup-by-attribute' );
 
         // Get all attributes
         $attribute_taxonomies = wc_get_attribute_taxonomies();
@@ -69,9 +69,9 @@ class MT2MBA_BACKEND_ATTRB
         // Build <DIV>
         ?>
         <div class="form-field">
-            <label for="term_markup"><?php echo( $this->field_label ); ?></label>
+            <label for="term_markup"><?php echo( $this->markup_label ); ?></label>
             <input type="text" placeholder="[ +|- ]0.00 or [ +|- ]00%" name="term_markup" id="term_add_markup" value="">
-            <p class="description"><?php echo( $this->field_description ); ?></p>
+            <p class="description"><?php echo( $this->markup_description ); ?></p>
         </div>
         <?php
     }
@@ -85,14 +85,16 @@ class MT2MBA_BACKEND_ATTRB
      function mt2mba_edit_form_fields( $term )
      {
         // Retrieve the existing markup for this term (NULL results are valid)
-        $term_meta = get_term_meta( $term->term_id, "mt2mba_markup", TRUE );
+        $term_markup        = get_term_meta( $term->term_id, "mt2mba_markup", TRUE );
+        $term_calc_on_sale  = get_term_meta( $term->term_id, "mt2mba_calc_on_sale", TRUE );
+
         // Build row and fill field with current markup
         ?>
         <tr class="form-field">
-            <th scope="row" valign="top"><label for="term_markup"><?php echo( $this->field_label ); ?></label></th>
+            <th scope="row" valign="top"><label for="term_markup"><?php echo( $this->markup_label ); ?></label></th>
             <td>
-                <input type="text" placeholder="[ +|- ]0.00 or [ +|- ]00%" name="term_markup" id="term_edit_markup" value="<?php echo esc_attr( $term_meta ) ? esc_attr( $term_meta ) : ''; ?>">
-                <p class="description"><?php echo( $this->field_description ); ?></p>
+                <input type="text" placeholder="[ +|- ]0.00 or [ +|- ]00%" name="term_markup" id="term_edit_markup" value="<?php echo esc_attr( $term_markup ) ? esc_attr( $term_markup ) : ''; ?>">
+                <p class="description"><?php echo( $this->markup_description ); ?></p>
             </td>
         </tr>
         <?php
@@ -114,13 +116,15 @@ class MT2MBA_BACKEND_ATTRB
         global           $mt2mba_utility;
         $term            = get_term( $term_id );
         $taxonomy        = sanitize_key( $term->taxonomy );
+        
         // Remove any previous markup information from description
         $description     = $term->description;
         $description     = trim( $mt2mba_utility->remove_bracketed_string( ATTRB_MARKUP_DESC_BEG, ATTRB_MARKUP_DESC_END, $description ) );
         
-        // Remove old metadata, regardless of next step
+        // Remove old metadata, regardless of next steps
         delete_term_meta( $term_id, 'mt2mba_markup' );
 
+        // Add Markup metadata if present
         if ( esc_attr( $_POST[ 'term_markup' ] <> 0 ) )
         {
             $term_markup = esc_attr( $_POST[ 'term_markup' ]);
@@ -145,6 +149,6 @@ class MT2MBA_BACKEND_ATTRB
         wp_update_term( $term_id, $taxonomy, array( 'description' => trim( $description ) ) );
     }
 
-}    // End  class MT2MBA_ATTRB_BACKEND
+}    // End  class MT2MBA_BACKEND_TERM
 
 ?>

@@ -10,7 +10,7 @@ Donate link:            https://www.paypal.me/MT2Dev/15
 License:                GPLv3
 License URI:            https://www.gnu.org/licenses/gpl-3.0.html
 Version:                3.2
-Build:                  201901.01
+Build:                  201901.02
 Stable tag:             trunk
 Requires at least:      4.6
 Tested up to:           5.0.2
@@ -134,6 +134,7 @@ If you use Markup-by-Attribute and want to see me continuing support for it, I e
 = 3.2 =
 * Feature: Add option to calculate percentage markups from sale prices rather than regular prices.
 * Fix: Option 'Do NOT show the markup in the options drop-down box' showed slug in drop-down box instead of term name. Corrected to always show name for global attributes.
+* Maintenance: Added donation language to Settings page.
 
 = 3.1 =
 * Feature: Added ability to round percentage markups so prices will retain digits below decimal. For shops that want to end all prices with .00, .95, .99  or whatever. Requested feature from shop where all prices end in .00.

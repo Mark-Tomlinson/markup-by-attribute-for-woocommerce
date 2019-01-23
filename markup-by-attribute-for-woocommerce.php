@@ -22,11 +22,11 @@
  * License URI:            https://www.gnu.org/licenses/gpl-3.0.html
  * Text Domain:            markup-by-attribute
  * Domain path:            /languages
- * Version:                3.1
- * Build:                  201849.01
+ * Version:                3.2
+ * Build:                  201901.02
  * Stable tag:             trunk
  * Requires at least:      4.6
- * Tested up to:           5.0
+ * Tested up to:           5.0.2
  * Requires PHP:           5.6
  * PHP tested up to:       7.2.10
  * WC requires at least:   3.0
@@ -109,7 +109,7 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 		new MT2MBA_UTILITY_POINTERS;
 
 		// Instantiate attribute admin
-		new MT2MBA_BACKEND_ATTRB;
+		new MT2MBA_BACKEND_TERM;
 
 		// Instantiate product admin
 		new MT2MBA_BACKEND_PRODUCT;
@@ -119,6 +119,8 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 		// --------------
 		// Front end code
 		// --------------
+
+		// Instantiate options drop-down box
 		new MT2MBA_FRONTEND_OPTIONS;
 	}
 }

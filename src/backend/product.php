@@ -120,12 +120,10 @@ class MT2MBA_BACKEND_PRODUCT
                         {
                             $orig_price_stored = update_post_meta( $product_id, "mt2mba_base_{$price_type}", $orig_price );
                         }
-                        // Variation description and option markup are only set on the regular price; not the sale price
-                        if ( $price_type == 'regular_price' )
+                        // Variation description and option markup are only set on the regular price
+                        // Unless the mt2mba_calc_on_sale_price option is 'yes'
+                        if ( ( $price_type == 'regular_price' ) || ( MT2MBA_CALC_ON_SALE_PRICE == 'yes' ) )
                         {
-                            // Clear out old markup metadata
-                            delete_post_meta( $product_id, $meta_key );
-
                             // If term_markup has a value other than zero, add/update the value to the metadata table
                             if ( strpos( $markup, "%" ) )
                             {
@@ -137,7 +135,7 @@ class MT2MBA_BACKEND_PRODUCT
                                 }
                                 else
                                 {
-                                    $markup = $orig_price * floatval( $markup ) / 100;
+                                    $markup = round ( $orig_price * floatval( $markup ) / 100, 2 );
                                 };
                                 $markup = sprintf( "%+01.2f", $markup );
                             }
@@ -150,13 +148,20 @@ class MT2MBA_BACKEND_PRODUCT
                             $markup_table[ $term->taxonomy ][ $term->slug ][ "markup" ] = $markup;
                             // Add term and description to markup table for use below with each variation
                             $markup_table[ $term->taxonomy ][ $term->slug ][ "description" ] = $mt2mba_utility->format_description_markup( $markup, $term->name );
-                            // Save actual markup value for term as post metadata for use in product attribute dropdown
-                            update_post_meta( $product_id, $meta_key, sprintf( "%+g", $markup ) );
+                            // Save markup value for use in product attribute dropdown
+                            // But only do this for the regular price
+                            if ( $price_type == 'regular_price' )
+                            {
+                                // Clear out old markup metadata
+            //                    delete_post_meta( $product_id, $meta_key );
+                                // Save actual markup value for term as post metadata for use in product attribute dropdown
+                                update_post_meta( $product_id, $meta_key, sprintf( "%+g", $markup ) );
+                            }
                         }
                         else
                         {
-                            // If calculating sale price, retrieve markup set for regular price.
-                            $markup_table[ $term->taxonomy ][ $term->slug ][ "markup" ] = get_metadata( 'post', $product_id, $meta_key, TRUE );
+                           // If calculating sale price, retrieve markup set for regular price.
+                           $markup_table[ $term->taxonomy ][ $term->slug ][ "markup" ] = get_metadata( 'post', $product_id, $meta_key, TRUE );
                         }
                     }
                     else

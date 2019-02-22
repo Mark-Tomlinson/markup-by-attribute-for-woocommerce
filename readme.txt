@@ -10,10 +10,10 @@ Donate link:            https://www.paypal.me/MT2Dev/15
 License:                GPLv3
 License URI:            https://www.gnu.org/licenses/gpl-3.0.html
 Version:                3.2
-Build:                  201901.02
+Build:                  201908.01
 Stable tag:             trunk
 Requires at least:      4.6
-Tested up to:           5.0.2
+Tested up to:           5.1
 Requires PHP:           5.6
 PHP tested up to:       7.2.10
 WC requires at least:   3.0

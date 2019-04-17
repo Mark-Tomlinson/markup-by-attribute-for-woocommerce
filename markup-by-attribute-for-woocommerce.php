@@ -22,15 +22,15 @@
  * License URI:            https://www.gnu.org/licenses/gpl-3.0.html
  * Text Domain:            markup-by-attribute
  * Domain path:            /languages
- * Version:                3.3
- * Build:                  201909.02
+ * Version:                3.4
+ * Build:                  201916.01
  * Stable tag:             trunk
  * Requires at least:      4.6
- * Tested up to:           5.1
+ * Tested up to:           5.1.1
  * Requires PHP:           5.6
  * PHP tested up to:       7.3.0
  * WC requires at least:   3.0
- * WC tested up to:        3.5.5
+ * WC tested up to:        3.5.8
  */
 
 // Exit if accessed directly

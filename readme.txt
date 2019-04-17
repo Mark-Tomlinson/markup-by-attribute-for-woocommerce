@@ -1,6 +1,6 @@
 === Markup by Attribute for WooCommerce ===
 
-Plugin Name:            Markup by Attribute for WooCommerce - MT² Tech
+Plugin Name:            Markup by Attribute for WooCommerce
 Description:            This plugin adds product variation markup by attribute to WooCommerce -- the ability to add a markup (or markdown) to an attribute term and have that change the regular and sale price of the associated product variations.
 Plugin URI:             https://wordpress.org/plugins/markup-by-attribute-for-woocommerce/
 Tags:                   WooCommerce, Attribute, Price, Variation, Markup
@@ -9,15 +9,15 @@ Contributors:           MarkTomlinson
 Donate link:            https://www.paypal.me/MT2Dev/15
 License:                GPLv3
 License URI:            https://www.gnu.org/licenses/gpl-3.0.html
-Version:                3.2
-Build:                  201908.01
+Version:                3.3
+Build:                  201909.02
 Stable tag:             trunk
 Requires at least:      4.6
 Tested up to:           5.1
 Requires PHP:           5.6
-PHP tested up to:       7.2.10
+PHP tested up to:       7.3.0
 WC requires at least:   3.0
-WC tested up to:        3.5.2
+WC tested up to:        3.5.5
 
 This plugin adds product variation markup by attribute to WooCommerce and adjusts product variation regular and sale prices accordingly.
 
@@ -130,6 +130,11 @@ If you use Markup-by-Attribute and want to see me continuing support for it, I e
 7. The settings page allows configuration of how the markup is displayed.
 
 == Changelog ==
+
+= 3.3. =
+* Feature: For compatibility with plugins that remove the options drop-down box, the `Include the Increase (Decrease) in the Term Name` option allows markups to show when the drop-down box is not available.
+* Feature: For compatibility with plugins that remove the options drop-down box, the `Do NOT show the markup in the options drop-down box` option now doesn't load the MT2MBA_FRONTEND_OPTIONS class.
+* Fix: Fixed bug where adding and removing a sales price would leave the markup as the new sales price.
 
 = 3.2 =
 * Feature: Add option to calculate percentage markups from sale prices rather than regular prices.

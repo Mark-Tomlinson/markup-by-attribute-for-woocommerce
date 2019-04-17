@@ -146,6 +146,7 @@ class MT2MBA_UTILITY_GENERAL
         {
             $settings = new MT2MBA_BACKEND_SETTINGS;
             define( 'MT2MBA_DESC_BEHAVIOR', $settings->get_desc_behavior() );
+            define( 'MT2MBA_MODIFY_TERM_NAME', $settings->get_modify_term_name() );
             define( 'MT2MBA_DROPDOWN_BEHAVIOR', $settings->get_dropdown_behavior() );
             define( 'MT2MBA_CALC_ON_SALE_PRICE', $settings->get_calc_on_sale_price() );
             define( 'MT2MBA_ROUND_MARKUP', $settings->get_round_markup() );
@@ -185,7 +186,7 @@ class MT2MBA_UTILITY_GENERAL
             if ( strpos( $markup, '%' ) )
             {
                 // Return formatted with percentage
-                $markup = trim( html_entity_decode( $sign . sprintf( MT2MBA_PRICE_FORMAT, '', $this->clean_up_price( $markup ) ) ) ) . '%';
+                $markup = trim( html_entity_decode( $markup ) );
             }
             elseif ( MT2MBA_DROPDOWN_BEHAVIOR == 'add' )
             {
@@ -210,7 +211,7 @@ class MT2MBA_UTILITY_GENERAL
      * @param   string  $term   Attribute term the markup applies to
      * @return  string          Formatted markup
      */
-    function format_description_markup( $markup, $term )
+    function format_description_markup( $markup, $term_name )
     {
         if ( $markup <> 0 )
         {
@@ -222,7 +223,12 @@ class MT2MBA_UTILITY_GENERAL
 
             return html_entity_decode
                 (
-                    sprintf( $desc_format, sprintf( MT2MBA_PRICE_FORMAT, MT2MBA_CURRENCY_SYMBOL, $this->clean_up_price( $markup ) ), $term )
+                    sprintf
+                    (
+                        $desc_format,
+                        sprintf( MT2MBA_PRICE_FORMAT, MT2MBA_CURRENCY_SYMBOL, $this->clean_up_price( $markup ) ),
+                        trim( $this->remove_bracketed_string( ' (', ')', $term_name ) )
+                    )
                 );
         }
         // No markup; return empty string

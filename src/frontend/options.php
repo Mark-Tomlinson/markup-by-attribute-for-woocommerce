@@ -18,17 +18,7 @@ class MT2MBA_FRONTEND_OPTIONS {
         // instantiated version of itself
         $self    = new self( );
         // Set initialization method to run on 'wp_loaded'.
-        add_filter( 'wp_loaded', array( $self, 'on_loaded' ) );
-    }
-
-    /**
-     * Hook into Wordpress and WooCommerce
-     * Method runs on 'wp_loaded' hook
-     */
-    public function on_loaded( )
-    {
-        // Hook dropdown box build into product page
-        add_filter( 'woocommerce_dropdown_variation_attribute_options_html', array( $this, 'mt2mba_dropdown_options_markup_html' ), 10, 2);
+        add_filter( 'woocommerce_dropdown_variation_attribute_options_html', array( $self, 'mt2mba_dropdown_options_markup_html' ), 10, 2);
     }
 
     /**
@@ -39,6 +29,9 @@ class MT2MBA_FRONTEND_OPTIONS {
      */
     public function mt2mba_dropdown_options_markup_html( $html, $args )
     {
+        // Set globals
+        global $mt2mba_utility;
+
         // Extract all needed content from $args
         $options                = $args['options'];
         $product                = $args['product'];
@@ -48,10 +41,6 @@ class MT2MBA_FRONTEND_OPTIONS {
         $class                  = $args['class'];
         $show_option_none       = $args['show_option_none'] ? TRUE : FALSE;
         $show_option_none_text  = $args['show_option_none'] ? $args['show_option_none'] : __( 'Choose an option', 'woocommerce' ); 
-
-        // Utility class
-        global $mt2mba_utility;
-        $mt2mba_utility->get_mba_globals();
 
         // If $options is empty, get them from the product attributes
         if ( empty( $options ) && !empty( $product ) && !empty( $attribute ) )
@@ -86,16 +75,6 @@ class MT2MBA_FRONTEND_OPTIONS {
                     // Add markup if present
                     if ( in_array( $term->slug, $options ) )
                     {
-                        if ( MT2MBA_DROPDOWN_BEHAVIOR == 'hide' )    // we're hiding the markup
-                        {
-                            $html .= PHP_EOL .
-                                '<option value="' . esc_attr( $term->slug ) . '"' .
-                                selected( sanitize_title( $args['selected'] ), $term->slug, FALSE ) . '>' .
-                                esc_html( apply_filters( 'woocommerce_variation_option_name', $term->name ) ) .
-                                '</option>';
-                        }
-                        else    // we're not hiding the markup
-                        {
                             // Add markup if metadata exists, else leave blank
                             if ( ! $markup = get_metadata( 'post', $product->get_id(), 'mt2mba_' . $term->term_id . '_markup_amount', TRUE ) )
                             {
@@ -108,7 +87,6 @@ class MT2MBA_FRONTEND_OPTIONS {
                                 esc_html( apply_filters( 'woocommerce_variation_option_name', $term->name ) ) .
                                 esc_html( $mt2mba_utility->format_option_markup( $markup ) ) .
                                 '</option>';
-                        }
                     }
                 }
             }

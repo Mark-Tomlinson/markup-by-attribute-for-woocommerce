@@ -80,6 +80,7 @@ class MT2MBA_BACKEND_PRODUCT
         {
             // Utility class
             global $mt2mba_utility;
+            // Get globals
             $mt2mba_utility->get_mba_globals();
 
             // Catch original price
@@ -152,15 +153,13 @@ class MT2MBA_BACKEND_PRODUCT
                             // But only do this for the regular price
                             if ( $price_type == 'regular_price' )
                             {
-                                // Clear out old markup metadata
-            //                    delete_post_meta( $product_id, $meta_key );
                                 // Save actual markup value for term as post metadata for use in product attribute dropdown
                                 update_post_meta( $product_id, $meta_key, sprintf( "%+g", $markup ) );
                             }
                         }
                         else
                         {
-                           // If calculating sale price, retrieve markup set for regular price.
+                           // If calculating sale price, retrieve markup that was set for regular price.
                            $markup_table[ $term->taxonomy ][ $term->slug ][ "markup" ] = get_metadata( 'post', $product_id, $meta_key, TRUE );
                         }
                     }
@@ -176,78 +175,94 @@ class MT2MBA_BACKEND_PRODUCT
             // Loop through each variation
             foreach ( $variations as $variation_id )
             {
-                $has_orig_price  = FALSE;
-
                 $variation       = wc_get_product( $variation_id );
-                $attributes      = $variation->get_attributes();
 
-                // Starting variation price is whatever was passed in
-                $variation_price = $orig_price;
-
-                // Trim any previous markup information out of description
-                global           $mt2mba_utility;
-                $description     = $variation->get_description();
-                $description     = trim( $mt2mba_utility->remove_bracketed_string( PRODUCT_MARKUP_DESC_BEG, PRODUCT_MARKUP_DESC_END, $description ) );
-
-                // Loop through each attribute within variation
-                foreach ( $attributes as $attribute_id => $term_id )
+                // If sale price is zero, clear it out and don't calculate markup
+                if ( $orig_price == 0 && $price_type != 'regular_price' )
                 {
-                    // Does this variation have a markup?
-                    if ( isset( $markup_table[ $attribute_id ][ $term_id ] ) )
+                    $variation->{"set_$price_type"}( '' );   
+                }
+                // If regular price or a non-zero sale price, calculate markup
+                else
+                {
+
+                    $has_orig_price  = FALSE;
+                    $attributes      = $variation->get_attributes();
+
+                    // Starting variation price is whatever was passed in
+                    $variation_price = $orig_price;
+
+                    // Trim any previous markup information out of description
+                    global           $mt2mba_utility;
+                    $description     = $variation->get_description();
+                    $description     = trim( $mt2mba_utility->remove_bracketed_string( PRODUCT_MARKUP_DESC_BEG, PRODUCT_MARKUP_DESC_END, $description ) );
+
+                    // Loop through each attribute within variation
+                    foreach ( $attributes as $attribute_id => $term_id )
                     {
-                        // Add markup to price
-                        $markup = (float) $markup_table[ $attribute_id ][ $term_id ][ "markup" ];
-                        $variation_price = $variation_price + $markup;
+                        // Does this variation have a markup?
+                        if ( isset( $markup_table[ $attribute_id ][ $term_id ] ) )
+                        {
+                            // Add markup to price
+                            $markup = (float) $markup_table[ $attribute_id ][ $term_id ][ "markup" ];
+                            $variation_price = $variation_price + $markup;
 
-                        // Make sure markup wasn't a reduction that creates
-                        // a negative price, then set price accordingly
-                        if ( $variation_price > 0 )
-                        {
-                            $variation->{"set_$price_type"}( $variation_price );
-                        }
-                        else
-                        {
-                            $variation->{"set_$price_type"}( 0.0 );
-                        }
-
-                        // Update description if Description Behavior is NOT 'ignore'.
-                        if ( ! ( MT2MBA_DESC_BEHAVIOR == 'ignore' ) )
-                        {
-                            // Build description (for regular price calculation only)
-                            if ( $price_type == 'regular_price' )
+                            // Make sure markup wasn't a reduction that creates
+                            // a negative price, then set price accordingly
+                            if ( $variation_price > 0 )
                             {
-                                // Put regular price in description if absent
-                                if ( ! $has_orig_price )
+                                $variation->{"set_$price_type"}( $variation_price );
+                            }
+                            else
+                            {
+                                $variation->{"set_$price_type"}( 0.0 );
+                            }
+
+                            // Update description if Description Behavior is NOT 'ignore'.
+                            if ( ! ( MT2MBA_DESC_BEHAVIOR == 'ignore' ) )
+                            {
+                                // Build description (for regular price calculation only)
+                                if ( $price_type == 'regular_price' )
                                 {
-                                    if ( MT2MBA_DESC_BEHAVIOR == 'overwrite' )
+                                    // Put regular price in description if absent
+                                    if ( ! $has_orig_price )
                                     {
-                                        // Start with an empty description
-                                        $description = "";
-                                    }
-                                    // Set markup opening tag
-                                    $description .= PHP_EOL . PRODUCT_MARKUP_DESC_BEG;
-                                    // Open description with original price
-                                    $description .= html_entity_decode
-                                        (
-                                            MT2MBA_PRICE_META .
-                                            sprintf
+                                        if ( MT2MBA_DESC_BEHAVIOR == 'overwrite' )
+                                        {
+                                            // Start with an empty description
+                                            $description = "";
+                                        }
+                                        // Set markup opening tag
+                                        $description .= PHP_EOL . PRODUCT_MARKUP_DESC_BEG;
+                                        // Open description with original price (if non-zero)
+                                        if ( $orig_price <> 0 )
+                                        {
+                                            $description .= html_entity_decode
                                             (
-                                                get_woocommerce_price_format(),
-                                                get_woocommerce_currency_symbol( get_woocommerce_currency() ),
-                                                $orig_price_formatted
-                                            ) .
-                                            PHP_EOL
-                                        );
-                                    // Flip flag
-                                    $has_orig_price = TRUE;
+                                                MT2MBA_PRICE_META .
+                                                sprintf
+                                                (
+                                                    get_woocommerce_price_format(),
+                                                    get_woocommerce_currency_symbol( get_woocommerce_currency() ),
+                                                    $orig_price_formatted
+                                                ) .
+                                                PHP_EOL
+                                            );
+                                        }
+                                        // Flip flag
+                                        $has_orig_price = TRUE;
+                                    }
+                                    // Add markup description to variation description
+                                    if ( $markup_table[ $attribute_id ][ $term_id ][ "description" ] <> '' )
+                                    {
+                                        $description .= $markup_table[ $attribute_id ][ $term_id ][ "description" ] . PHP_EOL;
+                                    }
                                 }
-                                // Add markup description to variation description
-                                $description .= $markup_table[ $attribute_id ][ $term_id ][ "description" ] . PHP_EOL;
                             }
                         }
-                    }
-                }    // End attribute loop
-
+                
+                    }    // End attribute loop
+                }
                 // Rewrite variation description if setting the regular price
                 if ( $price_type == 'regular_price' )
                 {

@@ -11,7 +11,7 @@
  * file that was distributed with this source code.
  */
 /**
- * Plugin Name:            Markup by Attribute for WooCommerce - MT² Tech
+ * Plugin Name:            Markup by Attribute for WooCommerce
  * Description:            This plugin adds product variation markup by attribute to WooCommerce -- the ability to add a markup (or markdown) to an attribute term and have that change the regular and sale price of the associated product variations.
  * Plugin URI:             https://wordpress.org/plugins/markup-by-attribute-for-woocommerce/
  * Tags:                   WooCommerce, Attribute, Price, Variation, Markup
@@ -22,22 +22,23 @@
  * License URI:            https://www.gnu.org/licenses/gpl-3.0.html
  * Text Domain:            markup-by-attribute
  * Domain path:            /languages
- * Version:                3.2
- * Build:                  201908.01
+ * Version:                3.3
+ * Build:                  201909.02
  * Stable tag:             trunk
  * Requires at least:      4.6
  * Tested up to:           5.1
  * Requires PHP:           5.6
- * PHP tested up to:       7.2.10
+ * PHP tested up to:       7.3.0
  * WC requires at least:   3.0
- * WC tested up to:        3.5.2
+ * WC tested up to:        3.5.5
  */
 
 // Exit if accessed directly
 if ( !defined( 'ABSPATH' ) ) exit( );
 
-// If WooCommerce is active 
-if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) )
+// Run Markup by Attribute within WooCommerce
+add_action( 'woocommerce_init', 'mt2mba_main' );
+function mt2mba_main()
 {
   	// Load translations
 	load_plugin_textdomain( 'markup-by-attribute', FALSE, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
@@ -73,12 +74,12 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 				sprintf( '<a href="%s">' . __( 'Markup-by-Attribute settings', 'markup-by-attribute' ) . '</a>.', MT2MBA_SITE_URL . '/wp-admin/admin.php?page=wc-settings&tab=products&section=mt2mba' )
 			),
 			//	Info message #2
-//			'unique_message_identifier' => __( 'message', 'markup-by-attribute' ),
-),
+			//'unique_message_identifier' => __( 'message', 'markup-by-attribute' ),
+		),
 		'warning' => array
 		(
 			//	Warning message #1
-//			'unique_message_identifier' => __( 'message', 'markup-by-attribute' ),
+			//'unique_message_identifier' => __( 'message', 'markup-by-attribute' ),
 		),
 	);
 
@@ -93,6 +94,9 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
     // Instantiate utility class. Done here in case upgrade required.
 	global $mt2mba_utility;
     $mt2mba_utility = new MT2MBA_UTILITY_GENERAL;
+
+	// Set global constants
+	$mt2mba_utility->get_mba_globals();
 
 	// Pull in correct code depending on whether we are in the shop (frontend) or on the admin page (backend).
 	if ( is_admin( ) )
@@ -120,8 +124,11 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 		// Front end code
 		// --------------
 
-		// Instantiate options drop-down box
-		new MT2MBA_FRONTEND_OPTIONS;
+		// Instantiate options drop-down box (Unless markup is hidden)
+        if ( MT2MBA_MODIFY_TERM_NAME != 'yes' && MT2MBA_DROPDOWN_BEHAVIOR != 'hide' )    // we're not hiding the markup
+        {
+			new MT2MBA_FRONTEND_OPTIONS;
+		}
 	}
 }
 

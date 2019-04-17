@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Markup by Attribute for WooCommerce - MT² Tech\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-03 21:42+0000\n"
+"POT-Creation-Date: 2019-03-03 21:17+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -14,43 +14,43 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Loco https://localise.biz/"
 
-#: markup-by-attribute-for-woocommerce.php:54
+#: markup-by-attribute-for-woocommerce.php:55
 msgid "Markup by Attribute"
 msgstr ""
 
-#: markup-by-attribute-for-woocommerce.php:56
+#: markup-by-attribute-for-woocommerce.php:57
 msgid "Product price"
 msgstr ""
 
-#: markup-by-attribute-for-woocommerce.php:59
+#: markup-by-attribute-for-woocommerce.php:60
 msgid "Markup:"
 msgstr ""
 
-#: markup-by-attribute-for-woocommerce.php:70
+#: markup-by-attribute-for-woocommerce.php:71
 msgid ""
 "PLEASE NOTE: As of version 2.4, Markup-by-Attribute no longer has it's own "
 "currency format settings. It now uses the"
 msgstr ""
 
-#: markup-by-attribute-for-woocommerce.php:71
+#: markup-by-attribute-for-woocommerce.php:72
 msgid "WooCommerce currency settings"
 msgstr ""
 
-#: markup-by-attribute-for-woocommerce.php:72
+#: markup-by-attribute-for-woocommerce.php:73
 msgid ""
 "You may still control the markup display behavior of the options drop-down "
 "and the product description with the"
 msgstr ""
 
-#: markup-by-attribute-for-woocommerce.php:73
+#: markup-by-attribute-for-woocommerce.php:74
 msgid "Markup-by-Attribute settings"
 msgstr ""
 
-#: markup-by-attribute-for-woocommerce.php:139
+#: markup-by-attribute-for-woocommerce.php:148
 msgid "Settings"
 msgstr ""
 
-#: markup-by-attribute-for-woocommerce.php:144
+#: markup-by-attribute-for-woocommerce.php:153
 msgid "Instructions"
 msgstr ""
 
@@ -71,135 +71,159 @@ msgid ""
 "link right here."
 msgstr ""
 
-#: src/utility/general.php:221
+#: src/utility/general.php:222
 #, php-format
 msgid "Subtract %1$s for %2$s"
 msgstr ""
 
-#: src/utility/general.php:221
+#: src/utility/general.php:222
 #, php-format
 msgid "Add %1$s for %2$s"
 msgstr ""
 
-#: src/backend/attrb.php:37
+#: src/backend/term.php:37
 msgid "Markup (or markdown)"
 msgstr ""
 
-#: src/backend/attrb.php:38
+#: src/backend/term.php:38
 msgid ""
 "Markup or markdown associated with this option. Signed, floating point "
 "numeric allowed."
 msgstr ""
 
-#: src/backend/settings.php:242
+#: src/backend/settings.php:276
 msgid ""
 "The following options are used to configure variation markups by attribute."
 msgstr ""
 
-#: src/backend/settings.php:245
+#: src/backend/settings.php:279
 #, php-format
 msgid ""
 "Additional help can be found in the <a href=\"%1$s\" target=\"_blank\">"
 "Markup by Attribute wiki</a> on the <code>Settings</code> page."
 msgstr ""
 
-#: src/backend/settings.php:250
+#: src/backend/settings.php:284
 #, php-format
 msgid ""
 "If you find this plugin helpful, please consider <a href=\"%1$s\" "
 "target=\"_blank\">a small donation</a>."
 msgstr ""
 
-#: src/backend/settings.php:260
+#: src/backend/settings.php:302
 msgid ""
 "Should Markup-by-Attribute add the markup to the options drop-down box, and "
 "should the currency symbol be displayed?"
 msgstr ""
 
-#: src/backend/settings.php:261
+#: src/backend/settings.php:303
 msgid "This setting affects all products and takes effect immediately."
 msgstr ""
 
-#: src/backend/settings.php:264
+#: src/backend/settings.php:306
 msgid "Option Drop-down Behavior"
 msgstr ""
 
-#: src/backend/settings.php:270
+#: src/backend/settings.php:312
 msgid "Do NOT show the markup in the options drop-down box."
 msgstr ""
 
-#: src/backend/settings.php:271
+#: src/backend/settings.php:313
 msgid "Show the markup WITH the currency symbol in the options drop-down box."
 msgstr ""
 
-#: src/backend/settings.php:272
+#: src/backend/settings.php:314
 msgid ""
 "Show the markup WITHOUT the currency symbol in the options drop-down box."
 msgstr ""
 
-#: src/backend/settings.php:280
+#: src/backend/settings.php:322
+msgid ""
+"Rewrite the names of the attribute terms to include the increase (decrease)."
+msgstr ""
+
+#: src/backend/settings.php:323
+msgid ""
+"This allows compatibility with plugins that replace the option drop-down box."
+msgstr ""
+
+#: src/backend/settings.php:324
+msgid "Uses the drop-down list behavior settings (see above)."
+msgstr ""
+
+#: src/backend/settings.php:325
+msgid ""
+"This setting affects the names individually and applies when the attribute "
+"has been saved."
+msgstr ""
+
+#: src/backend/settings.php:328
+msgid "Include the Increase (Decrease) in the Term Name"
+msgstr ""
+
+#: src/backend/settings.php:339
 msgid ""
 "How should Markup-by-Attribute handle adding price markup information to the "
 "variation description?"
 msgstr ""
 
-#: src/backend/settings.php:281
+#: src/backend/settings.php:340
 msgid ""
 "This setting affects products individually and takes effect when you "
 "recalculate the regular price for the product."
 msgstr ""
 
-#: src/backend/settings.php:284
+#: src/backend/settings.php:343
 msgid "Description Behavior"
 msgstr ""
 
-#: src/backend/settings.php:290
+#: src/backend/settings.php:349
 msgid "Do NOT add pricing information to the description field."
 msgstr ""
 
-#: src/backend/settings.php:291
+#: src/backend/settings.php:350
 msgid "Add pricing information to the end of the existing description."
 msgstr ""
 
-#: src/backend/settings.php:292
+#: src/backend/settings.php:351
 msgid "Overwrite the variation description with price information."
 msgstr ""
 
-#: src/backend/settings.php:300
+#: src/backend/settings.php:375
 msgid ""
 "Price adjustments are calculated based on the normal price of the product, "
 "even if the sales price is present."
 msgstr ""
 
-#: src/backend/settings.php:301
+#: src/backend/settings.php:376
 msgid ""
 "This option tells Markup-by-Attribute to use the sale price for percentage "
 "markups."
 msgstr ""
 
-#: src/backend/settings.php:302
+#: src/backend/settings.php:377
 msgid ""
 "Keep in mind that regular price adjustments will always be displayed in the "
 "Attribute drop-down menu and in the product description regardless of this "
 "setting."
 msgstr ""
 
-#: src/backend/settings.php:305
+#: src/backend/settings.php:380
 msgid "Use Sale Price for Markup"
 msgstr ""
 
-#: src/backend/settings.php:315
+#: src/backend/settings.php:390
 msgid ""
 "Some stores want prices with specific numbers below the decimal place (such "
 "as xx.00 or xx.95). Rounding percentage markups will keep the value below "
 "the decimal."
 msgstr ""
 
-#: src/backend/settings.php:320
+#: src/backend/settings.php:395
 msgid "Round Markup"
 msgstr ""
 
-#: src/backend/settings.php:330
+#: src/backend/settings.php:421
 msgid ""
 "Use Cautiously: WooCommerce limits the number of linked variations you can "
 "create at a time to 50 to prevent server overload.  To create more, you can "
@@ -209,25 +233,25 @@ msgid ""
 "number higher."
 msgstr ""
 
-#: src/backend/settings.php:335
+#: src/backend/settings.php:426
 msgid "Variation Max"
 msgstr ""
 
-#: src/backend/settings.php:373
+#: src/backend/settings.php:471
 msgid "Please select an option for the options drop-down."
 msgstr ""
 
-#: src/backend/settings.php:388
+#: src/backend/settings.php:486
 msgid "Please select an option for the description behavior."
 msgstr ""
 
-#: src/backend/settings.php:405
+#: src/backend/settings.php:503
 msgid ""
 "Variation Max must be a number, 1 or higher.</br>Previous option retained."
 msgstr ""
 
 #. Name of the plugin
-msgid "Markup by Attribute for WooCommerce - MT² Tech"
+msgid "Markup by Attribute for WooCommerce"
 msgstr ""
 
 #. Description of the plugin

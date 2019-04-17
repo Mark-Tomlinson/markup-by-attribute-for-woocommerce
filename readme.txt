@@ -6,11 +6,11 @@ Plugin URI:             https://wordpress.org/plugins/markup-by-attribute-for-wo
 Tags:                   WooCommerce, Attribute, Price, Variation, Markup
 Author:                 MarkTomlinson
 Contributors:           MarkTomlinson
-Donate link:            https://www.paypal.me/MT2Dev/15
+Donate link:            https://www.paypal.me/MT2Dev/5
 License:                GPLv3
 License URI:            https://www.gnu.org/licenses/gpl-3.0.html
 Version:                3.4
-Build:                  201916.04
+Build:                  201916.05
 Stable tag:             trunk
 Requires at least:      4.6
 Tested up to:           5.1.1
@@ -116,7 +116,7 @@ Then do nothing. Prices, descriptions, and option drop-downs for products will r
 
 = I'd like to donate. =
 
-Thanks! The donation button assumes $15.00 USD. But feel free to adjust that amount up or down as you feel it's appropriate. I'm a retired guy who's living off his savings, so every little bit helps.
+Thanks! The donation button assumes $5.00 USD. But feel free to adjust that amount up or down as you feel it's appropriate. I'm a retired guy who's living off his savings, so every little bit helps.
 
 If you use Markup-by-Attribute and want to see me continuing support for it, I encourage you to encourage me with a small donation.
 

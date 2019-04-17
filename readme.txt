@@ -10,7 +10,7 @@ Donate link:            https://www.paypal.me/MT2Dev/15
 License:                GPLv3
 License URI:            https://www.gnu.org/licenses/gpl-3.0.html
 Version:                3.4
-Build:                  201916.02
+Build:                  201916.03
 Stable tag:             trunk
 Requires at least:      4.6
 Tested up to:           5.1.1
@@ -75,7 +75,8 @@ _NOTE:_ These instructions assume you are familiar with WooCommerce global Produ
     * Examples of valid values include: ‘-5’, ‘5.95’, ‘+5.678’, ‘7.5%’, and ‘-12%’.
 1.  **Create product variations as you normally would.**
     * Markup by Attribute requires variable products because it changes the price of each variation.
-    * It is recommended that you use the `Create variations from all attributes` function to ensure all variations are represented.
+    * Using `Create variations from all attributes` is the easiest way to ensure you have all combinations.
+    * Do not have a variation with "Any" in an attribute with a markup because WooCommerce will choose the "Any" variation regardless of others that may exist. (So if XX-Large is 5% more, you can not have one variation for "XX-Large" and another for "Any size" to cover the rest, because WooCommerce assumes Any includes XX-Large.)
 1.  **Use the `Set regular price` and `Set sale price` bulk edit functions as you normally would.**  (_NOTE: If you’ve already set the prices before installing Markup by Attribute, you will need to do it again to apply the markup_).
     * The markup will be applied to the price according to the attribute terms associated with the variation.
     * A description of the markup will be added to the variation description.

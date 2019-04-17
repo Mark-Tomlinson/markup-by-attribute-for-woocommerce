@@ -23,7 +23,7 @@
  * Text Domain:            markup-by-attribute
  * Domain path:            /languages
  * Version:                3.4
- * Build:                  201916.01
+ * Build:                  201916.02
  * Stable tag:             trunk
  * Requires at least:      4.6
  * Tested up to:           5.1.1

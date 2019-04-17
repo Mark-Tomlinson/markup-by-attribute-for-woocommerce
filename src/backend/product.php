@@ -106,7 +106,7 @@ class MT2MBA_BACKEND_PRODUCT
             foreach ( wc_get_product( $product_id )->get_attributes() as $pa_attrb ) {
 
                 // Loop through attribute terms
-                foreach ( get_terms( $pa_attrb->get_name(), array( 'hide_empty' => false, ) ) as $term ) {
+                foreach ( get_terms( array( 'taxonomy' => $pa_attrb->get_name(), 'hide_empty' => false, ) ) as $term ) {
                     
                     $markup = get_term_meta( $term->term_id, 'mt2mba_markup', TRUE );
 

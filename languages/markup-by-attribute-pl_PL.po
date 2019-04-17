@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Markup by Attribute for WooCommerce - MT² Tech\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-03 21:17+0000\n"
-"PO-Revision-Date: 2019-03-03 21:18+0000\n"
+"POT-Creation-Date: 2019-04-17 03:16+0000\n"
+"PO-Revision-Date: 2019-04-17 03:16+0000\n"
 "Last-Translator: Mark Tomlinson <mt2@technologist.com>\n"
 "Language-Team: Polish\n"
 "Language: pl_PL\n"
@@ -13,7 +13,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Loco https://localise.biz/\n"
-"X-Loco-Version: 2.2.0; wp-5.1"
+"X-Loco-Version: 2.2.2; wp-5.1.1"
 
 #: markup-by-attribute-for-woocommerce.php:55
 msgid "Markup by Attribute"
@@ -26,30 +26,6 @@ msgstr "Cena produktu"
 #: markup-by-attribute-for-woocommerce.php:60
 msgid "Markup:"
 msgstr "Zmiana ceny: "
-
-#: markup-by-attribute-for-woocommerce.php:71
-msgid ""
-"PLEASE NOTE: As of version 2.4, Markup-by-Attribute no longer has it's own "
-"currency format settings. It now uses the"
-msgstr ""
-"Warte uwagi: Od wersji 2.4,  Markup-by-Attribute nie posiada własnych "
-"ustawień odnośnie waluty. Korzysta z tych wbudowanych do"
-
-#: markup-by-attribute-for-woocommerce.php:72
-msgid "WooCommerce currency settings"
-msgstr "WooCommerce ustawienia waluty"
-
-#: markup-by-attribute-for-woocommerce.php:73
-msgid ""
-"You may still control the markup display behavior of the options drop-down "
-"and the product description with the"
-msgstr ""
-"Nadal możesz kontrolować zachowanie wyświetlania opcji w menu rozwijanym i "
-"opisu produktu za pomocą"
-
-#: markup-by-attribute-for-woocommerce.php:74
-msgid "Markup-by-Attribute settings"
-msgstr "Markup-by-Attribute ustawienia"
 
 #: markup-by-attribute-for-woocommerce.php:148
 msgid "Settings"

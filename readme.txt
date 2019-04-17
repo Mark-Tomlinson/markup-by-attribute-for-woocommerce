@@ -10,7 +10,7 @@ Donate link:            https://www.paypal.me/MT2Dev/15
 License:                GPLv3
 License URI:            https://www.gnu.org/licenses/gpl-3.0.html
 Version:                3.4
-Build:                  201916.03
+Build:                  201916.04
 Stable tag:             trunk
 Requires at least:      4.6
 Tested up to:           5.1.1
@@ -134,6 +134,8 @@ If you use Markup-by-Attribute and want to see me continuing support for it, I e
 
 = 3.4 =
 * Fix: Show hidden attribute terms to correct error where WordPress/WooCommerce wrongly considers the term as unused.
+* Maintenance: Updated instructions.
+* Maintenance: Removed v2.4 upgrade message.
 
 = 3.3. =
 * Feature: For compatibility with plugins that remove the options drop-down box, the `Include the Increase (Decrease) in the Term Name` option allows markups to show when the drop-down box is not available.

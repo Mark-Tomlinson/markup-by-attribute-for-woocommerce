@@ -64,16 +64,7 @@ function mt2mba_main()
 	(	//	Update with dismissible info and warning messages that get displayed at startup
 		'info' => array
 		(
-			// Version 2.4 Upgrade notice
-//			'ver2_4_upgrade' => sprintf
-//			(
-//				'%1$s %2$s %3$s %4$s',
-//				__( 'PLEASE NOTE: As of version 2.4, Markup-by-Attribute no longer has it\'s own currency format settings. It now uses the', 'markup-by-attribute' ),
-//				sprintf( '<a href="%s">' . __( 'WooCommerce currency settings', 'markup-by-attribute' ) . '</a>.<br/>', MT2MBA_SITE_URL . '/wp-admin/admin.php?page=wc-settings' ),
-//				__( 'You may still control the markup display behavior of the options drop-down and the product description with the', 'markup-by-attribute' ),
-//				sprintf( '<a href="%s">' . __( 'Markup-by-Attribute settings', 'markup-by-attribute' ) . '</a>.', MT2MBA_SITE_URL . '/wp-admin/admin.php?page=wc-settings&tab=products&section=mt2mba' )
-//			),
-			//	Info message #2
+			//	Info message #1
 			//'unique_message_identifier' => __( 'message', 'markup-by-attribute' ),
 		),
 		'warning' => array

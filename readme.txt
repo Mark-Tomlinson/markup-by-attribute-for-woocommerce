@@ -10,7 +10,7 @@ Donate link:            https://www.paypal.me/MT2Dev/5
 License:                GPLv3
 License URI:            https://www.gnu.org/licenses/gpl-3.0.html
 Version:                3.5
-Build:                  201920.02
+Build:                  201920.04
 Stable tag:             trunk
 Requires at least:      4.6
 Tested up to:           5.2.1
@@ -133,7 +133,9 @@ If you use Markup-by-Attribute and want to see me continuing support for it, I e
 == Changelog ==
 
 = 3.5 =
-* Fix: Remove `Include the Increase (Decrease) in the Term Name` option because of complexity.
+* Fix: Correct 'hide' option of option drop-down box.
+* Fix: Remove non-functioning or incorrectly implemented options.
+* Fix: Corrected the way the markup was saved to metadata (stopped rounding).
 * Maintenance: Include new `Tested to:` information.
 
 = 3.4 =

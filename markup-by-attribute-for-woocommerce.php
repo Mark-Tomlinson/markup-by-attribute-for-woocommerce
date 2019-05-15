@@ -4,8 +4,8 @@
  *
  * @package     markup-by-attribute-for-woocommerce
  * @author      Mark Tomlinson
- * @version     2.4
- * @copyright   Mark Tomlinson  2018
+ * @version     3.5
+ * @copyright   Mark Tomlinson  2019
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -23,7 +23,7 @@
  * Text Domain:            markup-by-attribute
  * Domain path:            /languages
  * Version:                3.5
- * Build:                  201920.02
+ * Build:                  201920.04
  * Stable tag:             trunk
  * Requires at least:      4.6
  * Tested up to:           5.2.1

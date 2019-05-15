@@ -122,8 +122,7 @@ class MT2MBA_BACKEND_PRODUCT
                             $orig_price_stored = update_post_meta( $product_id, "mt2mba_base_{$price_type}", $orig_price );
                         }
                         // Variation description and option markup are only set on the regular price
-                        // Unless the mt2mba_calc_on_sale_price option is 'yes'
-                        if ( ( $price_type == 'regular_price' ) || ( MT2MBA_CALC_ON_SALE_PRICE == 'yes' ) )
+                        if ( $price_type == 'regular_price' )
                         {
                             // If term_markup has a value other than zero, add/update the value to the metadata table
                             if ( strpos( $markup, "%" ) )
@@ -154,7 +153,7 @@ class MT2MBA_BACKEND_PRODUCT
                             if ( $price_type == 'regular_price' )
                             {
                                 // Save actual markup value for term as post metadata for use in product attribute dropdown
-                                update_post_meta( $product_id, $meta_key, sprintf( "%+g", $markup ) );
+                                update_post_meta( $product_id, $meta_key, sprintf( "%+f", $markup ) );
                             }
                         }
                         else

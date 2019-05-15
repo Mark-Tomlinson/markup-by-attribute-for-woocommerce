@@ -140,39 +140,6 @@ class MT2MBA_BACKEND_SETTINGS
     }
 
     /**
-     * Set the Calc on Sale Price option
-     * @param   boolean $data   Whether percentage markups will calculated from sale price
-     * @return  boolean         Whether percentage markups will calculated from sale price
-     */
-    private function set_calc_on_sale_price( $data )
-    {
-        if ( $data === '' )
-        {
-            $data = $this->calc_on_sale_price;
-        }
-        if ( update_option( 'mt2mba_calc_on_sale_price', $data ) )
-        {
-            return $data;
-        }
-        return FALSE;
-    }
-
-    /**
-     * Get the Calc on Sale Price option (and set it if not present)
-     * @uses    set_round_markup()  Set the Calc on Sale Price option
-     * @return  boolean             Whether percentage markups will calculated from sale price
-     */
-    public function get_calc_on_sale_price()
-    {
-        $data = get_option( 'mt2mba_calc_on_sale_price' );
-        if ( ! isset ( $data ) )
-        {
-            $data = $this->set_calc_on_sale_price( $this->calc_on_sale_price );
-        }
-        return $data;
-    }
-
-    /**
      * Set the Max Variations option
      * @param   int $mv Maximum variations per run
      * @return  int     Maximum variations per run or FALSE
@@ -255,13 +222,13 @@ class MT2MBA_BACKEND_SETTINGS
                     'id'       => 'mt2mba',
                 );
 
-            // Start section 'Display'
-            $mt2mba_settings[] = array
-                (
-                    'title'    => __( 'Markup Display' ),
-                    'type'     => 'title',
-                    'id'       => 'mt2mba_display',
-                );
+//            // Start section 'Display'
+//            $mt2mba_settings[] = array
+//                (
+//                    'title'    => __( 'Markup Display' ),
+//                    'type'     => 'title',
+//                    'id'       => 'mt2mba_display',
+//                );
 
             // Format of markup in Drop-down
             register_setting( 'mt2mba', 'mt2mba_dropdown_behavior', array( $this, 'validate_mt2mba_dropdown_behavior_field' ) );
@@ -303,37 +270,21 @@ class MT2MBA_BACKEND_SETTINGS
                     'default'  => $this->desc_behavior,
                 );
 
-            // End section
-            $mt2mba_settings[] = array
-                (
-                    'type'     => 'sectionend',
-                    'id'       => 'mt2mba_display',
-                );
+//            // End section
+//            $mt2mba_settings[] = array
+//                (
+//                    'type'     => 'sectionend',
+//                    'id'       => 'mt2mba_display',
+//                );
 
             // --------------------------------------------------
-            // Start section 'Markup Calculation'
-            $mt2mba_settings[] = array
-                (
-                    'title'    => __( 'Markup Calculation' ),
-                    'type'     => 'title',
-                    'id'       => 'mt2mba_calc',
-                );
-
-            // Calculate percentage markups on sale price
-            register_setting( 'mt2mba', 'mt2mba_calc_on_sale_price' );
-            $description = 
-                __( 'Price adjustments are calculated based on the normal price of the product, even if the sales price is present.', 'markup-by-attribute' ) . ' ' .
-                __( 'This option tells Markup-by-Attribute to use the sale price for percentage markups.', 'markup-by-attribute' ) . '<br/>' .
-                '<i>' . __( 'Keep in mind that regular price adjustments will always be displayed in the Attribute drop-down menu and in the product description regardless of this setting.', 'markup-by-attribute' ) . '</i>';
-            $mt2mba_settings[] = array
-                (
-                    'title'    => __( 'Use Sale Price for Markup', 'markup-by-attribute' ),
-                    'name'     => 'mt2mba_calc_on_sale_price',
-                    'desc'     => sprintf($this->format_desc, $description ),
-                    'id'       => 'mt2mba_calc_on_sale_price',
-                    'default'  => $this->calc_on_sale_price,
-                    'type'     => 'checkbox',
-                );
+//            // Start section 'Markup Calculation'
+//            $mt2mba_settings[] = array
+//                (
+//                    'title'    => __( 'Markup Calculation' ),
+//                    'type'     => 'title',
+//                    'id'       => 'mt2mba_calc',
+//                );
 
             // Round off percentage markups
             register_setting( 'mt2mba', 'mt2mba_round_markup' );
@@ -350,21 +301,21 @@ class MT2MBA_BACKEND_SETTINGS
                     'type'     => 'checkbox',
                 );
 
-            // End section 'Markup Calculation' 
-            $mt2mba_settings[] = array
-                (
-                    'type'     => 'sectionend',
-                    'id'       => 'mt2mba_calc',
-                );
+//            // End section 'Markup Calculation' 
+//            $mt2mba_settings[] = array
+//                (
+//                    'type'     => 'sectionend',
+//                    'id'       => 'mt2mba_calc',
+//                );
 
             // --------------------------------------------------
-            // Start section 'Other'
-            $mt2mba_settings[] = array
-                (
-                    'title'    => __( 'Other' ),
-                    'type'     => 'title',
-                    'id'       => 'mt2mba_other',
-                );
+//            // Start section 'Other'
+//            $mt2mba_settings[] = array
+//                (
+//                    'title'    => __( 'Other' ),
+//                    'type'     => 'title',
+//                    'id'       => 'mt2mba_other',
+//                );
 
             // Variation Max
             register_setting( 'mt2mba', 'mt2mba_variation_max', array( $this, 'validate_mt2mba_variation_max_field' ) );
@@ -381,12 +332,12 @@ class MT2MBA_BACKEND_SETTINGS
                     'type'     => 'text',
                 );
 
-            // End section 'Other' 
-            $mt2mba_settings[] = array
-                (
-                    'type'     => 'sectionend',
-                    'id'       => 'mt2mba_other',
-                );
+//            // End section 'Other' 
+//            $mt2mba_settings[] = array
+//                (
+//                    'type'     => 'sectionend',
+//                    'id'       => 'mt2mba_other',
+//                );
 
             // --------------------------------------------------
             // End Markup by Attribute settings

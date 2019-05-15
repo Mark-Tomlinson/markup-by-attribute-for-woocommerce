@@ -23,7 +23,7 @@
  * Text Domain:            markup-by-attribute
  * Domain path:            /languages
  * Version:                3.5
- * Build:                  201920.01
+ * Build:                  201920.02
  * Stable tag:             trunk
  * Requires at least:      4.6
  * Tested up to:           5.2.1
@@ -115,11 +115,8 @@ function mt2mba_main()
 		// Front end code
 		// --------------
 
-		// Instantiate options drop-down box (Unless markup is hidden)
-        if ( MT2MBA_MODIFY_TERM_NAME != 'yes' && MT2MBA_DROPDOWN_BEHAVIOR != 'hide' )    // we're not hiding the markup
-        {
-			new MT2MBA_FRONTEND_OPTIONS;
-		}
+		// Instantiate options drop-down box
+		new MT2MBA_FRONTEND_OPTIONS;
 	}
 }
 

@@ -146,7 +146,6 @@ class MT2MBA_UTILITY_GENERAL
         {
             $settings = new MT2MBA_BACKEND_SETTINGS;
             define( 'MT2MBA_DESC_BEHAVIOR', $settings->get_desc_behavior() );
-            define( 'MT2MBA_MODIFY_TERM_NAME', $settings->get_modify_term_name() );
             define( 'MT2MBA_DROPDOWN_BEHAVIOR', $settings->get_dropdown_behavior() );
             define( 'MT2MBA_CALC_ON_SALE_PRICE', $settings->get_calc_on_sale_price() );
             define( 'MT2MBA_ROUND_MARKUP', $settings->get_round_markup() );

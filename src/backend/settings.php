@@ -74,39 +74,6 @@ class MT2MBA_BACKEND_SETTINGS
     }
 
     /**
-     * Set the Modify Term Name option
-     * @param   boolean $data   Whether the term name will be rewritten to include the markup
-     * @return  boolean         Whether the term name will be rewritten to include the markup
-     */
-    private function set_modify_term_name( $data )
-    {
-        if ( $data === '' )
-        {
-            $data = $this->modify_term_name;
-        }
-        if ( update_option( 'mt2mba_modify_term_name', $data ) )
-        {
-            return $data;
-        }
-        return FALSE;
-    }
-
-    /**
-     * Get the Modify Term Name option (and set it if not present)
-     * @uses    set_round_markup()  Set whether the term name will be rewritten to include the markup
-     * @return  boolean             Whether the term name will be rewritten to include the markup
-     */
-    public function get_modify_term_name()
-    {
-        $data = get_option( 'mt2mba_modify_term_name' );
-        if ( ! isset ( $data ) )
-        {
-            $data = $this->set_modify_term_name( $this->modify_term_name );
-        }
-        return $data;
-    }
-
-    /**
      * Set the description behavior option
      * @param   string  $data   The description writing behavior
      * @return  string          The description writing behavior
@@ -316,24 +283,7 @@ class MT2MBA_BACKEND_SETTINGS
                     'default'  => $this->dropdown_behavior,
                 );
 
-            // Include Markup in Term Name
-            register_setting( 'mt2mba', 'mt2mba_modify_term_name' );
-            $description = 
-            __( 'Rewrite the names of the attribute terms to include the increase (decrease).', 'markup-by-attribute' ) . ' ' .
-            __( 'This allows compatibility with plugins that replace the option drop-down box.', 'markup-by-attribute' ) . ' ' .
-            __( 'Uses the drop-down list behavior settings (see above).', 'markup-by-attribute' ) . '<br/>' .
-                '<i>' . __( 'This setting affects the names individually and applies when the attribute has been saved.', 'markup-by-attribute' ) . '</i>';
-            $mt2mba_settings[] = array
-                (
-                    'title'    => __( 'Include the Increase (Decrease) in the Term Name', 'markup-by-attribute' ),
-                    'name'     => 'mt2mba_modify_term_name',
-                    'desc'     => sprintf($this->format_desc, $description ),
-                    'id'       => 'mt2mba_modify_term_name',
-                    'default'  => $this->modify_term_name,
-                    'type'     => 'checkbox',
-                );
-
-                // Description Behavior
+            // Description Behavior
             register_setting( 'mt2mba', 'mt2mba_desc_behavior', array( $this, 'validate_mt2mba_desc_behavior_field' ) );
             $description =
                 __( 'How should Markup-by-Attribute handle adding price markup information to the variation description?', 'markup-by-attribute' ) . ' <br/>' .

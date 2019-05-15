@@ -120,8 +120,6 @@ class MT2MBA_BACKEND_TERM
         // Remove any previous markup information from description and name
         $description     = $term->description;
         $description     = trim( $mt2mba_utility->remove_bracketed_string( ATTRB_MARKUP_DESC_BEG, ATTRB_MARKUP_DESC_END, $description ) );
-        $term_name       = $term->name;
-        $term_name       = trim( $mt2mba_utility->remove_bracketed_string( ' (', ')', $term_name ) );
         
         // Remove old metadata, regardless of next steps
         delete_term_meta( $term_id, 'mt2mba_markup' );
@@ -145,15 +143,10 @@ class MT2MBA_BACKEND_TERM
             update_term_meta( $term_id, 'mt2mba_markup', $markup );
             // Update term description so markups are visible in the term list
             $description .= PHP_EOL . ATTRB_MARKUP_DESC_BEG . $markup . ATTRB_MARKUP_DESC_END;
-            // Update term name if MODIFY_TERM_NAME option is set to 'yes'
-            if ( MT2MBA_MODIFY_TERM_NAME == 'yes' && MT2MBA_DROPDOWN_BEHAVIOR != 'hide' )
-            {
-                $term_name .= ' ' . esc_html( $mt2mba_utility->format_option_markup( $markup ) );
-            }
         }
 
         // Rewrite description
-        wp_update_term( $term_id, $taxonomy, array( 'description' => trim( $description ), 'name' => trim( $term_name ) ) );
+        wp_update_term( $term_id, $taxonomy, array( 'description' => trim( $description ) ) );
     }
 
 }    // End  class MT2MBA_BACKEND_TERM

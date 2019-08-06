@@ -13,8 +13,8 @@ class MT2MBA_BACKEND_SETTINGS
     var $dropdown_behavior          =   'do_not_add';   // The default behavior for displaying the currency symbol in the options drop-down.
     var $modify_term_name           =   'no';           // The default behavior for rewriting the term name with markup.
     var $desc_behavior              =   'append';       // The default behavior for writing the pricing information into the variation description.
+    var $hide_base_price            =   'no';           // The default behavior for whether the base regulare price shows in the description.
     var $round_markup               =   'no';           // The default behavior for rounding percentage markups.
-    var $calc_on_sale_price         =   'no';           // The default behavior for using the sale price for percentage markups.
     var $max_variations             =   50;             // The default number or variation created per run.
 
     var $error_msg                  =   '';
@@ -102,6 +102,39 @@ class MT2MBA_BACKEND_SETTINGS
         if ( $data === FALSE )
         {
             $data = $this->set_desc_behavior( $this->desc_behavior );
+        }
+        return $data;
+    }
+
+    /**
+     * Set the Hide Base Price option
+     * @param   boolean $data   Whether base prices will appear in the description
+     * @return  boolean         Whether base prices will appear in the description
+     */
+    private function set_hide_base_price( $data )
+    {
+        if ( $data === '' )
+        {
+            $data = $this->hide_base_price;
+        }
+        if ( update_option( 'mt2mba_hide_base_price', $data ) )
+        {
+            return $data;
+        }
+        return FALSE;
+    }
+
+    /**
+     * Get the Show Base Price option (and set it if not present)
+     * @uses    set_hide_base_price()   Set the Show Base Price option
+     * @return  boolean                 Whether base prices will appear in the description
+     */
+    public function get_hide_base_price()
+    {
+        $data = get_option( 'mt2mba_hide_base_price' );
+        if ( ! isset ( $data ) )
+        {
+            $data = $this->set_hide_base_price( $this->hide_base_price );
         }
         return $data;
     }
@@ -268,6 +301,21 @@ class MT2MBA_BACKEND_SETTINGS
                             'overwrite'     => __( 'Overwrite the variation description with price information.', 'markup-by-attribute' ),
                         ),
                     'default'  => $this->desc_behavior,
+                );
+
+            // Round off percentage markups
+            register_setting( 'mt2mba', 'mt2mba_hide_base_price' );
+            $description =
+                __('Do NOT show the base price in the product description.', 'markup-by-attribute' ) . ' <br/>' .
+                '<em>' . __( 'This setting affects products individually and takes effect when you recalculate the regular price for the product.', 'markup-by-attribute' ) . '</em>';
+            $mt2mba_settings[] = array
+                (
+                    'title'    => __( 'Hide Base Price', 'markup-by-attribute' ),
+                    'name'     => 'mt2mba_hide_base_price',
+                    'desc'     => sprintf($this->format_desc, $description ),
+                    'id'       => 'mt2mba_hide_base_price',
+                    'default'  => $this->hide_base_price,
+                    'type'     => 'checkbox',
                 );
 
 //            // End section

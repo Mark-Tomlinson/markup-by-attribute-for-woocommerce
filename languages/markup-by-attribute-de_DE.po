@@ -1,14 +1,13 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Markup by Attribute for WooCommerce - MT² Tech\n"
+"Project-Id-Version: Markup by Attribute for WooCommerce - MTB2 Tech\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-08-06 03:20+0000\n"
-"PO-Revision-Date: 2019-08-06 03:21+0000\n"
+"PO-Revision-Date: 2019-08-06 03:23+0000\n"
 "Last-Translator: Mark Tomlinson <mt2@technologist.com>\n"
-"Language-Team: Polish\n"
-"Language: pl_PL\n"
-"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10 >= 2 && n%10<=4 "
-"&&(n%100<10||n%100 >= 20)? 1 : 2);\n"
+"Language-Team: German\n"
+"Language: de_DE\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -21,19 +20,19 @@ msgstr "Markup by Attribute"
 
 #: markup-by-attribute-for-woocommerce.php:57
 msgid "Product price"
-msgstr "Cena produktu"
+msgstr "Produkt Preis: "
 
 #: markup-by-attribute-for-woocommerce.php:60
 msgid "Markup:"
-msgstr "Zmiana ceny: "
+msgstr "Aufschlag:"
 
 #: markup-by-attribute-for-woocommerce.php:136
 msgid "Settings"
-msgstr "Ustawienia"
+msgstr "Einstellungen"
 
 #: markup-by-attribute-for-woocommerce.php:141
 msgid "Instructions"
-msgstr "Instrukcja"
+msgstr "Anleitung"
 
 #: src/utility/pointers.php:96
 msgid ""
@@ -44,12 +43,13 @@ msgid ""
 "variation <em>Set regular price</em> and <em>Set sale price</em> bulk edit "
 "action."
 msgstr ""
-"Markups can be fixed values such as <code>5</code> or <code>5.95</code>. Or "
-"they can be percentages such as <code>5%</code> or <code>1.23%</code>. "
-"Markups can start with a plus or minus sign such as <code>+5.95</code> or "
-"<code>-1.23%</code>.<br/>The markup will be applied during the product "
-"variation <em>Set regular price</em> and <em>Set sale price</em> bulk edit "
-"action."
+"AufschlC$ge kC6nnen <code>5</code> oder <code>5.95</code> sein. AuCerdem "
+"kC6nnen Sie Prozentzahlen wie <code>5%</code> oder<code>1.23%</code> sein. \n"
+"AufschlC$ge kC6nnen mit Plus<code>+5.95</code> oder Minus<code>-1.23%</code> "
+"dargestellt werden.<br/>Der Preisaufschlag wird wC$hrend der "
+"Variationserstellung eines Produktes durch <em>RegulC$ren Preis "
+"festlegen</em> und <em>Angebotspreis festlegen</em> im Hintergrund berechnet "
+"und festgelegt."
 
 #: src/utility/pointers.php:134
 msgid ""
@@ -57,37 +57,37 @@ msgid ""
 "instructions may help get you started.<br/>We'll just leave the instructions "
 "link right here."
 msgstr ""
-"Używanie tej wtyczki jest proste, ale może być trochę niejasne. Ten link do "
-"instrukcji może pomóc Ci zacząć. <br/> Zostawimy link do instrukcji tutaj."
+"Die Benutzung dieses Plugins mag etwas seltsam erscheinen. Dieser Link zur "
+"Anleitung wird dir bei der Benutzung helfen.<br/>"
 
 #: src/utility/general.php:227
 #, php-format
 msgid "Subtract %1$s for %2$s"
-msgstr "Obniżka %1$s za %2$s"
+msgstr "AbzC<glich %1$s fC<r %2$s"
 
 #: src/utility/general.php:227
 #, php-format
 msgid "Add %1$s for %2$s"
-msgstr "Dodatkowo %1$s za %2$s"
+msgstr "ZuzC<glich %1$s fC<r %2$s"
 
 #: src/backend/term.php:37
 msgid "Markup (or markdown)"
-msgstr "Zmiana ceny (podwyżka bądź obniżka)"
+msgstr "Preis Auf (oder Abschlag)."
 
 #: src/backend/term.php:38
 msgid ""
 "Markup or markdown associated with this option. Signed, floating point "
 "numeric allowed."
 msgstr ""
-"Dodatnia lub ujemna liczba całkowita. Może być zmiennoprzecinkowa. Może być "
-"znak % na końcu."
+"Der Preis Auf oder Abschlag wird mit dieser Angabe berechnet . Mit \"+\" "
+"oder \"-\" Zeichen versehene Nummern sind zugelassen."
 
 #: src/backend/settings.php:243
 msgid ""
 "The following options are used to configure variation markups by attribute."
 msgstr ""
-"Poniższe opcje służą do konfigurowania podwyżek (obniżek) cen przez atrybut "
-"produktu."
+"Die folgenden Optionen werden verwendet um Varianten PreisaufschlC$ge durch "
+"Produkt Eigenschaften zu konfigurieren"
 
 #: src/backend/settings.php:246
 #, php-format
@@ -95,9 +95,8 @@ msgid ""
 "Additional help can be found in the <a href=\"%1$s\" target=\"_blank\">"
 "Markup by Attribute wiki</a> on the <code>Settings</code> page."
 msgstr ""
-"Dodatkową pomoc można znaleźć w <a href=\"%1$s\" target=\"_blank\">wiki "
-"Markup by Attribute</a> na stronie <code>Settings</code> (tylko angielska "
-"wersja)."
+"Du kannst auf unserer <a href=\"%1$s\" target=\"_blank\">Markup by Attribute "
+"Wiki-Seite</a> im <code>Settings-Bereich</code> zusC$tzliche Hilfe finden."
 
 #: src/backend/settings.php:251
 #, php-format
@@ -105,75 +104,80 @@ msgid ""
 "If you find this plugin helpful, please consider <a href=\"%1$s\" "
 "target=\"_blank\">a small donation</a>."
 msgstr ""
-"Jeśli znajdziesz ten plugin pomocne, proszę rozważyć <a href=\"\"%1$s\"\" "
-"target=\"\"_blank\"\">małą darowiznę</a>."
+"Wenn du das Plugin hilfreich findest, wC<rden wir uns C<ber eine  <a "
+"href=\"%1$s\" target=\"_blank\">kleine Spende</a>. freuen."
 
 #: src/backend/settings.php:269
 msgid ""
 "Should Markup-by-Attribute add the markup to the options drop-down box, and "
 "should the currency symbol be displayed?"
 msgstr ""
-"Czy wtyczka ma dodać zmianę ceny i znak waluty do listy rozwijanej atrybutów "
-"produktu?"
+"Soll Markup-by-Attribute den Preis Auf/Abschlag im Drop-Down-Feld anzeigen "
+"und soll das WC$hrungssymbol angezeigt werden?"
 
 #: src/backend/settings.php:270
 msgid "This setting affects all products and takes effect immediately."
-msgstr "To ustawienie natychmiastowo wpływa na wszystkie produkty na sklepie. "
+msgstr "Diese Einstellung betrifft alle Produkte und tritt direkt in Kraft."
 
 #: src/backend/settings.php:273
 msgid "Option Drop-down Behavior"
-msgstr "Zachowanie listy rozwijanej"
+msgstr "Drop-Down Verhalten "
 
 #: src/backend/settings.php:279
 msgid "Do NOT show the markup in the options drop-down box."
-msgstr "NIE pokazuj  zmiany ceny w liście rozwijanej. (Bez zmian)"
+msgstr "Zeige keinen Preis Auf/Abschlag im Drop-Down-Feld"
 
 #: src/backend/settings.php:280
 msgid "Show the markup WITH the currency symbol in the options drop-down box."
-msgstr "Pokaż zmianę ceny Z symbolem waluty w liście rozwijanej."
+msgstr "Zeige den Preisaufschlag MIT das WC$hrungssymbol im Drop-Down-Feld"
 
 #: src/backend/settings.php:281
 msgid ""
 "Show the markup WITHOUT the currency symbol in the options drop-down box."
-msgstr "Pokaż zmianę ceny BEZ symbolu waluty w liście rozwijanej."
+msgstr "Zeige den Preisaufschlag OHNE das WC$hrungssymbol im Drop-Down-Feld"
 
 #: src/backend/settings.php:289
 msgid ""
 "How should Markup-by-Attribute handle adding price markup information to the "
 "variation description?"
-msgstr "Jak wtyczka ma wyświetlać zmianę ceny w opisie wariantu produktu?"
+msgstr ""
+"Wie soll Markup-by-Attribute zusC$tzliche Preis Auf/AbschlC$ge im "
+"Beschreibungs-Feld verarbeiten?"
 
 #: src/backend/settings.php:290 src/backend/settings.php:310
 msgid ""
 "This setting affects products individually and takes effect when you "
 "recalculate the regular price for the product."
 msgstr ""
-"To ustawienie wpływa na produkty indywidualnie i zaczyna obowiązywać po "
-"ponownym obliczeniu zwykłej ceny produktu."
+"Diese Einstellung betrifft jedes Produkt individuell und tritt in Kraft wenn "
+"du den \"RegulC$ren Preis\" fC<r das Produkt neu eingibst."
 
 #: src/backend/settings.php:293
 msgid "Description Behavior"
-msgstr "Zachowanie opisu"
+msgstr "Artikelbeschreibungs-Verhalten"
 
 #: src/backend/settings.php:299
 msgid "Do NOT add pricing information to the description field."
-msgstr "NIE dodawaj żadnych informacji do opisu wariantu."
+msgstr "Keine Preisinformation im Artikel-Beschreibungsfeld hinzufC<gen."
 
 #: src/backend/settings.php:300
 msgid "Add pricing information to the end of the existing description."
-msgstr "Dopisz informację o cenie na końcu istniejącego opisu."
+msgstr ""
+"ZusC$tzliche Preisinformation an das Ende der bestehenden "
+"Artikelbeschreibung hinzufC<gen."
 
 #: src/backend/settings.php:301
 msgid "Overwrite the variation description with price information."
-msgstr "Nadpisz opis wariantu informacją o zmianie ceny."
+msgstr ""
+"Cberschreibe die Variations-Artikelbeschreibung mit der Preis Information"
 
 #: src/backend/settings.php:309
 msgid "Do NOT show the base price in the product description."
-msgstr "NIE pokazuj ceny bazowej w opisie produktu."
+msgstr ""
 
 #: src/backend/settings.php:313
 msgid "Hide Base Price"
-msgstr "Ukryj cenę bazowej"
+msgstr ""
 
 #: src/backend/settings.php:339
 msgid ""
@@ -181,13 +185,12 @@ msgid ""
 "as xx.00 or xx.95). Rounding percentage markups will keep the value below "
 "the decimal."
 msgstr ""
-"Niektóre sklepy mają ceny z określonymi numerami poniżej miejsca "
-"dziesiętnego (na przykład XX,00 lub XX,95). Wartości procentowe zaokrąglania "
-"będą utrzymywać wartość poniżej przecinka."
+"Manche Shops wollen bestimmte Preisendungen (wie xx,00 oder xx,95). Diese "
+"Option rundet die PreisaufschlC$ge entsprechend ab."
 
 #: src/backend/settings.php:344
 msgid "Round Markup"
-msgstr "Zaokrąglić zmiana ceny"
+msgstr "Gerundete Auf/AbschlC$ge"
 
 #: src/backend/settings.php:370
 msgid ""
@@ -198,35 +201,33 @@ msgid ""
 "product AND the order in the admin console is important, then set this "
 "number higher."
 msgstr ""
-"Używaj ostrożnie. WooCommerce ogranicza liczbę wariantów produktu które "
-"możesz utworzyć do 50 by uchronić serwer od przeciążenia. By utworzyć więcej "
-"wariantów możesz skorzystać z opcji \"Utwórz warianty ze wszystkich "
-"atrybutów\" który generuje warianty z narzuconym porządkiem. Jeśli chcesz "
-"stworzyć więcej niż 50 wariantów ręcznie, w ustalonym porządku skorzystaj w "
-"powyższej opcji i ustaw wyższą wartość."
+"Achtung! WooCommerce limitiert die Anzahl der gleichzeitig zu erstellenden "
+"Varianten auf 50 um einen Overload zu vermeiden. Um diese Zahl hC6her zu "
+"setzen verwende diese Option. Wir empfehlen nicht mehr als 1000 Variationen "
+"mit einen Durchgang. "
 
 #: src/backend/settings.php:375
 msgid "Variation Max"
-msgstr "Maksymalna ilość wariantów produktu"
+msgstr "Variationsmaxium"
 
 #: src/backend/settings.php:420
 msgid "Please select an option for the options drop-down."
-msgstr "Wybierz jak ma się zachowywać lista rozwijana z atrybutami."
+msgstr "Bitte eine Option fC<r das Drop-Down-Verhalten auswC$hlen"
 
 #: src/backend/settings.php:435
 msgid "Please select an option for the description behavior."
-msgstr "Wybierz jak ma się zachowywać opis wariantu."
+msgstr "Bitte eine Option fC<r Artikelbeschreibungs-Verhalten auswC$hlen"
 
 #: src/backend/settings.php:452
 msgid ""
 "Variation Max must be a number, 1 or higher.</br>Previous option retained."
 msgstr ""
-"Maksymalna ilość wariantów produktu musi być liczbą całkowitą większą od 0."
-"<br>Przywrócono poprzednią wartość."
+"Variationsmaximum muss eine Nummer grC6Cer gleich 1 sein.</br> Vorherige "
+"Einstellung wiederhergestellt"
 
 #. Name of the plugin
 msgid "Markup by Attribute for WooCommerce"
-msgstr "Markup by Attribute for WooCommerce"
+msgstr "Markup by Attribute fC<r WooCommerce"
 
 #. Description of the plugin
 msgid ""
@@ -234,9 +235,9 @@ msgid ""
 "ability to add a markup (or markdown) to an attribute term and have that "
 "change the regular and sale price of the associated product variations."
 msgstr ""
-"Wtyczka ta dodaje do WooCommerce możliwość zmiany ceny produktu według "
-"atrybutów - możliwość dodania podwyżki (lub obniżki) do atrybutu produktu "
-"który wpływa na końcową cenę danego produktu."
+"Dieses Plugin fC<gt Produkt Varianten das \"markup by attribute to "
+"WooCommerce\" Feld hinzu. Es ermC6glicht Preis Auf oder AbschlC$ge C<ber "
+"Produkt Variationen zu steuern. "
 
 #. URI of the plugin
 msgid "https://wordpress.org/plugins/markup-by-attribute-for-woocommerce/"

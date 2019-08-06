@@ -234,7 +234,7 @@ class MT2MBA_BACKEND_PRODUCT
                                         // Set markup opening tag
                                         $description .= PHP_EOL . PRODUCT_MARKUP_DESC_BEG;
                                         // Open description with original price (if non-zero)
-                                        if ( $orig_price <> 0 )
+                                        if ( ( $orig_price <> 0 ) and ( MT2MBA_HIDE_BASE_PRICE == 'no' ) )
                                         {
                                             $description .= html_entity_decode
                                             (

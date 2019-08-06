@@ -148,6 +148,7 @@ class MT2MBA_UTILITY_GENERAL
             define( 'MT2MBA_DESC_BEHAVIOR', $settings->get_desc_behavior() );
             define( 'MT2MBA_DROPDOWN_BEHAVIOR', $settings->get_dropdown_behavior() );
             define( 'MT2MBA_ROUND_MARKUP', $settings->get_round_markup() );
+            define( 'MT2MBA_HIDE_BASE_PRICE', $settings->get_hide_base_price() );
             define( 'MT2MBA_PRICE_FORMAT', get_woocommerce_price_format() );
             define( 'MT2MBA_CURRENCY_SYMBOL', get_woocommerce_currency_symbol( get_woocommerce_currency() ) );
             define( 'MT2MBA_DECIMAL_POINTS', wc_get_price_decimals() );

@@ -17,8 +17,7 @@ Tested up to:           5.2.2
 Requires PHP:           5.6
 PHP tested up to:       7.2.19
 WC requires at least:   3.0
-WC tested up to:        3.6.5
-
+WC tested up to:        3.7.0
 
 This plugin adds product variation markup by attribute to WooCommerce and adjusts product variation regular and sale prices accordingly.
 

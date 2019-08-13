@@ -4,7 +4,7 @@
  *
  * @package     markup-by-attribute-for-woocommerce
  * @author      Mark Tomlinson
- * @version     3.5
+ * @version     3.6
  * @copyright   Mark Tomlinson  2019
  *
  * For the full copyright and license information, please view the LICENSE
@@ -30,7 +30,7 @@
  * Requires PHP:           5.6
  * PHP tested up to:       7.2.19
  * WC requires at least:   3.0
- * WC tested up to:        3.6.5
+ * WC tested up to:        3.7.0
  */
 
 // Exit if accessed directly

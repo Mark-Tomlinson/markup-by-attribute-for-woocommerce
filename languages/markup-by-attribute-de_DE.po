@@ -3,10 +3,10 @@ msgstr ""
 "Project-Id-Version: Markup by Attribute for WooCommerce - MTB2 Tech\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-08-06 03:20+0000\n"
-"PO-Revision-Date: 2019-08-06 03:23+0000\n"
-"Last-Translator: Mark Tomlinson <mt2@technologist.com>\n"
-"Language-Team: German\n"
-"Language: de_DE\n"
+"PO-Revision-Date: 2019-08-10 15:19+0000\n"
+"Last-Translator: Roland <roland.pohl.dd@gmail.com>\n"
+"Language-Team: Deutsch\n"
+"Language: de-DE\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,7 +20,7 @@ msgstr "Markup by Attribute"
 
 #: markup-by-attribute-for-woocommerce.php:57
 msgid "Product price"
-msgstr "Produkt Preis: "
+msgstr "Produkt Preis"
 
 #: markup-by-attribute-for-woocommerce.php:60
 msgid "Markup:"
@@ -44,7 +44,8 @@ msgid ""
 "action."
 msgstr ""
 "AufschlC$ge kC6nnen <code>5</code> oder <code>5.95</code> sein. AuCerdem "
-"kC6nnen Sie Prozentzahlen wie <code>5%</code> oder<code>1.23%</code> sein. \n"
+"kC6nnen Sie durch Prozentzahlen wie <code>5%</code> oder<code>1.23%</code> "
+"ausgedrückt werden. \n"
 "AufschlC$ge kC6nnen mit Plus<code>+5.95</code> oder Minus<code>-1.23%</code> "
 "dargestellt werden.<br/>Der Preisaufschlag wird wC$hrend der "
 "Variationserstellung eines Produktes durch <em>RegulC$ren Preis "
@@ -58,7 +59,7 @@ msgid ""
 "link right here."
 msgstr ""
 "Die Benutzung dieses Plugins mag etwas seltsam erscheinen. Dieser Link zur "
-"Anleitung wird dir bei der Benutzung helfen.<br/>"
+"Anleitung wird dir aber bei der Benutzung helfen.<br/>"
 
 #: src/utility/general.php:227
 #, php-format
@@ -68,7 +69,7 @@ msgstr "AbzC<glich %1$s fC<r %2$s"
 #: src/utility/general.php:227
 #, php-format
 msgid "Add %1$s for %2$s"
-msgstr "ZuzC<glich %1$s fC<r %2$s"
+msgstr "Zuzüglich %1$s für %2$s"
 
 #: src/backend/term.php:37
 msgid "Markup (or markdown)"
@@ -129,12 +130,12 @@ msgstr "Zeige keinen Preis Auf/Abschlag im Drop-Down-Feld"
 
 #: src/backend/settings.php:280
 msgid "Show the markup WITH the currency symbol in the options drop-down box."
-msgstr "Zeige den Preisaufschlag MIT das WC$hrungssymbol im Drop-Down-Feld"
+msgstr "Zeige den Preisaufschlag MIT dem WC$hrungssymbol im Drop-Down-Feld an"
 
 #: src/backend/settings.php:281
 msgid ""
 "Show the markup WITHOUT the currency symbol in the options drop-down box."
-msgstr "Zeige den Preisaufschlag OHNE das WC$hrungssymbol im Drop-Down-Feld"
+msgstr "Zeige den Preisaufschlag OHNE das WC$hrungssymbol im Drop-Down-Feld an"
 
 #: src/backend/settings.php:289
 msgid ""
@@ -169,15 +170,15 @@ msgstr ""
 #: src/backend/settings.php:301
 msgid "Overwrite the variation description with price information."
 msgstr ""
-"Cberschreibe die Variations-Artikelbeschreibung mit der Preis Information"
+"Cberschreibe die Variations-Artikelbeschreibung mit der Preisinformation"
 
 #: src/backend/settings.php:309
 msgid "Do NOT show the base price in the product description."
-msgstr ""
+msgstr "Grundpreis NICHT in der Produktbeschreibung anzeigen"
 
 #: src/backend/settings.php:313
 msgid "Hide Base Price"
-msgstr ""
+msgstr "Grundpreis verstecken"
 
 #: src/backend/settings.php:339
 msgid ""
@@ -185,8 +186,8 @@ msgid ""
 "as xx.00 or xx.95). Rounding percentage markups will keep the value below "
 "the decimal."
 msgstr ""
-"Manche Shops wollen bestimmte Preisendungen (wie xx,00 oder xx,95). Diese "
-"Option rundet die PreisaufschlC$ge entsprechend ab."
+"Manche Shops wollen immer bestimmte Preisendungen (wie xx,00 oder xx,95) "
+"anzeigen. Diese Option rundet die PreisaufschlC$ge entsprechend ab."
 
 #: src/backend/settings.php:344
 msgid "Round Markup"
@@ -204,7 +205,7 @@ msgstr ""
 "Achtung! WooCommerce limitiert die Anzahl der gleichzeitig zu erstellenden "
 "Varianten auf 50 um einen Overload zu vermeiden. Um diese Zahl hC6her zu "
 "setzen verwende diese Option. Wir empfehlen nicht mehr als 1000 Variationen "
-"mit einen Durchgang. "
+"in einem Durchgang. "
 
 #: src/backend/settings.php:375
 msgid "Variation Max"
@@ -216,7 +217,7 @@ msgstr "Bitte eine Option fC<r das Drop-Down-Verhalten auswC$hlen"
 
 #: src/backend/settings.php:435
 msgid "Please select an option for the description behavior."
-msgstr "Bitte eine Option fC<r Artikelbeschreibungs-Verhalten auswC$hlen"
+msgstr "Bitte eine Option fC<r das Artikelbeschreibungs-Verhalten auswC$hlen"
 
 #: src/backend/settings.php:452
 msgid ""

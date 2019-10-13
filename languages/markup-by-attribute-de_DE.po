@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Markup by Attribute for WooCommerce - MTB2 Tech\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-08-06 03:20+0000\n"
-"PO-Revision-Date: 2019-08-10 15:19+0000\n"
+"PO-Revision-Date: 2019-10-13 16:39+0000\n"
 "Last-Translator: Roland <roland.pohl.dd@gmail.com>\n"
 "Language-Team: Deutsch\n"
 "Language: de-DE\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Loco https://localise.biz/\n"
-"X-Loco-Version: 2.3.0; wp-5.2.2"
+"X-Loco-Version: 2.3.0; wp-5.2.3"
 
 #: markup-by-attribute-for-woocommerce.php:55
 msgid "Markup by Attribute"
@@ -43,14 +43,14 @@ msgid ""
 "variation <em>Set regular price</em> and <em>Set sale price</em> bulk edit "
 "action."
 msgstr ""
-"AufschlC$ge kC6nnen <code>5</code> oder <code>5.95</code> sein. AuCerdem "
-"kC6nnen Sie durch Prozentzahlen wie <code>5%</code> oder<code>1.23%</code> "
+"Aufschläge können <code>5</code> oder <code>5.95</code> sein. Außerdem könne "
+"Sie durch Prozentzahlen wie <code>5%</code> oder<code>1.23%</code> "
 "ausgedrückt werden. \n"
-"AufschlC$ge kC6nnen mit Plus<code>+5.95</code> oder Minus<code>-1.23%</code> "
-"dargestellt werden.<br/>Der Preisaufschlag wird wC$hrend der "
-"Variationserstellung eines Produktes durch <em>RegulC$ren Preis "
-"festlegen</em> und <em>Angebotspreis festlegen</em> im Hintergrund berechnet "
-"und festgelegt."
+"Aufschläge können mit Plus<code>+5.95</code> oder Minus<code>-1.23%</code> "
+"dargestellt werden.<br/>Der Preisaufschlag wird während der "
+"Variationserstellung eines Produktes durch <em>Regulären Preis festlegen</em>"
+" und <em>Angebotspreis festlegen</em> im Hintergrund berechnet und "
+"festgelegt."
 
 #: src/utility/pointers.php:134
 msgid ""
@@ -64,7 +64,7 @@ msgstr ""
 #: src/utility/general.php:227
 #, php-format
 msgid "Subtract %1$s for %2$s"
-msgstr "AbzC<glich %1$s fC<r %2$s"
+msgstr "Abzüglich %1$s für %2$s"
 
 #: src/utility/general.php:227
 #, php-format
@@ -142,7 +142,7 @@ msgid ""
 "How should Markup-by-Attribute handle adding price markup information to the "
 "variation description?"
 msgstr ""
-"Wie soll Markup-by-Attribute zusC$tzliche Preis Auf/AbschlC$ge im "
+"Wie soll Markup-by-Attribute zusätzliche Preis Auf/Abschläge im "
 "Beschreibungs-Feld verarbeiten?"
 
 #: src/backend/settings.php:290 src/backend/settings.php:310
@@ -151,7 +151,7 @@ msgid ""
 "recalculate the regular price for the product."
 msgstr ""
 "Diese Einstellung betrifft jedes Produkt individuell und tritt in Kraft wenn "
-"du den \"RegulC$ren Preis\" fC<r das Produkt neu eingibst."
+"du den \"Regulären Preis\" für das Produkt neu eingibst."
 
 #: src/backend/settings.php:293
 msgid "Description Behavior"
@@ -164,13 +164,13 @@ msgstr "Keine Preisinformation im Artikel-Beschreibungsfeld hinzufC<gen."
 #: src/backend/settings.php:300
 msgid "Add pricing information to the end of the existing description."
 msgstr ""
-"ZusC$tzliche Preisinformation an das Ende der bestehenden "
-"Artikelbeschreibung hinzufC<gen."
+"Zusätzliche Preisinformation an das Ende der bestehenden Artikelbeschreibung "
+"hinzufügen."
 
 #: src/backend/settings.php:301
 msgid "Overwrite the variation description with price information."
 msgstr ""
-"Cberschreibe die Variations-Artikelbeschreibung mit der Preisinformation"
+"berschreibe die Variations-Artikelbeschreibung mit der Preisinformation"
 
 #: src/backend/settings.php:309
 msgid "Do NOT show the base price in the product description."
@@ -186,12 +186,12 @@ msgid ""
 "as xx.00 or xx.95). Rounding percentage markups will keep the value below "
 "the decimal."
 msgstr ""
-"Manche Shops wollen immer bestimmte Preisendungen (wie xx,00 oder xx,95) "
-"anzeigen. Diese Option rundet die PreisaufschlC$ge entsprechend ab."
+"Manche Shops wollen immer bestimmte Preis-Endungen (wie xx,00 oder xx,95) "
+"anzeigen. Diese Option rundet die Preisaufschäge entsprechend ab."
 
 #: src/backend/settings.php:344
 msgid "Round Markup"
-msgstr "Gerundete Auf/AbschlC$ge"
+msgstr "Gerundete Auf/Abschläge"
 
 #: src/backend/settings.php:370
 msgid ""
@@ -213,11 +213,11 @@ msgstr "Variationsmaxium"
 
 #: src/backend/settings.php:420
 msgid "Please select an option for the options drop-down."
-msgstr "Bitte eine Option fC<r das Drop-Down-Verhalten auswC$hlen"
+msgstr "Bitte eine Option für das Drop-Down-Verhalten auswählen"
 
 #: src/backend/settings.php:435
 msgid "Please select an option for the description behavior."
-msgstr "Bitte eine Option fC<r das Artikelbeschreibungs-Verhalten auswC$hlen"
+msgstr "Bitte eine Option für das Artikelbeschreibungs-Verhalten auswählen"
 
 #: src/backend/settings.php:452
 msgid ""
@@ -228,7 +228,7 @@ msgstr ""
 
 #. Name of the plugin
 msgid "Markup by Attribute for WooCommerce"
-msgstr "Markup by Attribute fC<r WooCommerce"
+msgstr "Markup by Attribute für WooCommerce"
 
 #. Description of the plugin
 msgid ""
@@ -236,8 +236,8 @@ msgid ""
 "ability to add a markup (or markdown) to an attribute term and have that "
 "change the regular and sale price of the associated product variations."
 msgstr ""
-"Dieses Plugin fC<gt Produkt Varianten das \"markup by attribute to "
-"WooCommerce\" Feld hinzu. Es ermC6glicht Preis Auf oder AbschlC$ge C<ber "
+"Dieses Plugin fügt Produkt Varianten das \"markup by attribute to "
+"WooCommerce\" Feld hinzu. Es ermöglicht Preis Auf oder Abschläge über "
 "Produkt Variationen zu steuern. "
 
 #. URI of the plugin

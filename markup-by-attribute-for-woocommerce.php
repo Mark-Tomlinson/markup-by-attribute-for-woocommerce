@@ -22,16 +22,16 @@
  * License URI:            https://www.gnu.org/licenses/gpl-3.0.html
  * Text Domain:            markup-by-attribute
  * Domain path:            /languages
- * Version:                3.6
- * Build:                  201932.01
+ * Version:                3.7
+ * Build:                  201941.01
  * Stable tag:             trunk
  * Requires at least:      4.6
- * Tested up to:           5.2.2
+ * Tested up to:           5.2.3
  * Requires PHP:           5.6
  * PHP tested up to:       7.2.19
  * WC requires at least:   3.0
- * WC tested up to:        3.7.0
- */
+ * WC tested up to:        3.7.1
+*/
 
 // Exit if accessed directly
 if ( !defined( 'ABSPATH' ) ) exit( );

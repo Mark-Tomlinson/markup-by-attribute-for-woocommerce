@@ -9,15 +9,15 @@ Contributors:           MarkTomlinson
 Donate link:            https://www.paypal.me/MT2Dev/5
 License:                GPLv3
 License URI:            https://www.gnu.org/licenses/gpl-3.0.html
-Version:                3.6
-Build:                  201932.01
+Version:                3.7
+Build:                  201941.01
 Stable tag:             trunk
 Requires at least:      4.6
-Tested up to:           5.2.2
+Tested up to:           5.2.3
 Requires PHP:           5.6
 PHP tested up to:       7.2.19
 WC requires at least:   3.0
-WC tested up to:        3.7.0
+WC tested up to:        3.7.1
 
 This plugin adds product variation markup by attribute to WooCommerce and adjusts product variation regular and sale prices accordingly.
 
@@ -131,6 +131,9 @@ If you use Markup-by-Attribute and want to see me continuing support for it, I e
 7. The settings page allows configuration of how the markup is displayed.
 
 == Changelog ==
+
+= 3.7 =
+* Translation: Corrected German language files -- thanks to Roland Pohl.
 
 = 3.6 =
 * Feature: Add option to hide base price in product description.

@@ -2,17 +2,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Markup by Attribute for WooCommerce - MTB2 Tech\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-08-06 03:20+0000\n"
-"PO-Revision-Date: 2020-01-29 20:53+0000\n"
-"Last-Translator: Mark Tomlinson <mt2@technologist.com>\n"
-"Language-Team: Deutsch\n"
-"Language: de_DE\n"
+"POT-Creation-Date: 2020-04-17 00:43+0000\n"
+"PO-Revision-Date: 2020-04-18 17:41+0000\n"
+"Last-Translator: \n"
+"Language-Team: German (Switzerland)\n"
+"Language: de_CH\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Loco https://localise.biz/\n"
-"X-Loco-Version: 2.3.1; wp-5.3.2"
+"X-Loco-Version: 2.3.3; wp-5.4"
 
 #: markup-by-attribute-for-woocommerce.php:55
 msgid "Markup by Attribute"
@@ -22,15 +22,11 @@ msgstr "Markup by Attribute"
 msgid "Product price"
 msgstr "Produkt Preis"
 
-#: markup-by-attribute-for-woocommerce.php:60
-msgid "Markup:"
-msgstr "Aufschlag:"
-
-#: markup-by-attribute-for-woocommerce.php:136
+#: markup-by-attribute-for-woocommerce.php:134
 msgid "Settings"
 msgstr "Einstellungen"
 
-#: markup-by-attribute-for-woocommerce.php:141
+#: markup-by-attribute-for-woocommerce.php:139
 msgid "Instructions"
 msgstr "Anleitung"
 
@@ -71,17 +67,40 @@ msgstr "Abzüglich %1$s für %2$s"
 msgid "Add %1$s for %2$s"
 msgstr "Zuzüglich %1$s für %2$s"
 
-#: src/backend/term.php:37
+#: src/backend/term.php:42
 msgid "Markup (or markdown)"
 msgstr "Preis Auf (oder Abschlag)."
 
-#: src/backend/term.php:38
+#: src/backend/term.php:43
 msgid ""
 "Markup or markdown associated with this option. Signed, floating point "
 "numeric allowed."
 msgstr ""
 "Der Preis Auf oder Abschlag wird mit dieser Angabe berechnet. Mit ″ + ″ oder "
 "″ - ″ Zeichen versehene Nummern sind zugelassen."
+
+#: src/backend/term.php:44
+msgid "Add Markup to Name?"
+msgstr ""
+
+#: src/backend/term.php:45
+msgid ""
+"Rename the attribute to include the markup. Often needed if the option drop-"
+"down box is overwritten by another plugin or theme and markup is no longer "
+"visible."
+msgstr ""
+
+#: src/backend/term.php:47
+msgid "(Add"
+msgstr "(Zuzüglich"
+
+#: src/backend/term.php:48
+msgid "(Subtract"
+msgstr "(Abzüglich"
+
+#: src/backend/term.php:49
+msgid "Markup:"
+msgstr "Aufschlag:"
 
 #: src/backend/settings.php:243
 msgid ""

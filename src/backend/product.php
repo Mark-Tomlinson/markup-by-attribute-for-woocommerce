@@ -33,7 +33,7 @@ class MT2MBA_BACKEND_PRODUCT
         // Load settings
         $settings = new MT2MBA_BACKEND_SETTINGS;
         // Override the max variation threshold with value from settings
-        define( 'WC_MAX_LINKED_VARIATIONS', $settings->get_max_variations() );
+        if ( ! defined ( 'WC_MAX_LINKED_VARIATIONS' ) ) define( 'WC_MAX_LINKED_VARIATIONS', $settings->get_max_variations() );
         // Hook mt2mba markup code into bulk actions
         add_action( 'woocommerce_bulk_edit_variations', array( $this, 'mt2mba_apply_markup_to_price' ), 10, 4 );
     }

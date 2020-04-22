@@ -18,7 +18,7 @@ class MT2MBA_FRONTEND_OPTIONS {
         // instantiated version of itself
         $self    = new self( );
         // Set initialization method to run on 'wp_loaded'.
-        add_filter( 'woocommerce_dropdown_variation_attribute_options_html', array( $self, 'mt2mba_dropdown_options_markup_html' ), 10, 2);
+        add_filter( 'woocommerce_dropdown_variation_attribute_options_html', array( $self, 'mt2mba_dropdown_options_markup_html' ), 0, 2);
     }
 
     /**
@@ -42,8 +42,16 @@ class MT2MBA_FRONTEND_OPTIONS {
         $show_option_none       = $args['show_option_none'] ? TRUE : FALSE;
         $show_option_none_text  = $args['show_option_none'] ? $args['show_option_none'] : __( 'Choose an option', 'woocommerce' ); 
 
+        // If the markup is supposed to be included in the name, do not run through
+        // this code This prevents the markup from appearing twice in a drop-down.
+        if ( get_option( REWRITE_OPTION_PREFIX . wc_attribute_taxonomy_id_by_name( $attribute ) ) == 'yes' )
+        {
+            return $html;
+        }
+
+
         // If $options is empty, get them from the product attributes
-        if ( empty( $options ) && !empty( $product ) && !empty( $attribute ) )
+        if ( empty( $options ) && ! empty( $product ) && ! empty( $attribute ) )
         {
             $attributes         = $product->get_variation_attributes();
             $options            = $attributes[ $attribute ];
@@ -63,10 +71,9 @@ class MT2MBA_FRONTEND_OPTIONS {
             '<option value="">' . esc_html( $show_option_none_text ) . '</option>';
 
         // Build <OPTION>s within <SELECT>
-        if ( !empty( $options ) )
+        if ( ! empty( $options ) )
         {
-            if ( $product &&                    // product exists
-                taxonomy_exists( $attribute ) ) // attribute is global
+            if ( $product && taxonomy_exists( $attribute ) ) // product exists and attribute is global
             {
                 $terms = wc_get_product_terms( $product->get_id( ), $attribute, array( 'fields' => 'all' ) );
                 // Need to add option with markup if present
@@ -75,18 +82,17 @@ class MT2MBA_FRONTEND_OPTIONS {
                     // Add markup if present
                     if ( in_array( $term->slug, $options ) )
                     {
-                            // Add markup if metadata exists, else leave blank
-                            if ( ! $markup = get_metadata( 'post', $product->get_id(), 'mt2mba_' . $term->term_id . '_markup_amount', TRUE ) )
-                            {
-                                $markup = get_metadata( 'term', $term->term_id, 'mt2mba_markup', TRUE );
-                            }
-                            // And build <OPTION> into $html
-                            $html .= PHP_EOL .
-                                '<option value="' . esc_attr( $term->slug ) . '"' .
-                                selected( sanitize_title( $args['selected'] ), $term->slug, FALSE ) . '>' .
-                                esc_html( apply_filters( 'woocommerce_variation_option_name', $term->name ) ) .
-                                esc_html( $mt2mba_utility->format_option_markup( $markup ) ) .
-                                '</option>';
+                        // Add markup if metadata exists, else leave blank
+                        if ( ! $markup = get_metadata( 'post', $product->get_id(), 'mt2mba_' . $term->term_id . '_markup_amount', TRUE ) )
+                        {
+                            $markup = get_metadata( 'term', $term->term_id, 'mt2mba_markup', TRUE );
+                        }
+                        // And build <OPTION> into $html
+                        $html .= PHP_EOL .
+                            '<option value="' . esc_attr( $term->slug ) . '"' . selected( sanitize_title( $args['selected'] ), $term->slug, FALSE ) . '>' .
+                            esc_html( apply_filters( 'woocommerce_variation_option_name', $term->name ) ) .
+                            esc_html( $mt2mba_utility->format_option_markup( $markup ) ) .
+                            '</option>';
                     }
                 }
             }

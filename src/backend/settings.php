@@ -10,7 +10,7 @@ if ( !defined( 'ABSPATH' ) ) exit( );
 
 class MT2MBA_BACKEND_SETTINGS
 {
-    var $dropdown_behavior          =   'do_not_add';   // The default behavior for displaying the currency symbol in the options drop-down.
+    var $dropdown_behavior          =   'add';          // The default behavior for displaying the currency symbol in the options drop-down.
     var $modify_term_name           =   'no';           // The default behavior for rewriting the term name with markup.
     var $desc_behavior              =   'append';       // The default behavior for writing the pricing information into the variation description.
     var $hide_base_price            =   'no';           // The default behavior for whether the base regulare price shows in the description.

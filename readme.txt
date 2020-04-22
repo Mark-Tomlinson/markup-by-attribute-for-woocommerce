@@ -9,14 +9,14 @@ Contributors:           MarkTomlinson
 Donate link:            https://www.paypal.me/MT2Dev/5
 License:                GPLv3
 License URI:            https://www.gnu.org/licenses/gpl-3.0.html
-Version:                3.8
-Build:                  202011.01
+Version:                3.9
+Build:                  202016.01
 Stable tag:             trunk
-Tested up to:           5.3.2
+Tested up to:           5.4
 Requires at least:      4.6
 PHP tested up to:       7.2.24
 Requires PHP:           5.6
-WC tested up to:        4.0.0
+WC tested up to:        4.0.1
 WC requires at least:   3.0
 
 This plugin adds product variation markup by attribute to WooCommerce and adjusts product variation regular and sale prices accordingly.
@@ -98,21 +98,29 @@ Because the markup description is bracketed in `<span>` tags, CSS can be used to
 
 == Frequently Asked Questions ==
 
+= If I change the markup for an attribute, how will product prices change? =
+
+Markup by Attribute works within the framework provided by WooCommerce and sets product variation markups (or markdowns) during the `Set regular price` and `Set sale price` actions. Therefore, you must locate the products affected by this change and reset the regular and sale prices. I'm working on adding an "Attribute" column to the Product list to facilitate this type of activity.
+
+= It's not working. Why? =
+
+When I get this question, it is usually because people want the prices to change as soon as they add or adjust a markup. The way Markup by Attribute was built, however, requires that you run the `Set regular prices` function for the variations. 
+
+If you've used `Set regular prices`and it still doesn't update the prices properly, you may have a variation with an “Any” attribute. If you have six sizes, for instance, but you have one product variation with “Any size”, then WooCommerce will pick that one. The important take-away here is that you shouldn't have a variation with “Any attribute”, if that attribute has a markup.
+
+If it's neither of these things, please check the support forums.
+
+= What if I change an attribute's markups but do not want to change products marked up previously? =
+
+Then do nothing. Prices, descriptions, and option drop-downs for products will remain at whatever value they were set to last time you ran the `Set regular price` or `Set sale price` bulk variation activities.
+
 = Does this support languages other than English? =
 
 Yes. However, the developer only speaks American English.  I can provide 'Google Translate' versions of other languages, but I would prefer it if a native speaker translated the text. The .POT file is found in the /languages folder of the plugin. If you don't have access to your server, you can also find it on [GitHub](https://github.com/Mark-Tomlinson/markup-by-attribute-for-woocommerce).
 
 What's a .POT file? If you'd like to help but don't know how to use a template file, don't worry. A .POT file is a text file that contains all the English phrases found in Markup by Attribute.  You can simply open it and translate what you read there.  Send me the translations and I will incorporate them in the next release.
 
-Many thanks to [Zjadlbymcos](https://github.com/Zjadlbymcos) on GitHub for his Polish Translation.
-
-= If I change the markup for an attribute, how will product prices change? =
-
-Markup by Attribute works within the framework provided by WooCommerce and sets product variation markups (or markdowns) during the `Set regular price` and `Set sale price` actions. Therefore, you must locate the products affected by this change and reset the regular and sale prices. I'm working on adding an "Attribute" column to the Product list to facilitate this type of activity.
-
-= What if I change an attribute's markups but do not want to change products marked up previously? =
-
-Then do nothing. Prices, descriptions, and option drop-downs for products will remain at whatever value they were set to last time you ran the `Set regular price` or `Set sale price` bulk variation activities.
+Many thanks to [Zjadlbymcos](https://github.com/Zjadlbymcos) on GitHub for his Polish Translation and @silentstepsch for several variations of German.
 
 = I'd like to donate. =
 
@@ -131,6 +139,11 @@ If you use Markup-by-Attribute and want to see me continuing support for it, I e
 7. The settings page allows configuration of how the markup is displayed.
 
 == Changelog ==
+
+= 3.9 =
+* Fix: Corrected issue where Markup by Attribute might overwrite another plugin or theme's option selection.
+* Feature: Add option to overwrite the term name to include the markup.
+* Maintenance: General clean up and commenting.
 
 = 3.8 =
 * Translation: Further corrections to language files and created versions for German variations. (Thanks to silentstepsch.)
@@ -274,3 +287,11 @@ Prevents null prices (due to an apparent bug in WooCommerce sale_price) from bei
 = 1.0 =
 
 Initial version
+
+== Upgrade Notice ==
+
+= 3.9 =
+
+Added a new feature that allows Markup by Attribute to add the markup to the name of the option. This is useful when the dropdown box has been replaced by color swatches, checkboxes, or some other selector. As long as the name of the option is displayed (for instance, when the cursor hovers over it), then the markup will be seen by your customer.
+
+Fixed a bug where Markup by Attribute would overwrite the options selector for some themes and other plugins. This occurred if the theme or plugin provided changed the function of the options selector (for instance, to color swatches), and did not code it so that they take precedence.

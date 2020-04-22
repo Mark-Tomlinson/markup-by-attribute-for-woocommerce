@@ -2,9 +2,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Markup by Attribute for WooCommerce - MT² Tech\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-08-06 03:20+0000\n"
-"PO-Revision-Date: 2019-08-06 03:21+0000\n"
-"Last-Translator: Mark Tomlinson <mt2@technologist.com>\n"
+"POT-Creation-Date: 2020-04-17 00:43+0000\n"
+"PO-Revision-Date: 2020-04-18 18:05+0000\n"
+"Last-Translator: \n"
 "Language-Team: Polish\n"
 "Language: pl_PL\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10 >= 2 && n%10<=4 "
@@ -13,7 +13,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Loco https://localise.biz/\n"
-"X-Loco-Version: 2.3.0; wp-5.2.2"
+"X-Loco-Version: 2.3.3; wp-5.4"
 
 #: markup-by-attribute-for-woocommerce.php:55
 msgid "Markup by Attribute"
@@ -23,15 +23,11 @@ msgstr "Markup by Attribute"
 msgid "Product price"
 msgstr "Cena produktu"
 
-#: markup-by-attribute-for-woocommerce.php:60
-msgid "Markup:"
-msgstr "Zmiana ceny: "
-
-#: markup-by-attribute-for-woocommerce.php:136
+#: markup-by-attribute-for-woocommerce.php:134
 msgid "Settings"
 msgstr "Ustawienia"
 
-#: markup-by-attribute-for-woocommerce.php:141
+#: markup-by-attribute-for-woocommerce.php:139
 msgid "Instructions"
 msgstr "Instrukcja"
 
@@ -70,17 +66,40 @@ msgstr "Obniżka %1$s za %2$s"
 msgid "Add %1$s for %2$s"
 msgstr "Dodatkowo %1$s za %2$s"
 
-#: src/backend/term.php:37
+#: src/backend/term.php:42
 msgid "Markup (or markdown)"
 msgstr "Zmiana ceny (podwyżka bądź obniżka)"
 
-#: src/backend/term.php:38
+#: src/backend/term.php:43
 msgid ""
 "Markup or markdown associated with this option. Signed, floating point "
 "numeric allowed."
 msgstr ""
 "Dodatnia lub ujemna liczba całkowita. Może być zmiennoprzecinkowa. Może być "
 "znak % na końcu."
+
+#: src/backend/term.php:44
+msgid "Add Markup to Name?"
+msgstr "Dodaj zmianę ceny do nazwy?"
+
+#: src/backend/term.php:45
+msgid ""
+"Rename the attribute to include the markup. Often needed if the option drop-"
+"down box is overwritten by another plugin or theme and markup is no longer "
+"visible."
+msgstr ""
+
+#: src/backend/term.php:47
+msgid "(Add"
+msgstr "(Dodatkowo"
+
+#: src/backend/term.php:48
+msgid "(Subtract"
+msgstr "(Obniżka"
+
+#: src/backend/term.php:49
+msgid "Markup:"
+msgstr "Zmiana ceny: "
 
 #: src/backend/settings.php:243
 msgid ""

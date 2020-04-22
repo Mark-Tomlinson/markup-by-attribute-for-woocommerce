@@ -22,14 +22,14 @@
  * License URI:            https://www.gnu.org/licenses/gpl-3.0.html
  * Text Domain:            markup-by-attribute
  * Domain path:            /languages
- * Version:                3.8
- * Build:                  202011.01
+ * Version:                3.9
+ * Build:                  202016.01
  * Stable tag:             trunk
- * Tested up to:           5.3.2
+ * Tested up to:           5.4
  * Requires at least:      4.6
  * PHP tested up to:       7.2.24
  * Requires PHP:           5.6
- * WC tested up to:        4.0.0
+ * WC tested up to:        4.0.1
  * WC requires at least:   3.0
 */
 
@@ -45,8 +45,8 @@ function mt2mba_main()
 
 	// Set plugin information
 	define( 'MT2MBA_PLUGIN_PREFIX',     'MT2MBA'                                            );
-	define( 'MT2MBA_VERSION',           3.1                                                 );
-	define( 'MT2MBA_BUILD',             201847.01                                           );
+	define( 'MT2MBA_VERSION',           3.9                                                 );
+	define( 'MT2MBA_BUILD',             202016.01                                           );
 	define( 'MT2MBA_DB_VERSION',        2.1                                                 );
 	define( 'MT2MBA_SITE_URL',          get_bloginfo( 'wpurl')                              );
 	define( 'MT2MBA_PLUGIN_DIR',        plugin_dir_path( __FILE__ )                         );
@@ -57,8 +57,7 @@ function mt2mba_main()
 	define( 'MT2MBA_PRICE_META',        __( 'Product price', 'markup-by-attribute' ) . ' '  );
 	define( 'PRODUCT_MARKUP_DESC_BEG',	'<span id="mbainfo">'                               );
 	define( 'PRODUCT_MARKUP_DESC_END',  '</span>'                                           );
-	define( 'ATTRB_MARKUP_DESC_BEG',    '(' . __( 'Markup:', 'markup-by-attribute' ) . ' '  );
-	define( 'ATTRB_MARKUP_DESC_END',    ')'                                                 );
+	define( 'REWRITE_OPTION_PREFIX', 	'mt2mba_rewrite_attrb_name_'						);
 
 	$admin_messages = array
 	(	//	Update with dismissible info and warning messages that get displayed at startup

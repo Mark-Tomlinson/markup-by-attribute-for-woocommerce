@@ -32,16 +32,26 @@ class MT2MBA_AUTOLOADER
     {
         if ( 0 !== strpos( $class, MT2MBA_PLUGIN_PREFIX ) )
         {
+            // Not Markup by Attribute, leave
             return;
         }
         else
         {
-            if ( is_file( $file = strtolower( dirname( __FILE__ ) . str_replace( '_', '/', str_ireplace( MT2MBA_PLUGIN_PREFIX, '/src', $class ) ) . '.php' ) ) )
+            // Markup by Attribute class, get file name
+            if ( is_file( $file = dirname( __FILE__ ) . str_replace( '_', '/', strtolower( str_ireplace( MT2MBA_PLUGIN_PREFIX, '/src', $class ) ) . '.php' ) ) )
             {
+                // Valid class name, load
                 require_once $file;
                 $class::init();
             }
+            else
+            {
+                $error_msg = MT2MBA_PLUGIN_NAME . " can not find " . $class . " at " . $file . ".</br>" .
+                    "To correct, you will have to use FTP or your hosting administration panel to remove " . dirname( __FILE__ ) . ".";
+                exit( $error_msg );
+            }
         }
+        return;
     }
 }
 

@@ -9,8 +9,8 @@ Contributors:           MarkTomlinson
 Donate link:            https://www.paypal.me/MT2Dev/5
 License:                GPLv3
 License URI:            https://www.gnu.org/licenses/gpl-3.0.html
-Version:                3.9
-Build:                  202016.01
+Version:                3.9.1
+Build:                  202017.01
 Stable tag:             trunk
 Tested up to:           5.4
 Requires at least:      4.6
@@ -25,18 +25,18 @@ This plugin adds product variation markup by attribute to WooCommerce and adjust
 
 = Varying Prices on Product Variations is Tedious and Error-Prone =
 
-Want to add $5 to every blue product you sell? Maybe you sell jewelry with birthstones and some stones just cost more than others. If all "X-Large" products cost 7.5% more, you have to manually calculate and change every "X-Large" variation of every product.
+Want to add $5 to every blue product you sell? Maybe you sell jewelry with birthstones and some stones just cost more than others. If all “X-Large” products cost 7.5% more, you have to manually calculate and change every “X-Large” variation of every product.
 
 = Markup by Attribute Adds 'Markup' to Attribute Terms =
 
-Markup by Attribute solves this problem by allowing you to add a markup (or markdown) to global attribute terms. If the attribute is 'color', then Markup by Attribute allows you to add "+5" to Blue while leaving Green and Yellow alone. When you set regular and sale prices, every blue product will be $5.00 more.
+Markup by Attribute solves this problem by allowing you to add a markup (or markdown) to global attribute terms. If the attribute is 'color', then Markup by Attribute allows you to add “+5" to Blue while leaving Green and Yellow alone. When you set regular and sale prices, every blue product will be $5.00 more.
 
 Markup by Attribute:
 
 * Can create a fixed value markup (such as $5), or a percentage markup (such as 5%).
 * The markup value can be positive yielding an increase in price, or negative yielding a decrease in price.
 * Uses familiar WooCommerce bulk edit actions `Set regular price` and `Set sale price`.
-* Puts the price increase (or decrease) in the options drop-down box along side of the terms so customers can make informed decisions. (Or, optionally, does not).
+* Puts the price increase (or decrease) in the options drop-down box alongside of the terms so customers can make informed decisions. (Or, optionally, does not).
 * Can write a breakdown of the price modifications in the variation description so the itemization is visible to the customer.
 * Has been tested with Gutenberg and is fully compatible.
 
@@ -58,13 +58,14 @@ Markup by Attribute:
 
 = Automated Installation =
 
-1. Locate the Markup by Attribute for WooCommerce plugin on the `Plugins` => `Add New` page in WordPress using the search box.
+1. Locate the Markup by Attribute for WooCommerce plugin on the `Plugins` ⇾ `Add New` page in WordPress using the search box.
 
 2. Install the plugin using the `[Install]` button.
 
 3. The `[Install]` button will change to an `[Activate]` button. Use it to activate the plugin.
 
 = Using Markup by Attribute for WooCommerce =
+(Detailed instructions can be found at [Markup by Attribute Wiki](https://github.com/Mark-Tomlinson/markup-by-attribute-for-woocommerce/wiki).)
 
 _NOTE:_ These instructions assume you are familiar with WooCommerce global Product Attributes and with WooCommerce Product Variations. If not, you may want to review the WooCommerce documentation on [Product Attributes](https://docs.woocommerce.com/document/managing-product-taxonomies/#section-6) and [Variable Products](https://docs.woocommerce.com/document/variable-product/).
 
@@ -76,7 +77,7 @@ _NOTE:_ These instructions assume you are familiar with WooCommerce global Produ
 1.  **Create product variations as you normally would.**
     * Markup by Attribute requires variable products because it changes the price of each variation.
     * Using `Create variations from all attributes` is the easiest way to ensure you have all combinations.
-    * Do not have a variation with "Any" in an attribute with a markup because WooCommerce will choose the "Any" variation regardless of others that may exist. (So if XX-Large is 5% more, you can not have one variation for "XX-Large" and another for "Any size" to cover the rest, because WooCommerce assumes Any includes XX-Large.)
+    * Do not have a variation with “Any” in an attribute with a markup because WooCommerce will choose the “Any” variation regardless of others that may exist. So, if XX-Large is 5% more, you cannot have one variation for “XX-Large” and another for “Any size” to cover the rest because WooCommerce assumes “Any size” includes “XX-Large”.
 1.  **Use the `Set regular price` and `Set sale price` bulk edit functions as you normally would.**  (_NOTE: If you’ve already set the prices before installing Markup by Attribute, you will need to do it again to apply the markup_).
     * The markup will be applied to the price according to the attribute terms associated with the variation.
     * A description of the markup will be added to the variation description.
@@ -84,23 +85,14 @@ _NOTE:_ These instructions assume you are familiar with WooCommerce global Produ
       Product Price 18.95
       Add 2.00 for Logo
       ```
-    * _TIP_: If you change the markup at a later date, repeat this step to recalculate the markup for this product. Or do not repeat the step to leave the previous markups unchanged.
-    * _TIP_: Always set the regular price before setting a sale price. Percentage markups are calculated on the regular price, so they can not be applied to a sale price if the regular price has not been set.
-
-# Advanced #
-
-Because the markup description is bracketed in `<span>` tags, CSS can be used to modify its appearance on the product page. Simply modify the id "#mbainfo".
-    ```
-    #mbainfo {
-        color: salmon;
-    }
-    ```
+    * _TIP_: If you change the markup later, repeat this step to recalculate the markup for this product. Or do not repeat the step to leave the previous markups unchanged.
+    * _TIP_: Always set the regular price before setting a sale price. Percentage markups are calculated on the regular price, so they cannot be applied to a sale price if the regular price has not been set.
 
 == Frequently Asked Questions ==
 
 = If I change the markup for an attribute, how will product prices change? =
 
-Markup by Attribute works within the framework provided by WooCommerce and sets product variation markups (or markdowns) during the `Set regular price` and `Set sale price` actions. Therefore, you must locate the products affected by this change and reset the regular and sale prices. I'm working on adding an "Attribute" column to the Product list to facilitate this type of activity.
+Markup by Attribute works within the framework provided by WooCommerce and sets product variation markups (or markdowns) during the `Set regular price` and `Set sale price` actions. Therefore, you must locate the products affected by this change and reset the regular and sale prices. I'm working on adding an “Attribute” column to the Product list to facilitate this type of activity.
 
 = It's not working. Why? =
 
@@ -124,14 +116,14 @@ Many thanks to [Zjadlbymcos](https://github.com/Zjadlbymcos) on GitHub for his P
 
 = I'd like to donate. =
 
-Thanks! The donation button assumes $5.00 USD. But feel free to adjust that amount up or down as you feel it's appropriate. I'm a retired guy who's living off his savings, so every little bit helps.
+Thanks! The donation button assumes $5.00 USD. But feel free to adjust that amount up or down as you feel it's appropriate. I'm a retired guy who's living off his savings, so every bit helps.
 
 If you use Markup-by-Attribute and want to see me continuing support for it, I encourage you to encourage me with a small donation.
 
 == Screenshots ==
 
-1. Note the addition of the "Markup (or markdown)" field on the bottom of the `Add new *attribute*` panel of the attribute editor.
-2. Note the addition of the "Markup (or markdown)" field on the bottom of the `Edit *attribute*` screen of the attribute editor.
+1. Note the addition of the “Markup (or markdown)” field on the bottom of the `Add new *attribute*` panel of the attribute editor.
+2. Note the addition of the “Markup (or markdown)” field on the bottom of the `Edit *attribute*` screen of the attribute editor.
 3. The regular price is $18.95. Markup by Attribute added $6 for a logo and $1.42 for extra large.
 4. The customer sees the full range of sale prices available and how much each option costs, plus a clear description of the breakdown.
 5. Markdowns (negative markups) can be used as well.
@@ -139,6 +131,9 @@ If you use Markup-by-Attribute and want to see me continuing support for it, I e
 7. The settings page allows configuration of how the markup is displayed.
 
 == Changelog ==
+
+= 3.9.1 =
+* Fix: Corrected issue when website directory path contains mixed case.
 
 = 3.9 =
 * Fix: Corrected issue where Markup by Attribute might overwrite another plugin or theme's option selection.
@@ -192,19 +187,19 @@ If you use Markup-by-Attribute and want to see me continuing support for it, I e
 * Maintenance: General code clean-up and redundancy removal.
 
 = 2.5 =
-* Fix: Corrected "Requires PHP" version number in readme.txt.
-* Fix: Updated "WC tested up to" version number in readme.txt.
-* Fix: Eliminated unused "Docs" folder
+* Fix: Corrected “Requires PHP” version number in readme.txt.
+* Fix: Updated “WC tested up to” version number in readme.txt.
+* Fix: Eliminated unused “Docs” folder
 
 = 2.4 =
 * Feature: Use the WooCommerce currency formatting settings.
-* Fix: Re-ensure documentation is clear that this works on "global" attributes.
+* Fix: Re-ensure documentation is clear that this works on “global” attributes.
 
 = 2.3 =
 * Feature: Add option to not display markup in the options drop-down box.
 * Fix: Add missing Author: tag.
-* Fix: Ensure documentation is clear that this works on "global" attributes.
-* Fix: Version 2.3 exposes a problem in an earlier version's database conversion where percentage markups show incorrectly in the options drop-down (For instance, a 10% markup on $40 shows as $10 instead of $4). To patch around it, version 2.3 will put the percentage in the drop-down instead of the actual markup. These items will need to have their regular prices reset in order to have the actual markup appear.
+* Fix: Ensure documentation is clear that this works on “global” attributes.
+* Fix: Version 2.3 exposes a problem in an earlier version's database conversion where percentage markups show incorrectly in the options drop-down (For instance, a 10% markup on $40 shows as $10 instead of $4). To patch around it, version 2.3 will put the percentage in the drop-down instead of the actual markup. These items will need to have their regular prices reset to have the actual markup appear.
 
 = 2.2 =
 * Fix: Plugin name and Description.
@@ -221,9 +216,9 @@ If you use Markup-by-Attribute and want to see me continuing support for it, I e
 * Feature: The new Settings page allows for increasing the number of variations that can be created at a time (override WooCommerce's limit of 50).
 * Feature: The new Settings page allows for modifying the way pricing markup is added to the variation descriptions (overwrite, append, or ignore).
 * Feature: The new settings page allows configuration of the way the markup is displayed, including the number of decimals and the currency symbol.
-* Feature: Markup description now enclosed in <span> tags and can be modified with CSS ( #mbainfo {} ).
+* Feature: Markup description now enclosed in <span> tags and can be modified with CSS (#mbainfo {}).
 * Feature: Markup description added to the attribute term description and can be seen in the attribute term list.
-* Feature: Markup now saved as a floating point number and not limited in digits below the decimal point.
+* Feature: Markup now saved as a floating-point number and not limited in digits below the decimal point.
 * Feature: Database and code change to enhance supportability.
 * Fix: Corrected issue where Increase/Decrease Regular/Sale Price functions calculated based on variation price rather than base price, yielding incorrect prices when percentages were used.
 * Fix: Corrected issue where Increase/Decrease Regular/Sale Price functions did not update variation descriptions.
@@ -294,4 +289,4 @@ Initial version
 
 Added a new feature that allows Markup by Attribute to add the markup to the name of the option. This is useful when the dropdown box has been replaced by color swatches, checkboxes, or some other selector. As long as the name of the option is displayed (for instance, when the cursor hovers over it), then the markup will be seen by your customer.
 
-Fixed a bug where Markup by Attribute would overwrite the options selector for some themes and other plugins. This occurred if the theme or plugin provided changed the function of the options selector (for instance, to color swatches), and did not code it so that they take precedence.
+Fixed a bug where Markup by Attribute would overwrite the options' selector for some themes and other plugins. This occurred if the theme or plugin provided changed the function of the options' selector (for instance, to color swatches), and did not code it so that they take precedence.

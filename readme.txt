@@ -9,8 +9,8 @@ Contributors:           MarkTomlinson
 Donate link:            https://www.paypal.me/MT2Dev/5
 License:                GPLv3
 License URI:            https://www.gnu.org/licenses/gpl-3.0.html
-Version:                3.9.1
-Build:                  202027.02
+Version:                3.9.2
+Build:                  202028.01
 Stable tag:             trunk
 Tested up to:           5.4.2
 Requires at least:      4.6

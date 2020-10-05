@@ -69,8 +69,8 @@ class MT2MBA_UTILITY_GENERAL
             foreach( $results as $row )
             {
                 $term = get_term( (integer) $row->term_id );
-                $description = trim( $this->remove_bracketed_string( ATTRB_MARKUP_DESC_BEG, ATTRB_MARKUP_DESC_END, trim( $term->description ) ) );
-                $description .= PHP_EOL . ATTRB_MARKUP_DESC_BEG . $row->meta_value . ATTRB_MARKUP_DESC_END;
+                $description = trim( $this->remove_bracketed_string( ATTRB_MARKUP_DESC_BEG, ATTRB_MARKUP_END, trim( $term->description ) ) );
+                $description .= PHP_EOL . ATTRB_MARKUP_DESC_BEG . $row->meta_value . ATTRB_MARKUP_END;
                 wp_update_term( $row->term_id, $term->taxonomy, array( 'description' => trim( $description ) ) );
             }
 

@@ -22,8 +22,8 @@
  * License URI:            https://www.gnu.org/licenses/gpl-3.0.html
  * Text Domain:            markup-by-attribute
  * Domain path:            /languages
- * Version:                3.9.2
- * Build:                  202028.01
+ * Version:                3.9.3
+ * Build:                  202028.02
  * Stable tag:             trunk
  * Tested up to:           5.4.2
  * Requires at least:      4.6

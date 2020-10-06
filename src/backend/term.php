@@ -44,9 +44,6 @@ class MT2MBA_BACKEND_TERM
         $this->rewrite_description  = __( 'Rename the attribute to include the markup. Often needed if the option drop-down box is overwritten by another plugin or theme and markup is no longer visible.', 'markup-by-attribute' );
         $this->text_add             = __( '(Add', 'markup-by-attribute' );
         $this->text_subtract        = __( '(Subtract', 'markup-by-attribute' );
-        define( 'ATTRB_MARKUP_DESC_BEG',    '(' . __( 'Markup:', 'markup-by-attribute' ) . ' '  );
-        define( 'ATTRB_MARKUP_NAME_BEG',    ' ('												);
-        define( 'ATTRB_MARKUP_END',			')'                                                 );
     
         // Get all attributes
         $attribute_taxonomies = wc_get_attribute_taxonomies();

@@ -9,8 +9,13 @@ Contributors:           MarkTomlinson
 Donate link:            https://www.paypal.me/MT2Dev/5
 License:                GPLv3
 License URI:            https://www.gnu.org/licenses/gpl-3.0.html
+<<<<<<< HEAD
 Version:                3.9.3
 Build:                  202028.03
+=======
+Version:                3.9.4
+Build:                  202041.01
+>>>>>>> Fix-Constant
 Stable tag:             trunk
 Tested up to:           5.5.1
 Requires at least:      4.6
@@ -131,6 +136,8 @@ If you use Markup-by-Attribute and want to see me continuing support for it, I e
 7. The settings page allows configuration of how the markup is displayed.
 
 == Changelog ==
+= 3.9.4 =
+Fix: Consolidate constants.
 
 = 3.9.3 =
 * Fix: Corrected issue with ATTRB_MARKUP_DESC_END vs. ATTRB_MARKUP_END.

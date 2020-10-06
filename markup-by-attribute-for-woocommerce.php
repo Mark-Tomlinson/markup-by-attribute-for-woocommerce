@@ -22,8 +22,13 @@
  * License URI:            https://www.gnu.org/licenses/gpl-3.0.html
  * Text Domain:            markup-by-attribute
  * Domain path:            /languages
+<<<<<<< HEAD
  * Version:                3.9.3
  * Build:                  202028.03
+=======
+ * Version:                3.9.4
+ * Build:                  202041.01
+>>>>>>> Fix-Constant
  * Stable tag:             trunk
  * Tested up to:           5.5.1
  * Requires at least:      4.6
@@ -58,6 +63,9 @@ function mt2mba_main()
 	define( 'PRODUCT_MARKUP_DESC_BEG',	'<span id="mbainfo">'                               );
 	define( 'PRODUCT_MARKUP_DESC_END',  '</span>'                                           );
 	define( 'REWRITE_OPTION_PREFIX', 	'mt2mba_rewrite_attrb_name_'						);
+	define( 'ATTRB_MARKUP_DESC_BEG',    '(' . __( 'Markup:', 'markup-by-attribute' ) . ' '  );
+	define( 'ATTRB_MARKUP_NAME_BEG',    ' ('												);
+	define( 'ATTRB_MARKUP_END',			')'                                                 );
 
 	$admin_messages = array
 	(	//	Update with dismissible info and warning messages that get displayed at startup

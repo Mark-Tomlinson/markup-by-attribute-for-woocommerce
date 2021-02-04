@@ -45,8 +45,8 @@ function mt2mba_main()
 
 	// Set plugin information
 	define( 'MT2MBA_PLUGIN_PREFIX',     'MT2MBA'                                            );
-	define( 'MT2MBA_VERSION',           '3.9.2'                                             );
-	define( 'MT2MBA_BUILD',             202028.01                                           );
+	define( 'MT2MBA_VERSION',           '3.9.4'                                             );
+	define( 'MT2MBA_BUILD',             202105.01                                           );
 	define( 'MT2MBA_DB_VERSION',        2.1                                                 );
 	define( 'MT2MBA_SITE_URL',          get_bloginfo( 'wpurl')                              );
 	define( 'MT2MBA_PLUGIN_DIR',        plugin_dir_path( __FILE__ )                         );

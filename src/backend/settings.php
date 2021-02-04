@@ -303,7 +303,7 @@ class MT2MBA_BACKEND_SETTINGS
                     'default'  => $this->desc_behavior,
                 );
 
-            // Round off percentage markups
+            // Do not show the base price in the description
             register_setting( 'mt2mba', 'mt2mba_hide_base_price' );
             $description =
                 __('Do NOT show the base price in the product description.', 'markup-by-attribute' ) . ' <br/>' .
@@ -337,8 +337,9 @@ class MT2MBA_BACKEND_SETTINGS
             // Round off percentage markups
             register_setting( 'mt2mba', 'mt2mba_round_markup' );
             $description = __(
-                'Some stores want prices with specific numbers below the decimal place (such as xx.00 or xx.95). Rounding percentage markups will keep the value below the decimal.',
-                'markup-by-attribute' );
+                'Some stores want prices with specific numbers below the decimal place (such as xx.00 or xx.95). Rounding percentage markups will keep the value below the decimal intact.',
+                'markup-by-attribute' ) . ' <br/>' .
+                '<em>' . __( 'This setting affects products individually and takes effect when you recalculate the regular price for the product.', 'markup-by-attribute' ) . '</em>';
             $mt2mba_settings[] = array
                 (
                     'title'    => __( 'Round Markup', 'markup-by-attribute' ),

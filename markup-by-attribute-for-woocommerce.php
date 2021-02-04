@@ -23,13 +23,13 @@
  * Text Domain:            markup-by-attribute
  * Domain path:            /languages
  * Version:                3.9.4
- * Build:                  202041.01
+ * Build:                  202105.01
  * Stable tag:             trunk
- * Tested up to:           5.5.1
+ * Tested up to:           5.6.1
  * Requires at least:      4.6
- * PHP tested up to:       7.2.24
+ * PHP tested up to:       7.4.3
  * Requires PHP:           5.6
- * WC tested up to:        4.5.2
+ * WC tested up to:        4.9.2
  * WC requires at least:   3.0
  */
 

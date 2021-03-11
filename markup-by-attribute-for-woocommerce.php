@@ -22,14 +22,14 @@
  * License URI:            https://www.gnu.org/licenses/gpl-3.0.html
  * Text Domain:            markup-by-attribute
  * Domain path:            /languages
- * Version:                3.9.4
- * Build:                  202105.02
+ * Version:                3.9.5
+ * Build:                  202110.01
  * Stable tag:             trunk
- * Tested up to:           5.6.1
+ * Tested up to:           5.7
  * Requires at least:      4.6
  * PHP tested up to:       7.4.3
  * Requires PHP:           5.6
- * WC tested up to:        4.9.2
+ * WC tested up to:        5.1.0
  * WC requires at least:   3.0
  */
 
@@ -45,8 +45,8 @@ function mt2mba_main()
 
 	// Set plugin information
 	define( 'MT2MBA_PLUGIN_PREFIX',     'MT2MBA'                                            );
-	define( 'MT2MBA_VERSION',           '3.9.4'                                             );
-	define( 'MT2MBA_BUILD',             202105.01                                           );
+	define( 'MT2MBA_VERSION',           '3.9.5'                                             );
+	define( 'MT2MBA_BUILD',             202110.01                                           );
 	define( 'MT2MBA_DB_VERSION',        2.1                                                 );
 	define( 'MT2MBA_SITE_URL',          get_bloginfo( 'wpurl')                              );
 	define( 'MT2MBA_PLUGIN_DIR',        plugin_dir_path( __FILE__ )                         );

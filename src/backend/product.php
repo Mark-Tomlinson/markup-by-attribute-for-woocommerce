@@ -114,7 +114,7 @@ class MT2MBA_BACKEND_PRODUCT
                     $meta_key = 'mt2mba_' . $term->term_id . '_markup_amount';
 
                     // If there is a markup (or markdown) present ...
-                    if ( $markup <> 0 )
+                    if ( $markup <> "" && $markup <> 0 )
                     {
                         // Store original price
                         if ( ! $orig_price_stored )
@@ -234,7 +234,7 @@ class MT2MBA_BACKEND_PRODUCT
                                         // Set markup opening tag
                                         $description .= PHP_EOL . PRODUCT_MARKUP_DESC_BEG;
                                         // Open description with original price (if non-zero)
-                                        if ( ( $orig_price <> 0 ) and ( MT2MBA_HIDE_BASE_PRICE == 'no' ) )
+                                        if ( ( $orig_price <> "" && $orig_price <> 0 ) and ( MT2MBA_HIDE_BASE_PRICE == 'no' ) )
                                         {
                                             $description .= html_entity_decode
                                             (

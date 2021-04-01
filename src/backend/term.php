@@ -208,7 +208,7 @@ class MT2MBA_BACKEND_TERM
         delete_term_meta( $term_id, 'mt2mba_markup' );
 
         // Add Markup metadata if present
-        if ( esc_attr( $_POST[ 'term_markup' ] <> 0 ) )
+        if ( esc_attr( $_POST[ 'term_markup' ] <> "" && $_POST[ 'term_markup' ] <> 0 ) )
         {
             $term_markup = esc_attr( $_POST[ 'term_markup' ]);
             

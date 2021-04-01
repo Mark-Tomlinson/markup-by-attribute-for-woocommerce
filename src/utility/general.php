@@ -159,21 +159,28 @@ class MT2MBA_UTILITY_GENERAL
 
     /**
      * Clean up the price or markup and reformat according to currency options
+     * 
+     * @param   string  $price    A number that will be reformatted into the local currency
+     * @return  string            Properly formatted price with currency indicator
      */
     public function clean_up_price( $price )
     {
-        return number_format( floatval( abs( $price ) ), MT2MBA_DECIMAL_POINTS, MT2MBA_DECIMAL_SEPARATOR, MT2MBA_THOUSAND_SEPARATOR );
+        if ( is_numeric( $price ) )
+        {
+            return number_format( floatval( abs( $price ) ), MT2MBA_DECIMAL_POINTS, MT2MBA_DECIMAL_SEPARATOR, MT2MBA_THOUSAND_SEPARATOR );
+        }
+        return '';
     }
 
     /**
      * Format the markup that appears in the options drop-down box
      * 
-     * @param    float    $markup    Signed markup amount
-     * @return  string               Formatted markup
+     * @param   float   $markup    Signed markup amount
+     * @return  string             Formatted markup
      */
     function format_option_markup( $markup )
     {
-        if ( $markup <> 0 )
+        if ( $markup <> "" && $markup <> 0 )
         {
             // Get globals
             $this->get_mba_globals();
@@ -204,7 +211,6 @@ class MT2MBA_UTILITY_GENERAL
                 $markup = trim( html_entity_decode( $sign . sprintf( MT2MBA_PRICE_FORMAT, '', $this->clean_up_price( $markup ) ) ) );
             }
             return " (" . $markup . ")";
-
          }
         // No markup; return empty string
         return '';
@@ -218,7 +224,7 @@ class MT2MBA_UTILITY_GENERAL
      */
     function format_description_markup( $markup, $term_name )
     {
-        if ( $markup <> 0 )
+        if ( $markup <> "" && $markup <> 0 )
         {
             // Get globals
             $this->get_mba_globals();

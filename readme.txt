@@ -10,15 +10,15 @@ Donate link:            https://www.paypal.me/MT2Dev/5
 License:                GPLv3
 License URI:            https://www.gnu.org/licenses/gpl-3.0.html
 Version:                3.9.6
-Build:                  202113.01
+Build:                  202113.02
 Stable tag:             trunk
-Tested up to:           5.7
+Tested up to:           5.7.1
 Requires at least:      4.6
 PHP tested up to:       8.0.3
 Requires PHP:           5.6
-WC tested up to:        5.1.0
+WC tested up to:        5.2.2
 WC requires at least:   3.0
- 
+  
 This plugin adds product variation markup by attribute to WooCommerce and adjusts product variation regular and sale prices accordingly.
 
 == Description ==

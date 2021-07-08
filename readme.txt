@@ -9,7 +9,7 @@ Contributors:           MarkTomlinson
 Donate link:            https://www.paypal.me/MT2Dev/5
 License:                GPLv3
 License URI:            https://www.gnu.org/licenses/gpl-3.0.html
-Version:                3.9.7
+Version:                3.9.6
 Build:                  202113.03
 Stable tag:             trunk
 Tested up to:           5.7.2
@@ -131,20 +131,20 @@ If you use Markup-by-Attribute and want to see me continuing support for it, I e
 7. The settings page allows configuration of how the markup is displayed.
 
 == Changelog ==
-= 3.9.7 =
-* Maintenance: Add customer facing Swedish translations.
-* Maintenance: Tested with PHP 8.0.8, Wordpress 5.7.2, WooCommerce 5.4.1.
-
 = 3.9.6 =
+Build 202113.02
 * Fix: Empty and non-zero evaluations are no longer the same in PHP 8. Corrected to check each individually.
 * Maintenance: Tested with PHP 8.0.3 and update `PHP tested up to:` information.
+Build 202113.03
+* Maintenance: Add customer facing Swedish translations.
+* Maintenance: Tested with PHP 8.0.8, Wordpress 5.7.2, WooCommerce 5.4.1.
 
 = 3.9.5 =
 * Maintenance: Tested with WordPress 5.7 and include new `Tested up to:` information.
 * Maintenance: Tested with WooCommerce 5.1.0 and include new `WC tested up to:` information.
 
 = 3.9.4 =
-Fix: Consolidate constants.
+* Fix: Consolidate constants.
 
 = 3.9.3 =
 * Fix: Corrected issue with ATTRB_MARKUP_DESC_END vs. ATTRB_MARKUP_END.

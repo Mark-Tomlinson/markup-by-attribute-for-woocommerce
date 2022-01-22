@@ -66,6 +66,61 @@ class MT2MBA_BACKEND_TERM
             // Hook save function into both the 'new' and 'edit' functions
             add_action( "created_{$taxonomy}", array( $this, 'mt2mba_save_markup_to_metadata' ), 10, 2 );
             add_action( "edited_{$taxonomy}", array( $this, 'mt2mba_save_markup_to_metadata' ), 10, 2 );
+
+            // Add 'Markup' column to 'edit' term panels
+            add_filter( "manage_edit-{$taxonomy}_columns" , array( $this, "mt2mba_add_markup_column"), 10 );
+            add_action( "manage_{$taxonomy}_custom_column", array( $this, "mt2mba_markup_column_content"), 10, 3 );
+
+            // Make 'Markup' column sortable
+            add_filter( "manage_edit-{$taxonomy}_sortable_columns", array( $this, "mt2mba_make_markup_sortable"), 10 );
+            add_filter( 'pre_get_terms', array( $this, 'mt2mba_sort_on_markup_column'), 10 );
+        }
+    }
+    /**
+     * Add Markup column to term list.
+     */
+    function mt2mba_add_markup_column ( $columns )
+    {
+        $columns['markup'] = __( 'Markup', 'markup-by-attribute' );
+        return $columns;
+    }
+
+    /**
+     * Add content to rows in Markup column.
+     */
+    function mt2mba_markup_column_content ( string $string, string $column_name, int $term_id )
+    {
+        if  ( $column_name == 'markup' ) echo esc_html( get_term_meta( $term_id, 'mt2mba_markup', true ) );
+        return;
+    }
+
+    /**
+     * Make Markup column sortable.
+     */
+    function mt2mba_make_markup_sortable ( $columns )
+    {
+        $columns['markup'] = 'markup'; 
+        return $columns;
+    }
+
+    /**
+     * Markup column may be sortable, but it is a term-meta item which
+     * must JOINed with the term table to make the sort happen.
+     */
+    function mt2mba_sort_on_markup_column( $term_query )
+    {
+        // WP_Term_Query does not define a get() or a set() method, 
+        // so the query_vars member must be manipulated directly
+        if ( !isset( $_GET['orderby'] ) ) return;   // No sorting requested.
+        if ( 'markup' == $_GET['orderby'] )
+        {
+            $meta_query = array(
+                'relation' => 'OR',
+                array( 'key' => 'mt2mba_markup', 'compare' => 'NOT EXISTS' ),
+                array( 'key' => 'mt2mba_markup' ),
+            );
+            $term_query->meta_query = new WP_Meta_Query( $meta_query );
+            $term_query->query_vars['orderby'] = 'mt2mba_markup';
         }
     }
 
@@ -187,20 +242,21 @@ class MT2MBA_BACKEND_TERM
      */
     function mt2mba_save_markup_to_metadata( $term_id )
     {
+        // Sanity check
+        if( !isset( $_POST[ 'term_markup' ] ) ) return;
+
         // Prevent recursion when wp_update_term() is called later
-        if ( defined( 'MT2MBA_ATTRB_RECURSION' ) )
-        {
-            return;
-        }
+        if ( defined( 'MT2MBA_ATTRB_RECURSION' ) ) return;
         define( 'MT2MBA_ATTRB_RECURSION', TRUE );
 
         global          $mt2mba_utility;
         $term           = get_term( $term_id );
         $taxonomy_name  = sanitize_key( $term->taxonomy );
 
-        // Remove any previous markup information from description and name
+        // Remove any previous markup information from term name.
         $name           = $term->name;
         $name           = trim( $mt2mba_utility->remove_bracketed_string( ATTRB_MARKUP_NAME_BEG, ATTRB_MARKUP_END, $name ) );
+        // Clean up legacy descriptions.
         $description    = $term->description;
         $description    = trim( $mt2mba_utility->remove_bracketed_string( ATTRB_MARKUP_DESC_BEG, ATTRB_MARKUP_END, $description ) );
 
@@ -225,9 +281,6 @@ class MT2MBA_BACKEND_TERM
             }
             update_term_meta( $term_id, 'mt2mba_markup', $markup );
 
-            // Update term description so markups are visible in the term list
-            $description .= PHP_EOL . ATTRB_MARKUP_DESC_BEG . $markup . ATTRB_MARKUP_END;
-
             // Update term name, if rewrite flag is set, so markup is visible in the name
             $rewrite_flag   = get_option( REWRITE_OPTION_PREFIX . wc_attribute_taxonomy_id_by_name( $taxonomy_name ) );
             if ( $rewrite_flag == 'yes' )
@@ -237,9 +290,12 @@ class MT2MBA_BACKEND_TERM
                 $name   .= $markup;
             }
         }
-
-        // Rewrite description
-        wp_update_term( $term_id, $taxonomy_name, array( 'description' => trim( $description ), 'name' => trim( $name ) ) );
+        // Rewrite term if name or description changed
+        if( $term->name != $name ||
+            $term->description != $description )
+        {
+            wp_update_term( $term_id, $taxonomy_name, array( 'description' => trim( $description ), 'name' => trim( $name ) ) );
+        }
     }
 
 }    // End  class MT2MBA_BACKEND_TERM

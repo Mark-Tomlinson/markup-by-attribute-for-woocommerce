@@ -147,6 +147,7 @@ class MT2MBA_UTILITY_GENERAL
             $settings = new MT2MBA_BACKEND_SETTINGS;
             define( 'MT2MBA_DESC_BEHAVIOR', $settings->get_desc_behavior() );
             define( 'MT2MBA_DROPDOWN_BEHAVIOR', $settings->get_dropdown_behavior() );
+            define( 'MT2MBA_SALE_PRICE_MARKUP', $settings->get_sale_price_markup() );
             define( 'MT2MBA_ROUND_MARKUP', $settings->get_round_markup() );
             define( 'MT2MBA_HIDE_BASE_PRICE', $settings->get_hide_base_price() );
             define( 'MT2MBA_PRICE_FORMAT', get_woocommerce_price_format() );

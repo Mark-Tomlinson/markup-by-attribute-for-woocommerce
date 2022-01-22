@@ -9,14 +9,14 @@ Contributors:           MarkTomlinson
 Donate link:            https://www.paypal.me/MT2Dev/5
 License:                GPLv3
 License URI:            https://www.gnu.org/licenses/gpl-3.0.html
-Version:                3.9.6
-Build:                  202113.03
+Version:                3.10.1
+Build:                  202152.01
 Stable tag:             trunk
-Tested up to:           5.7.2
+Tested up to:           5.8.2
 Requires at least:      4.6
-PHP tested up to:       8.0.8
+PHP tested up to:       8.0.14
 Requires PHP:           5.6
-WC tested up to:        5.4.1
+WC tested up to:        6.0.0
 WC requires at least:   3.0
    
 This plugin adds product variation markup by attribute to WooCommerce and adjusts product variation regular and sale prices accordingly.
@@ -92,7 +92,7 @@ _NOTE:_ These instructions assume you are familiar with WooCommerce global Produ
 
 = If I change the markup for an attribute, how will product prices change? =
 
-Markup by Attribute works within the framework provided by WooCommerce and sets product variation markups (or markdowns) during the `Set regular price` and `Set sale price` actions. Therefore, you must locate the products affected by this change and reset the regular and sale prices. I'm working on adding an “Attribute” column to the Product list to facilitate this type of activity.
+Markup by Attribute works within the framework provided by WooCommerce and sets product variation markups (or markdowns) during the `Set regular price` and `Set sale price` actions. Therefore, you must locate the products affected by this change and reset the regular and sale prices.
 
 = It's not working. Why? =
 
@@ -131,132 +131,146 @@ If you use Markup-by-Attribute and want to see me continuing support for it, I e
 7. The settings page allows configuration of how the markup is displayed.
 
 == Changelog ==
+= 3.10.1 =
+Build 202152.01
+* FIX: Commented out unneeded module testing because it prevents Markup-by-Attribute from working on some sites. Will re-include after I determine why it did not work.
+
+= 3.10 =
+Build 202152.01
+* FEATURE: Allows you to calculate percentage markups on sale prices instead of always using the regular price calculation.
+* FEATURE: Adds a sortable Markup column to the attribute list view and eliminates the markup notation from the description.
+* MAINTENANCE: Added test to not load unneeded modules.
+* MAINTENANCE: Minor code and comment cleanup.
+* MAINTENANCE: Tested with PHP 8.0.14 and updated `PHP tested up to:` information.
+* MAINTENANCE: Tested with WordPress 5.8.2 and updated `Tested up to:` information.
+* MAINTENANCE: Tested with WooCommerce 6.0.0 and updated `WC tested up to:` information.
+
 = 3.9.6 =
 Build 202113.02
-* Fix: Empty and non-zero evaluations are no longer the same in PHP 8. Corrected to check each individually.
-* Maintenance: Tested with PHP 8.0.3 and update `PHP tested up to:` information.
+* FIX: Empty and non-zero evaluations are no longer the same in PHP 8. Corrected to check each individually.
+* MAINTENANCE: Tested with PHP 8.0.3 and update `PHP tested up to:` information.
 Build 202113.03
-* Maintenance: Add customer facing Swedish translations.
-* Maintenance: Tested with PHP 8.0.8, Wordpress 5.7.2, WooCommerce 5.4.1.
+* MAINTENANCE: Add customer facing Swedish translations.
+* MAINTENANCE: Tested with PHP 8.0.8, Wordpress 5.7.2, WooCommerce 5.4.1.
 
 = 3.9.5 =
-* Maintenance: Tested with WordPress 5.7 and include new `Tested up to:` information.
-* Maintenance: Tested with WooCommerce 5.1.0 and include new `WC tested up to:` information.
+* MAINTENANCE: Tested with WordPress 5.7 and include new `Tested up to:` information.
+* MAINTENANCE: Tested with WooCommerce 5.1.0 and include new `WC tested up to:` information.
 
 = 3.9.4 =
-* Fix: Consolidate constants.
+* FIX: Consolidate constants.
 
 = 3.9.3 =
-* Fix: Corrected issue with ATTRB_MARKUP_DESC_END vs. ATTRB_MARKUP_END.
+* FIX: Corrected issue with ATTRB_MARKUP_DESC_END vs. ATTRB_MARKUP_END.
 
 = 3.9.2 =
-* Maintenance: Tested with WooCommerce 4.3.0 and include new `Tested to:` information.
+* MAINTENANCE: Tested with WooCommerce 4.3.0 and include new `Tested to:` information.
 
 = 3.9.1 =
-* Fix: Corrected issue when website directory path contains mixed case.
+* FIX: Corrected issue when website directory path contains mixed case.
 
 = 3.9 =
-* Fix: Corrected issue where Markup by Attribute might overwrite another plugin or theme's option selection.
-* Feature: Add option to overwrite the term name to include the markup.
-* Maintenance: General clean up and commenting.
+* FIX: Corrected issue where Markup by Attribute might overwrite another plugin or theme's option selection.
+* FEATURE: Add option to overwrite the term name to include the markup.
+* MAINTENANCE: General clean up and commenting.
 
 = 3.8 =
 * Translation: Further corrections to language files and created versions for German variations. (Thanks to silentstepsch.)
-* Maintenance: Include new `Tested to:` information.
+* MAINTENANCE: Include new `Tested to:` information.
 
 = 3.7 =
 * Translation: Corrected German language files -- thanks to Roland Pohl.
 
 = 3.6 =
-* Feature: Add option to hide base price in product description.
+* FEATURE: Add option to hide base price in product description.
 * Translation: Add German translation
 
 = 3.5 =
-* Fix: Correct 'hide' option of option drop-down box.
-* Fix: Remove non-functioning or incorrectly implemented options.
-* Fix: Corrected the way the markup was saved to metadata (stopped rounding).
-* Maintenance: Include new `Tested to:` information.
+* FIX: Correct 'hide' option of option drop-down box.
+* FIX: Remove non-functioning or incorrectly implemented options.
+* FIX: Corrected the way the markup was saved to metadata (stopped rounding).
+* MAINTENANCE: Include new `Tested to:` information.
 
 = 3.4 =
-* Fix: Show hidden attribute terms to correct error where WordPress/WooCommerce wrongly considers the term as unused.
-* Maintenance: Updated instructions.
-* Maintenance: Removed v2.4 upgrade message.
+* FIX: Show hidden attribute terms to correct error where WordPress/WooCommerce wrongly considers the term as unused.
+* MAINTENANCE: Updated instructions.
+* MAINTENANCE: Removed v2.4 upgrade message.
 
 = 3.3. =
-* Feature: For compatibility with plugins that remove the options drop-down box, the `Include the Increase (Decrease) in the Term Name` option allows markups to show when the drop-down box is not available.
-* Feature: For compatibility with plugins that remove the options drop-down box, the `Do NOT show the markup in the options drop-down box` option now doesn't load the MT2MBA_FRONTEND_OPTIONS class.
-* Fix: Fixed bug where adding and removing a sales price would leave the markup as the new sales price.
+* FEATURE: For compatibility with plugins that remove the options drop-down box, the `Include the Increase (Decrease) in the Term Name` option allows markups to show when the drop-down box is not available.
+* FEATURE: For compatibility with plugins that remove the options drop-down box, the `Do NOT show the markup in the options drop-down box` option now doesn't load the MT2MBA_FRONTEND_OPTIONS class.
+* FIX: Fixed bug where adding and removing a sales price would leave the markup as the new sales price.
 
 = 3.2 =
-* Feature: Add option to calculate percentage markups from sale prices rather than regular prices.
-* Fix: Option 'Do NOT show the markup in the options drop-down box' showed slug in drop-down box instead of term name. Corrected to always show name for global attributes.
-* Maintenance: Renamed Attrb.php to Term.php since it actually affects the terms and not the general attribute.
-* Maintenance: Added donation language to Settings page.
+* FEATURE: Add option to calculate percentage markups from sale prices rather than regular prices.
+* FIX: Option 'Do NOT show the markup in the options drop-down box' showed slug in drop-down box instead of term name. Corrected to always show name for global attributes.
+* MAINTENANCE: Renamed Attrb.php to Term.php since it actually affects the terms and not the general attribute.
+* MAINTENANCE: Added donation language to Settings page.
 
 = 3.1 =
-* Feature: Added ability to round percentage markups so prices will retain digits below decimal. For shops that want to end all prices with .00, .95, .99  or whatever. Requested feature from shop where all prices end in .00.
-* Feature: Fully tested with Gutenberg.
-* Feature: Added Polish language files.
+* FEATURE: Added ability to round percentage markups so prices will retain digits below decimal. For shops that want to end all prices with .00, .95, .99  or whatever. Requested feature from shop where all prices end in .00.
+* FEATURE: Fully tested with Gutenberg.
+* FEATURE: Added Polish language files.
 
 = 3.0 =
-* Feature: Now supports Internationalization and translation.
-* Maintenance: Simplified usage directions in readme.txt.
-* Maintenance: Restructured libraries and renamed files and classes for better organization.
-* Maintenance: Rebuilt admin notice class for supportability and improved performance.
-* Maintenance: Reorganized main module for understandability.
-* Maintenance: General code clean-up and redundancy removal.
+* FEATURE: Now supports Internationalization and translation.
+* MAINTENANCE: Simplified usage directions in readme.txt.
+* MAINTENANCE: Restructured libraries and renamed files and classes for better organization.
+* MAINTENANCE: Rebuilt admin notice class for supportability and improved performance.
+* MAINTENANCE: Reorganized main module for understandability.
+* MAINTENANCE: General code clean-up and redundancy removal.
 
 = 2.5 =
-* Fix: Corrected “Requires PHP” version number in readme.txt.
-* Fix: Updated “WC tested up to” version number in readme.txt.
-* Fix: Eliminated unused “Docs” folder
+* FIX: Corrected “Requires PHP” version number in readme.txt.
+* FIX: Updated “WC tested up to” version number in readme.txt.
+* FIX: Eliminated unused “Docs” folder
 
 = 2.4 =
-* Feature: Use the WooCommerce currency formatting settings.
-* Fix: Re-ensure documentation is clear that this works on “global” attributes.
+* FEATURE: Use the WooCommerce currency formatting settings.
+* FIX: Re-ensure documentation is clear that this works on “global” attributes.
 
 = 2.3 =
-* Feature: Add option to not display markup in the options drop-down box.
-* Fix: Add missing Author: tag.
-* Fix: Ensure documentation is clear that this works on “global” attributes.
-* Fix: Version 2.3 exposes a problem in an earlier version's database conversion where percentage markups show incorrectly in the options drop-down (For instance, a 10% markup on $40 shows as $10 instead of $4). To patch around it, version 2.3 will put the percentage in the drop-down instead of the actual markup. These items will need to have their regular prices reset to have the actual markup appear.
+* FEATURE: Add option to not display markup in the options drop-down box.
+* FIX: Add missing Author: tag.
+* FIX: Ensure documentation is clear that this works on “global” attributes.
+* FIX: Version 2.3 exposes a problem in an earlier version's database conversion where percentage markups show incorrectly in the options drop-down (For instance, a 10% markup on $40 shows as $10 instead of $4). To patch around it, version 2.3 will put the percentage in the drop-down instead of the actual markup. These items will need to have their regular prices reset to have the actual markup appear.
 
 = 2.2 =
-* Fix: Plugin name and Description.
-* Fix: Markup calculation on sale prices when using a percentage markup (percent of the regular price, not sale price).
-* Fix: Clear Markup by Attribute metadata from the database on variation deletion.
+* FIX: Plugin name and Description.
+* FIX: Markup calculation on sale prices when using a percentage markup (percent of the regular price, not sale price).
+* FIX: Clear Markup by Attribute metadata from the database on variation deletion.
 
 = 2.1 =
-* Feature: Organize `Settings` page with sub-headings.
-* Feature: Provide a link to the wiki from `Settings` page.
-* Feature: Expand wiki to include help with settings.
-* Fix: Improve readme.txt readability.
+* FEATURE: Organize `Settings` page with sub-headings.
+* FEATURE: Provide a link to the wiki from `Settings` page.
+* FEATURE: Expand wiki to include help with settings.
+* FIX: Improve readme.txt readability.
 
 = 2.0 =
-* Feature: The new Settings page allows for increasing the number of variations that can be created at a time (override WooCommerce's limit of 50).
-* Feature: The new Settings page allows for modifying the way pricing markup is added to the variation descriptions (overwrite, append, or ignore).
-* Feature: The new settings page allows configuration of the way the markup is displayed, including the number of decimals and the currency symbol.
-* Feature: Markup description now enclosed in <span> tags and can be modified with CSS (#mbainfo {}).
-* Feature: Markup description added to the attribute term description and can be seen in the attribute term list.
-* Feature: Markup now saved as a floating-point number and not limited in digits below the decimal point.
-* Feature: Database and code change to enhance supportability.
-* Fix: Corrected issue where Increase/Decrease Regular/Sale Price functions calculated based on variation price rather than base price, yielding incorrect prices when percentages were used.
-* Fix: Corrected issue where Increase/Decrease Regular/Sale Price functions did not update variation descriptions.
-* Fix: Corrected issue where markup in the options drop-down was calculated from the sale price.
+* FEATURE: The new Settings page allows for increasing the number of variations that can be created at a time (override WooCommerce's limit of 50).
+* FEATURE: The new Settings page allows for modifying the way pricing markup is added to the variation descriptions (overwrite, append, or ignore).
+* FEATURE: The new settings page allows configuration of the way the markup is displayed, including the number of decimals and the currency symbol.
+* FEATURE: Markup description now enclosed in <span> tags and can be modified with CSS (#mbainfo {}).
+* FEATURE: Markup description added to the attribute term description and can be seen in the attribute term list.
+* FEATURE: Markup now saved as a floating-point number and not limited in digits below the decimal point.
+* FEATURE: Database and code change to enhance supportability.
+* FIX: Corrected issue where Increase/Decrease Regular/Sale Price functions calculated based on variation price rather than base price, yielding incorrect prices when percentages were used.
+* FIX: Corrected issue where Increase/Decrease Regular/Sale Price functions did not update variation descriptions.
+* FIX: Corrected issue where markup in the options drop-down was calculated from the sale price.
 
 = 1.3.2 =
 
-Fix: Eliminate bug where default variation options were not being selected and `Choose an Option` was always shown.
+FIX: Eliminate bug where default variation options were not being selected and `Choose an Option` was always shown.
 
 = 1.3.1 =
 
-Fix: Remove error_log() statement accidentally left in.
+FIX: Remove error_log() statement accidentally left in.
 
 = 1.3 =
 
-* Feature: Added class backend-pointers for inline instructions.
-* Feature: Added instructions link to Plugins page.
-* Fix: Use only regular price markup in attribute drop-down on the frontend. Percentage markups where appearing different in dropdown and variation description.
+* FEATURE: Added class backend-pointers for inline instructions.
+* FEATURE: Added instructions link to Plugins page.
+* FIX: Use only regular price markup in attribute drop-down on the frontend. Percentage markups where appearing different in dropdown and variation description.
 
 = 1.2.0 =
 

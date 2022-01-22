@@ -110,8 +110,8 @@ class MT2MBA_BACKEND_PRODUCT
                     
                     $markup = get_term_meta( $term->term_id, 'mt2mba_markup', TRUE );
 
-                    // Set up post metadata key
-                    $meta_key = 'mt2mba_' . $term->term_id . '_markup_amount';
+                    // Set up post metadata key. (Save only regular price markup, so no need to distinguish.)
+                    $meta_key = "mt2mba_{$term->term_id}_markup_amount";
 
                     // If there is a markup (or markdown) present ...
                     if ( $markup <> "" && $markup <> 0 )
@@ -121,8 +121,9 @@ class MT2MBA_BACKEND_PRODUCT
                         {
                             $orig_price_stored = update_post_meta( $product_id, "mt2mba_base_{$price_type}", $orig_price );
                         }
-                        // Variation description and option markup are only set on the regular price
-                        if ( $price_type == 'regular_price' )
+                        // Variation description and option markup are only set on the
+                        // regular price unless requested for sale prices.
+                        if ( $price_type == 'regular_price' || MT2MBA_SALE_PRICE_MARKUP == 'yes' )
                         {
                             // If term_markup has a value other than zero, add/update the value to the metadata table
                             if ( strpos( $markup, "%" ) )
@@ -135,9 +136,20 @@ class MT2MBA_BACKEND_PRODUCT
                                 }
                                 else
                                 {
-                                    $markup = round ( $orig_price * floatval( $markup ) / 100, 2 );
+                                    $markup = round ( $orig_price * floatval( $markup ) / 100, wc_get_price_decimals() );
                                 };
-                                $markup = sprintf( "%+01.2f", $markup );
+                                //$markup = sprintf( "%+01.2f", $markup );
+								$markup = apply_filters
+                				(
+                    				'formatted_woocommerce_price',
+                    				number_format
+                    				(
+                        				$markup,
+                        				wc_get_price_decimals(),
+                        				wc_get_price_decimal_separator(),
+                        				wc_get_price_thousand_separator()
+                    				)
+								 );
                             }
                             else
                             {
@@ -158,8 +170,8 @@ class MT2MBA_BACKEND_PRODUCT
                         }
                         else
                         {
-                           // If calculating sale price, retrieve markup that was set for regular price.
-                           $markup_table[ $term->taxonomy ][ $term->slug ][ "markup" ] = get_metadata( 'post', $product_id, $meta_key, TRUE );
+                            // If using regular price markup for sale price, retrieve markup that was set for regular price.
+                            $markup_table[ $term->taxonomy ][ $term->slug ][ "markup" ] = get_metadata( 'post', $product_id, $meta_key, TRUE );
                         }
                     }
                     else
@@ -184,7 +196,6 @@ class MT2MBA_BACKEND_PRODUCT
                 // If regular price or a non-zero sale price, calculate markup
                 else
                 {
-
                     $has_orig_price  = FALSE;
                     $attributes      = $variation->get_attributes();
 
@@ -206,16 +217,8 @@ class MT2MBA_BACKEND_PRODUCT
                             $markup = (float) $markup_table[ $attribute_id ][ $term_id ][ "markup" ];
                             $variation_price = $variation_price + $markup;
 
-                            // Make sure markup wasn't a reduction that creates
-                            // a negative price, then set price accordingly
-                            if ( $variation_price > 0 )
-                            {
-                                $variation->{"set_$price_type"}( $variation_price );
-                            }
-                            else
-                            {
-                                $variation->{"set_$price_type"}( 0.0 );
-                            }
+                            // Make sure markup wasn't a reduction that creates a negative price, then set price accordingly.
+                            $variation_price > 0 ?  $variation->{"set_$price_type"}( $variation_price ) : $variation->{"set_$price_type"}( 0.0 );
 
                             // Update description if Description Behavior is NOT 'ignore'.
                             if ( ! ( MT2MBA_DESC_BEHAVIOR == 'ignore' ) )
@@ -275,7 +278,7 @@ class MT2MBA_BACKEND_PRODUCT
                 }
                 // And save
                 $variation->save();
-            }    // END variation loop
+            }   // END variation loop
         }
         else
         {

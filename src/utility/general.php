@@ -142,7 +142,7 @@ class MT2MBA_UTILITY_GENERAL
      */
     function get_mba_globals()
     {
-        if ( !defined ( 'MT2MBA_THOUSAND_SEPARATOR' ) )
+        if ( !defined ( 'MT2MBA_CURRENCY_SYMBOL' ) )
         {
             $settings = new MT2MBA_BACKEND_SETTINGS;
             define( 'MT2MBA_DESC_BEHAVIOR', $settings->get_desc_behavior() );
@@ -150,11 +150,7 @@ class MT2MBA_UTILITY_GENERAL
             define( 'MT2MBA_SALE_PRICE_MARKUP', $settings->get_sale_price_markup() );
             define( 'MT2MBA_ROUND_MARKUP', $settings->get_round_markup() );
             define( 'MT2MBA_HIDE_BASE_PRICE', $settings->get_hide_base_price() );
-            define( 'MT2MBA_PRICE_FORMAT', get_woocommerce_price_format() );
             define( 'MT2MBA_CURRENCY_SYMBOL', get_woocommerce_currency_symbol( get_woocommerce_currency() ) );
-            define( 'MT2MBA_DECIMAL_POINTS', wc_get_price_decimals() );
-            define( 'MT2MBA_DECIMAL_SEPARATOR', wc_get_price_decimal_separator() );
-            define( 'MT2MBA_THOUSAND_SEPARATOR', wc_get_price_thousand_separator() );
         }
     }
 
@@ -166,9 +162,9 @@ class MT2MBA_UTILITY_GENERAL
      */
     public function clean_up_price( $price )
     {
-        if ( is_numeric( $price ) )
+        if ( is_numeric( $price ) )		// Might be a percentage in rare cases
         {
-            return number_format( floatval( abs( $price ) ), MT2MBA_DECIMAL_POINTS, MT2MBA_DECIMAL_SEPARATOR, MT2MBA_THOUSAND_SEPARATOR );
+			return strip_tags( wc_price( abs( $price ) ) ) . " ";
         }
         return '';
     }
@@ -204,12 +200,12 @@ class MT2MBA_UTILITY_GENERAL
             elseif ( MT2MBA_DROPDOWN_BEHAVIOR == 'add' )
             {
                 // Return formatted with symbol
-                $markup = html_entity_decode( $sign . sprintf( MT2MBA_PRICE_FORMAT, MT2MBA_CURRENCY_SYMBOL, $this->clean_up_price( $markup ) ) );
+                $markup = html_entity_decode( $sign . $this->clean_up_price( $markup ) );
             }
             else
             {
                 // Return formatted without symbol
-                $markup = trim( html_entity_decode( $sign . sprintf( MT2MBA_PRICE_FORMAT, '', $this->clean_up_price( $markup ) ) ) );
+                $markup = html_entity_decode( $sign . trim( str_replace(MT2MBA_CURRENCY_SYMBOL, "", $this->clean_up_price( $markup ) ) ) );
             }
             return " (" . $markup . ")";
          }
@@ -238,7 +234,7 @@ class MT2MBA_UTILITY_GENERAL
                     sprintf
                     (
                         $desc_format,
-                        sprintf( MT2MBA_PRICE_FORMAT, MT2MBA_CURRENCY_SYMBOL, $this->clean_up_price( $markup ) ),
+                        $this->clean_up_price( $markup ),
                         trim( $this->remove_bracketed_string( ' (', ')', $term_name ) )
                     )
                 );

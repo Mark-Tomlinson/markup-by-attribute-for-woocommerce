@@ -299,6 +299,8 @@ class MT2MBA_BACKEND_PRODUCT
                     // And then loop back through this very same function, changing the bulk action type to
                     // one of the two 'set price' options. This will reset the prices on all variations to the
                     // new base regular/sale price plus the attribute markup.
+                    //     * variable_regular_price
+                    //     * variable_sale_price
                     $this->mt2mba_apply_markup_to_price( "variable_{$price_type}", $new_data, $product_id, $variations );
                 }
             }

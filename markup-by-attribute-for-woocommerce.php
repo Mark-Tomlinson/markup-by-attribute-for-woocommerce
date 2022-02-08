@@ -22,14 +22,14 @@
  * License URI:            https://www.gnu.org/licenses/gpl-3.0.html
  * Text Domain:            markup-by-attribute
  * Domain path:            /languages
- * Version:                3.10.1
- * Build:                  202152.01
+ * Version:                3.10.3
+ * Build:                  202205.01
  * Stable tag:             trunk
- * Tested up to:           5.8.2
+ * Tested up to:           5.9
  * Requires at least:      4.6
- * PHP tested up to:       8.0.14
+ * PHP tested up to:       8.0.15
  * Requires PHP:           5.6
- * WC tested up to:        6.0.0
+ * WC tested up to:        6.1.1
  * WC requires at least:   3.0
  */
 
@@ -39,16 +39,6 @@ if ( !defined( 'ABSPATH' ) ) exit( );
 // Run Markup by Attribute within WooCommerce
 add_action( 'woocommerce_init', 'mt2mba_main' );
 
-function present_in_get_post($arraykey, $textstring)
-{
-	if ( ( isset($_GET[$arraykey]) && strpos($_GET[$arraykey], $textstring) <> '' ) ||
-		 ( isset($_POST[$arraykey]) && strpos($_POST[$arraykey], $textstring) <> '' ) )
-	{
-		return true;
-	}
-	return false;
-}
-
 function mt2mba_main()
 {
   	// Load translations
@@ -56,8 +46,8 @@ function mt2mba_main()
 
 	// Set plugin information
 	define( 'MT2MBA_PLUGIN_PREFIX',     'MT2MBA'                                            );
-	define( 'MT2MBA_VERSION',           '3.10.1'                                            );
-	define( 'MT2MBA_BUILD',             202152.01                                           );
+	define( 'MT2MBA_VERSION',           '3.10.3'                                            );
+	define( 'MT2MBA_BUILD',             202205.01                                           );
 	define( 'MT2MBA_DB_VERSION',        2.1                                                 );
 	define( 'MT2MBA_SITE_URL',          get_bloginfo( 'wpurl')                              );
 	define( 'MT2MBA_PLUGIN_DIR',        plugin_dir_path( __FILE__ )                         );
@@ -117,16 +107,10 @@ function mt2mba_main()
 		new MT2MBA_UTILITY_POINTERS;
 
 		// Instantiate attribute admin
-//		if( present_in_get_post('taxonomy', 'pa_') )
-//		{
-			new MT2MBA_BACKEND_TERM;
-//		}
+		new MT2MBA_BACKEND_TERM;
 
 		// Instantiate product admin
-//		if( present_in_get_post('action', '_bulk_edit_') )
-//		{
-			new MT2MBA_BACKEND_PRODUCT;
-//		}
+		new MT2MBA_BACKEND_PRODUCT;
 	}
 	else
 	{

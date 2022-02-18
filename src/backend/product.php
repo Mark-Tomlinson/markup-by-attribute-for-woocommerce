@@ -85,18 +85,8 @@ class MT2MBA_BACKEND_PRODUCT
 
             // Catch original price
             $orig_price             = floatval( $data[ 'value' ] );
-            $orig_price_formatted   = apply_filters
-                (
-                    'formatted_woocommerce_price',
-                    number_format
-                    (
-                        $orig_price,
-                        wc_get_price_decimals(),
-                        wc_get_price_decimal_separator(),
-                        wc_get_price_thousand_separator()
-                    )
-                );
-            $orig_price_stored     = FALSE;
+            $orig_price_formatted   = strip_tags( wc_price( abs( $orig_price ) ) );
+            $orig_price_stored      = FALSE;
 
             // Clear out old base price meta data
             delete_post_meta( $product_id, "mt2mba_base_{$price_type}" );
@@ -138,18 +128,7 @@ class MT2MBA_BACKEND_PRODUCT
                                 {
                                     $markup = round ( $orig_price * floatval( $markup ) / 100, wc_get_price_decimals() );
                                 };
-                                //$markup = sprintf( "%+01.2f", $markup );
-								$markup = apply_filters
-                				(
-                    				'formatted_woocommerce_price',
-                    				number_format
-                    				(
-                        				$markup,
-                        				wc_get_price_decimals(),
-                        				wc_get_price_decimal_separator(),
-                        				wc_get_price_thousand_separator()
-                    				)
-								 );
+                                $markup = sprintf( "%+01.2f", $markup );
                             }
                             else
                             {

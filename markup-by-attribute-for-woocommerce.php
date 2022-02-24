@@ -4,7 +4,7 @@
  *
  * @package     markup-by-attribute-for-woocommerce
  * @author      Mark Tomlinson
- * @version     3.10
+ * @version     3.10.5
  * @copyright   Mark Tomlinson  2021
  *
  * For the full copyright and license information, please view the LICENSE
@@ -23,7 +23,7 @@
  * Text Domain:				markup-by-attribute
  * Domain path:				/languages
  * Version:					3.10.5
- * Build:					202208.01
+ * Build:					202208.02
  * Stable tag:				trunk
  * Tested up to:			5.9.1
  * Requires at least:		4.6
@@ -49,7 +49,7 @@ function mt2mba_main()
 	// Set plugin information
 	define( 'MT2MBA_PLUGIN_PREFIX',     'MT2MBA'                                            );
 	define( 'MT2MBA_VERSION',           '3.10.5'                                            );
-	define( 'MT2MBA_BUILD',             202208.01                                           );
+	define( 'MT2MBA_BUILD',             202208.02                                           );
 	define( 'MT2MBA_DB_VERSION',        2.1                                                 );
 	define( 'MT2MBA_SITE_URL',          get_bloginfo( 'wpurl')                              );
 	define( 'MT2MBA_PLUGIN_DIR',        plugin_dir_path( __FILE__ )                         );

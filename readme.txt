@@ -10,7 +10,7 @@ Donate link:            https://www.paypal.me/MT2Dev/5
 License:                GPLv3
 License URI:            https://www.gnu.org/licenses/gpl-3.0.html
 Version:                3.10.5
-Build:					202208.01
+Build:					202208.02
 Stable tag:				trunk
 Tested up to:			5.9.1
 Requires at least:		4.6
@@ -141,6 +141,8 @@ Build 202208.01
 * MAINTENANCE: Tested with WooCommerce 6.2.1 and updated `WC tested up to:` information.
 * MAINTENANCE: Added `Apache tested up to:` 2.4.41 information.
 * MAINTENANCE: Added `MySQL tested up to:` 8.0.28 information.
+Build 202208.02
+* MAINTENANCE: Corrected versioning information.
 
 = 3.10.4 =
 Build 202207.01

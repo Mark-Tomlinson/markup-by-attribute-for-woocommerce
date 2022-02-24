@@ -218,17 +218,7 @@ class MT2MBA_BACKEND_PRODUCT
                                         // Open description with original price (if non-zero)
                                         if ( ( $orig_price <> "" && $orig_price <> 0 ) and ( MT2MBA_HIDE_BASE_PRICE == 'no' ) )
                                         {
-                                            $description .= html_entity_decode
-                                            (
-                                                MT2MBA_PRICE_META .
-                                                sprintf
-                                                (
-                                                    get_woocommerce_price_format(),
-                                                    get_woocommerce_currency_symbol( get_woocommerce_currency() ),
-                                                    $orig_price_formatted
-                                                ) .
-                                                PHP_EOL
-                                            );
+                                            $description .= html_entity_decode( MT2MBA_PRICE_META . $orig_price_formatted . PHP_EOL );
                                         }
                                         // Flip flag
                                         $has_orig_price = TRUE;

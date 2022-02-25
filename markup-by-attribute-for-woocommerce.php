@@ -11,28 +11,28 @@
  * file that was distributed with this source code.
  */
 /**
- * Plugin Name:				Markup by Attribute for WooCommerce
- * Description:				This plugin adds product variation markup by attribute to WooCommerce -- the ability to add a markup (or markdown) to an attribute term and have that change the regular and sale price of the associated product variations.
- * Plugin URI:				https://wordpress.org/plugins/markup-by-attribute-for-woocommerce/
- * Tags:					WooCommerce, Attribute, Price, Variation, Markup
- * Author:					MarkTomlinson
- * Contributors:			MarkTomlinson
- * Donate link:				https://www.paypal.me/MT2Dev/5
- * License:					GPLv3
- * License URI:				https://www.gnu.org/licenses/gpl-3.0.html
- * Text Domain:				markup-by-attribute
- * Domain path:				/languages
- * Version:					3.10.5
- * Build:					202208.02
- * Stable tag:				trunk
- * Tested up to:			5.9.1
- * Requires at least:		4.6
- * PHP tested up to:		8.0.16
- * Requires PHP:			5.6
- * WC tested up to:			6.2.1
- * WC requires at least:	3.0
- * Apache tested up to:		2.4.41
- * MySQL tested up to:		8.0.28
+ * Plugin Name:                         Markup by Attribute for WooCommerce
+ * Description:                         This plugin adds product variation markup by attribute to WooCommerce -- the ability to add a markup (or markdown) to an attribute term and have that change the regular and sale price of the associated product variations.
+ * Plugin URI:                          https://wordpress.org/plugins/markup-by-attribute-for-woocommerce/
+ * Tags:                                WooCommerce, Attribute, Price, Variation, Markup
+ * Author:                              MarkTomlinson
+ * Contributors:                        MarkTomlinson
+ * Donate link:                         https://www.paypal.me/MT2Dev/5
+ * License:                             GPLv3
+ * License URI:                         https://www.gnu.org/licenses/gpl-3.0.html
+ * Text Domain:                         markup-by-attribute
+ * Domain path:                         /languages
+ * Version:                             3.10.5
+ * Build:                               202208.02
+ * Stable tag:                          trunk
+ * Tested up to:                        5.9.1
+ * Requires at least:                   4.6
+ * PHP tested up to:                    8.0.16
+ * Requires PHP:                        5.6
+ * WC tested up to:                     6.2.1
+ * WC requires at least:                3.0
+ * Apache tested up to:                 2.4.41
+ * MySQL tested up to:                  8.0.28
  */
 
 // Exit if accessed directly

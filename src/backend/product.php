@@ -72,7 +72,7 @@ class MT2MBA_BACKEND_PRODUCT
     {
         // Set string for testing and SET functions later
         $price_type     = substr( $bulk_action, 9, strpos( $bulk_action, '_price' ) - 3 );
-        
+
         // Method is hooked into 'woocommerce_bulk_edit_variations', which runs with
         // every bulk edit action. So we only want to execute it if the bulk action
         // is setting the regular or sale price.
@@ -84,7 +84,7 @@ class MT2MBA_BACKEND_PRODUCT
             $mt2mba_utility->get_mba_globals();
 
             // Catch original price
-            $orig_price             = floatval( $data[ 'value' ] );
+            $orig_price             = wc_format_decimal( $data[ 'value' ] );
             $orig_price_formatted   = strip_tags( wc_price( abs( $orig_price ) ) );
             $orig_price_stored      = FALSE;
 
@@ -273,6 +273,7 @@ class MT2MBA_BACKEND_PRODUCT
                     $this->mt2mba_apply_markup_to_price( "variable_{$price_type}", $new_data, $product_id, $variations );
                 }
             }
+
             // Is it to delete all variations?
             if ( $bulk_action == 'delete_all' )
             {
@@ -281,7 +282,8 @@ class MT2MBA_BACKEND_PRODUCT
                 $wpdb->query( "DELETE FROM {$wpdb->postmeta} WHERE post_id = '{$product_id}' AND meta_key LIKE 'mt2mba_%'" );
             }
         }
-    }    // END function mt2mba_apply_markup_to_price
+
+    }   // END function mt2mba_apply_markup_to_price
 
 }    // End  class MT2MBA_PRODUCT_BACKEND
 

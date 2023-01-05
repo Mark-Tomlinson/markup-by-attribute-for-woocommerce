@@ -44,7 +44,8 @@ class MT2MBA_BACKEND_TERM
         $this->rewrite_description  = __( 'Rename the attribute to include the markup. Often needed if the option drop-down box is overwritten by another plugin or theme and markup is no longer visible.', 'markup-by-attribute' );
         $this->text_add             = __( '(Add', 'markup-by-attribute' );
         $this->text_subtract        = __( '(Subtract', 'markup-by-attribute' );
-    
+        $this->placeholder         = "[+|-]" . wc_format_localized_decimal('0.00') ." or [+|-]" . wc_format_localized_decimal('00.0%');
+
         // Get all attributes
         $attribute_taxonomies = wc_get_attribute_taxonomies();
 
@@ -80,7 +81,7 @@ class MT2MBA_BACKEND_TERM
                 10 );
             add_action( "manage_{$taxonomy}_custom_column", function ( $string, $column_name, $term_id )
                 {   // Add content to rows in Markup column
-                    if  ( $column_name == 'markup' ) echo esc_html( get_term_meta( $term_id, 'mt2mba_markup', true ) );
+                    if  ( $column_name == 'markup' ) echo wc_format_localized_decimal( get_term_meta( $term_id, 'mt2mba_markup', true ) );
                     return;
                 },
                 10, 3 );
@@ -190,7 +191,7 @@ class MT2MBA_BACKEND_TERM
         ?>
         <div class="form-field">
             <label for="term_markup"><?php echo( $this->markup_label ); ?></label>
-            <input type="text" placeholder="[ +|- ]0.00 or [ +|- ]00%" name="term_markup" id="term_add_markup" value="">
+            <input type="text" placeholder="<?php echo( $this->placeholder ); ?>" name="term_markup" id="term_add_markup" value="">
             <p class="description"><?php echo( $this->markup_description ); ?></p>
         </div>
         <?php
@@ -205,14 +206,14 @@ class MT2MBA_BACKEND_TERM
      function mt2mba_edit_form_fields( $term )
      {
         // Retrieve the existing markup for this term (NULL results are valid)
-        $term_markup        = get_term_meta( $term->term_id, "mt2mba_markup", TRUE );
+        $term_markup        = wc_format_localized_decimal( get_term_meta( $term->term_id, "mt2mba_markup", TRUE ) );
 
         // Build row and fill field with current markup
         ?>
        <tr class="form-field">
            <th scope="row" valign="top"><label for="term_markup"><?php echo( $this->markup_label ); ?></label></th>
            <td>
-               <input type="text" placeholder="[ +|- ]0.00 or [ +|- ]00%" name="term_markup" id="term_edit_markup" value="<?php echo esc_attr( $term_markup ) ? esc_attr( $term_markup ) : ''; ?>">
+               <input type="text" placeholder="<?php echo( $this->placeholder ); ?>" name="term_markup" id="term_edit_markup" value="<?php echo esc_attr( $term_markup ) ? esc_attr( $term_markup ) : ''; ?>">
                <p class="description"><?php echo( $this->markup_description ); ?></p>
            </td>
        </tr>
@@ -250,17 +251,17 @@ class MT2MBA_BACKEND_TERM
         if ( esc_attr( $_POST[ 'term_markup' ] <> "" && $_POST[ 'term_markup' ] <> 0 ) )
         {
             $term_markup = esc_attr( $_POST[ 'term_markup' ]);
-            
+
             // If term_markup has a value other than zero, add/update the value to the metadata table
             if ( strpos( $term_markup, "%" ) )
             {
                 // If term_markup has a percentage sign, save as a formatted percent
-                $markup = sprintf( "%+g%%", sanitize_text_field( $term_markup ) );
+                $markup = sprintf( "%+g%%", wc_format_decimal( $term_markup ) );
             }
             else
             {
                 // If term_markup does not have percentage sign, save as a formatted floating point number
-                $markup = sprintf( "%+g", sanitize_text_field( $term_markup ) );
+                $markup = sprintf( "%+g", wc_format_decimal( $term_markup ) );
             }
             update_term_meta( $term_id, 'mt2mba_markup', $markup );
 

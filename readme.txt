@@ -9,25 +9,25 @@ Contributors:           MarkTomlinson
 Donate link:            https://www.paypal.me/MT2Dev/5
 License:                GPLv3
 License URI:            https://www.gnu.org/licenses/gpl-3.0.html
-Version:                3.10.5
-Build:                  202208.02
+Version:                3.11.0
+Build:                  202245.02
 Stable tag:             trunk
-Tested up to:           5.9.1
+Tested up to:           6.1
 Requires at least:      4.6
-PHP tested up to:       8.0.16
+PHP tested up to:       8.1.2
 Requires PHP:           5.6
-WC tested up to:        6.2.1
+WC tested up to:        7.1.0
 WC requires at least:   3.0
-Apache tested up to:    2.4.41
-MySQL tested up to:     8.0.28
-   
+Apache tested up to:    2.4.52
+MySQL tested up to:     8.0.31
+
 This plugin adds product variation markup by attribute to WooCommerce and adjusts product variation regular and sale prices accordingly.
 
 == Description ==
 
 = Varying Prices on Product Variations is Tedious and Error-Prone =
 
-Want to add $5 to every blue product you sell? Maybe you sell jewelry with birthstones and some stones just cost more than others. If all “X-Large” products cost 7.5% more, you have to manually calculate and change every “X-Large” variation of every product.
+Want to add $5 to every blue product you sell? Maybe you sell jewelry with birthstones, and some stones just cost more than others. If all “X-Large” products cost 7.5% more, you have to manually calculate and change every “X-Large” variation of every product.
 
 = Markup by Attribute Adds 'Markup' to Attribute Terms =
 
@@ -38,8 +38,8 @@ Markup by Attribute:
 * Can create a fixed value markup (such as $5), or a percentage markup (such as 5%).
 * The markup value can be positive yielding an increase in price, or negative yielding a decrease in price.
 * Uses familiar WooCommerce bulk edit actions `Set regular price` and `Set sale price`.
-* Puts the price increase (or decrease) in the options drop-down box alongside of the terms so customers can make informed decisions. (Or, optionally, does not).
-* Can write a breakdown of the price modifications in the variation description so the itemization is visible to the customer.
+* Puts the price increase (or decrease) in the options drop-down box alongside of the terms, so customers can make informed decisions. (Or, optionally, does not).
+* Can write a breakdown of the price modifications in the variation description, so the itemization is visible to the customer.
 * Has been tested with Gutenberg and is fully compatible.
 
 == Installation ==
@@ -48,7 +48,7 @@ Markup by Attribute:
 
 * Manual Installation
 * Automated Installation
-* Using Markup by Attribute for WooCommerce 
+* Using Markup-by-Attribute for WooCommerce 
 
 = Manual Installation =
 
@@ -56,11 +56,11 @@ Markup by Attribute:
 
 2. Unzip the plugin files to the `/wp-content/plugins/markup-by-attribute-for-woocommerce` directory.
 
-3. Activate the plugin through the `Plugins` page in WordPress.
+3. Activate the plugin through the WordPress `Plugins` page.
 
 = Automated Installation =
 
-1. Locate the Markup by Attribute for WooCommerce plugin on the `Plugins` ⇾ `Add New` page in WordPress using the search box.
+1. Locate the Markup by Attribute for WooCommerce plugin using the search box on the in WordPress `Plugins` ⇾ `Add New` page.
 
 2. Install the plugin using the `[Install]` button.
 
@@ -80,7 +80,7 @@ _NOTE:_ These instructions assume you are familiar with WooCommerce global Produ
     * Markup by Attribute requires variable products because it changes the price of each variation.
     * Using `Create variations from all attributes` is the easiest way to ensure you have all combinations.
     * Do not have a variation with “Any” in an attribute with a markup because WooCommerce will choose the “Any” variation regardless of others that may exist. So, if XX-Large is 5% more, you cannot have one variation for “XX-Large” and another for “Any size” to cover the rest because WooCommerce assumes “Any size” includes “XX-Large”.
-1.  **Use the `Set regular price` and `Set sale price` bulk edit functions as you normally would.**  (_NOTE: If you’ve already set the prices before installing Markup by Attribute, you will need to do it again to apply the markup_).
+1.  **Use the `Set regular price` and `Set sale price` bulk edit functions as you normally would.**  (_NOTE: If you’ve already set the prices before installing Markup-by-Attribute, you will need to do it again to apply the markup_).
     * The markup will be applied to the price according to the attribute terms associated with the variation.
     * A description of the markup will be added to the variation description.
       ```
@@ -112,15 +112,15 @@ Then do nothing. Prices, descriptions, and option drop-downs for products will r
 
 Yes. However, the developer only speaks American English.  I can provide 'Google Translate' versions of other languages, but I would prefer it if a native speaker translated the text. The .POT file is found in the /languages folder of the plugin. If you don't have access to your server, you can also find it on [GitHub](https://github.com/Mark-Tomlinson/markup-by-attribute-for-woocommerce).
 
-What's a .POT file? If you'd like to help but don't know how to use a template file, don't worry. A .POT file is a text file that contains all the English phrases found in Markup by Attribute.  You can simply open it and translate what you read there.  Send me the translations and I will incorporate them in the next release.
+What's a .POT file? If you'd like to help but don't know how to use a template file, don't worry. A .POT file is a text file that contains all the English phrases found in Markup-by-Attribute.  You can simply open it and translate what you read there.  Send me the translations and I will incorporate them in the next release.
 
 Many thanks to [Zjadlbymcos](https://github.com/Zjadlbymcos) on GitHub for his Polish Translation and @silentstepsch for several variations of German.
 
 = I'd like to donate. =
 
-Thanks! The donation button assumes $5.00 USD. But feel free to adjust that amount up or down as you feel it's appropriate. I'm a retired guy who's living off his savings, so every bit helps.
+Thanks! The donation button assumes $5.00 USD. But please don't hesitate to adjust that amount up or down as you feel it's appropriate. I'm a retired guy who's living off his savings, so every bit helps.
 
-If you use Markup-by-Attribute and want to see me continuing support for it, I encourage you to encourage me with a small donation.
+If you use Markup by Attribute and want to see me continuing support for it, I encourage you to encourage me with a small donation.
 
 == Screenshots ==
 
@@ -129,10 +129,19 @@ If you use Markup-by-Attribute and want to see me continuing support for it, I e
 3. The regular price is $18.95. Markup by Attribute added $6 for a logo and $1.42 for extra large.
 4. The customer sees the full range of sale prices available and how much each option costs, plus a clear description of the breakdown.
 5. Markdowns (negative markups) can be used as well.
-6. Markups are applied to sale prices just as they are to regular prices.
+6. Markups are applied to sale prices just as they are with regular prices.
 7. The settings page allows configuration of how the markup is displayed.
 
 == Changelog ==
+
+= 3.11.0 =
+Build 202245.01
+* MAINTENANCE: Ensured compatibility with current versions of WordPress, WooCommerce, and PHP.
+* MAINTENANCE: Resolved a PHP 'depreciation' warning.
+* FIX: Fixed a bug where Markup-by-Attribute would get confused about the decimal separator because the server and WooCommerce localization settings conflict.
+Build 202245.02
+* MAINTENANCE: Changed the default on `Sale Price Markup` to 'yes'.
+
 = 3.10.5 =
 Build 202208.01
 * FIX: Correct Doubled currency symbol.
@@ -146,12 +155,12 @@ Build 202208.02
 
 = 3.10.4 =
 Build 202207.01
-* FIX: Correct floating point conversion error for percentage markups over four digits long (< -1,000, > +1,000).
+* FIX: Correct floating-point conversion error for percentage markups over four digits long (< -1,000, > +1,000).
 
 = 3.10.3 =
 Build 202205.01
 * MAINTENANCE: Extensive clean-up.
-* MAINTENANCE: Used wc-price() function instead of DIY formatting for better compatability.
+* MAINTENANCE: Used wc-price() function instead of DIY formatting for better compatibility.
 * MAINTENANCE: Tested with PHP 8.0.15 and updated `PHP tested up to:` information.
 * MAINTENANCE: Tested with WordPress 5.9 and updated `Tested up to:` information.
 * MAINTENANCE: Tested with WooCommerce 6.1.1 and updated `WC tested up to:` information.
@@ -176,7 +185,7 @@ Build 202113.02
 * MAINTENANCE: Tested with PHP 8.0.3 and update `PHP tested up to:` information.
 Build 202113.03
 * MAINTENANCE: Add customer facing Swedish translations.
-* MAINTENANCE: Tested with PHP 8.0.8, Wordpress 5.7.2, WooCommerce 5.4.1.
+* MAINTENANCE: Tested with PHP 8.0.8, WordPress 5.7.2, WooCommerce 5.4.1.
 
 = 3.9.5 =
 * MAINTENANCE: Tested with WordPress 5.7 and include new `Tested up to:` information.
@@ -195,7 +204,7 @@ Build 202113.03
 * FIX: Corrected issue when website directory path contains mixed case.
 
 = 3.9 =
-* FIX: Corrected issue where Markup by Attribute might overwrite another plugin or theme's option selection.
+* FIX: Corrected issue where Markup-by-Attribute might overwrite another plugin or theme's option selection.
 * FEATURE: Add option to overwrite the term name to include the markup.
 * MAINTENANCE: General clean up and commenting.
 
@@ -229,11 +238,11 @@ Build 202113.03
 = 3.2 =
 * FEATURE: Add option to calculate percentage markups from sale prices rather than regular prices.
 * FIX: Option 'Do NOT show the markup in the options drop-down box' showed slug in drop-down box instead of term name. Corrected to always show name for global attributes.
-* MAINTENANCE: Renamed Attrb.php to Term.php since it actually affects the terms and not the general attribute.
+* MAINTENANCE: Renamed Attrb.php to Term.php, since it actually affects the terms and not the general attribute.
 * MAINTENANCE: Added donation language to Settings page.
 
 = 3.1 =
-* FEATURE: Added ability to round percentage markups so prices will retain digits below decimal. For shops that want to end all prices with .00, .95, .99  or whatever. Requested feature from shop where all prices end in .00.
+* FEATURE: Added ability to round percentage markups, so prices will retain digits below decimal. For shops that want to end all prices with .00, .95, .99 or whatever. Requested feature from shop where all prices end in .00.
 * FEATURE: Fully tested with Gutenberg.
 * FEATURE: Added Polish language files.
 
@@ -256,17 +265,17 @@ Build 202113.03
 
 = 2.3 =
 * FEATURE: Add option to not display markup in the options drop-down box.
-* FIX: Add missing Author: tag.
+* FIX: Add missing 'Author:' tag.
 * FIX: Ensure documentation is clear that this works on “global” attributes.
 * FIX: Version 2.3 exposes a problem in an earlier version's database conversion where percentage markups show incorrectly in the options drop-down (For instance, a 10% markup on $40 shows as $10 instead of $4). To patch around it, version 2.3 will put the percentage in the drop-down instead of the actual markup. These items will need to have their regular prices reset to have the actual markup appear.
 
 = 2.2 =
 * FIX: Plugin name and Description.
 * FIX: Markup calculation on sale prices when using a percentage markup (percent of the regular price, not sale price).
-* FIX: Clear Markup by Attribute metadata from the database on variation deletion.
+* FIX: Clear Markup-by-Attribute metadata from the database on variation deletion.
 
 = 2.1 =
-* FEATURE: Organize `Settings` page with sub-headings.
+* FEATURE: Organize `Settings` page with subheadings.
 * FEATURE: Provide a link to the wiki from `Settings` page.
 * FEATURE: Expand wiki to include help with settings.
 * FIX: Improve readme.txt readability.
@@ -277,7 +286,7 @@ Build 202113.03
 * FEATURE: The new settings page allows configuration of the way the markup is displayed, including the number of decimals and the currency symbol.
 * FEATURE: Markup description now enclosed in <span> tags and can be modified with CSS (#mbainfo {}).
 * FEATURE: Markup description added to the attribute term description and can be seen in the attribute term list.
-* FEATURE: Markup now saved as a floating-point number and not limited in digits below the decimal point.
+* FEATURE: Markup now saved as a floating-point number and not limited to only two digits below the decimal point.
 * FEATURE: Database and code change to enhance supportability.
 * FIX: Corrected issue where Increase/Decrease Regular/Sale Price functions calculated based on variation price rather than base price, yielding incorrect prices when percentages were used.
 * FIX: Corrected issue where Increase/Decrease Regular/Sale Price functions did not update variation descriptions.
@@ -295,7 +304,7 @@ FIX: Remove error_log() statement accidentally left in.
 
 * FEATURE: Added class backend-pointers for inline instructions.
 * FEATURE: Added instructions link to Plugins page.
-* FIX: Use only regular price markup in attribute drop-down on the frontend. Percentage markups where appearing different in dropdown and variation description.
+* FIX: Use only regular price markup in attribute drop-down on the frontend. Percentage markups were appearing different in dropdown and variation description.
 
 = 1.2.0 =
 
@@ -308,7 +317,7 @@ FIX: Remove error_log() statement accidentally left in.
 
 = 1.1 =
 
-* Moved markup from term Description to new metadata field.
+* Moved markup from term Description to a new metadata field.
 * Added metadata field to term Add and Edit panels.
 * Broke class-mt2-markup-backend.php into class-mt2-markup-backend-attrb.php and class-mt2-markup-backend-product.php for supportability.
 * Cleaned code and added comments for readability.
@@ -319,6 +328,18 @@ FIX: Remove error_log() statement accidentally left in.
 
 == Upgrade Notice ==
 
+= 3.11 =
+
+Ensured compatibility with current versions of WordPress, WooCommerce, and PHP. Resolved a PHP 'depreciation' warning.
+
+Fixed a bug where Markup-by-Attribute would get confused about the decimal separator because the server and WooCommerce localization settings conflict.
+
+= 3.9 =
+
+Added a new feature that allows Markup-by-Attribute to add the markup to the name of the option. This is useful when the dropdown box has been replaced by color swatches, checkboxes, or some other selector. As long as the name of the option is displayed (for instance, when the cursor hovers over it), then the markup will be seen by your customer.
+
+Fixed a bug where Markup-by-Attribute would overwrite the options' selector for some themes and other plugins. This occurred if the theme or plugin provided changed the function of the options' selector (for instance, to color swatches), and did not code it so that they take precedence.
+
 = 1.3.1 =
 
 * Includes clearer instructions and inline help.
@@ -326,8 +347,8 @@ FIX: Remove error_log() statement accidentally left in.
 
 = 1.2.0 =
 
-* Now allows the use of percentage (5%) markups and markdowns as well as fixed values ($5).
-* And it stores the actual markup value displayed in attribute drop-down with the product. This allows changing of the markup in the attribute \without affecting the markup displayed with the product.
+* Now allows the use of percentage (5%) markups and markdowns, as well as fixed values ($5).
+* And it stores the actual markup value displayed in the attribute drop-down with the product. This allows changing of the markup in the attribute \without affecting the markup displayed with the product.
 
 = 1.1.1 =
 
@@ -335,17 +356,9 @@ Prevents null prices (due to an apparent bug in WooCommerce sale_price) from bei
 
 = 1.1 =
 
-* Markup is now stored in metadata, freeing up the Description field. Edits are added to the code so the markup will always be stored in the correct format.
+* Markup is now stored in metadata, freeing up the Description field. Edits are added to the code, so the markup will always be stored in the correct format.
 * Code improvements to add robustness and supportability.
 
 = 1.0 =
 
 Initial version
-
-== Upgrade Notice ==
-
-= 3.9 =
-
-Added a new feature that allows Markup by Attribute to add the markup to the name of the option. This is useful when the dropdown box has been replaced by color swatches, checkboxes, or some other selector. As long as the name of the option is displayed (for instance, when the cursor hovers over it), then the markup will be seen by your customer.
-
-Fixed a bug where Markup by Attribute would overwrite the options' selector for some themes and other plugins. This occurred if the theme or plugin provided changed the function of the options' selector (for instance, to color swatches), and did not code it so that they take precedence.

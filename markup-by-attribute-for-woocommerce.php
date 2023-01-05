@@ -4,7 +4,7 @@
  *
  * @package     markup-by-attribute-for-woocommerce
  * @author      Mark Tomlinson
- * @version     3.10.5
+ * @version     3.11
  * @copyright   Mark Tomlinson  2021
  *
  * For the full copyright and license information, please view the LICENSE
@@ -22,17 +22,17 @@
  * License URI:                         https://www.gnu.org/licenses/gpl-3.0.html
  * Text Domain:                         markup-by-attribute
  * Domain path:                         /languages
- * Version:                             3.10.5
- * Build:                               202208.02
+ * Version:                             3.11.0
+ * Build:                               202245.01
  * Stable tag:                          trunk
- * Tested up to:                        5.9.1
+ * Tested up to:                        6.1
  * Requires at least:                   4.6
- * PHP tested up to:                    8.0.16
+ * PHP tested up to:                    8.1.2
  * Requires PHP:                        5.6
- * WC tested up to:                     6.2.1
+ * WC tested up to:                     7.1.0
  * WC requires at least:                3.0
- * Apache tested up to:                 2.4.41
- * MySQL tested up to:                  8.0.28
+ * Apache tested up to:                 2.4.52
+ * MySQL tested up to:                  8.0.31
  */
 
 // Exit if accessed directly
@@ -48,8 +48,8 @@ function mt2mba_main()
 
 	// Set plugin information
 	define( 'MT2MBA_PLUGIN_PREFIX',     'MT2MBA'                                            );
-	define( 'MT2MBA_VERSION',           '3.10.5'                                            );
-	define( 'MT2MBA_BUILD',             202208.02                                           );
+	define( 'MT2MBA_VERSION',           '3.11.0'                                            );
+	define( 'MT2MBA_BUILD',             202245.01                                           );
 	define( 'MT2MBA_DB_VERSION',        2.1                                                 );
 	define( 'MT2MBA_SITE_URL',          get_bloginfo( 'wpurl')                              );
 	define( 'MT2MBA_PLUGIN_DIR',        plugin_dir_path( __FILE__ )                         );

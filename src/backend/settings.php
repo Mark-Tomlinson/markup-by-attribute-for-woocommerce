@@ -14,7 +14,7 @@ class MT2MBA_BACKEND_SETTINGS
     var $modify_term_name   =   'no';       // The default behavior for rewriting the term name with markup.
     var $desc_behavior      =   'append';   // The default behavior for writing the pricing information into the variation description.
     var $hide_base_price    =   'no';       // The default behavior for whether the base regulare price shows in the description.
-    var $sale_price_markup  =   'no';       // The default behavior for setting sale price percentage markups.
+    var $sale_price_markup  =   'yes';      // The default behavior for setting sale price percentage markups.
     var $round_markup       =   'no';       // The default behavior for rounding percentage markups.
     var $max_variations     =   50;         // The default number or variation created per run.
 

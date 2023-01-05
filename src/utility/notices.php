@@ -53,8 +53,8 @@ class MT2MBA_UTILITY_NOTICES
      */
     public function action_admin_init()
     {
-        $dismiss_option = filter_input( INPUT_GET, 'mt2mba_dismiss', FILTER_SANITIZE_STRING );
-        if ( is_string( $dismiss_option ) ) {
+        if( isset( $_GET[ 'mt2mba_dismiss' ] ) ) {
+            $dismiss_option = htmlspecialchars( $_GET[ 'mt2mba_dismiss' ] );
             update_option( "mt2mba_dismissed_$dismiss_option", true );
             wp_die();
         }

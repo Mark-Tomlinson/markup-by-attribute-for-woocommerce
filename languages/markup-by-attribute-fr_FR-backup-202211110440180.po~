@@ -1,0 +1,230 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Markup by Attribute for WooCommerce - MT² Tech\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-04-17 00:43+0000\n"
+"PO-Revision-Date: 2022-11-11 04:39+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (France)\n"
+"Language: fr_FR\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.6.3; wp-6.1"
+
+#: markup-by-attribute-for-woocommerce.php:55
+msgid "Markup by Attribute"
+msgstr ""
+
+#: markup-by-attribute-for-woocommerce.php:57
+msgid "Product price"
+msgstr "Prix du produit"
+
+#: markup-by-attribute-for-woocommerce.php:134
+msgid "Settings"
+msgstr ""
+
+#: markup-by-attribute-for-woocommerce.php:139
+msgid "Instructions"
+msgstr ""
+
+#: src/utility/pointers.php:96
+msgid ""
+"Markups can be fixed values such as <code>5</code> or <code>5.95</code>. Or "
+"they can be percentages such as <code>5%</code> or <code>1.23%</code>. "
+"Markups can start with a plus or minus sign such as <code>+5.95</code> or "
+"<code>-1.23%</code>.<br/>The markup will be applied during the product "
+"variation <em>Set regular price</em> and <em>Set sale price</em> bulk edit "
+"action."
+msgstr ""
+
+#: src/utility/pointers.php:134
+msgid ""
+"Using this plugin is simple, but might be a little obscure. This link to the "
+"instructions may help get you started.<br/>We'll just leave the instructions "
+"link right here."
+msgstr ""
+
+#: src/utility/general.php:227
+#, php-format
+msgid "Subtract %1$s for %2$s"
+msgstr "Soustraire %1$s pour %2$s"
+
+#: src/utility/general.php:227
+#, php-format
+msgid "Add %1$s for %2$s"
+msgstr "Ajouter %1$s pour %2$s"
+
+#: src/backend/term.php:42
+msgid "Markup (or markdown)"
+msgstr ""
+
+#: src/backend/term.php:43
+msgid ""
+"Markup or markdown associated with this option. Signed, floating point "
+"numeric allowed."
+msgstr ""
+
+#: src/backend/term.php:44
+msgid "Add Markup to Name?"
+msgstr ""
+
+#: src/backend/term.php:45
+msgid ""
+"Rename the attribute to include the markup. Often needed if the option drop-"
+"down box is overwritten by another plugin or theme and markup is no longer "
+"visible."
+msgstr ""
+
+#: src/backend/term.php:47
+msgid "(Add"
+msgstr "(Supplément"
+
+#: src/backend/term.php:48
+msgid "(Subtract"
+msgstr ""
+
+#: src/backend/term.php:49
+msgid "Markup:"
+msgstr ""
+
+#: src/backend/settings.php:243
+msgid ""
+"The following options are used to configure variation markups by attribute."
+msgstr ""
+
+#: src/backend/settings.php:246
+#, php-format
+msgid ""
+"Additional help can be found in the <a href=\"%1$s\" target=\"_blank\">"
+"Markup by Attribute wiki</a> on the <code>Settings</code> page."
+msgstr ""
+
+#: src/backend/settings.php:251
+#, php-format
+msgid ""
+"If you find this plugin helpful, please consider <a href=\"%1$s\" "
+"target=\"_blank\">a small donation</a>."
+msgstr ""
+
+#: src/backend/settings.php:269
+msgid ""
+"Should Markup-by-Attribute add the markup to the options drop-down box, and "
+"should the currency symbol be displayed?"
+msgstr ""
+
+#: src/backend/settings.php:270
+msgid "This setting affects all products and takes effect immediately."
+msgstr ""
+
+#: src/backend/settings.php:273
+msgid "Option Drop-down Behavior"
+msgstr ""
+
+#: src/backend/settings.php:279
+msgid "Do NOT show the markup in the options drop-down box."
+msgstr ""
+
+#: src/backend/settings.php:280
+msgid "Show the markup WITH the currency symbol in the options drop-down box."
+msgstr ""
+
+#: src/backend/settings.php:281
+msgid ""
+"Show the markup WITHOUT the currency symbol in the options drop-down box."
+msgstr ""
+
+#: src/backend/settings.php:289
+msgid ""
+"How should Markup-by-Attribute handle adding price markup information to the "
+"variation description?"
+msgstr ""
+
+#: src/backend/settings.php:290 src/backend/settings.php:310
+msgid ""
+"This setting affects products individually and takes effect when you "
+"recalculate the regular price for the product."
+msgstr ""
+
+#: src/backend/settings.php:293
+msgid "Description Behavior"
+msgstr ""
+
+#: src/backend/settings.php:299
+msgid "Do NOT add pricing information to the description field."
+msgstr ""
+
+#: src/backend/settings.php:300
+msgid "Add pricing information to the end of the existing description."
+msgstr ""
+
+#: src/backend/settings.php:301
+msgid "Overwrite the variation description with price information."
+msgstr ""
+
+#: src/backend/settings.php:309
+msgid "Do NOT show the base price in the product description."
+msgstr ""
+
+#: src/backend/settings.php:313
+msgid "Hide Base Price"
+msgstr ""
+
+#: src/backend/settings.php:339
+msgid ""
+"Some stores want prices with specific numbers below the decimal place (such "
+"as xx.00 or xx.95). Rounding percentage markups will keep the value below "
+"the decimal."
+msgstr ""
+
+#: src/backend/settings.php:344
+msgid "Round Markup"
+msgstr ""
+
+#: src/backend/settings.php:370
+msgid ""
+"Use Cautiously: WooCommerce limits the number of linked variations you can "
+"create at a time to 50 to prevent server overload.  To create more, you can "
+"run 'Create variations from all attributes' again, but this creates "
+"variations out of order.  If you will have more than 50 variations of a "
+"product AND the order in the admin console is important, then set this "
+"number higher."
+msgstr ""
+
+#: src/backend/settings.php:375
+msgid "Variation Max"
+msgstr ""
+
+#: src/backend/settings.php:420
+msgid "Please select an option for the options drop-down."
+msgstr ""
+
+#: src/backend/settings.php:435
+msgid "Please select an option for the description behavior."
+msgstr ""
+
+#: src/backend/settings.php:452
+msgid ""
+"Variation Max must be a number, 1 or higher.</br>Previous option retained."
+msgstr ""
+
+#. Name of the plugin
+msgid "Markup by Attribute for WooCommerce"
+msgstr ""
+
+#. Description of the plugin
+msgid ""
+"This plugin adds product variation markup by attribute to WooCommerce -- the "
+"ability to add a markup (or markdown) to an attribute term and have that "
+"change the regular and sale price of the associated product variations."
+msgstr ""
+
+#. URI of the plugin
+msgid "https://wordpress.org/plugins/markup-by-attribute-for-woocommerce/"
+msgstr ""
+
+#. Author of the plugin
+msgid "MarkTomlinson"
+msgstr "MarkTomlinson"

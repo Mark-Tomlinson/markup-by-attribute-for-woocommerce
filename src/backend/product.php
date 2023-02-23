@@ -72,7 +72,6 @@ class MT2MBA_BACKEND_PRODUCT
     {
         // Set string for testing and SET functions later
         $price_type     = substr( $bulk_action, 9, strpos( $bulk_action, '_price' ) - 3 );
-
         // Method is hooked into 'woocommerce_bulk_edit_variations', which runs with
         // every bulk edit action. So we only want to execute it if the bulk action
         // is setting the regular or sale price.

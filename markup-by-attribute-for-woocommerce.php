@@ -11,27 +11,27 @@
  * file that was distributed with this source code.
  */
 /**
- * Plugin Name:                         Markup by Attribute for WooCommerce
- * Description:                         This plugin adds product variation markup by attribute to WooCommerce -- the ability to add a markup (or markdown) to an attribute term and have that change the regular and sale price of the associated product variations.
- * Plugin URI:                          https://wordpress.org/plugins/markup-by-attribute-for-woocommerce/
- * Tags:                                WooCommerce, Attribute, Price, Variation, Markup
- * Author:                              MarkTomlinson
- * Contributors:                        MarkTomlinson
- * Donate link:                         https://www.paypal.me/MT2Dev/5
- * License:                             GPLv3
- * License URI:                         https://www.gnu.org/licenses/gpl-3.0.html
- * Text Domain:                         markup-by-attribute
- * Domain path:                         /languages
- * Version:                             3.11.1
- * Build:                               202308.02
- * Stable tag:                          trunk
- * Tested up to:                        6.2
- * Requires at least:                   4.6
- * PHP tested up to:                    8.1.2
- * Requires PHP:                        5.6
- * WC tested up to:                     7.7.0
- * WC requires at least:                3.0
- * MySQL tested up to:                  8.0.33
+ * Plugin Name:				Markup by Attribute for WooCommerce
+ * Description:				This plugin adds product variation markup by attribute to WooCommerce -- the ability to add a markup (or markdown) to an attribute term and have that change the regular and sale price of the associated product variations.
+ * Plugin URI:				https://wordpress.org/plugins/markup-by-attribute-for-woocommerce/
+ * Tags:					WooCommerce, Attribute, Price, Variation, Markup
+ * Author:					MarkTomlinson
+ * Contributors:			MarkTomlinson
+ * Donate link:				https://www.paypal.me/MT2Dev/5
+ * License:					GPLv3
+ * License URI:				https://www.gnu.org/licenses/gpl-3.0.html
+ * Text Domain:				markup-by-attribute
+ * Domain path:				/languages
+ * Version:					3.11.2
+ * Build:					202332.01
+ * Stable tag:				trunk
+ * Tested up to:			6.3
+ * Requires at least:		4.6
+ * PHP tested up to:		8.1.2
+ * Requires PHP:			5.6
+ * WC tested up to:			8.0.1
+ * WC requires at least:	3.0
+ * MySQL tested up to:		8.0.33
  */
 
 // Exit if accessed directly
@@ -47,8 +47,8 @@ function mt2mba_main()
 
 	// Set plugin information
 	define( 'MT2MBA_PLUGIN_PREFIX',     'MT2MBA'                                            );
-	define( 'MT2MBA_VERSION',           '3.11.1'                                            );
-	define( 'MT2MBA_BUILD',             202308.02                                           );
+	define( 'MT2MBA_VERSION',           '3.11.2'                                            );
+	define( 'MT2MBA_BUILD',             202332.01                                           );
 	define( 'MT2MBA_DB_VERSION',        2.1                                                 );
 	define( 'MT2MBA_SITE_URL',          get_bloginfo( 'wpurl')                              );
 	define( 'MT2MBA_PLUGIN_DIR',        plugin_dir_path( __FILE__ )                         );

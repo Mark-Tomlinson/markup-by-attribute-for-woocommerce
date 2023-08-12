@@ -164,7 +164,7 @@ class MT2MBA_UTILITY_GENERAL
     {
         if ( is_numeric( $price ) )		// Might be a percentage in rare cases
         {
-			return strip_tags( wc_price( abs( $price ) ) ) . " ";
+			return strip_tags( wc_price( abs( $price ) ) );
         }
         return '';
     }

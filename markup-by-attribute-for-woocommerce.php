@@ -4,7 +4,7 @@
  *
  * @package     markup-by-attribute-for-woocommerce
  * @author      Mark Tomlinson
- * @version     3.11.1
+ * @version     3.11.3
  * @copyright   Mark Tomlinson  2021
  *
  * For the full copyright and license information, please view the LICENSE
@@ -22,20 +22,27 @@
  * License URI:				https://www.gnu.org/licenses/gpl-3.0.html
  * Text Domain:				markup-by-attribute
  * Domain path:				/languages
- * Version:					3.11.2
- * Build:					202332.01
+ * Version:					3.11.3
+ * Build:					202343.01
  * Stable tag:				trunk
- * Tested up to:			6.3
+ * Tested up to:			6.4
  * Requires at least:		4.6
  * PHP tested up to:		8.1.2
  * Requires PHP:			5.6
- * WC tested up to:			8.0.1
+ * WC tested up to:			8.2.1
  * WC requires at least:	3.0
  * MySQL tested up to:		8.0.33
  */
 
 // Exit if accessed directly
 if ( !defined( 'ABSPATH' ) ) exit( );
+
+// Declare Markup-by-Attribute is compatable with HPOS
+add_action( 'before_woocommerce_init', function() {
+	if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
+		\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
+	}
+} );
 
 // Run Markup by Attribute within WooCommerce
 add_action( 'woocommerce_init', 'mt2mba_main' );
@@ -47,8 +54,8 @@ function mt2mba_main()
 
 	// Set plugin information
 	define( 'MT2MBA_PLUGIN_PREFIX',     'MT2MBA'                                            );
-	define( 'MT2MBA_VERSION',           '3.11.2'                                            );
-	define( 'MT2MBA_BUILD',             202332.01                                           );
+	define( 'MT2MBA_VERSION',           '3.11.3'                                            );
+	define( 'MT2MBA_BUILD',             202343.01                                           );
 	define( 'MT2MBA_DB_VERSION',        2.1                                                 );
 	define( 'MT2MBA_SITE_URL',          get_bloginfo( 'wpurl')                              );
 	define( 'MT2MBA_PLUGIN_DIR',        plugin_dir_path( __FILE__ )                         );
@@ -69,7 +76,7 @@ function mt2mba_main()
 		'info' => array
 		(
 			//	Info message #1
-			//'unique_message_identifier' => __( 'message', 'markup-by-attribute' ),
+			'HPOS_Compatability' => __( '<em>Markup-by-Attribute</em> is now compatible with HPOS. If <em>Markup-by-Attribute</em> was keeping you from fully utilizing HPOS, you may now be able to enable it.<ol><li>Go to &#39;WooCommerce >> Settings >> Advanced >> Features&#39;.</li><li>Look for &#39;Order data storage&#39; and select &#39;High-performance order storage&#39; (If this is not an option, a list of other incompatible plugins will appear.)</li><li>Save your changes.</li></ol>', 'markup-by-attribute' ),
 		),
 		'warning' => array
 		(

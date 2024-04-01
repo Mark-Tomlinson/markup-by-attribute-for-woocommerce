@@ -9,16 +9,16 @@ Contributors:           MarkTomlinson
 Donate link:            https://www.paypal.me/MT2Dev/5
 License:                GPLv3
 License URI:            https://www.gnu.org/licenses/gpl-3.0.html
-Version:				3.11.3
-Build:					202343.01
+Version:				3.12
+Build:					202414.01
 Stable tag:				trunk
-Tested up to:			6.4
+Tested up to:			6.5
 Requires at least:		4.6
 PHP tested up to:		8.1.2
 Requires PHP:			5.6
-WC tested up to:		8.2.1
+WC tested up to:		8.7.0
 WC requires at least:	3.0
-MySQL tested up to:		8.0.33
+MySQL tested up to:		8.0.36
 
 This plugin adds product variation markup by attribute to WooCommerce and adjusts product variation regular and sale prices accordingly.
 
@@ -132,6 +132,12 @@ If you use Markup by Attribute and want to see me continuing support for it, I e
 7. The settings page allows configuration of how the markup is displayed.
 
 == Changelog ==
+
+= 3.12 =
+Build 202414.01
+* MAINTENANCE: Extensive revisions to /src/product.php for readability and performance.
+* MAINTENANCE: Smaller revisions throughout code for readability and performance.
+* MAINTENANCE: Ensured compatibility with current versions of WordPress, WooCommerce, and PHP.
 
 = 3.11.3 =
 Build 202343.01

@@ -78,7 +78,7 @@ class MT2MBA_Price_Set_Handler extends MT2MBA_Price_Markup_Handler
 
             // Get current markup for attribute term meta table
             $markup = get_term_meta($term->term_id, "mt2mba_markup", true);
-error_log(print_r(get_term_meta($term->term_id, "mt2mba_markup", true), true));
+
             // If there isn't a markup...
             if (empty($markup)) {
                 // No markup, remove previous product markup metadata

@@ -9,10 +9,10 @@ Contributors:           MarkTomlinson
 Donate link:            https://www.paypal.me/MT2Dev/5
 License:                GPLv3
 License URI:            https://www.gnu.org/licenses/gpl-3.0.html
-Version:				3.12
-Build:					202414.01
+Version:				3.12.1
+Build:					202415.01
 Stable tag:				trunk
-Tested up to:			6.5
+Tested up to:			6.5.2
 Requires at least:		4.6
 PHP tested up to:		8.1.2
 Requires PHP:			5.6
@@ -132,6 +132,10 @@ If you use Markup by Attribute and want to see me continuing support for it, I e
 7. The settings page allows configuration of how the markup is displayed.
 
 == Changelog ==
+
+= 3.12.1 =
+Build 202414.01
+* FIX: Add code to handle manually added attributes for GitHub issue #28. (https://github.com/Mark-Tomlinson/markup-by-attribute-for-woocommerce/issues/28) Thanks to g-alfieri for suggesting a fix.
 
 = 3.12 =
 Build 202414.01

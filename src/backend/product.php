@@ -157,10 +157,13 @@ class MT2MBA_Price_Set_Handler extends MT2MBA_Price_Markup_Handler
 
         // Loop through product attributes
         foreach (wc_get_product($product_id)->get_attributes() as $pa_attrb) {
-            $taxonomy = $pa_attrb->get_name();
-            // Retrieve all attribute terms
-            $terms = get_terms(["taxonomy" => $taxonomy, "hide_empty" => false]);
-            $all_terms = array_merge($all_terms, $terms);
+            if($pa_attrb->is_taxonomy()){
+                $taxonomy = $pa_attrb->get_name();
+                // Retrieve all attribute terms
+                $terms = get_terms(["taxonomy" => $taxonomy, "hide_empty" => false]);
+                $all_terms = array_merge($all_terms, $terms);
+
+            }
         }
         $markup_table = $this->build_markup_table($all_terms, $product_id);
 

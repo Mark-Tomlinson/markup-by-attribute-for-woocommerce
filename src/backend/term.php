@@ -18,6 +18,7 @@ class MT2MBA_BACKEND_TERM
     private $rewrite_description;
     private $text_add;
     private $text_subtract;
+    private $placeholder;
 
     /**
      * Initialization method visible before instantiation

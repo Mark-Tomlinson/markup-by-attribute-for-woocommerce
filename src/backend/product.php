@@ -10,6 +10,7 @@ abstract class MT2MBA_Price_Markup_Handler
     protected $product_id;
     protected $base_price;
     protected $base_price_formatted;
+    protected $price_decimals;
 
 	/**
 	 * MT2MBA_Price_Markup_Handler constructor. Creates variables used throughout.
@@ -364,10 +365,12 @@ class MT2MBA_BACKEND_PRODUCT
     {
         // Load settings
         $settings = new MT2MBA_BACKEND_SETTINGS();
+
         // Override the max variation threshold with value from settings
         if (!defined("WC_MAX_LINKED_VARIATIONS")) {
             define("WC_MAX_LINKED_VARIATIONS", $settings->get_max_variations());
         }
+
         // Hook mt2mba markup code into bulk actions
         add_action("woocommerce_bulk_edit_variations", [$this, "mt2mba_apply_markup_to_price"], 10, 4);
     }

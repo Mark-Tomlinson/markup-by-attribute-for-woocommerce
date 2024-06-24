@@ -1,0 +1,4 @@
+/* admin-style.css */
+.woocommerce-add-variation-price-container {
+    display: none !important;
+}

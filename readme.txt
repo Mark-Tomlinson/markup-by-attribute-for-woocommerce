@@ -9,7 +9,7 @@ Contributors:           MarkTomlinson
 Donate link:            https://www.paypal.me/MT2Dev/5
 License:                GPLv3
 License URI:            https://www.gnu.org/licenses/gpl-3.0.html
-Version:                3.12.4
+Version:                3.13.1
 Build:                  202428.01
 Stable tag:             trunk
 Tested up to:           6.6
@@ -133,7 +133,7 @@ If you use Markup by Attribute and want to see me continuing support for it, I e
 
 == Changelog ==
 
-= 3.12.4 =
+= 3.13.1 =
 Build 202428.01
 * FEATURE: Added a column for the attributes to the 'All Products' page. Can also filter on the individual attributes. This will make finding products whose markups have changed much easier.
 * MAINTENANCE: Ensured compatibility with current versions of WordPress, WooCommerce, and PHP. New versions of WooCommerce and PHP.

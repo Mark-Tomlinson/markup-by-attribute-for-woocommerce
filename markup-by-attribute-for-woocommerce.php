@@ -3,7 +3,7 @@
  * This file is part of the Markup by Attribute for WooCommerce plugin by Mark Tomlinson
  *
  * @package     markup-by-attribute-for-woocommerce
- * @version     3.12
+ * @version     3.13.1
  * @license     GPL-3.0+
  */
 

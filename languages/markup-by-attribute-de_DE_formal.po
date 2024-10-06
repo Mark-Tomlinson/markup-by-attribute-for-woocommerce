@@ -1,9 +1,9 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Markup by Attribute for WooCommerce - MTB2 Tech\n"
-"Report-Msgid-Bugs-To: \n"
+"Project-Id-Version: Markup by Attribute for WooCommerce - MT² Tech\n"
+"Report-Msgid-Bugs-To: markupbyattribute@mail.com\n"
 "POT-Creation-Date: 2020-04-17 00:43+0000\n"
-"PO-Revision-Date: 2020-04-18 17:30+0000\n"
+"PO-Revision-Date: 2024-10-05 23:30+0000\n"
 "Last-Translator: \n"
 "Language-Team: German (Formal)\n"
 "Language: de_DE_formal\n"
@@ -12,25 +12,145 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Loco https://localise.biz/\n"
-"X-Loco-Version: 2.3.3; wp-5.4"
+"X-Loco-Version: 2.6.11; wp-6.6.2"
 
-#: markup-by-attribute-for-woocommerce.php:55
-msgid "Markup by Attribute"
-msgstr "Markup by Attribute"
+#: src/backend/term.php:50
+msgid "(Add"
+msgstr "(Zuzüglich"
 
-#: markup-by-attribute-for-woocommerce.php:57
-msgid "Product price"
-msgstr "Produkt Preis"
+#: src/backend/term.php:51
+msgid "(Subtract"
+msgstr "(Abzüglich"
 
-#: markup-by-attribute-for-woocommerce.php:134
-msgid "Settings"
-msgstr "Einstellungen"
+#: src/utility/general.php:197
+#, php-format
+msgid "Add %1$s for %2$s"
+msgstr "Zuzüglich %1$s für %2$s"
 
-#: markup-by-attribute-for-woocommerce.php:139
+#: src/backend/term.php:48
+msgid "Add Markup to Name?"
+msgstr "Aufschlag zum Namen hinzufügen."
+
+#: src/backend/settings.php:121
+msgid "Add pricing information to the end of the existing description."
+msgstr ""
+"Zusätzliche Preisinformation an das Ende der bestehenden Artikelbeschreibung "
+"hinzufügen."
+
+#: src/backend/settings.php:72
+#, php-format
+msgid ""
+"Additional help can be found in the <a href=\"%1$s\" target=\"_blank\">"
+"Markup by Attribute wiki</a> on the <code>Settings</code> page."
+msgstr ""
+"Du kannst auf unserer <a href=\"%1$s\" target=\"_blank\">Markup by Attribute "
+"Wiki-Seite</a> im <code>Settings-Bereich</code> zusätzlich Hilfe finden."
+
+#. Description of the plugin
+msgid "Adds product variation markup by attribute to WooCommerce."
+msgstr "Fügt Produktvarianten-Aufschläge nach Attribut zu WooCommerce hinzu."
+
+#: src/backend/productlist.php:61 src/backend/productlist.php:66
+msgid "Attributes"
+msgstr "Attribute"
+
+#: src/backend/settings.php:120
+msgid "Do NOT add pricing information to the description field."
+msgstr "Keine Preisinformation im Artikel-Beschreibungsfeld hinzufügen."
+
+#: src/backend/settings.php:134
+msgid "Do NOT show the base price in the product description."
+msgstr "Grundpreis NICHT in der Produktbeschreibung anzeigen"
+
+#: src/backend/settings.php:101
+msgid "Do NOT show the markup in the options drop-down box."
+msgstr "Zeige keinen Preis Auf/Abschlag im Drop-Down-Feld"
+
+#: src/backend/settings.php:133
+msgid "Hide Base Price"
+msgstr "Grundpreis verstecken"
+
+#: src/backend/settings.php:115
+#| msgid ""
+#| "How should Markup-by-Attribute handle adding price markup information to "
+#| "the variation description?"
+msgid ""
+"How should Markup-by-Attribute handle adding price markup information to the "
+"product variation description?"
+msgstr ""
+"Wie soll Markup-by-Attribute die Hinzufügung von "
+"Preisaufschlagsinformationen zur Produktvariationsbeschreibung handhaben?"
+
+#. URI of the plugin
+msgid "https://wordpress.org/plugins/markup-by-attribute-for-woocommerce/"
+msgstr "https://wordpress.org/plugins/markup-by-attribute-for-woocommerce/"
+
+#: src/backend/settings.php:76
+#, php-format
+msgid ""
+"If you find this plugin helpful, please consider <a href=\"%1$s\" "
+"target=\"_blank\">a small donation</a>."
+msgstr ""
+"Wenn du das Plugin hilfreich findest, würden wir uns über eine <a "
+"href=\"%1$s\" target=\"_blank\">kleine Spende</a> freuen."
+
+#: src/backend/settings.php:208
+msgid ""
+"Include a column on the 'All Products' page to show all attributes "
+"associated with the products?"
+msgstr ""
+"Soll eine Spalte auf der Seite 'Alle Produkte' eingefügt werden, um alle mit "
+"den Produkten verbundenen Attribute anzuzeigen?"
+
+#: markup-by-attribute-for-woocommerce.php:54
 msgid "Instructions"
 msgstr "Anleitung"
 
-#: src/utility/pointers.php:96
+#. Author of the plugin
+msgid "MarkTomlinson"
+msgstr "MarkTomlinson"
+
+#: src/backend/term.php:82
+msgid "Markup"
+msgstr "Aufschlag"
+
+#: src/backend/term.php:46
+msgid "Markup (or markdown)"
+msgstr "Preis Auf (oder Abschlag)."
+
+#: markup-by-attribute-for-woocommerce.php:102 src/backend/settings.php:51
+msgid "Markup by Attribute"
+msgstr "Markup-by-Attribute"
+
+#. Name of the plugin
+msgid "Markup by Attribute for WooCommerce"
+msgstr "Markup-by-Attribute für WooCommerce"
+
+#: src/backend/settings.php:68
+msgid "Markup by Attribute Settings"
+msgstr "Markup-by-Attribute Einstellungen"
+
+#: src/backend/settings.php:148
+msgid "Markup Calculation"
+msgstr "Aufschlagsberechnung"
+
+#: src/backend/settings.php:84
+msgid "Markup Display"
+msgstr "Aufschlagsanzeige"
+
+#: src/backend/term.php:47
+msgid ""
+"Markup or markdown associated with this option. Signed, floating point "
+"numeric allowed."
+msgstr ""
+"Der Preis Auf oder Abschlag wird mit dieser Angabe berechnet. Mit ″ + ″ oder "
+"″ - ″ Zeichen versehene Nummern sind zugelassen."
+
+#: markup-by-attribute-for-woocommerce.php:107
+msgid "Markup:"
+msgstr "Aufschlag:"
+
+#: src/utility/pointers.php:101
 msgid ""
 "Markups can be fixed values such as <code>5</code> or <code>5.95</code>. Or "
 "they can be percentages such as <code>5%</code> or <code>1.23%</code>. "
@@ -48,7 +168,138 @@ msgstr ""
 " und <em>Angebotspreis festlegen</em> im Hintergrund berechnet und "
 "festgelegt."
 
-#: src/utility/pointers.php:134
+#: src/backend/settings.php:222
+msgid "Max Variations"
+msgstr "Maximale Variationen"
+
+#: src/backend/settings.php:223
+msgid "Maximum number of variations that can be created per run."
+msgstr ""
+"Maximale Anzahl von Variationen, die pro Durchlauf erstellt werden können."
+
+#: src/backend/settings.php:95
+msgid "Option Drop-down Behavior"
+msgstr "Verhalten des Auswahlmenüs für Optionen"
+
+#: src/backend/settings.php:196
+msgid "Other"
+msgstr "Sonstiges"
+
+#: src/backend/settings.php:122
+msgid "Overwrite the variation description with price information."
+msgstr ""
+"Berschreibe die Variations-Artikelbeschreibung mit der Preisinformation"
+
+#: markup-by-attribute-for-woocommerce.php:103
+msgid "Product price"
+msgstr "Produkt Preis"
+
+#: src/backend/term.php:49
+msgid ""
+"Rename the attribute to include the markup. Often needed if the option drop-"
+"down box is overwritten by another plugin or theme and markup is no longer "
+"visible."
+msgstr ""
+"Benennen Sie das Attribut um, um die Marge einzuschließen. Häufig "
+"erforderlich, wenn das Options-Dropdown-Feld von einem anderen Plugin oder "
+"Theme überschrieben wird und die Marge nicht mehr sichtbar ist."
+
+#: src/backend/settings.php:179
+msgid "Round Markup"
+msgstr "Gerundete Auf/Abschläge"
+
+#: src/backend/settings.php:180
+msgid "Round percentage markups to keep the value below the decimal intact?"
+msgstr ""
+"Prozentuale Aufschläge runden, um den Wert nach dem Komma unverändert zu "
+"lassen?"
+
+#: src/backend/settings.php:161
+msgid "Sale Price Markup"
+msgstr "Verkaufspreis-Aufschlag"
+
+#: src/backend/settings.php:163
+msgid "setting it OFF leaves the markup at $3."
+msgstr "wenn es ausgeschaltet ist, bleibt der Aufschlag bei 3 €."
+
+#: markup-by-attribute-for-woocommerce.php:53
+msgid "Settings"
+msgstr "Einstellungen"
+
+#: src/backend/settings.php:96
+msgid ""
+"Should Markup-by-Attribute add the markup to the options drop-down box, and "
+"should the currency symbol be displayed?"
+msgstr ""
+"Soll Markup by Attribute den Preis Auf / Abschlag im Drop-Down-Feld anzeigen "
+"und soll das Währungszeichen angezeigt werden?"
+
+#: src/backend/settings.php:162
+msgid "Should Markup-by-Attribute calculate percentage markups on sale prices?"
+msgstr ""
+"Soll Markup-by-Attribute prozentuale Aufschläge auf Verkaufspreise berechnen?"
+
+#: src/backend/settings.php:207
+msgid "Show Attributes on Product List"
+msgstr "Attribute in der Produktliste anzeigen"
+
+#: src/backend/settings.php:102
+msgid "Show the markup WITH the currency symbol in the options drop-down box."
+msgstr "Zeige den Preisaufschlag MIT dem Währungszeichen im Drop-Down-Feld an."
+
+#: src/backend/settings.php:103
+msgid ""
+"Show the markup WITHOUT the currency symbol in the options drop-down box."
+msgstr ""
+"Zeige den Preisaufschlag OHNE das Währungszeichen im Drop-Down-Feld an."
+
+#: src/backend/settings.php:181
+#| msgid ""
+#| "Some stores want prices with specific numbers below the decimal place "
+#| "(such as xx.00 or xx.95). Rounding percentage markups will keep the value "
+#| "below the decimal."
+msgid ""
+"Some stores want prices with specific numbers below the decimal place (such "
+"as xx.00 or xx.95). Rounding percentage markups will keep the value below "
+"the decimal intact."
+msgstr ""
+"Einige Shops möchten Preise mit bestimmten Zahlen nach dem Komma (wie xx,00 "
+"oder xx,95). Das Runden prozentualer Aufschläge behält den Wert nach dem "
+"Komma bei."
+
+#: src/utility/general.php:197
+#, php-format
+msgid "Subtract %1$s for %2$s"
+msgstr "Abzüglich %1$s für %2$s"
+
+#: src/backend/settings.php:70
+msgid ""
+"The following options are used to configure variation markups by attribute."
+msgstr ""
+"Die folgenden Optionen werden verwendet um Varianten Preisaufschläge durch "
+"Produkt Eigenschaften zu konfigurieren."
+
+#: src/backend/settings.php:97 src/backend/settings.php:116
+msgid "This setting affects all products and takes effect immediately."
+msgstr "Diese Einstellung betrifft alle Produkte und tritt direkt in Kraft."
+
+#: src/backend/settings.php:135 src/backend/settings.php:183
+msgid ""
+"This setting affects products individually and takes effect when you "
+"recalculate the regular price for the product."
+msgstr ""
+"Diese Einstellung betrifft jedes Produkt individuell und tritt in Kraft wenn "
+"du den \"Regulären Preis\" für das Produkt neu eingibst."
+
+#: src/backend/settings.php:165
+msgid ""
+"This setting affects products individually and takes effect when you "
+"recalculate the sale price for the product."
+msgstr ""
+"Diese Einstellung wirkt sich individuell auf Produkte aus und tritt in Kraft,"
+" wenn Sie den Verkaufspreis für das Produkt neu berechnen."
+
+#: src/utility/pointers.php:132
 msgid ""
 "Using this plugin is simple, but might be a little obscure. This link to the "
 "instructions may help get you started.<br/>We'll just leave the instructions "
@@ -57,213 +308,22 @@ msgstr ""
 "Die Benutzung dieses Plugins mag etwas seltsam erscheinen. Dieser Link zur "
 "Anleitung wird dir aber bei der Benutzung helfen.<br/>"
 
-#: src/utility/general.php:227
-#, php-format
-msgid "Subtract %1$s for %2$s"
-msgstr "Abzüglich %1$s für %2$s"
+#: src/backend/settings.php:114
+msgid "Variation Description Behavior"
+msgstr "Verhalten der Variantenbeschreibung"
 
-#: src/utility/general.php:227
-#, php-format
-msgid "Add %1$s for %2$s"
-msgstr "Zuzüglich %1$s für %2$s"
-
-#: src/backend/term.php:42
-msgid "Markup (or markdown)"
-msgstr "Preis Auf (oder Abschlag)."
-
-#: src/backend/term.php:43
+#: src/backend/settings.php:209
 msgid ""
-"Markup or markdown associated with this option. Signed, floating point "
-"numeric allowed."
+"When set on, you can filter by attribute, making it easier to find products "
+"that contain attributes you may have changed."
 msgstr ""
-"Der Preis Auf oder Abschlag wird mit dieser Angabe berechnet. Mit ″ + ″ oder "
-"″ - ″ Zeichen versehene Nummern sind zugelassen."
+"Wenn aktiviert, können Sie nach Attributen filtern, was es einfacher macht, "
+"Produkte zu finden, deren Attribute Sie möglicherweise geändert haben."
 
-#: src/backend/term.php:44
-msgid "Add Markup to Name?"
-msgstr ""
-
-#: src/backend/term.php:45
+#: src/backend/settings.php:224
 msgid ""
-"Rename the attribute to include the markup. Often needed if the option drop-"
-"down box is overwritten by another plugin or theme and markup is no longer "
-"visible."
+"You can always create more by running 'Create variations from all "
+"attributes' again."
 msgstr ""
-
-#: src/backend/term.php:47
-msgid "(Add"
-msgstr "(Zuzüglich"
-
-#: src/backend/term.php:48
-msgid "(Subtract"
-msgstr "(Abzüglich"
-
-#: src/backend/term.php:49
-msgid "Markup:"
-msgstr "Aufschlag:"
-
-#: src/backend/settings.php:243
-msgid ""
-"The following options are used to configure variation markups by attribute."
-msgstr ""
-"Die folgenden Optionen werden verwendet um Varianten Preisaufschläge durch "
-"Produkt Eigenschaften zu konfigurieren."
-
-#: src/backend/settings.php:246
-#, php-format
-msgid ""
-"Additional help can be found in the <a href=\"%1$s\" target=\"_blank\">"
-"Markup by Attribute wiki</a> on the <code>Settings</code> page."
-msgstr ""
-"Du kannst auf unserer <a href=\"%1$s\" target=\"_blank\">Markup by Attribute "
-"Wiki-Seite</a> im <code>Settings-Bereich</code> zusätzlich Hilfe finden."
-
-#: src/backend/settings.php:251
-#, php-format
-msgid ""
-"If you find this plugin helpful, please consider <a href=\"%1$s\" "
-"target=\"_blank\">a small donation</a>."
-msgstr ""
-"Wenn du das Plugin hilfreich findest, würden wir uns über eine <a "
-"href=\"%1$s\" target=\"_blank\">kleine Spende</a> freuen."
-
-#: src/backend/settings.php:269
-msgid ""
-"Should Markup-by-Attribute add the markup to the options drop-down box, and "
-"should the currency symbol be displayed?"
-msgstr ""
-"Soll Markup by Attribute den Preis Auf / Abschlag im Drop-Down-Feld anzeigen "
-"und soll das Währungszeichen angezeigt werden?"
-
-#: src/backend/settings.php:270
-msgid "This setting affects all products and takes effect immediately."
-msgstr "Diese Einstellung betrifft alle Produkte und tritt direkt in Kraft."
-
-#: src/backend/settings.php:273
-msgid "Option Drop-down Behavior"
-msgstr "Drop-Down Verhalten "
-
-#: src/backend/settings.php:279
-msgid "Do NOT show the markup in the options drop-down box."
-msgstr "Zeige keinen Preis Auf/Abschlag im Drop-Down-Feld"
-
-#: src/backend/settings.php:280
-msgid "Show the markup WITH the currency symbol in the options drop-down box."
-msgstr "Zeige den Preisaufschlag MIT dem Währungszeichen im Drop-Down-Feld an."
-
-#: src/backend/settings.php:281
-msgid ""
-"Show the markup WITHOUT the currency symbol in the options drop-down box."
-msgstr ""
-"Zeige den Preisaufschlag OHNE das Währungszeichen im Drop-Down-Feld an."
-
-#: src/backend/settings.php:289
-msgid ""
-"How should Markup-by-Attribute handle adding price markup information to the "
-"variation description?"
-msgstr ""
-"Wie soll Markup by Attribute zusätzliche preis Auf / Abschläge im "
-"Beschreibungs-Feld verarbeiten?"
-
-#: src/backend/settings.php:290 src/backend/settings.php:310
-msgid ""
-"This setting affects products individually and takes effect when you "
-"recalculate the regular price for the product."
-msgstr ""
-"Diese Einstellung betrifft jedes Produkt individuell und tritt in Kraft wenn "
-"du den \"Regulären Preis\" für das Produkt neu eingibst."
-
-#: src/backend/settings.php:293
-msgid "Description Behavior"
-msgstr "Artikelbeschreibungs-Verhalten"
-
-#: src/backend/settings.php:299
-msgid "Do NOT add pricing information to the description field."
-msgstr "Keine Preisinformation im Artikel-Beschreibungsfeld hinzufügen."
-
-#: src/backend/settings.php:300
-msgid "Add pricing information to the end of the existing description."
-msgstr ""
-"Zusätzliche Preisinformation an das Ende der bestehenden Artikelbeschreibung "
-"hinzufügen."
-
-#: src/backend/settings.php:301
-msgid "Overwrite the variation description with price information."
-msgstr ""
-"Berschreibe die Variations-Artikelbeschreibung mit der Preisinformation"
-
-#: src/backend/settings.php:309
-msgid "Do NOT show the base price in the product description."
-msgstr "Grundpreis NICHT in der Produktbeschreibung anzeigen"
-
-#: src/backend/settings.php:313
-msgid "Hide Base Price"
-msgstr "Grundpreis verstecken"
-
-#: src/backend/settings.php:339
-msgid ""
-"Some stores want prices with specific numbers below the decimal place (such "
-"as xx.00 or xx.95). Rounding percentage markups will keep the value below "
-"the decimal."
-msgstr ""
-"Manche Shops wollen immer bestimmte Preis-Endungen (wie xx,00 oder xx,95) "
-"anzeigen. Diese Option rundet die Preisaufschläge entsprechend ab."
-
-#: src/backend/settings.php:344
-msgid "Round Markup"
-msgstr "Gerundete Auf/Abschläge"
-
-#: src/backend/settings.php:370
-msgid ""
-"Use Cautiously: WooCommerce limits the number of linked variations you can "
-"create at a time to 50 to prevent server overload.  To create more, you can "
-"run 'Create variations from all attributes' again, but this creates "
-"variations out of order.  If you will have more than 50 variations of a "
-"product AND the order in the admin console is important, then set this "
-"number higher."
-msgstr ""
-"Achtung! WooCommerce limitiert die Anzahl der gleichzeitig zu erstellenden "
-"Varianten auf 50 um einen Overload zu vermeiden. Um diese Zahl hC6her zu "
-"setzen verwende diese Option. Wir empfehlen nicht mehr als 1000 Variationen "
-"in einem Durchgang. "
-
-#: src/backend/settings.php:375
-msgid "Variation Max"
-msgstr "Variationsmaxium"
-
-#: src/backend/settings.php:420
-msgid "Please select an option for the options drop-down."
-msgstr "Bitte eine Option für das Drop-Down-Verhalten auswählen"
-
-#: src/backend/settings.php:435
-msgid "Please select an option for the description behavior."
-msgstr "Bitte eine Option für das Artikelbeschreibungs-Verhalten auswählen"
-
-#: src/backend/settings.php:452
-msgid ""
-"Variation Max must be a number, 1 or higher.</br>Previous option retained."
-msgstr ""
-"Variationsmaximum muss eine Nummer größer gleich 1 sein.</br> Vorherige "
-"Einstellung wiederhergestellt."
-
-#. Name of the plugin
-msgid "Markup by Attribute for WooCommerce"
-msgstr "Markup by Attribute für WooCommerce"
-
-#. Description of the plugin
-msgid ""
-"This plugin adds product variation markup by attribute to WooCommerce -- the "
-"ability to add a markup (or markdown) to an attribute term and have that "
-"change the regular and sale price of the associated product variations."
-msgstr ""
-"Dieses Plugin fügt Produkt Varianten das \"markup by attribute to "
-"WooCommerce\" Feld hinzu. Es ermöglicht Preis Auf oder Abschläge über "
-"Produkt Variationen zu steuern. "
-
-#. URI of the plugin
-msgid "https://wordpress.org/plugins/markup-by-attribute-for-woocommerce/"
-msgstr "https://wordpress.org/plugins/markup-by-attribute-for-woocommerce/"
-
-#. Author of the plugin
-msgid "MarkTomlinson"
-msgstr "MarkTomlinson"
+"Sie können jederzeit mehr erstellen, indem Sie 'Varianten generieren' erneut "
+"ausführen."

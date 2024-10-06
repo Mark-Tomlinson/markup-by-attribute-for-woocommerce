@@ -1,4 +1,9 @@
-/* admin-style.css */
+/* admin-style.css
+ *
+ * Need to eliminate the [Add price] button to prevent
+ * conflicts with the [Set regular prices] bulk function.
+ *
+ */
 .woocommerce-add-variation-price-container {
-    display: none !important;
+	display: none !important;
 }

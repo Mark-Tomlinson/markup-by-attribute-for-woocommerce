@@ -1,42 +1,31 @@
 <?php
-/**
- * Autoloads Markup-by-Attribute classes using WordPress convention.
- */
-class MT2MBA_AUTOLOADER
-{
-    /**
-     * Registers class-mt2mba-autoloader as an SPL autoloader.
-     * @param boolean $prepend
-     */
-    public static function register($prepend = FALSE) {
-        if (version_compare(phpversion(), '5.3.0', '>=')) {
-            spl_autoload_register(array(new self, 'autoload'), TRUE, $prepend);
-        } else {
-            spl_autoload_register(array(new self, 'autoload'));
-        }
-    }
+namespace mt2Tech\MarkupByAttribute;
 
-    /**
-     * Handles autoloading of Markup-by-Attribute classes.
-     * @param string $class
-     */
-    public static function autoload($class) {
-        if (0 !== strpos($class, MT2MBA_PLUGIN_PREFIX)) {
-            // Not Markup by Attribute, leave
-            return;
-        } else {
-            // Markup by Attribute class, get file name
-            if (is_file($file = dirname(__FILE__) . str_replace('_', '/', strtolower(str_ireplace(MT2MBA_PLUGIN_PREFIX, '/src', $class)) . '.php'))) {
-                // Valid class name, load
-                require_once $file;
-                $class::init();
-            } else {
-                $error_msg = MT2MBA_PLUGIN_NAME . " can not find " . $class . " at " . $file . ".</br>" .
-                    "To correct, you will have to use FTP or your hosting administration panel to remove " . dirname(__FILE__) . ".";
-                exit($error_msg);
-            }
-        }
-        return;
-    }
+class Autoloader {
+	public static function register($prepend = false) {
+		spl_autoload_register([new self, 'autoload'], true, $prepend);
+	}
+
+	public static function autoload($class) {
+		// Base directory for your plugin classes
+		$base_dir = dirname(__FILE__) . '/src/';
+
+		// Check if the class uses the namespace prefix
+		$len = strlen(__NAMESPACE__);
+		if (strncmp(__NAMESPACE__, $class, $len) !== 0) {
+			return; // Not our class, let other autoloaders handle it
+		}
+
+		// Get the relative class name
+		$relative_class = substr($class, $len);
+
+		// Replace namespace separators with directory separators in the relative class name
+		// and convert to lowercase for file system compatibility
+		$file = $base_dir . str_replace('\\', '/', strtolower($relative_class)) . '.php';
+
+		// If the file exists, require it
+		if (file_exists($file)) {
+			require $file;
+		}
+	}
 }
-?>

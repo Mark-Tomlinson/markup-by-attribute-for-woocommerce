@@ -26,7 +26,7 @@ abstract class PriceMarkupHandler {
 	 * @param	float	$base_price		The base price of the product
 	 */
 	public function __construct($bulk_action, $product_id, $base_price) {
-
+		
 		// Create 'regular_price'	string	in one place
 		if (!defined('REGULAR_PRICE')) {
 			define('REGULAR_PRICE', 'regular_price');
@@ -438,8 +438,142 @@ class Product {
 			define("WC_MAX_LINKED_VARIATIONS", MT2MBA_MAX_VARIATIONS);
 		}
 
+		// Add action to enqueue recalc markup JS
+		add_action('admin_enqueue_scripts', [$this, 'enqueue_recalc_markup_js']);
+    
+		// Add AJAX handlers for recalculate markup
+		add_action('wp_ajax_mt2mba_recalculate_markup', [$this, 'handle_recalculate_markup']);
+
 		// Hook mt2mba markup code into bulk actions
 		add_action("woocommerce_bulk_edit_variations", [$this, "mt2mba_apply_markup_to_price"], 10, 4);
+	}
+
+	/**
+	 * Enqueue the recalculate markup JavaScript file and required dependencies.
+	 * Sets up all necessary localization data including security nonces for both
+	 * our custom markup recalculation and WooCommerce's variation loading.
+	 *
+	 * @param string $hook The current admin page hook
+	 */
+	public function enqueue_recalc_markup_js($hook) {
+		// Only load on product edit page
+		if (!in_array($hook, ['post.php', 'post-new.php'])) {
+			return;
+		}
+		
+		// Only load for product post type
+		if (get_post_type() !== 'product') {
+			return;
+		}
+		
+		// Get the product
+		$product = wc_get_product(get_the_ID());
+		
+		// Only load for variable products
+		if ($product && $product->is_type('variable')) {
+			wp_enqueue_script(
+				'mt2mba-recalc-markup',
+				plugins_url('js/jq-mt2mba-recalc-markups.js', dirname(__FILE__)),
+				['jquery', 'wc-admin-variation-meta-boxes'],
+				MT2MBA_VERSION,
+				true
+			);
+
+			// Localize the script with all required data
+			wp_localize_script(
+				'mt2mba-recalc-markup',
+				'mt2mbaLocal',
+				array(
+					'buttonText' => __('Recalculate markup', 'markup-by-attribute'),
+					'ajaxUrl' => admin_url('admin-ajax.php'),
+					'productId' => get_the_ID(),
+					// Security nonces for both operations
+					'security' => wp_create_nonce('mt2mba_recalc_markup'),
+					'variationsNonce' => wp_create_nonce('load-variations'),
+					'i18n' => array(
+						'errorRecalculating' => __('Error recalculating markups', 'markup-by-attribute'),
+						'failedRecalculating' => __('Failed to recalculate markups. Please try again.', 'markup-by-attribute')
+					)
+				)
+			);
+		}
+	}
+
+	/**
+	 * Handle the AJAX request to recalculate markup
+	 */
+	public function handle_recalculate_markup() {
+		// Verify nonce first
+		if (!check_ajax_referer('mt2mba_recalc_markup', 'security', false)) {
+			wp_send_json_error(['message' => __('Security check failed', 'markup-by-attribute')]);
+			return;
+		}
+		
+		if (!current_user_can('edit_products')) {
+			wp_send_json_error(['message' => __('Permission denied', 'markup-by-attribute')]);
+			return;
+		}
+
+		$product_id = isset($_POST['product_id']) ? absint($_POST['product_id']) : 0;
+		if (!$product_id) {
+			wp_send_json_error(['message' => 'Invalid product ID']);
+			return;
+		}
+		
+		try {
+			$product = wc_get_product($product_id);
+			if (!$product || $product->get_type() !== 'variable') {
+				throw new Exception('Invalid product type');
+			}
+			
+			// Get the base regular price
+			$base_price = get_post_meta($product_id, 'mt2mba_base_regular_price', true);
+			if (!$base_price) {
+				throw new Exception('No base price found');
+			}
+			
+			// Get all variations
+			$variations = $product->get_children();
+			
+			// Create data array for PriceSetHandler
+			$data = ['value' => $base_price];
+			
+			// Use existing PriceSetHandler to recalculate prices
+			$handler = new PriceSetHandler('variable_regular_price', $data, $product_id, $variations);
+			
+			// Make sure we complete all database operations
+			global $wpdb;
+			$wpdb->query('START TRANSACTION');
+			
+			try {
+				$handler->applyMarkup('variable_regular_price', $data, $product_id, $variations);
+				
+				// Force all pending database operations to complete
+				$wpdb->query('COMMIT');
+				
+				// Clear all caches
+				wp_cache_flush();
+				clean_post_cache($product_id);
+				foreach ($variations as $variation_id) {
+					clean_post_cache($variation_id);
+				}
+				
+				wp_send_json_success([
+					'completed' => true,
+					'product_id' => $product_id,
+					'variations_count' => count($variations)
+				]);
+				
+			} catch (Exception $e) {
+				$wpdb->query('ROLLBACK');
+				throw $e;
+			}
+		} catch (Exception $e) {
+			wp_send_json_error([
+				'message' => $e->getMessage(),
+				'product_id' => $product_id
+			]);
+		}
 	}
 
 	/**
@@ -450,7 +584,6 @@ class Product {
 	 * @param	array	$variations		List of variation IDs for the variable product.
 	 */
 	public function mt2mba_apply_markup_to_price($bulk_action, $data, $product_id, $variations) {
-
 		// Determine which class should extend PriceMarkupHandler based on the bulk_action
 		if ($bulk_action == "variable_regular_price" || $bulk_action == "variable_sale_price") {
 			// Set either the regular price or the sale price
@@ -470,8 +603,7 @@ class Product {
 		}
 
 		// Invoke the applyMarkup() function from the class that was decided above
-		$handler->applyMarkup((string) $bulk_action, (array) $data, (string) $product_id, (array) $variations
-		);
+		$handler->applyMarkup((string) $bulk_action, (array) $data, (string) $product_id, (array) $variations);
 	}
 }
 ?>

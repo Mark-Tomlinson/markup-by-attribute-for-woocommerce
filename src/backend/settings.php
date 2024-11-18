@@ -61,6 +61,11 @@ class Settings extends WC_Settings_API {
 	 */
 	public function get_settings($settings, $current_section) {
 		if ('mt2mba' === $current_section) {
+			// Repeating strings
+			$immediately = __('This setting affects all products and takes effect immediately.', 'markup-by-attribute');
+			$individually = __('This setting affects products individually and takes effect when you recalculate prices or reapply markups.', 'markup-by-attribute');
+
+			// Create settings array
 			$mt2mba_settings = array();
 
 			// Add title to the settings page
@@ -94,7 +99,7 @@ class Settings extends WC_Settings_API {
 			$mt2mba_settings[] = array(
 				'name'		=> __('Option Drop-down Behavior', 'markup-by-attribute'),
 				'desc'		=> __('Should Markup-by-Attribute add the markup to the options drop-down box, and should the currency symbol be displayed?', 'markup-by-attribute') . '<br/>' .
-					'<em>' . __('This setting affects all products and takes effect immediately.', 'markup-by-attribute') . '</em>',
+					'<em>' . $immediately . '</em>',
 				'id'		=> 'mt2mba_dropdown_behavior',
 				'type'		=> 'radio',
 				'options'	=> array(
@@ -108,12 +113,11 @@ class Settings extends WC_Settings_API {
 			/** -- Variation Description Behavior --
 			 *	How should Markup-by-Attribute handle adding price markup information to the product variation
 			 *	description?
-			 *	This setting affects all products and takes effect immediately.
 			 */
 			$mt2mba_settings[] = array(
 				'name'		=> __('Variation Description Behavior', 'markup-by-attribute'),
 				'desc'		=> __('How should Markup-by-Attribute handle adding price markup information to the product variation description?', 'markup-by-attribute') . '<br/>' .
-					'<em>' . __('This setting affects products individually and takes effect when you recalculate the regular price for the product.', 'markup-by-attribute') . '</em>',
+					'<em>' . $individually . '</em>',
 				'id'		=> 'mt2mba_desc_behavior',
 				'type'		=> 'radio',
 				'options'	=> array(
@@ -132,7 +136,7 @@ class Settings extends WC_Settings_API {
 			$mt2mba_settings[] = array(
 				'name'		=> __('Hide Base Price', 'markup-by-attribute'),
 				'desc'		=> __('Do NOT show the base price in the product description.', 'markup-by-attribute') . ' <br/>' .
-					'<em>' . __('This setting affects products individually and takes effect when you recalculate the regular price for the product.', 'markup-by-attribute') . '</em>',
+					'<em>' . $individually . '</em>',
 				'id'		=> 'mt2mba_hide_base_price',
 				'type'		=> 'checkbox',
 				'default'	=> $this->hide_base_price
@@ -160,9 +164,8 @@ class Settings extends WC_Settings_API {
 			$mt2mba_settings[] = array(
 				'name'		=> __('Sale Price Markup', 'markup-by-attribute'),
 				'desc'		=> __('Should Markup-by-Attribute calculate percentage markups on sale prices?', 'markup-by-attribute') . ' <br/>' .
-					__('A 10% markup on a $30 regular price yields a $3 markup. If you set a $20 sale price, setting this option ON yields a $2 markup, ' .
-					'setting it OFF leaves the markup at $3.', 'markup-by-attribute') . ' <br/>' . '<em>' .
-					__('This setting affects products individually and takes effect when you recalculate the sale price for the product.', 'markup-by-attribute') . '</em>',
+					__('A 10% markup on a $30 regular price yields a $3 markup. If you set a $20 sale price, setting this option ON yields a $2 markup, setting it OFF leaves the markup at $3.',
+					'markup-by-attribute') . ' <br/>' . '<em>' . $individually . '</em>',
 				'id'		=> 'mt2mba_sale_price_markup',
 				'type'		=> 'checkbox',
 				'default'	=> $this->sale_price_markup
@@ -179,8 +182,7 @@ class Settings extends WC_Settings_API {
 				'name'		=> __('Round Markup', 'markup-by-attribute'),
 				'desc'		=> __('Round percentage markups to keep the value below the decimal intact?', 'markup-by-attribute') . '<br/>' .
 					__('Some stores want prices with specific numbers below the decimal place (such as xx.00 or xx.95). Rounding percentage markups will keep the value below the decimal intact.',
-					'markup-by-attribute') . ' <br/>' . '<em>' .
-					__('This setting affects products individually and takes effect when you recalculate the regular price for the product.', 'markup-by-attribute') . '</em>',
+					'markup-by-attribute') . ' <br/>' . '<em>' . $individually . '</em>',
 				'id'		=> 'mt2mba_round_markup',
 				'type'		=> 'checkbox',
 				'default'	=> $this->round_markup

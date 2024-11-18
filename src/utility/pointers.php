@@ -98,9 +98,10 @@ class Pointers {
 		$pointer_content = sprintf (
 			'<h3><em>%s</em></h3><p>%s</p>',
 			MT2MBA_PLUGIN_NAME,
-			__('Markups can be fixed values such as <code>5</code> or <code>5.95</code>. Or they can be percentages such as <code>5%</code> or <code>1.23%</code>. Markups can start with a plus or minus sign such as <code>+5.95</code> or <code>-1.23%</code>.<br/>The markup will be applied during the product variation <em>Set regular price</em> and <em>Set sale price</em> bulk edit action.',
+			__('Markups can be fixed values such as <code>5</code> or <code>5.95</code>, or percentages such as <code>5%</code> or <code>1.23%</code>. Use plus or minus signs (like <code>+5.95</code> or <code>-1.23%</code>) for increases or decreases.<br/>Markups are applied when setting prices or reapplying markups to variations.',
 			'markup-by-attribute')
 		);
+		
 		$pointers = array (
 			'mt2mba-term_add_markup' => array (
 				'target' => '#term_add_markup',

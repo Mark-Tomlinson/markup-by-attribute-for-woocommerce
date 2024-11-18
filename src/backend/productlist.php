@@ -34,12 +34,126 @@ class ProductList {
 	private function __construct() {
 		// Add filter to modify product columns
 		add_filter('manage_edit-product_columns', array($this, 'modify_product_columns'), 20);
+
 		// Add action to populate attribute column
 		add_action('manage_product_posts_custom_column', array($this, 'populate_attributes_column'), 10, 2);
-		// Add action to include custom CSS
-		add_action('admin_head', array($this, 'add_custom_styling'));
+
 		// Add action to filter products by attribute
 		add_action('pre_get_posts', array($this, 'filter_products_by_attribute'));
+
+		// Add action to enqueue our JavaScript
+		add_action('admin_enqueue_scripts', array($this, 'enqueue_scripts'));
+
+		// Add bulk action
+		add_filter('bulk_actions-edit-product', array($this, 'register_bulk_action'));
+		add_filter('handle_bulk_actions-edit-product', array($this, 'handle_bulk_action'), 10, 3);
+
+		// Add action to include custom CSS
+		add_action('admin_enqueue_scripts', array($this, 'enqueue_styles'));
+	}
+
+	/**
+	 * Enqueue scripts needed for product list markup handling
+	 */
+	public function enqueue_scripts($hook) {
+		if ($hook !== 'edit.php') {
+			return;
+		}
+		
+		if (!isset($_GET['post_type']) || $_GET['post_type'] !== 'product') {
+			return;
+		}
+	
+		wp_enqueue_script(
+			'mt2mba-product-list-markup',
+			plugins_url('js/jq-mt2mba-reapply-markups-productlist.js', dirname(__FILE__)),
+			array('jquery'),
+			MT2MBA_VERSION,
+			true
+		);
+	
+		wp_localize_script(
+			'mt2mba-product-list-markup', 
+			'mt2mbaListLocal',
+			array(
+				'security' => wp_create_nonce('mt2mba_reapply_markup'),
+				'i18n' => array(
+					'processing' => __('Processing product %1$s of %2$s...', 'markup-by-attribute'),
+					'processed' => _n(
+						'%s product processed successfully.',
+						'%s products processed successfully.',
+						1,
+						'markup-by-attribute'
+					),
+					'processedPlural' => _n(
+						'%s product processed successfully.',
+						'%s products processed successfully.',
+						2,
+						'markup-by-attribute'
+					)
+				)
+			)
+		);
+	}
+	
+	/**
+	 * Enqueue styles for product list handling
+	 */
+	public function enqueue_styles($hook) {
+		if ($hook !== 'edit.php') {
+			return;
+		}
+		
+		if (!isset($_GET['post_type']) || $_GET['post_type'] !== 'product') {
+			return;
+		}
+
+		wp_enqueue_style(
+			'mt2mba-admin-styles',
+			plugins_url('css/admin-style.css', dirname(__FILE__)),
+			array(),
+			MT2MBA_VERSION
+		);
+	}
+
+	/**
+	 * Register the bulk action
+	 */
+	public function register_bulk_action($bulk_actions) {
+		$new_actions = array();
+		
+		// Rebuild the array in our desired order
+		foreach ($bulk_actions as $key => $action) {
+			$new_actions[$key] = $action;
+			
+			// Add our action after 'Edit'
+			if ($key === 'edit') {
+				$new_actions['reapply_markups'] = __('Reapply Markups', 'markup-by-attribute');
+			}
+		}
+		return $new_actions;
+	}
+
+	/**
+	 * Handle the bulk action
+	 */
+	public function handle_bulk_action($redirect_to, $doaction, $post_ids) {
+		if ($doaction !== 'reapply_markups') {
+			return $redirect_to;
+		}
+
+		// Filter to only get variable products
+		$variable_products = array_filter($post_ids, function($product_id) {
+			$product = wc_get_product($product_id);
+			return $product && $product->is_type('variable');
+		});
+
+		if (!empty($variable_products)) {
+			// Add products to process to the redirect URL
+			$redirect_to = add_query_arg('reapply_markups_ids', implode(',', $variable_products), $redirect_to);
+		}
+
+		return $redirect_to;
 	}
 
 	/**
@@ -67,6 +181,7 @@ class ProductList {
 		}
 		return $new_columns;
 	}
+
 	/**
 	 * Populate the custom attributes column.
 	 *
@@ -77,11 +192,10 @@ class ProductList {
 		if ('product_attributes' === $column) {
 			$product = wc_get_product($post_id);
 			$attributes = $product->get_attributes();
-
+	
 			if (!empty($attributes)) {
 				$output = array();
 				foreach ($attributes as $attribute) {
-					// Get the name of the attribute
 					if ($attribute->is_taxonomy()) {
 						$attribute_name = wc_attribute_label($attribute->get_name());
 						$taxonomy = $attribute->get_name();
@@ -89,37 +203,30 @@ class ProductList {
 						$attribute_name = $attribute->get_name();
 						$taxonomy = sanitize_title($attribute_name);
 					}
-					// Create a filter URL for each attribute
+	
 					$filter_url = add_query_arg(array(
 						'filter_product_attribute' => $taxonomy,
 						'post_type' => 'product'
 					), admin_url('edit.php'));
-					// Create a clickable link for each attribute
+	
 					$output[] = '<a href="' . esc_url($filter_url) . '">' . esc_html($attribute_name) . '</a>';
 				}
 				echo implode(', ', $output);
+	
+				// Only show reapply link for variable products with attributes
+				if ($product->is_type('variable')) {
+					// Use js-mt2mba-reapply-markup class as a JavaScript hook (prefixed to avoid conflicts)
+					echo '<br/><a href="#" class="js-mt2mba-reapply-markup" ' .
+						'data-product-id="' . esc_attr($post_id) . '" ' .
+						'title="' . esc_attr__('Reapply Markups', 'markup-by-attribute') . '" ' .
+						'style="color: #2271b1; margin: 2px 0 0 2px; display: inline-block;">' .
+						'<span class="dashicons dashicons-update" style="font-size: 20px; width: 22px; height: 22px;"></span>' .
+						__('Reprice', 'markup-by-attribute') . '</a>';
+				}
 			} else {
 				echo '<span class="na">–</span>';
 			}
 		}
-	}
-
-	/**
-	 * Add custom CSS for styling the product list table.
-	 */
-	public function add_custom_styling() {
-		echo '<style>
-			.wp-list-table .column-product_attributes {
-				width: 11%;
-			}
-			.wp-list-table {
-				table-layout: fixed;
-			}
-			.wp-list-table td {
-				overflow: hidden;
-				text-overflow: ellipsis;
-			}
-		</style>';
 	}
 
 	/**

@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Markup by Attribute for WooCommerce - MT² Tech\n"
 "Report-Msgid-Bugs-To: markupbyattribute@mail.com\n"
 "POT-Creation-Date: 2020-04-17 00:43+0000\n"
-"PO-Revision-Date: 2024-11-18 03:49+0000\n"
+"PO-Revision-Date: 2024-11-20 05:50+0000\n"
 "Last-Translator: \n"
 "Language-Team: Swedish\n"
 "Language: sv_SE\n"
@@ -12,9 +12,9 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Loco https://localise.biz/\n"
-"X-Loco-Version: 2.6.13; wp-6.7"
+"X-Loco-Version: 2.6.14; wp-6.7"
 
-#: src/backend/productlist.php:82 src/backend/productlist.php:88
+#: src/backend/productlist.php:81 src/backend/productlist.php:87
 #, php-format
 msgid "%s product processed successfully."
 msgid_plural "%s products processed successfully."
@@ -65,7 +65,7 @@ msgstr ""
 msgid "Adds product variation markup by attribute to WooCommerce."
 msgstr "Lägger till produktvariationspåslag efter attribut i WooCommerce."
 
-#: src/backend/productlist.php:175 src/backend/productlist.php:180
+#: src/backend/productlist.php:174 src/backend/productlist.php:179
 msgid "Attributes"
 msgstr "Attribut"
 
@@ -122,7 +122,8 @@ msgstr ""
 msgid "Instructions"
 msgstr "Instruktioner"
 
-#: src/backend/product.php:540 src/backend/product.php:545
+#: src/backend/product.php:539
+#| msgid "Invalid product"
 msgid "Invalid product ID"
 msgstr "Ogiltigt produkt-ID"
 
@@ -208,20 +209,20 @@ msgstr "Skriv över variationsbeskrivningen med prisinformation."
 msgid "Permission denied"
 msgstr "Åtkomst nekad"
 
-#: src/backend/productlist.php:81
+#: src/backend/productlist.php:80
 #, php-format
-msgid "Processing product %1$s of %2$s..."
-msgstr "Bearbetar produkt %1$s av %2$s..."
+msgid "Please wait; processing product %1$s of %2$s..."
+msgstr "Vänligen vänta; bearbetar produkt %1$s av %2$s..."
 
 #: markup-by-attribute-for-woocommerce.php:104
 msgid "Product price"
 msgstr "Produktpris"
 
-#: src/backend/productlist.php:131 src/backend/productlist.php:221
+#: src/backend/productlist.php:130 src/backend/productlist.php:259
 msgid "Reapply Markups"
 msgstr "Återanvänd påslag"
 
-#: src/backend/product.php:512
+#: src/backend/product.php:509
 msgid "Reapply markups to prices"
 msgstr "Återanvänd påslag på priser"
 
@@ -235,9 +236,14 @@ msgstr ""
 "rullgardinsmenyn skrivs över av ett annat tillägg eller tema och påslaget "
 "inte längre är synligt."
 
-#: src/backend/productlist.php:224
+#: src/backend/productlist.php:261
 msgid "Reprice"
 msgstr "Ompris"
+
+#: src/backend/product.php:510
+#, php-format
+msgid "Reprice variations at %s, plus or minus the markups?"
+msgstr "Omprisätta variationer till %s, plus eller minus påslagen?"
 
 #: src/backend/settings.php:182
 msgid "Round Markup"

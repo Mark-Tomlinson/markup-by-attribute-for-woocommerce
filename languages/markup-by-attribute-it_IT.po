@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Markup by Attribute for WooCommerce - MT² Tech\n"
 "Report-Msgid-Bugs-To: markupbyattribute@mail.com\n"
 "POT-Creation-Date: 2020-04-17 00:43+0000\n"
-"PO-Revision-Date: 2024-11-18 03:48+0000\n"
+"PO-Revision-Date: 2024-11-20 05:48+0000\n"
 "Last-Translator: \n"
 "Language-Team: Italian\n"
 "Language: it_IT\n"
@@ -12,9 +12,9 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Loco https://localise.biz/\n"
-"X-Loco-Version: 2.6.13; wp-6.7"
+"X-Loco-Version: 2.6.14; wp-6.7"
 
-#: src/backend/productlist.php:82 src/backend/productlist.php:88
+#: src/backend/productlist.php:81 src/backend/productlist.php:87
 #, php-format
 msgid "%s product processed successfully."
 msgid_plural "%s products processed successfully."
@@ -68,7 +68,7 @@ msgid "Adds product variation markup by attribute to WooCommerce."
 msgstr ""
 "Aggiunge ricarichi alle variazioni di prodotto per attributo in WooCommerce."
 
-#: src/backend/productlist.php:175 src/backend/productlist.php:180
+#: src/backend/productlist.php:174 src/backend/productlist.php:179
 msgid "Attributes"
 msgstr "Attributi"
 
@@ -125,7 +125,8 @@ msgstr ""
 msgid "Instructions"
 msgstr "Istruzioni"
 
-#: src/backend/product.php:540 src/backend/product.php:545
+#: src/backend/product.php:539
+#| msgid "Invalid product"
 msgid "Invalid product ID"
 msgstr "ID prodotto non valido"
 
@@ -212,20 +213,20 @@ msgstr ""
 msgid "Permission denied"
 msgstr "Permesso negato"
 
-#: src/backend/productlist.php:81
+#: src/backend/productlist.php:80
 #, php-format
-msgid "Processing product %1$s of %2$s..."
-msgstr "Elaborazione prodotto %1$s di %2$s..."
+msgid "Please wait; processing product %1$s of %2$s..."
+msgstr "Attendere prego; elaborazione prodotto %1$s di %2$s..."
 
 #: markup-by-attribute-for-woocommerce.php:104
 msgid "Product price"
 msgstr "Prezzo del prodotto"
 
-#: src/backend/productlist.php:131 src/backend/productlist.php:221
+#: src/backend/productlist.php:130 src/backend/productlist.php:259
 msgid "Reapply Markups"
 msgstr "Riapplica ricarichi"
 
-#: src/backend/product.php:512
+#: src/backend/product.php:509
 msgid "Reapply markups to prices"
 msgstr "Riapplica ricarichi ai prezzi"
 
@@ -239,9 +240,14 @@ msgstr ""
 "casella a discesa delle opzioni viene sovrascritta da un altro plugin o tema "
 "e il markup non è più visibile."
 
-#: src/backend/productlist.php:224
+#: src/backend/productlist.php:261
 msgid "Reprice"
 msgstr "Riprezzo"
+
+#: src/backend/product.php:510
+#, php-format
+msgid "Reprice variations at %s, plus or minus the markups?"
+msgstr "Ricalcolare le variazioni a %s, più o meno i ricarichi?"
 
 #: src/backend/settings.php:182
 msgid "Round Markup"

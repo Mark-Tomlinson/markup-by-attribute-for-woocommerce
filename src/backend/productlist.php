@@ -59,7 +59,6 @@ class ProductList {
 		if ($hook !== 'edit.php') {
 			return;
 		}
-		
 		if (!isset($_GET['post_type']) || $_GET['post_type'] !== 'product') {
 			return;
 		}
@@ -78,7 +77,7 @@ class ProductList {
 			array(
 				'security' => wp_create_nonce('mt2mba_reapply_markup'),
 				'i18n' => array(
-					'processing' => __('Processing product %1$s of %2$s...', 'markup-by-attribute'),
+					'processing' => __('Please wait; processing product %1$s of %2$s...', 'markup-by-attribute'),
 					'processed' => _n(
 						'%s product processed successfully.',
 						'%s products processed successfully.',
@@ -181,46 +180,84 @@ class ProductList {
 		}
 		return $new_columns;
 	}
+	/**
+	 * Static cache for term markups to avoid repeated database queries
+	 */
+	private static $markup_cache = [];
+
+	/**
+	 * Check if an attribute has any markup terms
+	 * 
+	 * @param string $taxonomy The attribute taxonomy
+	 * @return bool True if any terms have markup
+	 */
+	private function attribute_has_markup($taxonomy) {
+		// Check cache first
+		if (isset(self::$markup_cache[$taxonomy])) {
+			return self::$markup_cache[$taxonomy];
+		}
+
+		$terms = get_terms([
+			'taxonomy' => $taxonomy,
+			'hide_empty' => false,
+		]);
+
+		foreach ($terms as $term) {
+			$markup = get_term_meta($term->term_id, 'mt2mba_markup', true);
+			if (!empty($markup)) {
+				self::$markup_cache[$taxonomy] = true;
+				return true;
+			}
+		}
+
+		self::$markup_cache[$taxonomy] = false;
+		return false;
+	}
 
 	/**
 	 * Populate the custom attributes column.
 	 *
-	 * @param	string	$column		Name of the column to display.
-	 * @param	int		$post_id	ID of the current product.
+	 * @param string $column Name of the column to display.
+	 * @param int $post_id ID of the current product.
 	 */
 	public function populate_attributes_column($column, $post_id) {
 		if ('product_attributes' === $column) {
 			$product = wc_get_product($post_id);
 			$attributes = $product->get_attributes();
-	
+
 			if (!empty($attributes)) {
 				$output = array();
+				$has_markup = false;
+
 				foreach ($attributes as $attribute) {
 					if ($attribute->is_taxonomy()) {
 						$attribute_name = wc_attribute_label($attribute->get_name());
 						$taxonomy = $attribute->get_name();
+						
+						// Check if this attribute has any markup terms
+						if ($this->attribute_has_markup($taxonomy)) {
+							$has_markup = true;
+						}
 					} else {
 						$attribute_name = $attribute->get_name();
 						$taxonomy = sanitize_title($attribute_name);
 					}
-	
+
 					$filter_url = add_query_arg(array(
 						'filter_product_attribute' => $taxonomy,
 						'post_type' => 'product'
 					), admin_url('edit.php'));
-	
+
 					$output[] = '<a href="' . esc_url($filter_url) . '">' . esc_html($attribute_name) . '</a>';
 				}
 				echo implode(', ', $output);
-	
-				// Only show reapply link for variable products with attributes
-				if ($product->is_type('variable')) {
-					// Use js-mt2mba-reapply-markup class as a JavaScript hook (prefixed to avoid conflicts)
+
+				// Only show reapply link for variable products with markup-enabled attributes
+				if ($product->is_type('variable') && $has_markup) {
 					echo '<br/><a href="#" class="js-mt2mba-reapply-markup" ' .
 						'data-product-id="' . esc_attr($post_id) . '" ' .
-						'title="' . esc_attr__('Reapply Markups', 'markup-by-attribute') . '" ' .
-						'style="color: #2271b1; margin: 2px 0 0 2px; display: inline-block;">' .
-						'<span class="dashicons dashicons-update" style="font-size: 20px; width: 22px; height: 22px;"></span>' .
+						'title="' . esc_attr__('Reapply Markups', 'markup-by-attribute') . '">' .
+						'<span class="dashicons dashicons-update"></span>' .
 						__('Reprice', 'markup-by-attribute') . '</a>';
 				}
 			} else {

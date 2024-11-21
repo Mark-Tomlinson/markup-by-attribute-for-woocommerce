@@ -3,69 +3,81 @@
 /* Need to eliminate the [Add price] button to prevent
  * conflicts with the [Set regular prices] bulk function. */
  .woocommerce-add-variation-price-container {
-    display: none !important;
+	display: none !important;
 }
 
 /* Product list table layout */
 .wp-list-table {
-    table-layout: fixed;
+	table-layout: fixed;
 }
 
 .wp-list-table .column-product_attributes {
-    width: 11%;
+	width: 11%;
 }
 
 .wp-list-table td {
-    overflow: hidden;
-    text-overflow: ellipsis;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 /* Bulk reapply markup progress notice styles */
 .mt2mba-bulk-progress {
-    margin: 5px 0 15px;
+	margin: 5px 0 15px;
 }
 
 .mt2mba-bulk-progress .spinner {
-    float: none;
-    margin: 0 10px;
+	float: none;
+	margin: 0 10px;
 }
 
 /* Product list markup icon styles*/
 .js-mt2mba-reapply-markup {
-    color: #2271b1;
-    margin: 2px 0 0 4px;
-    display: inline-block;
+	color: #2271b1;
+	margin: 2px 0 0 4px;
+	display: inline-block;
 }
  
 .js-mt2mba-reapply-markup .dashicons {
-    font-size: 20px;
-    width: 22px;
-    height: 22px;
+	font-size: 20px;
+	width: 22px;
+	height: 22px;
 }
 
 .js-mt2mba-reapply-markup.processing {
-    opacity: 0.5;
+	opacity: 0.5;
 }
 
 .js-mt2mba-reapply-markup.error {
-    color: red;
+	color: red;
 }
 
 /* Remove focus outline from reprice link*/
 .js-mt2mba-reapply-markup:focus {
-    outline: none;
-    box-shadow: none;
+	outline: none;
+	box-shadow: none;
 }
 
 .js-mt2mba-reapply-markup:hover {
-    color: #135e96;  /* WP admin blue hover color*/
-    text-decoration: none;
+	color: #135e96;  /* WP admin blue hover color*/
+	text-decoration: none;
 }
 
 @keyframes spin {
-    100% { transform: rotate(360deg); }
+	100% { transform: rotate(360deg); }
 }
 
 .dashicons-update-spin {
-    animation: spin 1.5s linear infinite;
+	animation: spin 1.5s linear infinite;
+}
+
+/* Overlay styles */
+.mt2mba-processing-overlay {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba(224, 224, 224, 0.5);
+	z-index: 1000;
+	cursor: wait;
 }

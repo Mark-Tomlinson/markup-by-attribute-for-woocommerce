@@ -9,16 +9,16 @@ Contributors:			MarkTomlinson
 Donate link:			https://www.paypal.me/MT2Dev/5
 License:				GPLv3
 License URI:			https://www.gnu.org/licenses/gpl-3.0.html
-Version:				4.0
-Build:					202445.01
+Version:				4.0.2
+Build:					202447.05
 Stable tag:				trunk
 Tested up to:			6.7
 Requires at least:		4.6
 PHP tested up to:		8.3.13
 Requires PHP:			5.6
-WC tested up to:		9.4.1
+WC tested up to:		9.4.2
 WC requires at least:	3.0
-MySQL tested up to:		8.0.39
+MySQL tested up to:		8.0.40
 
 This plugin adds product variation markup by attribute to WooCommerce and adjusts product variation regular and sale prices accordingly.
 
@@ -143,18 +143,20 @@ If you use Markup-by-Attribute and want to see me continuing support for it, I e
 
 == Changelog ==
 
-= 4.0 =
-Build 202445.01
-*	FEATURE: Complete overhaul of markup reapplication workflow:
+= 4.0.2 =
+Build 202447.05
+*	ENHANCEMENT: Addition of Markup Reapplication Workflow:
+	- No longer need to manually reset prices to reapply changed markups
 	- Added "Reapply markups" to variable product variation bulk actions for single-product updates
 	- Added quick-action icon on Products list for individual products
 	- Added "Reapply Markups" bulk action on Products list for updating multiple products
-	- Visual feedback during all operations with success/error indicators
+	- Visual feedback during all operations with 'success'/'error' indicators
 	- Progress tracking for bulk operations
-*	ENHANCEMENT: No longer need to manually reset prices to reapply changed markups
+*	ENHANCEMENT: Added full Italian and French translations
+*	MAINTENANCE: Realigned all translations with current text
 *	MAINTENANCE: Consolidated and improved admin CSS styling
 *	MAINTENANCE: Optimized JavaScript for better performance and user feedback
-*	MAINTENANCE: Ensured compatibility with current versions of WordPress, WooCommerce, and PHP
+*	MAINTENANCE: Ensured compatibility with current versions of WordPress, WooCommerce, MySQL, and PHP
 
 = 3.14.2 =
 Build 202440.03

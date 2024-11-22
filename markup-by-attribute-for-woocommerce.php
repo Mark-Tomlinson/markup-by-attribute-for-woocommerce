@@ -24,7 +24,7 @@ use mt2Tech\MarkupByAttribute\Utility as Utility;
  * Text Domain:				markup-by-attribute
  * Domain Path:				/languages
  * Version:					4.1
- * Build:					202447.06
+ * Build:					202447.07
  * Stable tag:				trunk
  * Tested up to:			6.7.1
  * Requires at least:		4.6
@@ -94,7 +94,7 @@ function mt2mba_main() {
 	// Set plugin information
 	define('MT2MBA_PLUGIN_PREFIX', 'MT2MBA');
 	define('MT2MBA_VERSION', '4.1');
-	define('MT2MBA_BUILD', 202447.06);
+	define('MT2MBA_BUILD', 202447.07);
 	define('MT2MBA_DB_VERSION', 2.1);
 	define('MT2MBA_SITE_URL', get_bloginfo('wpurl'));
 	define('MT2MBA_PLUGIN_DIR', plugin_dir_path(__FILE__));

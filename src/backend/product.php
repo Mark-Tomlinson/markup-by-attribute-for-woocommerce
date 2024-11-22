@@ -79,7 +79,7 @@ class PriceSetHandler extends PriceMarkupHandler {
 	 * Build a table of markup values for the product.
 	 * 
 	 * @param array $attribute_data Array of attributes with their labels and terms
-	 * @param int   $product_id    The ID of the product
+	 * @param int   $product_id	The ID of the product
 	 * @return array The markup table
 	 */
 	protected function build_markup_table($attribute_data, $product_id) {

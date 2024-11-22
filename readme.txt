@@ -10,7 +10,7 @@ Donate link:			https://www.paypal.me/MT2Dev/5
 License:				GPLv3
 License URI:			https://www.gnu.org/licenses/gpl-3.0.html
 Version:				4.1
-Build:					202447.06
+Build:					202447.07
 Stable tag:				trunk
 Tested up to:			6.7.1
 Requires at least:		4.6
@@ -144,15 +144,17 @@ If you use Markup-by-Attribute and want to see me continuing support for it, I e
 == Changelog ==
 
 = 4.1 =
-Build 202447.06
+_Build 202447.06_
 **FEATURE**: Added settings option to add the attribute label to the Add/Subtract text in the description.
-  - Choose either "_Add $1.50 for Blue_" or "_Add $1.50 for **Color:** Blue_".
-  - Choose either "_Subtract $3.97 for XXX-Small_" or "_Subtract $3.97 for **Size:** XXX-Small"_.
+  - Choose either "_Add $1.50 for Blue_" or "_Add $1.50 for Color: Blue_".
+  - Choose either "_Subtract $3.97 for XXX-Small_" or "_Subtract $3.97 for Size: XXX-Small"_.
   - Use "Reapply Markups" introduced in version 4.0 to update all descriptions quickly.
 **MAINTENANCE**: Ensured compatibility with current versions of WordPress, WooCommerce, MySQL, and PHP
+_Build 202447.07_
+**MAINTENANCE**: Converted spaces into tabs for compactness.
 
 = 4.0.2 =
-Build 202447.05
+_Build 202447.05_
 **ENHANCEMENT**: Addition of Markup Reapplication Workflow:
   - No longer need to manually reset prices to reapply changed markups
   - Added "Reapply markups to prices" to variable product variation bulk actions for single-product updates

@@ -77,44 +77,56 @@ class PriceSetHandler extends PriceMarkupHandler {
 
 	/**
 	 * Build a table of markup values for the product.
-	 *
-	 * @param	array	$terms		The terms associated with the product
-	 * @param	int		$product_id	The ID of the product
-	 * @return	array				The markup table
+	 * 
+	 * @param array $attribute_data Array of attributes with their labels and terms
+	 * @param int   $product_id    The ID of the product
+	 * @return array The markup table
 	 */
-	protected function build_markup_table($terms, $product_id) {
+	protected function build_markup_table($attribute_data, $product_id) {
 		global $mt2mba_utility;
 		$markup_table = [];
-	
+
 		// Calculate markup for each term for this product
-		foreach ($terms as $term) {
-			$meta_key = "mt2mba_{$term->term_id}_markup_amount";
-			$markup = get_term_meta($term->term_id, 'mt2mba_markup', true);
-	
-			// Set price to calculate markup against
-			if ($this->price_type === REGULAR_PRICE || MT2MBA_SALE_PRICE_MARKUP === 'yes') {
-				$price = $this->base_price;
-			} else {
-				$price = get_metadata("post", $product_id, "mt2mba_base_" . REGULAR_PRICE, true);
-			}
-	
-			if (!empty($markup)) {
-				if (strpos($markup, "%")) {
-					// Markup is a percentage
-					$markup_value = ($price * floatval($markup)) / 100;
+		foreach ($attribute_data as $taxonomy => $data) {
+			$attrb_label = $data['label'];
+			foreach ($data['terms'] as $term) {
+				$markup = get_term_meta($term->term_id, 'mt2mba_markup', true);
+
+				// Set price to calculate markup against
+				if ($this->price_type === REGULAR_PRICE || MT2MBA_SALE_PRICE_MARKUP === 'yes') {
+					$price = $this->base_price;
 				} else {
-					// Markup is a flat amount
-					$markup_value = floatval($markup);
+					$price = get_metadata("post", $product_id, "mt2mba_base_" . REGULAR_PRICE, true);
 				}
 
-				// Round markup value
-				$markup_value = MT2MBA_ROUND_MARKUP == "yes" ? round($markup_value, 0) : round($markup_value, $this->price_decimals);
-	
-				if ($markup_value != 0) {
-					$markup_table[$term->taxonomy][$term->slug]['term_id'] = $term->term_id;
-					$markup_table[$term->taxonomy][$term->slug]['markup'] = $markup_value;
-					if (MT2MBA_DESC_BEHAVIOR !== "ignore" && $this->price_type === REGULAR_PRICE) {
-						$markup_table[$term->taxonomy][$term->slug]['description'] = $mt2mba_utility->format_description_markup($markup_value, $term->name);
+				if (!empty($markup)) {
+					if (strpos($markup, "%")) {
+						// Markup is a percentage
+						$markup_value = ($price * floatval($markup)) / 100;
+					} else {
+						// Markup is a flat amount
+						$markup_value = floatval($markup);
+					}
+
+					// Round markup value
+					$markup_value = MT2MBA_ROUND_MARKUP == "yes" ? 
+						round($markup_value, 0) : 
+						round($markup_value, $this->price_decimals);
+
+					if ($markup_value != 0) {
+						$markup_table[$taxonomy][$term->slug] = [
+							'term_id' => $term->term_id,
+							'markup' => $markup_value,
+						];
+						
+						if (MT2MBA_DESC_BEHAVIOR !== "ignore" && $this->price_type === REGULAR_PRICE) {
+							$markup_table[$taxonomy][$term->slug]['description'] = 
+								$mt2mba_utility->format_description_markup(
+									$markup_value,
+									$attrb_label, 
+									$term->name
+								);
+						}
 					}
 				}
 			}
@@ -272,18 +284,23 @@ class PriceSetHandler extends PriceMarkupHandler {
 			return;
 		}
 
-		// Retrieve all attributes for the product
-		$all_terms = [];
+		// Retrieve all attributes and their terms for the product
+		$attribute_data = [];
 		foreach (wc_get_product($product_id)->get_attributes() as $pa_attrb) {
 			if ($pa_attrb->is_taxonomy()) {
 				$taxonomy = $pa_attrb->get_name();
-				$terms = get_terms(["taxonomy" => $taxonomy, "hide_empty" => false]);
-				$all_terms = array_merge($all_terms, $terms);
+				$attribute_data[$taxonomy] = [
+					'label' => wc_attribute_label($taxonomy),
+					'terms' => get_terms([
+						"taxonomy" => $taxonomy, 
+						"hide_empty" => false
+					])
+				];
 			}
 		}
 
 		// Build a table of the markup values for the product
-		$markup_table = $this->build_markup_table($all_terms, $product_id);
+		$markup_table = $this->build_markup_table($attribute_data, $product_id);
 
 		// Bulk save product markup values
 		if ($this->price_type === REGULAR_PRICE) {

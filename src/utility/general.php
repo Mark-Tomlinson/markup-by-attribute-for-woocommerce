@@ -42,6 +42,7 @@ class General {
 			$settings = Backend\Settings::get_instance();
 			define('MT2MBA_DESC_BEHAVIOR', get_option('mt2mba_desc_behavior', $settings->desc_behavior));
 			define('MT2MBA_DROPDOWN_BEHAVIOR', get_option('mt2mba_dropdown_behavior', $settings->dropdown_behavior));
+			define('MT2MBA_INCLUDE_ATTRB_NAME', get_option('mt2mba_include_attrb_name', $settings->include_attrb_name));
 			define('MT2MBA_HIDE_BASE_PRICE', get_option('mt2mba_hide_base_price', $settings->hide_base_price));
 			define('MT2MBA_SALE_PRICE_MARKUP', get_option('mt2mba_sale_price_markup', $settings->sale_price_markup));
 			define('MT2MBA_ROUND_MARKUP', get_option('mt2mba_round_markup', $settings->round_markup));
@@ -186,23 +187,43 @@ class General {
 	}
 
 	/**
-	 * Format the markup that appears in the variation description
-	 * @param	float	$markup Signed markup amount
-	 * @param	string	$term	Attribute term the markup applies to
-	 * @return	string			Formatted markup
+	 * Format the add and subtract line items that appears in the variation description
+	 * @param float  $markup     Signed markup amount
+	 * @param string $attrb_name Attribute name that the markup applies to
+	 * @param string $term_name  Attribute term that the markup applies to
+	 * @return string           Formatted description 
 	 */
-	function format_description_markup($markup, $term_name) {
+	function format_description_markup($markup, $attrb_name, $term_name) {
 		if ($markup <> "" && $markup <> 0) {
-			// Translators; %1$s is the formated price of the option, %2$s is the option name
-			$desc_format = $markup < 0 ? __('Subtract %1$s for %2$s', 'markup-by-attribute') : __('Add %1$s for %2$s', 'markup-by-attribute');
-
-			return html_entity_decode (
-				sprintf (
-					$desc_format,
-					$this->clean_up_price($markup),
-					trim($this->remove_bracketed_string(' (', ')', $term_name))
-				)
-			);
+			// Two different translation strings based on whether attribute name is included
+			if (MT2MBA_INCLUDE_ATTRB_NAME == 'yes') {
+				// Translators; %1$s is the formatted price, %2$s is the attribute name, %3$s is the term name
+				$desc_format = $markup < 0 ? 
+					__('Subtract %1$s for %2$s: %3$s', 'markup-by-attribute') : 
+					__('Add %1$s for %2$s: %3$s', 'markup-by-attribute');
+				
+				return html_entity_decode(
+					sprintf(
+						$desc_format,
+						$this->clean_up_price($markup),
+						$attrb_name,
+						$term_name
+					)
+				);
+			} else {
+				// Translators; %1$s is the formatted price, %2$s is the term name
+				$desc_format = $markup < 0 ? 
+					__('Subtract %1$s for %2$s', 'markup-by-attribute') : 
+					__('Add %1$s for %2$s', 'markup-by-attribute');
+				
+				return html_entity_decode(
+					sprintf(
+						$desc_format,
+						$this->clean_up_price($markup),
+						$term_name
+					)
+				);
+			}
 		}
 		// No markup; return empty string
 		return '';

@@ -15,6 +15,7 @@ class Settings extends WC_Settings_API {
 	// Default values as properties
 	public $desc_behavior		= 'append';
 	public $dropdown_behavior	= 'add';
+	public $include_attrb_name	= 'no';
 	public $hide_base_price		= 'no';
 	public $sale_price_markup	= 'yes';
 	public $round_markup		= 'no';
@@ -126,6 +127,18 @@ class Settings extends WC_Settings_API {
 					'overwrite' => __('Overwrite the variation description with price information.', 'markup-by-attribute'),
 				),
 				'default'	=> $this->desc_behavior
+			);
+
+			/** -- Include Attribute Name --
+			 *	Include the name of the attribute in the variatiable product's decription. 'Add $1.50 for Blue' becomes 'Add $1.50 for Color Blue'.
+			 */
+			$mt2mba_settings[] = array(
+				'name'		=> __('Include Attribute Names in Variation Descriptions', 'markup-by-attribute'),
+				'desc'		=> __("Include the name of the attribute in the variable product's description. <b>Add $1.50 for Blue</b> becomes <b>Add $1.50 for Color: Blue</b>.", 'markup-by-attribute') . ' <br/>' .
+					'<em>' . $individually . '</em>',
+				'id'		=> 'mt2mba_include_attrb_name',
+				'type'		=> 'checkbox',
+				'default'	=> $this->include_attrb_name
 			);
 
 			/** -- Hide Base Price --

@@ -1,8 +1,8 @@
 <?php
 namespace mt2Tech\MarkupByAttribute;
-use mt2Tech\MarkupByAttribute\Backend as Backend;
-use mt2Tech\MarkupByAttribute\Frontend as Frontend;
-use mt2Tech\MarkupByAttribute\Utility as Utility;
+use mt2Tech\MarkupByAttribute\Backend	as Backend;
+use mt2Tech\MarkupByAttribute\Frontend	as Frontend;
+use mt2Tech\MarkupByAttribute\Utility	as Utility;
 /**
  * This file is part of the Markup by Attribute for WooCommerce plugin by Mark Tomlinson
  *
@@ -111,10 +111,14 @@ function mt2mba_main() {
 
 	$admin_messages = [
 		'info' => [
-			// Add any informational messages here
+			/* Add administrative info messages in the following format
+			 *
+			array("message_name", "This is a dismissable messages."),
+			 *
+			 */
 		],
 		'warning' => [
-			// Add any warning messages here
+			/* Add any warning messages here in the above format */
 		]
 	];
 
@@ -133,6 +137,7 @@ function mt2mba_main() {
 			Backend\ProductList::get_instance();
 		}
 		new Backend\Product;	// Product class cannot be singleton
+
 	} else {
 		// -- Front end code --
 		Frontend\Options::get_instance();

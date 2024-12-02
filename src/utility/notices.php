@@ -62,56 +62,24 @@ class Notices {
 	/**
 	 * Display admin notices sent in as an array
 	 *
-	 * @param	array	$admin_notices	A two dimensional array; array(notice_type => array(notice_id => notice))
+	 * @param	array	$admin_notices	(array)
+	 * 									- type	(string)	Type of message ('error', 'warning', 'success', 'info')
+	 * 									- 		(array)		Messages of the above type
+	 * 											- [0]		(string)	Message name
+	 * 											- [1]		(string)	Message
 	 */
 	public function send_notice_array($admin_notices) {
 		foreach ($admin_notices as $type => $notices) {
-			foreach ($notices as $notices_id => $notices) {
-				$this->{$type}($notices, $notices_id);
+			foreach ($notices as $notice_id => $notice) {
+				$this->notice($type, $notice[1], $notice[0]);
 			};
 		};
 	}
 
 	/**
-	 * Display error notice
-	 * @param	string	$message			Error message.
-	 * @param	string	$dismiss_option	Identifier for recording dismissal.
-	 */
-	public function error($message, $dismiss_option = FALSE) {
-		$this->notice('error', $message, $dismiss_option);
-	}
-
-	/**
-	 * Display warning notice
-	 * @param	string	$message			Warning message.
-	 * @param	string	$dismiss_option	Identifier for recording dismissal.
-	 */
-	public function warning($message, $dismiss_option = FALSE) {
-		$this->notice('warning', $message, $dismiss_option);
-	}
-
-	/**
-	 * Display success notice
-	 * @param	string	$message			Success message.
-	 * @param	string	$dismiss_option	Identifier for recording dismissal.
-	 */
-	public function success($message, $dismiss_option = FALSE) {
-		$this->notice('success', $message, $dismiss_option);
-	}
-
-	/**
-	 * Display info notice
-	 * @param	string	$message			Informational message.
-	 * @param	string	$dismiss_option	Identifier for recording dismissal.
-	 */
-	public function info($message, $dismiss_option = FALSE) {
-		$this->notice('info', $message, $dismiss_option);
-	}
-
-	/**
 	 * Generic display notice routine
-	 * @param	string	$type				Type of message ('error', 'warning', 'success', 'info')
-	 * @param	string	$message			Error message.
+	 * @param	string	$type			Type of message ('error', 'warning', 'success', 'info')
+	 * @param	string	$message		Error message.
 	 * @param	string	$dismiss_option	Identifier for recording dismissal.
 	 */
 	private function notice($type, $message, $dismiss_option) {

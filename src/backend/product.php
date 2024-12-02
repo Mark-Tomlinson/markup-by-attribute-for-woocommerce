@@ -176,10 +176,10 @@ class PriceSetHandler extends PriceMarkupHandler {
 	 * Uses MySQL's handling of duplicate keys to effectively perform an UPSERT operation.
 	 * When inserting a duplicate (post_id, meta_key) pair, MySQL will update the existing value.
 	 *
-	 * @param array $updates Array of updates to apply. Each element contains:
-	 *					  - id:		  (int)	Variation ID
-	 *					  - price:	   (float)  New price value
-	 *					  - description: (string) New variation description
+	 * @param	array	$updates	Array of updates to apply. Each element contains:
+	 *								- id:			(int)		Variation ID
+	 *								- price:		(float)		New price value
+	 *								- description:	(string)	New variation description
 	 */
 	protected function bulk_variation_update($updates) {
 		global $wpdb;
@@ -194,16 +194,16 @@ class PriceSetHandler extends PriceMarkupHandler {
 			
 			// Each variation needs both '_price' and price type records
 			$price_inserts[] = $wpdb->prepare(
-				"(%d, %s, %01.{$this->price_decimals}f),
-				(%d, %s, %01.{$this->price_decimals}f)",
+				"(%d, %s, %s),
+				(%d, %s, %s)",
 				$update['id'], 
 				'_price',
-				$update['price'],
+				$update['price'] === '' ? null : number_format($update['price'], $this->price_decimals, '.', ''),
 				$update['id'], 
 				'_' . $this->price_type,
-				$update['price']
+				$update['price'] === '' ? null : number_format($update['price'], $this->price_decimals, '.', '')
 			);
-	
+
 			if (isset($update['description'])) {
 				$description_updates[] = $wpdb->prepare(
 					"(%d, '_variation_description', %s)", 
@@ -212,7 +212,7 @@ class PriceSetHandler extends PriceMarkupHandler {
 				);
 			}
 		}
-	
+
 		// Start transaction for data consistency
 		$wpdb->query('START TRANSACTION');
 	
@@ -328,28 +328,32 @@ class PriceSetHandler extends PriceMarkupHandler {
 						$markup_description .= PHP_EOL . $markup_table[$attribute_id][$term_id]["description"];
 					}
 				}
+			}	// END: foreach ($attributes as $attribute_id => $term_id)
+
+			// Set variation price to null if negative
+			if ($variation_price <= 0) {
+				$variation_price = null;
 			}
 
-			$variation_price = max($variation_price, 0);
-
+			// Set the description
 			$description = "";
 			if ($this->price_type === REGULAR_PRICE) {
 				if (MT2MBA_DESC_BEHAVIOR !== "overwrite") {
 					$description = $variation->get_description();
 					$description = $mt2mba_utility->remove_bracketed_string(PRODUCT_MARKUP_DESC_BEG, PRODUCT_MARKUP_DESC_END, $description);
 				}
-
 				if ($markup_description) {
 					$description .= PHP_EOL . PRODUCT_MARKUP_DESC_BEG . $base_price_description . $markup_description . PRODUCT_MARKUP_DESC_END;
 				}
 			}
 
+			// And plug it into the $variation_updates array
 			$variation_updates[] = [
 				'id' => $variation_id,
 				'price' => $variation_price,
 				'description' => trim($description)
 			];
-		}
+		}	// END: foreach ($variations as $variation_id)
 
 		// Bulk update all variations from the variations_update table
 		if (!empty($variation_updates)) {
@@ -357,6 +361,7 @@ class PriceSetHandler extends PriceMarkupHandler {
 			$this->bulk_variation_update($variation_updates);
 		}
 	}
+
 }
 
 /**

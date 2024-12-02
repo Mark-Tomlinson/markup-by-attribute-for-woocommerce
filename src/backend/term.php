@@ -25,6 +25,7 @@ class Term {
 	private $text_add;
 	private $text_subtract;
 	private $placeholder;
+    private $validation_error = null;
 
 	// Public method to get the instance
 	public static function get_instance() {
@@ -99,6 +100,20 @@ class Term {
 				10);
 			add_filter('pre_get_terms', array($this, 'mt2mba_sort_on_markup_column'), 10);
 		}
+
+		// Add check for markup validation errors
+		add_action('admin_notices', array($this, 'display_markup_error'));
+	}
+
+	public function display_markup_error() {
+		$error = get_transient('mt2mba_markup_error');
+		if ($error) {
+			printf(
+				'<div class="notice notice-error"><p>%s</p></div>',
+				esc_html($error)
+			);
+			delete_transient('mt2mba_markup_error');
+		}
 	}
 
 	/**
@@ -120,8 +135,8 @@ class Term {
 	}
 
 	/**
-	 *Build <DIV> to add markup to the 'Add New' attribute term panel
-	 *Save the flag if the [Add attribute] button was pressed
+	 * Build <DIV> to add markup to the 'Add New' attribute term panel
+	 * Save the flag if the [Add attribute] button was pressed
 	 */
 	function mt2mba_add_attribute_fields() {
 		if (isset($_POST['add_new_attribute'])) {
@@ -148,8 +163,8 @@ class Term {
 	}
 
 	/**
-	 *Build <TR> to add markup to the 'Edit' attribute term panel
-	 *Save the flag if the [Save attribute] button was pressed
+	 * Build <TR> to add markup to the 'Edit' attribute term panel
+	 * Save the flag if the [Save attribute] button was pressed
 	 */
 	function mt2mba_edit_attribute_fields() {
 		// Retrieve the existing rewrite flag for this attribute(NULL results are valid)
@@ -176,7 +191,7 @@ class Term {
 	}
 
 	/**
-	 *Build <DIV> to add markup to the 'Add New' attribute term panel
+	 * Build <DIV> to add markup to the 'Add New' attribute term panel
 	 *
 	 *	@param string $taxonomy
 	 */
@@ -192,7 +207,7 @@ class Term {
 	}
 
 	/**
-	 *Build <TR> to add markup to the 'Edit' attribute term panel
+	 * Build <TR> to add markup to the 'Edit' attribute term panel
 	 *
 	 *@param	string	$term
 	 *
@@ -214,8 +229,40 @@ class Term {
 	}
 
 	/**
-	 *Save the term's markup as metadata
-	 *@param	string	$term_id
+	 * Validate markup value
+	 * @param string $markup The markup value to validate
+	 * @return array ['valid' => bool, 'message' => string]
+	 */
+	private function validate_markup($markup) {
+		// Remove any whitespace
+		$markup = trim($markup);
+
+		// Check if it's a valid number format
+		if (!preg_match('/^[-+]?\d*\.?\d+%?$/', $markup)) {
+			return [
+				'valid' => false,
+				'message' => __('Invalid markup format. Use numbers with optional decimal point, percentage sign, and plus/minus signs.', 'markup-by-attribute')
+			];
+		}
+
+		// Check if it's a percentage
+		if (strpos($markup, '%') !== false) {
+			// Remove % for numeric check
+			$value = floatval(str_replace('%', '', $markup));
+			if ($value < -99) {
+				return [
+					'valid' => false,
+					'message' => __('Percentage markdown cannot exceed -99% or will result in negative pricing.', 'markup-by-attribute')
+				];
+			}
+		}
+
+		return ['valid' => true, 'message' => ''];
+	}
+
+	/**
+	 * Save the term's markup as metadata
+	 * @param	string	$term_id
 	 */
 	function mt2mba_save_markup_to_metadata($term_id) {
 		// Sanity check
@@ -242,6 +289,21 @@ class Term {
 		// Add Markup metadata if present
 		if (esc_attr($_POST['term_markup'] <> "" && $_POST['term_markup'] <> 0)) {
 			$term_markup = esc_attr($_POST['term_markup']);
+			
+			// Validate markup
+			$validation = $this->validate_markup($term_markup);
+			if (!$validation['valid']) {
+				if (wp_doing_ajax()) {
+					wp_send_json_error([
+						'success' => $validation['message']
+					]);
+					exit;
+				} else {
+					// Our existing transient approach for non-AJAX
+					set_transient('mt2mba_markup_error', $validation['message'], 45);
+					return;
+				}
+			}
 
 			// If term_markup has a value other than zero, add/update the value to the metadata table
 			if (strpos($term_markup, "%")) {

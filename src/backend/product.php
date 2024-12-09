@@ -191,17 +191,22 @@ class PriceSetHandler extends PriceMarkupHandler {
 		// Build arrays for our SQL operations
 		foreach ($updates as $update) {
 			$variation_ids[] = (int)$update['id'];
-			
+
+			// Reformat price if not null
+			if ($update['price'] !== null) {
+				$update['price'] = number_format($update['price'], $this->price_decimals, '.', '');
+			}
+
 			// Each variation needs both '_price' and price type records
 			$price_inserts[] = $wpdb->prepare(
 				"(%d, %s, %s),
 				(%d, %s, %s)",
 				$update['id'], 
 				'_price',
-				$update['price'] === '' ? null : number_format($update['price'], $this->price_decimals, '.', ''),
+				$update['price'],
 				$update['id'], 
 				'_' . $this->price_type,
-				$update['price'] === '' ? null : number_format($update['price'], $this->price_decimals, '.', '')
+				$update['price']
 			);
 
 			if (isset($update['description'])) {
@@ -308,7 +313,12 @@ class PriceSetHandler extends PriceMarkupHandler {
 		}
 
 		// Save new base price
-		update_post_meta($product_id, "mt2mba_base_{$this->price_type}", round($this->base_price, $this->price_decimals));
+		$rounded_base = round($this->base_price, $this->price_decimals);
+		update_post_meta($product_id, "mt2mba_base_{$this->price_type}", $rounded_base);
+		if ($this->price_type === REGULAR_PRICE) {
+			// Store the current base price in a transient
+			set_transient('mt2mba_current_base_' . $product_id, $rounded_base, HOUR_IN_SECONDS);
+		}
 
 		// Format the base price description for the variations
 		$base_price_description = MT2MBA_HIDE_BASE_PRICE === 'no' ? html_entity_decode(MT2MBA_PRICE_META . $this->base_price_formatted) : '';
@@ -318,6 +328,25 @@ class PriceSetHandler extends PriceMarkupHandler {
 		foreach ($variations as $variation_id) {
 			$variation = wc_get_product($variation_id);
 			$variation_price = $this->base_price;
+
+			// If base price is intentionally set to exactly zero...
+			if ($variation_price == 0) {
+				// Clean up any existing markup description
+				$description = "";
+				if ($this->price_type === REGULAR_PRICE) {
+					$description = $variation->get_description();
+					$description = $mt2mba_utility->remove_bracketed_string(PRODUCT_MARKUP_DESC_BEG, PRODUCT_MARKUP_DESC_END, $description);
+				}
+				// Set the variation price to zero with no pricing description
+				$variation_updates[] = [
+					'id' => $variation_id,
+					'price' => 0,
+					'description' => trim($description)
+				];
+				// Exit loop and go onto the next variation
+				continue;
+			}
+
 			$markup_description = '';
 			$attributes = $variation->get_attributes();
 			foreach ($attributes as $attribute_id => $term_id) {
@@ -342,7 +371,7 @@ class PriceSetHandler extends PriceMarkupHandler {
 					$description = $variation->get_description();
 					$description = $mt2mba_utility->remove_bracketed_string(PRODUCT_MARKUP_DESC_BEG, PRODUCT_MARKUP_DESC_END, $description);
 				}
-				if ($markup_description) {
+				if ($markup_description && $variation_price != null) {
 					$description .= PHP_EOL . PRODUCT_MARKUP_DESC_BEG . $base_price_description . $markup_description . PRODUCT_MARKUP_DESC_END;
 				}
 			}
@@ -483,6 +512,9 @@ class Product {
 		
 		// Add AJAX handlers for reapply markup
 		add_action('wp_ajax_mt2mba_reapply_markup', [$this, 'ajax_handle_reapply_markup'], 10, 1);
+
+		// In Product class constructor
+		add_action('wp_ajax_mt2mba_get_formatted_price', [$this, 'ajax_get_formatted_price']);
 	}
 
 	/**
@@ -527,7 +559,6 @@ class Product {
 					'ajaxUrl' => admin_url('admin-ajax.php'),
 					'security' => wp_create_nonce('mt2mba_reapply_markup'),
 					'variationsNonce' => wp_create_nonce('load-variations'),
-					'basePrice' => $formatted_price,
 					'i18n' => array(
 						'reapplyMarkups' => __('Reapply markups to prices', 'markup-by-attribute'),
 						'confirmReapply' => __('Reprice variations at %s, plus or minus the markups?', 'markup-by-attribute'),
@@ -605,6 +636,27 @@ class Product {
 		} catch (Exception $e) {
 			wp_send_json_error(['message' => $e->getMessage()]);
 		}
+	}
+
+	public function ajax_get_formatted_price() {
+		check_ajax_referer('mt2mba_reapply_markup', 'security');
+		
+		$product_id = isset($_POST['product_id']) ? absint($_POST['product_id']) : 0;
+		if (!$product_id) {
+			wp_send_json_error();
+			return;
+		}
+	
+		// Check transient first
+		$base_price = get_transient('mt2mba_current_base_' . $product_id);
+		if ($base_price === false) {
+			// Fall back to stored meta
+			$base_price = get_post_meta($product_id, 'mt2mba_base_regular_price', true);
+		}
+	
+		wp_send_json_success([
+			'formatted_price' => html_entity_decode(strip_tags(wc_price($base_price)))
+		]);
 	}
 
 	/**

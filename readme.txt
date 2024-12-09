@@ -9,14 +9,14 @@ Contributors:			MarkTomlinson
 Donate link:			https://www.paypal.me/MT2Dev/5
 License:				GPLv3
 License URI:			https://www.gnu.org/licenses/gpl-3.0.html
-Version:				4.1
-Build:					202447.07
+Version:				4.2
+Build:					202449.01
 Stable tag:				trunk
 Tested up to:			6.7.1
 Requires at least:		4.6
-PHP tested up to:		8.3.13
+PHP tested up to:		8.3.14
 Requires PHP:			5.6
-WC tested up to:		9.4.2
+WC tested up to:		9.4.3
 WC requires at least:	3.0
 MySQL tested up to:		8.0.40
 
@@ -142,13 +142,14 @@ If you use Markup-by-Attribute and want to see me continuing support for it, I e
 7. The settings page allows configuration of how the markup is displayed.
 
 == Changelog ==
-
-= 4.1 =
-_Build 202447.06_
-**FEATURE**: Added settings option to add the attribute label to the Add/Subtract text in the description.
-  - Choose either "_Add $1.50 for Blue_" or "_Add $1.50 for Color: Blue_".
-  - Choose either "_Subtract $3.97 for XXX-Small_" or "_Subtract $3.97 for Size: XXX-Small"_.
-  - Use "Reapply Markups" introduced in version 4.0 to update all descriptions quickly.
+= 4.2 =
+_Build 202449.01_
+**FEATURE**: If markup/markdown calculations yield negative prices, Markup-by-Attribute will remove the price of a variation. WooCommerce will not display unpriced items to the customer, and the admin console will call out unpriced items.
+**FEATURE**: If the shopkeeper deliberately sets the price to zero (giveaways), Markup-by-Attribute will ignore the item and not adjust the price.
+**FEATURE**: Added the option to add the attribute label to the Add/Subtract text in the description.
+- Choose either "_Add $1.50 for Blue_" or "_Add $1.50 for Color: Blue_".
+- Choose either "_Subtract $3.97 for XXX-Small_" or "_Subtract $3.97 for Size: XXX-Small"_.
+- Use "Reapply Markups" introduced in version 4.0 to update all descriptions quickly.
 **MAINTENANCE**: Ensured compatibility with current versions of WordPress, WooCommerce, MySQL, and PHP
 _Build 202447.07_
 **MAINTENANCE**: Converted spaces into tabs for compactness.

@@ -156,7 +156,9 @@ _Build 202449.02_
 **FEATURE**: If markup/markdown calculations yield negative prices, Markup-by-Attribute will remove the price of a variation. WooCommerce will not display unpriced items to the customer, and the admin console will call out unpriced items.
 **MAINTENANCE**: Ensured compatibility with current versions of WordPress, WooCommerce, MySQL, and PHP
 _Build 202449.03_
-**FIX**: Removed the `Show Attributes List` setting because that's what WordPress `Screen Options` are for.
+**MAINTENANCE**: Added translations for new features
+**FIX**: Removed the `Show Attributes List` setting because that's what WordPress `Screen Options` are for
+**FIX**: Cleared WooCommerce product variation cache when using `Reapply Markups` or `⟳ Reprice` on the All Products page
 
 = 4.0.2 =
 _Build 202447.05_

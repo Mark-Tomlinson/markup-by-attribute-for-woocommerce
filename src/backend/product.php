@@ -329,9 +329,7 @@ class PriceSetHandler extends PriceMarkupHandler {
 			$variation = wc_get_product($variation_id);
 
 			// If base price is intentionally set to exactly zero...
-			error_log("Price: {$this->base_price}, Allow zero: " . MT2MBA_ALLOW_ZERO);									//	debug
 			if ($this->base_price == 0 && MT2MBA_ALLOW_ZERO === 'yes') {
-				error_log("{$product_id}->{$variation_id}: {$this->base_price}");		//	debug
 				// Clean up any existing markup description
 					$description = "";
 					if ($this->price_type === REGULAR_PRICE) {
@@ -621,11 +619,34 @@ class Product {
 	
 				$wpdb->query('COMMIT');
 				
-				// Clear caches
+				// Clear WordPress cache
 				wp_cache_flush();
 				clean_post_cache($product_id);
-				foreach ($variations as $variation_id) {
-					clean_post_cache($variation_id);
+				
+				// Clear WooCommerce specific caches
+				wc_delete_product_transients($product_id);
+				if (!empty($variations)) {
+					foreach ($variations as $variation_id) {
+						clean_post_cache($variation_id);
+						wc_delete_product_transients($variation_id);
+					}
+				}
+				
+				// Clear variable product price cache
+				delete_transient('wc_var_prices_' . $product_id);
+				
+				// Delete WooCommerce's variation parent price meta
+				delete_post_meta($product_id, '_price');
+				delete_post_meta($product_id, '_min_variation_price');
+				delete_post_meta($product_id, '_max_variation_price');
+				delete_post_meta($product_id, '_min_variation_regular_price');
+				delete_post_meta($product_id, '_max_variation_regular_price');
+				delete_post_meta($product_id, '_min_variation_sale_price');
+				delete_post_meta($product_id, '_max_variation_sale_price');
+	
+				// Force WooCommerce to recalculate prices
+				if (class_exists('\WC_Product_Variable')) {
+					\WC_Product_Variable::sync($product_id);
 				}
 	
 				wp_send_json_success(['completed' => true]);

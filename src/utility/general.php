@@ -46,6 +46,7 @@ class General {
 			define('MT2MBA_HIDE_BASE_PRICE', get_option('mt2mba_hide_base_price', $settings->hide_base_price));
 			define('MT2MBA_SALE_PRICE_MARKUP', get_option('mt2mba_sale_price_markup', $settings->sale_price_markup));
 			define('MT2MBA_ROUND_MARKUP', get_option('mt2mba_round_markup', $settings->round_markup));
+			define('MT2MBA_ALLOW_ZERO', get_option('mt2mba_allow_zero', $settings->allow_zero));
 			define('MT2MBA_SHOW_ATTRB_LIST', get_option('mt2mba_show_attrb_list', $settings->show_attrb_list));
 			define('MT2MBA_MAX_VARIATIONS', get_option('mt2mba_max_variations', $settings->max_variations));
 			define('MT2MBA_CURRENCY_SYMBOL', get_woocommerce_currency_symbol(get_woocommerce_currency()));

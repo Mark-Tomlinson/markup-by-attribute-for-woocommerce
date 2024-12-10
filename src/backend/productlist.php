@@ -204,7 +204,7 @@ class ProductList {
 
 		foreach ($terms as $term) {
 			$markup = get_term_meta($term->term_id, 'mt2mba_markup', true);
-			if (!empty($markup)) {
+			if (!empty($markup)) {		// Set flag and return true when the first markup is found
 				self::$markup_cache[$taxonomy] = true;
 				return true;
 			}

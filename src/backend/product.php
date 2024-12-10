@@ -316,36 +316,38 @@ class PriceSetHandler extends PriceMarkupHandler {
 		$rounded_base = round($this->base_price, $this->price_decimals);
 		update_post_meta($product_id, "mt2mba_base_{$this->price_type}", $rounded_base);
 		if ($this->price_type === REGULAR_PRICE) {
-			// Store the current base price in a transient
+			//	Store the current base price in a transient
 			set_transient('mt2mba_current_base_' . $product_id, $rounded_base, HOUR_IN_SECONDS);
 		}
 
-		// Format the base price description for the variations
+		//	Format the base price description for the variations
 		$base_price_description = MT2MBA_HIDE_BASE_PRICE === 'no' ? html_entity_decode(MT2MBA_PRICE_META . $this->base_price_formatted) : '';
 
-		// Set up table with variation prices
+		//	Set up table with variation prices
 		$variation_updates = [];
 		foreach ($variations as $variation_id) {
 			$variation = wc_get_product($variation_id);
-			$variation_price = $this->base_price;
 
 			// If base price is intentionally set to exactly zero...
-			if ($variation_price == 0) {
+			error_log("Price: {$this->base_price}, Allow zero: " . MT2MBA_ALLOW_ZERO);									//	debug
+			if ($this->base_price == 0 && MT2MBA_ALLOW_ZERO === 'yes') {
+				error_log("{$product_id}->{$variation_id}: {$this->base_price}");		//	debug
 				// Clean up any existing markup description
-				$description = "";
-				if ($this->price_type === REGULAR_PRICE) {
-					$description = $variation->get_description();
-					$description = $mt2mba_utility->remove_bracketed_string(PRODUCT_MARKUP_DESC_BEG, PRODUCT_MARKUP_DESC_END, $description);
-				}
-				// Set the variation price to zero with no pricing description
-				$variation_updates[] = [
-					'id' => $variation_id,
-					'price' => 0,
-					'description' => trim($description)
-				];
-				// Exit loop and go onto the next variation
-				continue;
+					$description = "";
+					if ($this->price_type === REGULAR_PRICE) {
+						$description = $variation->get_description();
+						$description = $mt2mba_utility->remove_bracketed_string(PRODUCT_MARKUP_DESC_BEG, PRODUCT_MARKUP_DESC_END, $description);
+					}
+
+					$variation_updates[] = [
+						'id' => $variation_id,
+						'price' => 0,
+						'description' => trim($description)
+					];
+					continue;    // Exit loop and go onto the next variation
 			}
+
+			$variation_price = $this->base_price;
 
 			$markup_description = '';
 			$attributes = $variation->get_attributes();
@@ -357,10 +359,10 @@ class PriceSetHandler extends PriceMarkupHandler {
 						$markup_description .= PHP_EOL . $markup_table[$attribute_id][$term_id]["description"];
 					}
 				}
-			}	// END: foreach ($attributes as $attribute_id => $term_id)
+			}	//	END: foreach ($attributes as $attribute_id => $term_id)
 
-			// Set variation price to null if negative
-			if ($variation_price <= 0) {
+			//	Set variation price to null if negative, allow zero pricing
+			if ($variation_price < 0) {
 				$variation_price = null;
 			}
 

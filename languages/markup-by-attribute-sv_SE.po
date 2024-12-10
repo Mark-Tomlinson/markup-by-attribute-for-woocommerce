@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Markup by Attribute for WooCommerce - MT² Tech\n"
 "Report-Msgid-Bugs-To: markupbyattribute@mail.com\n"
 "POT-Creation-Date: 2020-04-17 00:43+0000\n"
-"PO-Revision-Date: 2024-11-22 01:03+0000\n"
+"PO-Revision-Date: 2024-12-10 04:13+0000\n"
 "Last-Translator: \n"
 "Language-Team: Swedish\n"
 "Language: sv_SE\n"
@@ -29,22 +29,16 @@ msgstr "(Lägg till"
 msgid "(Subtract"
 msgstr "(Dra av"
 
-#: src/backend/settings.php:180
-msgid ""
-"A 10% markup on a $30 regular price yields a $3 markup. If you set a $20 "
-"sale price, setting this option ON yields a $2 markup, setting it OFF leaves "
-"the markup at $3."
-msgstr ""
-"Ett påslag på 10% på ett ordinarie pris på 30 kr ger ett påslag på 3 kr. Om "
-"du ställer in ett kampanjpris på 20 kr, ger aktivering av detta alternativ "
-"ett påslag på 2 kr, avstängning lämnar påslaget på 3 kr."
+#: src/backend/settings.php:181
+msgid "A 10% markup on a $30 regular price yields a $3 markup. If you set a $20 sale price, setting this option ON yields a $2 markup, setting it OFF leaves the markup at $3."
+msgstr "Ett påslag på 10% på ett ordinarie pris på 30 kr ger ett påslag på 3 kr. Om du ställer in ett kampanjpris på 20 kr, ger aktivering av detta alternativ ett påslag på 2 kr, avstängning lämnar påslaget på 3 kr."
 
-#: src/utility/general.php:217
+#: src/utility/general.php:218
 #, php-format
 msgid "Add %1$s for %2$s"
 msgstr "Lägg till %1$s för %2$s"
 
-#: src/utility/general.php:203
+#: src/utility/general.php:204
 #, php-format
 msgid "Add %1$s for %2$s: %3$s"
 msgstr "Lägg till %1$s för %2$s: %3$s"
@@ -53,96 +47,78 @@ msgstr "Lägg till %1$s för %2$s: %3$s"
 msgid "Add Markup to Name?"
 msgstr "Lägg till påslag till namnet?"
 
-#: src/backend/settings.php:126
+#: src/backend/settings.php:127
 msgid "Add pricing information to the end of the existing description."
 msgstr "Lägg till prisinformation i slutet av den befintliga beskrivningen."
 
-#: src/backend/settings.php:78
+#: src/backend/settings.php:79
 #, php-format
-msgid ""
-"Additional help can be found in the <a href=\"%1$s\" target=\"_blank\">"
-"Markup by Attribute wiki</a> on the <code>Settings</code> page."
-msgstr ""
-"Ytterligare hjälp finns i <a href=\"%1$s\" target=\"_blank\">Markup by "
-"Attribute-wikin</a> på <code>inställningssidan</code>."
+msgid "Additional help can be found in the <a href=\"%1$s\" target=\"_blank\">Markup by Attribute wiki</a> on the <code>Settings</code> page."
+msgstr "Ytterligare hjälp finns i <a href=\"%1$s\" target=\"_blank\">Markup by Attribute-wikin</a> på <code>inställningssidan</code>."
 
 #. Description of the plugin
 msgid "Adds product variation markup by attribute to WooCommerce."
 msgstr "Lägger till produktvariationspåslag efter attribut i WooCommerce."
 
+#: src/backend/settings.php:212
+msgid "Allow Zero Price"
+msgstr "Tillåt nollpris"
+
 #: src/backend/productlist.php:174 src/backend/productlist.php:179
 msgid "Attributes"
 msgstr "Attribut"
 
-#: src/backend/settings.php:125
+#: src/backend/settings.php:126
 msgid "Do NOT add pricing information to the description field."
 msgstr "Lägg INTE till prisinformation i beskrivningsfältet."
 
-#: src/backend/settings.php:151
+#: src/backend/settings.php:152
 msgid "Do NOT show the base price in the product description."
 msgstr "Visa INTE grundpriset i produktbeskrivningen."
 
-#: src/backend/settings.php:107
+#: src/backend/settings.php:108
 msgid "Do NOT show the markup in the options drop-down box."
 msgstr "Visa INTE påslaget i rullgardinsmenyn."
 
-#: src/backend/product.php:529
+#: src/backend/product.php:567
 msgid "Failed to reapply markups. Please try again."
 msgstr "Det gick inte att återanvända påslagen. Försök igen."
 
-#: src/backend/settings.php:150
+#: src/backend/settings.php:151
 msgid "Hide Base Price"
 msgstr "Dölj grundpris"
 
-#: src/backend/settings.php:120
-msgid ""
-"How should Markup-by-Attribute handle adding price markup information to the "
-"product variation description?"
-msgstr ""
-"Hur ska Markup-by-Attribute hantera tillägg av prisinformation i "
-"produktvariationens beskrivning?"
+#: src/backend/settings.php:121
+msgid "How should Markup-by-Attribute handle adding price markup information to the product variation description?"
+msgstr "Hur ska Markup-by-Attribute hantera tillägg av prisinformation i produktvariationens beskrivning?"
 
 #. URI of the plugin
 msgid "https://wordpress.org/plugins/markup-by-attribute-for-woocommerce/"
 msgstr "https://wordpress.org/plugins/markup-by-attribute-for-woocommerce/"
 
-#: src/backend/settings.php:82
+#: src/backend/settings.php:83
 #, php-format
-msgid ""
-"If you find this plugin helpful, please consider <a href=\"%1$s\" "
-"target=\"_blank\">a small donation</a>."
-msgstr ""
-"Om du tycker att detta tillägg är användbart, överväg gärna <a href=\"%1$s\" "
-"target=\"_blank\">en liten donation</a>."
+msgid "If you find this plugin helpful, please consider <a href=\"%1$s\" target=\"_blank\">a small donation</a>."
+msgstr "Om du tycker att detta tillägg är användbart, överväg gärna <a href=\"%1$s\" target=\"_blank\">en liten donation</a>."
 
-#: src/backend/settings.php:223
-msgid ""
-"Include a column on the 'All Products' page to show all attributes "
-"associated with the products?"
-msgstr ""
-"Inkludera en kolumn på sidan 'Alla produkter' för att visa alla attribut "
-"kopplade till produkterna?"
+#: src/backend/settings.php:241
+msgid "Include a column on the 'All Products' page to show all attributes associated with the products?"
+msgstr "Inkludera en kolumn på sidan 'Alla produkter' för att visa alla attribut kopplade till produkterna?"
 
-#: src/backend/settings.php:136
+#: src/backend/settings.php:137
 msgid "Include Attribute Names in Variation Descriptions"
 msgstr "Inkludera attributnamn i variationsbeskrivningar"
 
-#: src/backend/settings.php:137
-#| msgid ""
-#| "Include the name of the attribute in the variable product's description. "
-#| "<b>Add $1.50 for Blue</b> becomes <b>Add $1.50 for Color Blue</b>."
-msgid ""
-"Include the name of the attribute in the variable product's description. <b>"
-"Add $1.50 for Blue</b> becomes <b>Add $1.50 for Color: Blue</b>."
-msgstr ""
-"Inkludera attributnamnet i produktvariationens beskrivning. <b>Lägg till $1."
-"50 för Blå</b> blir <b>Lägg till $1.50 för Färg: Blå</b>."
+#: src/backend/settings.php:138
+#| msgid "Include the name of the attribute in the variable product's description. <b>Add $1.50 for Blue</b> becomes <b>Add $1.50 for Color Blue</b>."
+msgid "Include the name of the attribute in the variable product's description. <b>Add $1.50 for Blue</b> becomes <b>Add $1.50 for Color: Blue</b>."
+msgstr "Inkludera attributnamnet i produktvariationens beskrivning. <b>Lägg till $1.50 för Blå</b> blir <b>Lägg till $1.50 för Färg: Blå</b>."
 
 #: markup-by-attribute-for-woocommerce.php:54
 msgid "Instructions"
 msgstr "Instruktioner"
 
-#: src/backend/product.php:557
+#: src/backend/product.php:595
 #| msgid "Invalid product"
 msgid "Invalid product ID"
 msgstr "Ogiltigt produkt-ID"
@@ -159,7 +135,7 @@ msgstr "Påslag"
 msgid "Markup (or markdown)"
 msgstr "Påslag (eller prisnedsättning)"
 
-#: markup-by-attribute-for-woocommerce.php:103 src/backend/settings.php:52
+#: markup-by-attribute-for-woocommerce.php:103 src/backend/settings.php:53
 msgid "Markup by Attribute"
 msgstr "Markup by Attribute"
 
@@ -167,65 +143,51 @@ msgstr "Markup by Attribute"
 msgid "Markup by Attribute for WooCommerce"
 msgstr "Markup by Attribute for WooCommerce"
 
-#: src/backend/settings.php:74
+#: src/backend/settings.php:75
 msgid "Markup by Attribute Settings"
 msgstr "Inställningar för Markup by Attribute"
 
-#: src/backend/settings.php:165
+#: src/backend/settings.php:166
 msgid "Markup Calculation"
 msgstr "Påslagsberäkning"
 
-#: src/backend/settings.php:90
+#: src/backend/settings.php:91
 msgid "Markup Display"
 msgstr "Påslagsvisning"
 
 #: src/backend/term.php:47
-msgid ""
-"Markup or markdown associated with this option. Signed, floating point "
-"numeric allowed."
-msgstr ""
-"Påslag eller prisnedsättning kopplat till detta alternativ. Tecken och "
-"decimaltal är tillåtna."
+msgid "Markup or markdown associated with this option. Signed, floating point numeric allowed."
+msgstr "Påslag eller prisnedsättning kopplat till detta alternativ. Tecken och decimaltal är tillåtna."
 
 #: markup-by-attribute-for-woocommerce.php:108
 msgid "Markup:"
 msgstr "Påslag:"
 
 #: src/utility/pointers.php:101
-msgid ""
-"Markups can be fixed values such as <code>5</code> or <code>5.95</code>, or "
-"percentages such as <code>5%</code> or <code>1.23%</code>. Use plus or minus "
-"signs (like <code>+5.95</code> or <code>-1.23%</code>) for increases or "
-"decreases.<br/>Markups are applied when setting prices or reapplying markups "
-"to variations."
-msgstr ""
-"Påslag kan vara fasta värden som <code>5</code> eller <code>5.95</code>, "
-"eller procentsatser som <code>5%</code> eller <code>1.23%</code>. Använd "
-"plus- eller minustecken (som <code>+5.95</code> eller <code>-1.23%</code>) "
-"för ökningar eller minskningar.<br/>Påslag tillämpas när du ställer in "
-"priser eller återanvänder påslag på variationer."
+msgid "Markups can be fixed values such as <code>5</code> or <code>5.95</code>, or percentages such as <code>5%</code> or <code>1.23%</code>. Use plus or minus signs (like <code>+5.95</code> or <code>-1.23%</code>) for increases or decreases.<br/>Markups are applied when setting prices or reapplying markups to variations."
+msgstr "Påslag kan vara fasta värden som <code>5</code> eller <code>5.95</code>, eller procentsatser som <code>5%</code> eller <code>1.23%</code>. Använd plus- eller minustecken (som <code>+5.95</code> eller <code>-1.23%</code>) för ökningar eller minskningar.<br/>Påslag tillämpas när du ställer in priser eller återanvänder påslag på variationer."
 
-#: src/backend/settings.php:237
+#: src/backend/settings.php:255
 msgid "Max Variations"
 msgstr "Max antal variationer"
 
-#: src/backend/settings.php:238
+#: src/backend/settings.php:256
 msgid "Maximum number of variations that can be created per run."
 msgstr "Maximalt antal variationer som kan skapas per körning."
 
-#: src/backend/settings.php:101
+#: src/backend/settings.php:102
 msgid "Option Drop-down Behavior"
 msgstr "Beteende för rullgardinsmenyn"
 
-#: src/backend/settings.php:211
+#: src/backend/settings.php:229
 msgid "Other"
 msgstr "Övrigt"
 
-#: src/backend/settings.php:127
+#: src/backend/settings.php:128
 msgid "Overwrite the variation description with price information."
 msgstr "Skriv över variationsbeskrivningen med prisinformation."
 
-#: src/backend/product.php:545 src/backend/product.php:550
+#: src/backend/product.php:583 src/backend/product.php:588
 msgid "Permission denied"
 msgstr "Åtkomst nekad"
 
@@ -242,38 +204,32 @@ msgstr "Produktpris"
 msgid "Reapply Markups"
 msgstr "Återanvänd påslag"
 
-#: src/backend/product.php:527
+#: src/backend/product.php:565
 msgid "Reapply markups to prices"
 msgstr "Återanvänd påslag på priser"
 
 #: src/backend/term.php:49
-msgid ""
-"Rename the attribute to include the markup. Often needed if the option drop-"
-"down box is overwritten by another plugin or theme and markup is no longer "
-"visible."
-msgstr ""
-"Döp om attributet för att inkludera påslaget. Ofta nödvändigt om "
-"rullgardinsmenyn skrivs över av ett annat tillägg eller tema och påslaget "
-"inte längre är synligt."
+msgid "Rename the attribute to include the markup. Often needed if the option drop-down box is overwritten by another plugin or theme and markup is no longer visible."
+msgstr "Döp om attributet för att inkludera påslaget. Ofta nödvändigt om rullgardinsmenyn skrivs över av ett annat tillägg eller tema och påslaget inte längre är synligt."
 
 #: src/backend/productlist.php:261
 msgid "Reprice"
 msgstr "Ompris"
 
-#: src/backend/product.php:528
+#: src/backend/product.php:566
 #, php-format
 msgid "Reprice variations at %s, plus or minus the markups?"
 msgstr "Omprisätta variationer till %s, plus eller minus påslagen?"
 
-#: src/backend/settings.php:195
+#: src/backend/settings.php:196
 msgid "Round Markup"
 msgstr "Avrunda påslag"
 
-#: src/backend/settings.php:196
+#: src/backend/settings.php:197
 msgid "Round percentage markups to keep the value below the decimal intact?"
 msgstr "Avrunda procentpåslag för att behålla värdet under decimalen intakt?"
 
-#: src/backend/settings.php:178
+#: src/backend/settings.php:179
 msgid "Sale Price Markup"
 msgstr "Kampanjprispåslag"
 
@@ -281,97 +237,76 @@ msgstr "Kampanjprispåslag"
 msgid "Settings"
 msgstr "Inställningar"
 
-#: src/backend/settings.php:102
-msgid ""
-"Should Markup-by-Attribute add the markup to the options drop-down box, and "
-"should the currency symbol be displayed?"
-msgstr ""
-"Ska Markup-by-Attribute lägga till påslaget i rullgardinsmenyn för "
-"alternativ, och ska valutasymbolen visas?"
+#: src/backend/settings.php:103
+msgid "Should Markup-by-Attribute add the markup to the options drop-down box, and should the currency symbol be displayed?"
+msgstr "Ska Markup-by-Attribute lägga till påslaget i rullgardinsmenyn för alternativ, och ska valutasymbolen visas?"
 
-#: src/backend/settings.php:179
+#: src/backend/settings.php:180
 msgid "Should Markup-by-Attribute calculate percentage markups on sale prices?"
 msgstr "Ska Markup-by-Attribute beräkna procentpåslag på kampanjpriser?"
 
-#: src/backend/settings.php:222
+#: src/backend/settings.php:213
+msgid "Should Markup-by-Attribute ignore variations with a zero price?"
+msgstr "Ska Markup-by-Attribute ignorera varianter med nollpris?"
+
+#: src/backend/settings.php:240
 msgid "Show Attributes on Product List"
 msgstr "Visa attribut i produktlistan"
 
-#: src/backend/settings.php:108
+#: src/backend/settings.php:109
 msgid "Show the markup WITH the currency symbol in the options drop-down box."
 msgstr "Visa påslaget MED valutasymbol i rullgardinsmenyn."
 
-#: src/backend/settings.php:109
-msgid ""
-"Show the markup WITHOUT the currency symbol in the options drop-down box."
+#: src/backend/settings.php:110
+msgid "Show the markup WITHOUT the currency symbol in the options drop-down box."
 msgstr "Visa påslaget UTAN valutasymbol i rullgardinsmenyn."
 
-#: src/backend/settings.php:197
-msgid ""
-"Some stores want prices with specific numbers below the decimal place (such "
-"as xx.00 or xx.95). Rounding percentage markups will keep the value below "
-"the decimal intact."
-msgstr ""
-"Vissa butiker vill ha priser med specifika siffror efter decimalen (som xx."
-"00 eller xx.95). Avrundning av procentpåslag kommer att behålla värdet efter "
-"decimalen intakt."
+#: src/backend/settings.php:198
+msgid "Some stores want prices with specific numbers below the decimal place (such as xx.00 or xx.95). Rounding percentage markups will keep the value below the decimal intact."
+msgstr "Vissa butiker vill ha priser med specifika siffror efter decimalen (som xx.00 eller xx.95). Avrundning av procentpåslag kommer att behålla värdet efter decimalen intakt."
 
-#: src/utility/general.php:216
+#: src/utility/general.php:217
 #, php-format
 msgid "Subtract %1$s for %2$s"
 msgstr "Dra av %1$s för %2$s"
 
-#: src/utility/general.php:202
+#: src/utility/general.php:203
 #, php-format
 msgid "Subtract %1$s for %2$s: %3$s"
 msgstr "Dra av %1$s för %2$s: %3$s"
 
-#: src/backend/settings.php:76
-msgid ""
-"The following options are used to configure variation markups by attribute."
-msgstr ""
-"Följande alternativ används för att konfigurera variationspåslag efter "
-"attribut."
-
-#: src/backend/settings.php:66
-msgid "This setting affects all products and takes effect immediately."
-msgstr ""
-"Denna inställning påverkar alla produkter och träder i kraft omedelbart."
+#: src/backend/settings.php:77
+msgid "The following options are used to configure variation markups by attribute."
+msgstr "Följande alternativ används för att konfigurera variationspåslag efter attribut."
 
 #: src/backend/settings.php:67
-msgid ""
-"This setting affects products individually and takes effect when you "
-"recalculate prices or reapply markups."
-msgstr ""
-"Denna inställning påverkar produkter individuellt och träder i kraft när du "
-"räknar om priser eller återanvänder påslag."
+msgid "This setting affects all products and takes effect immediately."
+msgstr "Denna inställning påverkar alla produkter och träder i kraft omedelbart."
+
+#: src/backend/settings.php:68
+msgid "This setting affects products individually and takes effect when you recalculate prices or reapply markups."
+msgstr "Denna inställning påverkar produkter individuellt och träder i kraft när du räknar om priser eller återanvänder påslag."
 
 #: src/utility/pointers.php:133
-msgid ""
-"Using this plugin is simple, but might be a little obscure. This link to the "
-"instructions may help get you started.<br/>We'll just leave the instructions "
-"link right here."
-msgstr ""
-"Att använda detta tillägg är enkelt, men kan vara lite otydligt. Denna länk "
-"till instruktionerna kan hjälpa dig komma igång.<br/>Vi lämnar länken till "
-"instruktionerna precis här."
+msgid "Using this plugin is simple, but might be a little obscure. This link to the instructions may help get you started.<br/>We'll just leave the instructions link right here."
+msgstr "Att använda detta tillägg är enkelt, men kan vara lite otydligt. Denna länk till instruktionerna kan hjälpa dig komma igång.<br/>Vi lämnar länken till instruktionerna precis här."
 
-#: src/backend/settings.php:119
+#: src/backend/settings.php:120
 msgid "Variation Description Behavior"
 msgstr "Beteende för variationsbeskrivning"
 
-#: src/backend/settings.php:224
-msgid ""
-"When set on, you can filter by attribute, making it easier to find products "
-"that contain attributes you may have changed."
-msgstr ""
-"När detta är aktiverat kan du filtrera efter attribut, vilket gör det "
-"enklare att hitta produkter som innehåller attribut du kan ha ändrat."
+#: src/backend/settings.php:214
+msgid "When set OFF, markup calculations proceed normally even when the base price is zero. This allows using attributes to determine the entire price."
+msgstr "När inställningen är AV fortsätter påslagsberäkningarna som vanligt även när baspriset är noll. Detta gör det möjligt att använda attribut för att bestämma hela priset."
 
-#: src/backend/settings.php:239
-msgid ""
-"You can always create more by running 'Create variations from all "
-"attributes' again."
-msgstr ""
-"Du kan alltid skapa fler genom att köra 'Skapa variationer från alla "
-"attribut' igen."
+#: src/backend/settings.php:215
+msgid "When set ON, variations with zero prices remain at zero, ignoring any markups. This preserves zero prices for giveaway items."
+msgstr "När inställningen är PÅ förblir varianter med nollpris på noll, oavsett påslag. Detta bevarar nollpriser för gratisartiklar."
+
+#: src/backend/settings.php:242
+msgid "When set on, you can filter by attribute, making it easier to find products that contain attributes you may have changed."
+msgstr "När detta är aktiverat kan du filtrera efter attribut, vilket gör det enklare att hitta produkter som innehåller attribut du kan ha ändrat."
+
+#: src/backend/settings.php:257
+msgid "You can always create more by running 'Create variations from all attributes' again."
+msgstr "Du kan alltid skapa fler genom att köra 'Skapa variationer från alla attribut' igen."

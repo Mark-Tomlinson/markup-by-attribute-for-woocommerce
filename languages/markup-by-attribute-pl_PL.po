@@ -3,12 +3,11 @@ msgstr ""
 "Project-Id-Version: Markup by Attribute for WooCommerce - MT² Tech\n"
 "Report-Msgid-Bugs-To: markupbyattribute@mail.com\n"
 "POT-Creation-Date: 2020-04-17 00:43+0000\n"
-"PO-Revision-Date: 2024-11-22 01:19+0000\n"
+"PO-Revision-Date: 2024-12-10 04:11+0000\n"
 "Last-Translator: \n"
 "Language-Team: Polish\n"
 "Language: pl_PL\n"
-"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10 >= 2 && n%10<=4 "
-"&&(n%100<10||n%100 >= 20)? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10 >= 2 && n%10<=4 &&(n%100<10||n%100 >= 20)? 1 : 2);\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -31,22 +30,16 @@ msgstr "(Dodatkowo"
 msgid "(Subtract"
 msgstr "(Obniżka"
 
-#: src/backend/settings.php:180
-msgid ""
-"A 10% markup on a $30 regular price yields a $3 markup. If you set a $20 "
-"sale price, setting this option ON yields a $2 markup, setting it OFF leaves "
-"the markup at $3."
-msgstr ""
-"Narzut 10% na regularną cenę 30 zł daje narzut w wysokości 3 zł. Jeśli "
-"ustawisz cenę promocyjną na 20 zł, włączenie tej opcji spowoduje narzut 2 zł,"
-" wyłączenie pozostawi narzut na poziomie 3 zł."
+#: src/backend/settings.php:181
+msgid "A 10% markup on a $30 regular price yields a $3 markup. If you set a $20 sale price, setting this option ON yields a $2 markup, setting it OFF leaves the markup at $3."
+msgstr "Narzut 10% na regularną cenę 30 zł daje narzut w wysokości 3 zł. Jeśli ustawisz cenę promocyjną na 20 zł, włączenie tej opcji spowoduje narzut 2 zł, wyłączenie pozostawi narzut na poziomie 3 zł."
 
-#: src/utility/general.php:217
+#: src/utility/general.php:218
 #, php-format
 msgid "Add %1$s for %2$s"
 msgstr "Dodatkowo %1$s za %2$s"
 
-#: src/utility/general.php:203
+#: src/utility/general.php:204
 #, php-format
 msgid "Add %1$s for %2$s: %3$s"
 msgstr "Dodaj %1$s za %2$s: %3$s"
@@ -55,100 +48,79 @@ msgstr "Dodaj %1$s za %2$s: %3$s"
 msgid "Add Markup to Name?"
 msgstr "Dodaj zmianę ceny do nazwy?"
 
-#: src/backend/settings.php:126
+#: src/backend/settings.php:127
 msgid "Add pricing information to the end of the existing description."
 msgstr "Dopisz informację o cenie na końcu istniejącego opisu."
 
-#: src/backend/settings.php:78
+#: src/backend/settings.php:79
 #, php-format
-msgid ""
-"Additional help can be found in the <a href=\"%1$s\" target=\"_blank\">"
-"Markup by Attribute wiki</a> on the <code>Settings</code> page."
-msgstr ""
-"Dodatkową pomoc można znaleźć w <a href=\"%1$s\" target=\"_blank\">wiki "
-"Markup by Attribute</a> na stronie <code>Settings</code> (tylko angielska "
-"wersja)."
+msgid "Additional help can be found in the <a href=\"%1$s\" target=\"_blank\">Markup by Attribute wiki</a> on the <code>Settings</code> page."
+msgstr "Dodatkową pomoc można znaleźć w <a href=\"%1$s\" target=\"_blank\">wiki Markup by Attribute</a> na stronie <code>Settings</code> (tylko angielska wersja)."
 
 #. Description of the plugin
 msgid "Adds product variation markup by attribute to WooCommerce."
 msgstr "Dodaje narzut na warianty produktów według atrybutów do WooCommerce."
 
+#: src/backend/settings.php:212
+msgid "Allow Zero Price"
+msgstr "Zezwól na cenę zero"
+
 #: src/backend/productlist.php:174 src/backend/productlist.php:179
 msgid "Attributes"
 msgstr "Atrybuty"
 
-#: src/backend/settings.php:125
+#: src/backend/settings.php:126
 msgid "Do NOT add pricing information to the description field."
 msgstr "NIE dodawaj żadnych informacji do opisu wariantu."
 
-#: src/backend/settings.php:151
+#: src/backend/settings.php:152
 msgid "Do NOT show the base price in the product description."
 msgstr "NIE pokazuj ceny bazowej w opisie produktu."
 
-#: src/backend/settings.php:107
+#: src/backend/settings.php:108
 msgid "Do NOT show the markup in the options drop-down box."
 msgstr "NIE pokazuj  zmiany ceny w liście rozwijanej. (Bez zmian)"
 
-#: src/backend/product.php:529
+#: src/backend/product.php:567
 msgid "Failed to reapply markups. Please try again."
 msgstr "Nie udało się ponownie zastosować narzutów. Proszę spróbować ponownie."
 
-#: src/backend/settings.php:150
+#: src/backend/settings.php:151
 msgid "Hide Base Price"
 msgstr "Ukryj cenę bazowej"
 
-#: src/backend/settings.php:120
-#| msgid ""
-#| "How should Markup-by-Attribute handle adding price markup information to "
-#| "the variation description?"
-msgid ""
-"How should Markup-by-Attribute handle adding price markup information to the "
-"product variation description?"
-msgstr ""
-"Jak wtyczka Markup-by-Attribute ma obsługiwać dodawanie informacji o "
-"narzucie cenowym do opisu wariantu produktu?"
+#: src/backend/settings.php:121
+#| msgid "How should Markup-by-Attribute handle adding price markup information to the variation description?"
+msgid "How should Markup-by-Attribute handle adding price markup information to the product variation description?"
+msgstr "Jak wtyczka Markup-by-Attribute ma obsługiwać dodawanie informacji o narzucie cenowym do opisu wariantu produktu?"
 
 #. URI of the plugin
 msgid "https://wordpress.org/plugins/markup-by-attribute-for-woocommerce/"
 msgstr "https://wordpress.org/plugins/markup-by-attribute-for-woocommerce/"
 
-#: src/backend/settings.php:82
+#: src/backend/settings.php:83
 #, php-format
-msgid ""
-"If you find this plugin helpful, please consider <a href=\"%1$s\" "
-"target=\"_blank\">a small donation</a>."
-msgstr ""
-"Jeśli znajdziesz ten plugin pomocne, proszę rozważyć <a href=\"\"%1$s\"\" "
-"target=\"\"_blank\"\">małą darowiznę</a>."
+msgid "If you find this plugin helpful, please consider <a href=\"%1$s\" target=\"_blank\">a small donation</a>."
+msgstr "Jeśli znajdziesz ten plugin pomocne, proszę rozważyć <a href=\"\"%1$s\"\" target=\"\"_blank\"\">małą darowiznę</a>."
 
-#: src/backend/settings.php:223
-msgid ""
-"Include a column on the 'All Products' page to show all attributes "
-"associated with the products?"
-msgstr ""
-"Czy dodać kolumnę na stronie 'Wszystkie produkty', aby pokazać wszystkie "
-"atrybuty powiązane z produktami?"
+#: src/backend/settings.php:241
+msgid "Include a column on the 'All Products' page to show all attributes associated with the products?"
+msgstr "Czy dodać kolumnę na stronie 'Wszystkie produkty', aby pokazać wszystkie atrybuty powiązane z produktami?"
 
-#: src/backend/settings.php:136
+#: src/backend/settings.php:137
 msgid "Include Attribute Names in Variation Descriptions"
 msgstr "Dołącz nazwy atrybutów do opisów wariantów"
 
-#: src/backend/settings.php:137
-#| msgid ""
-#| "Include the name of the attribute in the variable product's description. "
-#| "<b>Add $1.50 for Blue</b> becomes <b>Add $1.50 for Color Blue</b>."
-msgid ""
-"Include the name of the attribute in the variable product's description. <b>"
-"Add $1.50 for Blue</b> becomes <b>Add $1.50 for Color: Blue</b>."
-msgstr ""
-"Dołącz nazwę atrybutu do opisu wariantu produktu. <b>Dodaj 1,50 zł za "
-"Niebieski</b>, zmienia się w <b>Dodaj 1,50 zł za Kolor: Niebieski</b>."
+#: src/backend/settings.php:138
+#| msgid "Include the name of the attribute in the variable product's description. <b>Add $1.50 for Blue</b> becomes <b>Add $1.50 for Color Blue</b>."
+msgid "Include the name of the attribute in the variable product's description. <b>Add $1.50 for Blue</b> becomes <b>Add $1.50 for Color: Blue</b>."
+msgstr "Dołącz nazwę atrybutu do opisu wariantu produktu. <b>Dodaj 1,50 zł za Niebieski</b>, zmienia się w <b>Dodaj 1,50 zł za Kolor: Niebieski</b>."
 
 #: markup-by-attribute-for-woocommerce.php:54
 msgid "Instructions"
 msgstr "Instrukcja"
 
-#: src/backend/product.php:557
+#: src/backend/product.php:595
 #| msgid "Invalid product"
 msgid "Invalid product ID"
 msgstr "Nieprawidłowy ID produktu"
@@ -165,7 +137,7 @@ msgstr "Narzut"
 msgid "Markup (or markdown)"
 msgstr "Narzut (lub obniżka)"
 
-#: markup-by-attribute-for-woocommerce.php:103 src/backend/settings.php:52
+#: markup-by-attribute-for-woocommerce.php:103 src/backend/settings.php:53
 msgid "Markup by Attribute"
 msgstr "Markup-by-Attribute"
 
@@ -173,69 +145,55 @@ msgstr "Markup-by-Attribute"
 msgid "Markup by Attribute for WooCommerce"
 msgstr "Markup-by-Attribute dla WooCommerce"
 
-#: src/backend/settings.php:74
+#: src/backend/settings.php:75
 msgid "Markup by Attribute Settings"
 msgstr "Ustawienia Markup-by-Attribute"
 
-#: src/backend/settings.php:165
+#: src/backend/settings.php:166
 msgid "Markup Calculation"
 msgstr "Obliczanie narzutu"
 
-#: src/backend/settings.php:90
+#: src/backend/settings.php:91
 msgid "Markup Display"
 msgstr "Wyświetlanie narzutu"
 
 #: src/backend/term.php:47
-msgid ""
-"Markup or markdown associated with this option. Signed, floating point "
-"numeric allowed."
-msgstr ""
-"Dodatnia lub ujemna liczba całkowita. Może być zmiennoprzecinkowa. Może być "
-"znak % na końcu."
+msgid "Markup or markdown associated with this option. Signed, floating point numeric allowed."
+msgstr "Dodatnia lub ujemna liczba całkowita. Może być zmiennoprzecinkowa. Może być znak % na końcu."
 
 #: markup-by-attribute-for-woocommerce.php:108
 msgid "Markup:"
 msgstr "Zmiana ceny: "
 
 #: src/utility/pointers.php:101
-msgid ""
-"Markups can be fixed values such as <code>5</code> or <code>5.95</code>, or "
-"percentages such as <code>5%</code> or <code>1.23%</code>. Use plus or minus "
-"signs (like <code>+5.95</code> or <code>-1.23%</code>) for increases or "
-"decreases.<br/>Markups are applied when setting prices or reapplying markups "
-"to variations."
-msgstr ""
-"Narzuty mogą być wartościami stałymi jak <code>5</code> lub <code>5.95</code>"
-", albo procentami jak <code>5%</code> lub <code>1.23%</code>. Użyj znaków "
-"plus lub minus (jak <code>+5.95</code> lub <code>-1.23%</code>) dla "
-"zwiększeń lub zmniejszeń.<br/>Narzuty są stosowane podczas ustawiania cen "
-"lub ponownego stosowania narzutów do wariantów."
+msgid "Markups can be fixed values such as <code>5</code> or <code>5.95</code>, or percentages such as <code>5%</code> or <code>1.23%</code>. Use plus or minus signs (like <code>+5.95</code> or <code>-1.23%</code>) for increases or decreases.<br/>Markups are applied when setting prices or reapplying markups to variations."
+msgstr "Narzuty mogą być wartościami stałymi jak <code>5</code> lub <code>5.95</code>, albo procentami jak <code>5%</code> lub <code>1.23%</code>. Użyj znaków plus lub minus (jak <code>+5.95</code> lub <code>-1.23%</code>) dla zwiększeń lub zmniejszeń.<br/>Narzuty są stosowane podczas ustawiania cen lub ponownego stosowania narzutów do wariantów."
 
-#: src/backend/settings.php:237
+#: src/backend/settings.php:255
 msgid "Max Variations"
 msgstr "Maksymalna liczba wariantów"
 
-#: src/backend/settings.php:238
+#: src/backend/settings.php:256
 msgid "Maximum number of variations that can be created per run."
-msgstr ""
-"Maksymalna liczba wariantów, która może zostać utworzona w jednym przebiegu."
+msgstr "Maksymalna liczba wariantów, która może zostać utworzona w jednym przebiegu."
 
-#: src/backend/settings.php:101
+#: src/backend/settings.php:102
 msgid "Option Drop-down Behavior"
 msgstr "Zachowanie listy rozwijanej"
 
-#: src/backend/settings.php:211
+#: src/backend/settings.php:229
 msgid "Other"
 msgstr "Inne"
 
-#: src/backend/settings.php:127
+#: src/backend/settings.php:128
 msgid "Overwrite the variation description with price information."
 msgstr "Nadpisz opis wariantu informacją o zmianie ceny."
 
-#: src/backend/product.php:545 src/backend/product.php:550
+#: src/backend/product.php:583 src/backend/product.php:588
 msgid "Permission denied"
 msgstr ""
 "Brak uprawnień\n"
+""
 
 #: src/backend/productlist.php:80
 #, php-format
@@ -250,38 +208,32 @@ msgstr "Cena produktu"
 msgid "Reapply Markups"
 msgstr "Ponowne zastosowanie narzutów"
 
-#: src/backend/product.php:527
+#: src/backend/product.php:565
 msgid "Reapply markups to prices"
 msgstr "Ponownie zastosuj narzuty do cen"
 
 #: src/backend/term.php:49
-msgid ""
-"Rename the attribute to include the markup. Often needed if the option drop-"
-"down box is overwritten by another plugin or theme and markup is no longer "
-"visible."
-msgstr ""
-"Zmień nazwę atrybutu, aby uwzględnić marżę. Często potrzebne, jeśli pole "
-"wyboru opcji jest nadpisywane przez inny plugin lub motyw i marża przestaje "
-"być widoczna."
+msgid "Rename the attribute to include the markup. Often needed if the option drop-down box is overwritten by another plugin or theme and markup is no longer visible."
+msgstr "Zmień nazwę atrybutu, aby uwzględnić marżę. Często potrzebne, jeśli pole wyboru opcji jest nadpisywane przez inny plugin lub motyw i marża przestaje być widoczna."
 
 #: src/backend/productlist.php:261
 msgid "Reprice"
 msgstr "Przelicz"
 
-#: src/backend/product.php:528
+#: src/backend/product.php:566
 #, php-format
 msgid "Reprice variations at %s, plus or minus the markups?"
 msgstr "Przeliczyć warianty po %s, plus lub minus narzuty?"
 
-#: src/backend/settings.php:195
+#: src/backend/settings.php:196
 msgid "Round Markup"
 msgstr "Zaokrąglić zmiana ceny"
 
-#: src/backend/settings.php:196
+#: src/backend/settings.php:197
 msgid "Round percentage markups to keep the value below the decimal intact?"
 msgstr "Zaokrąglić procentowe narzuty, aby zachować wartość po przecinku?"
 
-#: src/backend/settings.php:178
+#: src/backend/settings.php:179
 msgid "Sale Price Markup"
 msgstr "Narzut na Cenę Promocyjną"
 
@@ -289,101 +241,77 @@ msgstr "Narzut na Cenę Promocyjną"
 msgid "Settings"
 msgstr "Ustawienia"
 
-#: src/backend/settings.php:102
-msgid ""
-"Should Markup-by-Attribute add the markup to the options drop-down box, and "
-"should the currency symbol be displayed?"
-msgstr ""
-"Czy wtyczka ma dodać zmianę ceny i znak waluty do listy rozwijanej atrybutów "
-"produktu?"
+#: src/backend/settings.php:103
+msgid "Should Markup-by-Attribute add the markup to the options drop-down box, and should the currency symbol be displayed?"
+msgstr "Czy wtyczka ma dodać zmianę ceny i znak waluty do listy rozwijanej atrybutów produktu?"
 
-#: src/backend/settings.php:179
+#: src/backend/settings.php:180
 msgid "Should Markup-by-Attribute calculate percentage markups on sale prices?"
-msgstr ""
-"Czy Markup-by-Attribute powinien obliczać procentowe narzuty na cenach "
-"promocyjnych?"
+msgstr "Czy Markup-by-Attribute powinien obliczać procentowe narzuty na cenach promocyjnych?"
 
-#: src/backend/settings.php:222
+#: src/backend/settings.php:213
+msgid "Should Markup-by-Attribute ignore variations with a zero price?"
+msgstr "Czy Markup-by-Attribute ma ignorować warianty z ceną zero?"
+
+#: src/backend/settings.php:240
 msgid "Show Attributes on Product List"
 msgstr "Pokaż Atrybuty na Liście Produktów"
 
-#: src/backend/settings.php:108
+#: src/backend/settings.php:109
 msgid "Show the markup WITH the currency symbol in the options drop-down box."
 msgstr "Pokaż zmianę ceny Z symbolem waluty w liście rozwijanej."
 
-#: src/backend/settings.php:109
-msgid ""
-"Show the markup WITHOUT the currency symbol in the options drop-down box."
+#: src/backend/settings.php:110
+msgid "Show the markup WITHOUT the currency symbol in the options drop-down box."
 msgstr "Pokaż zmianę ceny BEZ symbolu waluty w liście rozwijanej."
 
-#: src/backend/settings.php:197
-#| msgid ""
-#| "Some stores want prices with specific numbers below the decimal place "
-#| "(such as xx.00 or xx.95). Rounding percentage markups will keep the value "
-#| "below the decimal."
-msgid ""
-"Some stores want prices with specific numbers below the decimal place (such "
-"as xx.00 or xx.95). Rounding percentage markups will keep the value below "
-"the decimal intact."
-msgstr ""
-"Niektóre sklepy preferują ceny z konkretnymi liczbami po przecinku (takimi "
-"jak xx,00 lub xx,95). Zaokrąglanie procentowych narzutów zachowa "
-"niezmienioną wartość po przecinku."
+#: src/backend/settings.php:198
+#| msgid "Some stores want prices with specific numbers below the decimal place (such as xx.00 or xx.95). Rounding percentage markups will keep the value below the decimal."
+msgid "Some stores want prices with specific numbers below the decimal place (such as xx.00 or xx.95). Rounding percentage markups will keep the value below the decimal intact."
+msgstr "Niektóre sklepy preferują ceny z konkretnymi liczbami po przecinku (takimi jak xx,00 lub xx,95). Zaokrąglanie procentowych narzutów zachowa niezmienioną wartość po przecinku."
 
-#: src/utility/general.php:216
+#: src/utility/general.php:217
 #, php-format
 msgid "Subtract %1$s for %2$s"
 msgstr "Obniżka %1$s za %2$s"
 
-#: src/utility/general.php:202
+#: src/utility/general.php:203
 #, php-format
 msgid "Subtract %1$s for %2$s: %3$s"
 msgstr "Odejmij %1$s za %2$s: %3$s"
 
-#: src/backend/settings.php:76
-msgid ""
-"The following options are used to configure variation markups by attribute."
-msgstr ""
-"Poniższe opcje służą do konfigurowania podwyżek (obniżek) cen przez atrybut "
-"produktu."
+#: src/backend/settings.php:77
+msgid "The following options are used to configure variation markups by attribute."
+msgstr "Poniższe opcje służą do konfigurowania podwyżek (obniżek) cen przez atrybut produktu."
 
-#: src/backend/settings.php:66
+#: src/backend/settings.php:67
 msgid "This setting affects all products and takes effect immediately."
 msgstr "To ustawienie natychmiastowo wpływa na wszystkie produkty na sklepie. "
 
-#: src/backend/settings.php:67
-msgid ""
-"This setting affects products individually and takes effect when you "
-"recalculate prices or reapply markups."
-msgstr ""
-"To ustawienie wpływa na produkty indywidualnie i zaczyna obowiązywać, gdy "
-"przeliczasz ceny lub ponownie stosujesz narzuty."
+#: src/backend/settings.php:68
+msgid "This setting affects products individually and takes effect when you recalculate prices or reapply markups."
+msgstr "To ustawienie wpływa na produkty indywidualnie i zaczyna obowiązywać, gdy przeliczasz ceny lub ponownie stosujesz narzuty."
 
 #: src/utility/pointers.php:133
-msgid ""
-"Using this plugin is simple, but might be a little obscure. This link to the "
-"instructions may help get you started.<br/>We'll just leave the instructions "
-"link right here."
-msgstr ""
-"Używanie tej wtyczki jest proste, ale może być trochę niejasne. Ten link do "
-"instrukcji może pomóc Ci zacząć. <br/> Zostawimy link do instrukcji tutaj."
+msgid "Using this plugin is simple, but might be a little obscure. This link to the instructions may help get you started.<br/>We'll just leave the instructions link right here."
+msgstr "Używanie tej wtyczki jest proste, ale może być trochę niejasne. Ten link do instrukcji może pomóc Ci zacząć. <br/> Zostawimy link do instrukcji tutaj."
 
-#: src/backend/settings.php:119
+#: src/backend/settings.php:120
 msgid "Variation Description Behavior"
 msgstr "Zachowanie Opisu Wariantu"
 
-#: src/backend/settings.php:224
-msgid ""
-"When set on, you can filter by attribute, making it easier to find products "
-"that contain attributes you may have changed."
-msgstr ""
-"Po włączeniu możesz filtrować według atrybutu, co ułatwia znalezienie "
-"produktów zawierających atrybuty, które mogły zostać zmienione."
+#: src/backend/settings.php:214
+msgid "When set OFF, markup calculations proceed normally even when the base price is zero. This allows using attributes to determine the entire price."
+msgstr "Gdy wyłączone, obliczenia narzutu przebiegają normalnie nawet przy zerowej cenie bazowej. Pozwala to na wykorzystanie atrybutów do określenia całkowitej ceny."
 
-#: src/backend/settings.php:239
-msgid ""
-"You can always create more by running 'Create variations from all "
-"attributes' again."
-msgstr ""
-"Zawsze możesz utworzyć więcej, ponownie uruchamiając opcję 'Wygeneruj "
-"warianty'."
+#: src/backend/settings.php:215
+msgid "When set ON, variations with zero prices remain at zero, ignoring any markups. This preserves zero prices for giveaway items."
+msgstr "Gdy włączone, warianty z cenami zerowymi pozostają zerowe, ignorując wszelkie narzuty. Zachowuje to zerowe ceny dla produktów promocyjnych."
+
+#: src/backend/settings.php:242
+msgid "When set on, you can filter by attribute, making it easier to find products that contain attributes you may have changed."
+msgstr "Po włączeniu możesz filtrować według atrybutu, co ułatwia znalezienie produktów zawierających atrybuty, które mogły zostać zmienione."
+
+#: src/backend/settings.php:257
+msgid "You can always create more by running 'Create variations from all attributes' again."
+msgstr "Zawsze możesz utworzyć więcej, ponownie uruchamiając opcję 'Wygeneruj warianty'."

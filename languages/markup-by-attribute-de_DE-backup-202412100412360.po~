@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Markup by Attribute for WooCommerce - MT² Tech\n"
 "Report-Msgid-Bugs-To: markupbyattribute@mail.com\n"
 "POT-Creation-Date: 2020-04-17 00:43+0000\n"
-"PO-Revision-Date: 2024-12-10 04:12+0000\n"
+"PO-Revision-Date: 2024-12-10 04:04+0000\n"
 "Last-Translator: \n"
 "Language-Team: German\n"
 "Language: de_DE\n"
@@ -303,7 +303,7 @@ msgstr "Wenn ausgeschaltet, werden Aufpreisberechnungen normal durchgeführt, au
 
 #: src/backend/settings.php:215
 msgid "When set ON, variations with zero prices remain at zero, ignoring any markups. This preserves zero prices for giveaway items."
-msgstr "Wenn eingeschaltet, bleiben Variationen mit Null-Preis bei Null, ungeachtet der Aufpreise. Dies bewahrt Null-Preise für Werbegeschenke."
+msgstr ""
 
 #: src/backend/settings.php:242
 msgid "When set on, you can filter by attribute, making it easier to find products that contain attributes you may have changed."

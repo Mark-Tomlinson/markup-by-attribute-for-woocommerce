@@ -3,10 +3,10 @@ msgstr ""
 "Project-Id-Version: Markup by Attribute for WooCommerce - MT² Tech\n"
 "Report-Msgid-Bugs-To: markupbyattribute@mail.com\n"
 "POT-Creation-Date: 2020-04-17 00:43+0000\n"
-"PO-Revision-Date: 2024-12-10 04:12+0000\n"
+"PO-Revision-Date: 2024-12-10 04:05+0000\n"
 "Last-Translator: \n"
-"Language-Team: German\n"
-"Language: de_DE\n"
+"Language-Team: German (Switzerland)\n"
+"Language: de_CH\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -91,7 +91,7 @@ msgstr "Grundpreis verstecken"
 #: src/backend/settings.php:121
 #| msgid "How should Markup-by-Attribute handle adding price markup information to the variation description?"
 msgid "How should Markup-by-Attribute handle adding price markup information to the product variation description?"
-msgstr "Wie soll Markup-by-Attribute die Hinzufügung von Preisaufschlagsinformationen zur Produktvariationsbeschreibung handhaben?"
+msgstr "Wie soll Markup-by-Attribute die Hinzufügung von Preiszuschlagsinformationen zur Produktvariationsbeschreibung handhaben?"
 
 #. URI of the plugin
 msgid "https://wordpress.org/plugins/markup-by-attribute-for-woocommerce/"
@@ -150,7 +150,7 @@ msgstr "Markup-by-Attribute Einstellungen"
 
 #: src/backend/settings.php:166
 msgid "Markup Calculation"
-msgstr "Aufschlagsberechnung"
+msgstr "Zuschlagsberechnung"
 
 #: src/backend/settings.php:91
 msgid "Markup Display"
@@ -211,7 +211,7 @@ msgstr "Aufschläge auf Preise neu anwenden"
 
 #: src/backend/term.php:49
 msgid "Rename the attribute to include the markup. Often needed if the option drop-down box is overwritten by another plugin or theme and markup is no longer visible."
-msgstr "Benennen Sie das Attribut um, um die Marge einzuschließen. Häufig erforderlich, wenn das Options-Dropdown-Feld von einem anderen Plugin oder Theme überschrieben wird und die Marge nicht mehr sichtbar ist."
+msgstr "Benennen Sie das Attribut um, um die Marge einzuschliessen. Häufig erforderlich, wenn das Options-Dropdown-Feld von einem anderen Plugin oder Theme überschrieben wird und die Marge nicht mehr sichtbar ist."
 
 #: src/backend/productlist.php:261
 msgid "Reprice"
@@ -256,11 +256,11 @@ msgstr "Attribute in der Produktliste anzeigen"
 
 #: src/backend/settings.php:109
 msgid "Show the markup WITH the currency symbol in the options drop-down box."
-msgstr "Zeige den Preisaufschlag MIT dem Währungszeichen im Drop-Down-Feld an."
+msgstr "Zeige den Preiszuschlag MIT dem Währungszeichen im Drop-Down-Feld an."
 
 #: src/backend/settings.php:110
 msgid "Show the markup WITHOUT the currency symbol in the options drop-down box."
-msgstr "Zeige den Preisaufschlag OHNE das Währungszeichen im Drop-Down-Feld an."
+msgstr "Zeige den Preiszuschlag OHNE das Währungszeichen im Drop-Down-Feld an."
 
 #: src/backend/settings.php:198
 #| msgid "Some stores want prices with specific numbers below the decimal place (such as xx.00 or xx.95). Rounding percentage markups will keep the value below the decimal."
@@ -270,7 +270,7 @@ msgstr "Einige Shops möchten Preise mit bestimmten Zahlen nach dem Komma (wie x
 #: src/utility/general.php:217
 #, php-format
 msgid "Subtract %1$s for %2$s"
-msgstr "Abzüglich %1$s für %2$s"
+msgstr "Preisabzug %1$s für %2$s"
 
 #: src/utility/general.php:203
 #, php-format
@@ -303,7 +303,7 @@ msgstr "Wenn ausgeschaltet, werden Aufpreisberechnungen normal durchgeführt, au
 
 #: src/backend/settings.php:215
 msgid "When set ON, variations with zero prices remain at zero, ignoring any markups. This preserves zero prices for giveaway items."
-msgstr "Wenn eingeschaltet, bleiben Variationen mit Null-Preis bei Null, ungeachtet der Aufpreise. Dies bewahrt Null-Preise für Werbegeschenke."
+msgstr ""
 
 #: src/backend/settings.php:242
 msgid "When set on, you can filter by attribute, making it easier to find products that contain attributes you may have changed."

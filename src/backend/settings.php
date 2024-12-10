@@ -19,6 +19,7 @@ class Settings extends WC_Settings_API {
 	public $hide_base_price		= 'no';
 	public $sale_price_markup	= 'yes';
 	public $round_markup		= 'no';
+	public $allow_zero			= 'no';
 	public $show_attrb_list		= 'no';
 	public $max_variations		= 50;
 
@@ -199,6 +200,23 @@ class Settings extends WC_Settings_API {
 				'id'		=> 'mt2mba_round_markup',
 				'type'		=> 'checkbox',
 				'default'	=> $this->round_markup
+			);
+
+			/** -- Allow Zero Base Price --
+			 *  Should Markup-by-Attribute process variations with zero base price?
+			 *  Some stores use markups to set the entire price, setting the base price to zero.
+			 *  Others want zero-priced variations to remain at zero for giveaways. This setting
+			 *  lets you choose which behavior you want.
+			 */
+			$mt2mba_settings[] = array(
+				'name'    => __('Allow Zero Price', 'markup-by-attribute'),
+				'desc'    => __('Should Markup-by-Attribute ignore variations with a zero price?', 'markup-by-attribute') . '<br/>' .
+					__('When set OFF, markup calculations proceed normally even when the base price is zero. This allows using attributes to determine the entire price.', 'markup-by-attribute') . '<br/>' .
+					__('When set ON, variations with zero prices remain at zero, ignoring any markups. This preserves zero prices for giveaway items.', 'markup-by-attribute') . ' <br/>' .
+					'<em>' . $individually . '</em>',
+				'id'      => 'mt2mba_allow_zero',
+				'type'    => 'checkbox',
+				'default' => $this->allow_zero
 			);
 
 			$mt2mba_settings[] = array(

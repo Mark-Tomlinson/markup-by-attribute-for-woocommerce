@@ -47,7 +47,6 @@ class General {
 			define('MT2MBA_SALE_PRICE_MARKUP', get_option('mt2mba_sale_price_markup', $settings->sale_price_markup));
 			define('MT2MBA_ROUND_MARKUP', get_option('mt2mba_round_markup', $settings->round_markup));
 			define('MT2MBA_ALLOW_ZERO', get_option('mt2mba_allow_zero', $settings->allow_zero));
-			define('MT2MBA_SHOW_ATTRB_LIST', get_option('mt2mba_show_attrb_list', $settings->show_attrb_list));
 			define('MT2MBA_MAX_VARIATIONS', get_option('mt2mba_max_variations', $settings->max_variations));
 			define('MT2MBA_CURRENCY_SYMBOL', get_woocommerce_currency_symbol(get_woocommerce_currency()));
 		}
@@ -108,14 +107,16 @@ class General {
 					$last_parent_id = $v_product['post_parent'];
 				}
 			}
+			// Clean database for conversion from version 2.3.
+			$wpdb->delete("{$wpdb->prefix}options", array('option_name'=>'mt2mba_decimal_points'));
+			$wpdb->delete("{$wpdb->prefix}options", array('option_name'=>'mt2mba_symbol_before'));
+			$wpdb->delete("{$wpdb->prefix}options", array('option_name'=>'mt2mba_symbol_after'));
 		}
 
-		// -----------------------------------------------
-		// Clean database for conversion from version 2.3.
-		// -----------------------------------------------
-		$wpdb->delete("{$wpdb->prefix}options", array('option_name'=>'mt2mba_decimal_points'));
-		$wpdb->delete("{$wpdb->prefix}options", array('option_name'=>'mt2mba_symbol_before'));
-		$wpdb->delete("{$wpdb->prefix}options", array('option_name'=>'mt2mba_symbol_after'));
+		//	Delete discontinued setting, mt2mba_show_attrb_list
+		if($current_db_version < 2.2) {
+			$wpdb->delete("{$wpdb->prefix}options", array('option_name'=>'mt2mba_show_attrb_list'));
+		}
 
 		// Made it this far, update database version
 		update_option('mt2mba_db_version', MT2MBA_DB_VERSION);

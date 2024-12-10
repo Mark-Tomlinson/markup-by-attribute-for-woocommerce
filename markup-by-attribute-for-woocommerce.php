@@ -24,7 +24,7 @@ use mt2Tech\MarkupByAttribute\Utility	as Utility;
  * Text Domain:				markup-by-attribute
  * Domain Path:				/languages
  * Version:					4.2
- * Build:					202449.02
+ * Build:					202449.03
  * Stable tag:				trunk
  * Tested up to:			6.7.1
  * Requires at least:		4.6
@@ -94,8 +94,8 @@ function mt2mba_main() {
 	// Set plugin information
 	define('MT2MBA_PLUGIN_PREFIX', 'MT2MBA');
 	define('MT2MBA_VERSION', '4.2');
-	define('MT2MBA_BUILD', 202449.02);
-	define('MT2MBA_DB_VERSION', 2.1);
+	define('MT2MBA_BUILD', 202449.03);
+	define('MT2MBA_DB_VERSION', 2.2);
 	define('MT2MBA_SITE_URL', get_bloginfo('wpurl'));
 	define('MT2MBA_PLUGIN_DIR', plugin_dir_path(__FILE__));
 	define('MT2MBA_PLUGIN_URL', plugin_dir_url(__FILE__));
@@ -133,9 +133,7 @@ function mt2mba_main() {
 
 		Utility\Pointers::get_instance();
 		Backend\Term::get_instance();
-		if (defined('MT2MBA_SHOW_ATTRB_LIST') && MT2MBA_SHOW_ATTRB_LIST === 'yes') {
-			Backend\ProductList::get_instance();
-		}
+		Backend\ProductList::get_instance();
 		new Backend\Product;	// Product class cannot be singleton
 
 	} else {

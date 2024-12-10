@@ -20,7 +20,6 @@ class Settings extends WC_Settings_API {
 	public $sale_price_markup	= 'yes';
 	public $round_markup		= 'no';
 	public $allow_zero			= 'no';
-	public $show_attrb_list		= 'no';
 	public $max_variations		= 50;
 
 	// Public method to get the instance
@@ -229,20 +228,6 @@ class Settings extends WC_Settings_API {
 				'name'		=> __('Other', 'markup-by-attribute'),
 				'type'		=> 'title',
 				'id'		=> 'mt2mba_other'
-			);
-
-			/** -- Show Attributes on Product List --
-			 *	Include a column on the 'All Products' page to show all attributes associated with the products?
-			 *	When set on, you can filter by attribute, making it easier to find products that contain attributes
-			 *	you may have changed.
-			 */
-			$mt2mba_settings[] = array(
-				'name'		=> __('Show Attributes on Product List', 'markup-by-attribute'),
-				'desc'		=> __('Include a column on the \'All Products\' page to show all attributes associated with the products?', 'markup-by-attribute') . '<br/>' .
-					__("When set on, you can filter by attribute, making it easier to find products that contain attributes you may have changed.", 'markup-by-attribute'),
-				'id'		=> 'mt2mba_show_attrb_list',
-				'type'		=> 'checkbox',
-				'default'	=> $this->show_attrb_list
 			);
 
 			/** -- Max Variations --

@@ -10,7 +10,7 @@ Donate link:			https://www.paypal.me/MT2Dev/5
 License:				GPLv3
 License URI:			https://www.gnu.org/licenses/gpl-3.0.html
 Version:				4.2
-Build:					202449.02
+Build:					202449.03
 Stable tag:				trunk
 Tested up to:			6.7.1
 Requires at least:		4.6
@@ -143,6 +143,8 @@ If you use Markup-by-Attribute and want to see me continuing support for it, I e
 
 == Changelog ==
 = 4.2 =
+_Build 202447.07_
+**MAINTENANCE**: Converted spaces into tabs for compactness.
 _Build 202449.02_
 **FEATURE**: Added the option to add the attribute label to the Add/Subtract text in the description.
 - Choose either "_Add $1.50 for Blue_" or "_Add $1.50 for Color: Blue_".
@@ -153,8 +155,8 @@ _Build 202449.02_
 - When set ON, variations with zero prices remain at zero, ignoring any markups.
 **FEATURE**: If markup/markdown calculations yield negative prices, Markup-by-Attribute will remove the price of a variation. WooCommerce will not display unpriced items to the customer, and the admin console will call out unpriced items.
 **MAINTENANCE**: Ensured compatibility with current versions of WordPress, WooCommerce, MySQL, and PHP
-_Build 202447.07_
-**MAINTENANCE**: Converted spaces into tabs for compactness.
+_Build 202449.03_
+**FIX**: Removed the `Show Attributes List` setting because that's what WordPress `Screen Options` are for.
 
 = 4.0.2 =
 _Build 202447.05_

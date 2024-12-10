@@ -156,16 +156,12 @@ class ProductList {
 	}
 
 	/**
-	 * Modify the columns in the product list table if 'product_attributes' column doesn't exist.
+	 * Modify the columns in the product list table
 	 *
 	 * @param	array	$columns	Existing columns.
 	 * @return	array				Modified columns.
 	 */
 	public function modify_product_columns($columns) {
-		// Check if 'product_attributes' column already exists
-		if (isset($columns['product_attributes'])) {
-			return $columns; // Return unmodified if the column already exists
-		}
 		// Insert attributes column after the product tag column
 		$new_columns = array();
 		foreach ($columns as $key => $column) {
@@ -174,12 +170,13 @@ class ProductList {
 				$new_columns['product_attributes'] = __('Attributes', 'markup-by-attribute');
 			}
 		}
-		// If we couldn't insert after 'product_tag', add it to the end
-		if (!isset($columns['product_attributes'])) {
+		// If we couldn't insert after 'product_tag', add to end
+		if (!isset($new_columns['product_attributes'])) {
 			$new_columns['product_attributes'] = __('Attributes', 'markup-by-attribute');
 		}
 		return $new_columns;
 	}
+
 	/**
 	 * Static cache for term markups to avoid repeated database queries
 	 */

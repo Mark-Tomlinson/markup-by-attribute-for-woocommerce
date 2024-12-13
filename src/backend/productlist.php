@@ -16,6 +16,18 @@ class ProductList {
 	 */
 	private static $instance = null;
 
+	/**
+     * Cache for variable product IDs to avoid repeated checks
+     * @var array
+     */
+    private $variable_products = [];
+
+	/**
+	 * Product base price used throughout
+	 * @var array
+	 */
+	private $base_price = '';
+
 	// Public method to get the instance
 	public static function get_instance() {
 		if (self::$instance === null) {
@@ -31,12 +43,12 @@ class ProductList {
 	public function __wakeup() {}
 
 	// Private constructor
-	private function __construct() {
-		// Add filter to modify product columns
-		add_filter('manage_edit-product_columns', array($this, 'modify_product_columns'), 20);
+    private function __construct() {
+        // Add filter to modify product columns
+        add_filter('manage_edit-product_columns', array($this, 'modify_product_columns'), 20);
 
-		// Add action to populate attribute column
-		add_action('manage_product_posts_custom_column', array($this, 'populate_attributes_column'), 10, 2);
+        // Add action to populate columns
+        add_action('manage_product_posts_custom_column', array($this, 'populate_columns'), 10, 2);
 
 		// Add action to filter products by attribute
 		add_action('pre_get_posts', array($this, 'filter_products_by_attribute'));
@@ -151,28 +163,25 @@ class ProductList {
 			// Add products to process to the redirect URL
 			$redirect_to = add_query_arg('reapply_markups_ids', implode(',', $variable_products), $redirect_to);
 		}
-
 		return $redirect_to;
 	}
 
 	/**
 	 * Modify the columns in the product list table
 	 *
-	 * @param	array	$columns	Existing columns.
-	 * @return	array				Modified columns.
+	 * @param   array   $columns    Existing columns.
+	 * @return  array               Modified columns.
 	 */
 	public function modify_product_columns($columns) {
-		// Insert attributes column after the product tag column
 		$new_columns = array();
 		foreach ($columns as $key => $column) {
 			$new_columns[$key] = $column;
+			if ($key === 'price') {
+				$new_columns['mt2mba_base_price'] = __('Base Price', 'markup-by-attribute');
+			}
 			if ($key === 'product_tag') {
 				$new_columns['product_attributes'] = __('Attributes', 'markup-by-attribute');
 			}
-		}
-		// If we couldn't insert after 'product_tag', add to end
-		if (!isset($new_columns['product_attributes'])) {
-			$new_columns['product_attributes'] = __('Attributes', 'markup-by-attribute');
 		}
 		return $new_columns;
 	}
@@ -212,56 +221,107 @@ class ProductList {
 	}
 
 	/**
-	 * Populate the custom attributes column.
-	 *
-	 * @param string $column Name of the column to display.
-	 * @param int $post_id ID of the current product.
-	 */
-	public function populate_attributes_column($column, $post_id) {
-		if ('product_attributes' === $column) {
-			$product = wc_get_product($post_id);
-			$attributes = $product->get_attributes();
+     * Populate the custom columns
+     *
+     * @param	string	$column  Name of the column to display.
+     * @param	int		$post_id ID of the current product.
+     */
+    public function populate_columns($column, $post_id) {
+		// Get product
+        $product = wc_get_product($post_id);
+		// Get appropriate base price
+		$this->base_price = '';
+		if ($product->is_on_sale()) {
+			$this->base_price = get_post_meta($post_id, 'mt2mba_base_sale_price', true);
+		} else {
+			$this->base_price = get_post_meta($post_id, 'mt2mba_base_regular_price', true);
+		}
 
-			if (!empty($attributes)) {
-				$output = array();
-				$has_markup = false;
+        // Cache whether this is a variable product on first check
+        if (!isset($this->variable_products[$post_id])) {
+            $this->variable_products[$post_id] = $product && $product->is_type('variable');
+        }
 
-				foreach ($attributes as $attribute) {
-					if ($attribute->is_taxonomy()) {
-						$attribute_name = wc_attribute_label($attribute->get_name());
-						$taxonomy = $attribute->get_name();
-						
-						// Check if this attribute has any markup terms
-						if ($this->attribute_has_markup($taxonomy)) {
-							$has_markup = true;
-						}
-					} else {
-						$attribute_name = $attribute->get_name();
-						$taxonomy = sanitize_title($attribute_name);
-					}
+		switch ($column) {
+			case 'product_attributes':
+				$this->render_attributes_column($product, $post_id);
+				break;
 
-					$filter_url = add_query_arg(array(
-						'filter_product_attribute' => $taxonomy,
-						'post_type' => 'product'
-					), admin_url('edit.php'));
-
-					$output[] = '<a href="' . esc_url($filter_url) . '">' . esc_html($attribute_name) . '</a>';
+			case 'mt2mba_base_price':
+				if (!$this->variable_products[$post_id]) {
+					echo '<span class="na">–</span>';
+					break;
 				}
-				echo implode(', ', $output);
-
-				// Only show reapply link for variable products with markup-enabled attributes
-				if ($product->is_type('variable') && $has_markup) {
-					echo '<br/><a href="#" class="js-mt2mba-reapply-markup" ' .
-						'data-product-id="' . esc_attr($post_id) . '" ' .
-						'title="' . esc_attr__('Reapply Markups', 'markup-by-attribute') . '">' .
-						'<span class="dashicons dashicons-update"></span>' .
-						__('Reprice', 'markup-by-attribute') . '</a>';
+				if ($this->base_price === '') {
+					echo '<span class="na">–</span>';
+					break;
 				}
-			} else {
-				echo '<span class="na">–</span>';
-			}
+				echo wc_price($this->base_price);
+				break;
 		}
 	}
+
+    /**
+     * Render the attributes column content
+     *
+     * @param WC_Product $product Product object
+     * @param int        $post_id Product ID
+     */
+    private function render_attributes_column($product, $post_id) {
+        $attributes = $product->get_attributes();
+        
+        if (empty($attributes)) {
+            echo '<span class="na">–</span>';
+            return;
+        }
+
+        $output = array();
+        $has_markup = false;
+
+        foreach ($attributes as $attribute) {
+            if ($attribute->is_taxonomy()) {
+                $attribute_name = wc_attribute_label($attribute->get_name());
+                $taxonomy = $attribute->get_name();
+                
+                if ($this->attribute_has_markup($taxonomy)) {
+                    $has_markup = true;
+                }
+            } else {
+                $attribute_name = $attribute->get_name();
+                $taxonomy = sanitize_title($attribute_name);
+            }
+
+            $filter_url = add_query_arg(array(
+                'filter_product_attribute' => $taxonomy,
+                'post_type' => 'product'
+            ), admin_url('edit.php'));
+
+            $output[] = '<a href="' . esc_url($filter_url) . '">' . esc_html($attribute_name) . '</a>';
+        }
+        
+        echo implode(', ', $output);
+
+        // Only show reapply link for variable products with markup-enabled attributes
+        if ($this->variable_products[$post_id] && $has_markup) {
+            echo '<br/><a href="#" class="js-mt2mba-reapply-markup" ' .
+                'data-product-id="' . esc_attr($post_id) . '" ' .
+                'title="' . esc_attr__('Reapply Markups', 'markup-by-attribute') . '">' .
+                '<span class="dashicons dashicons-update"></span>' .
+                __('Reprice', 'markup-by-attribute') . '</a>';
+			// Add hover text to reprice icon
+			echo "<script>
+				jQuery(document).ready(function($) {
+					$('.js-mt2mba-reapply-markup[data-product-id=\"{$post_id}\"]')
+						.attr('title', '" . 
+						esc_js(sprintf(
+							__('Reapply markups using base price: %s', 'markup-by-attribute'),
+							html_entity_decode(strip_tags(wc_price($this->base_price)))
+						)) . 
+						"');
+				});
+				</script>";
+        }
+    }
 
 	/**
 	 * Filter products by attribute in the admin product list.

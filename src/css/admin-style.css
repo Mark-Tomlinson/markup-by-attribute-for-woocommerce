@@ -1,7 +1,7 @@
 /* admin-style.css */
 
 /* Need to eliminate the [Add price] button to prevent
- * conflicts with the [Set regular prices] bulk function. */
+ * conflicts with the [Set regular prices] bulk function */
  .woocommerce-add-variation-price-container {
 	display: none !important;
 }
@@ -10,10 +10,23 @@
 .wp-list-table {
 	table-layout: fixed;
 }
-
 .wp-list-table .column-product_attributes {
 	width: 11%;
 }
+
+/* Base price column */
+.wp-list-table .column-mt2mba_base_price {
+    width: 8%;
+    text-align: center;
+}
+.wp-list-table .column-mt2mba_base_price .woocommerce-Price-amount {
+    opacity: 0.75;
+}
+
+/* Ensure price aligns with WooCommerce price column */
+.wp-list-table .column-mt2mba_base_price .woocommerce-Price-amount {
+    margin-right: 12px;
+} 
 
 .wp-list-table td {
 	overflow: hidden;

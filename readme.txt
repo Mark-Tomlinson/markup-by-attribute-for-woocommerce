@@ -2,22 +2,22 @@
 
 Plugin Name:			Markup by Attribute for WooCommerce
 Description:			This plugin adds product variation markup by attribute to WooCommerce -- the ability to add a markup (or markdown) to an attribute term and have that change the regular and sale price of the associated product variations.
-Plugin URI:				https://wordpress.org/plugins/markup-by-attribute-for-woocommerce/
-Tags:					WooCommerce, Attribute, Price, Variation, Markup
-Author:					MarkTomlinson
+Plugin URI:			https://wordpress.org/plugins/markup-by-attribute-for-woocommerce/
+Tags:				WooCommerce, Attribute, Price, Variation, Markup
+Author:				MarkTomlinson
 Contributors:			MarkTomlinson
 Donate link:			https://www.paypal.me/MT2Dev/5
-License:				GPLv3
+License:			GPLv3
 License URI:			https://www.gnu.org/licenses/gpl-3.0.html
-Version:				4.2
-Build:					202449.03
-Stable tag:				trunk
+Version:			4.2
+Build:				202449.03
+Stable tag:			trunk
 Tested up to:			6.7.1
 Requires at least:		4.6
 PHP tested up to:		8.3.14
 Requires PHP:			5.6
 WC tested up to:		9.4.3
-WC requires at least:	3.0
+WC requires at least:		3.0
 MySQL tested up to:		8.0.40
 
 This plugin adds product variation markup by attribute to WooCommerce and adjusts product variation regular and sale prices accordingly.

@@ -342,7 +342,7 @@ class PriceSetHandler extends PriceMarkupHandler {
 						'price' => 0,
 						'description' => trim($description)
 					];
-					continue;    // Exit loop and go onto the next variation
+					continue;	// Exit loop and go onto the next variation
 			}
 
 			$variation_price = $this->base_price;

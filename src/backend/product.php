@@ -528,8 +528,8 @@ class Product {
 				// Regular Price Field
 				woocommerce_wp_text_input([
 					'id'            => 'base_regular_price',
-					'label'         => __('Base regular price', 'markup-by-attribute'),
-					'description'   => __('Base price for variations before markup', 'markup-by-attribute'),
+					'label'         => __('Product base regular price', 'markup-by-attribute'),
+					'description'   => __('Base price for the variations before markup', 'markup-by-attribute'),
 					'value'         => $base_regular_price,
 					'type'         => 'text',
 					'desc_tip'     => true,
@@ -542,8 +542,8 @@ class Product {
 				if ($base_sale_price !== '') {
 					woocommerce_wp_text_input([
 						'id'            => 'base_sale_price',
-						'label'         => __('Base sale price', 'markup-by-attribute'),
-						'description'   => __('Base sale price for variations before markup', 'markup-by-attribute'),
+						'label'         => __('Product base sale price', 'markup-by-attribute'),
+						'description'   => __('Base sale price for the variations before markup', 'markup-by-attribute'),
 						'value'         => $base_sale_price,
 						'type'         => 'text',
 						'desc_tip'     => true,

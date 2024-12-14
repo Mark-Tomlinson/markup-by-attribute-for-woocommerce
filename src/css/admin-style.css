@@ -103,28 +103,3 @@
 	z-index: 1000;
 	cursor: wait;
 }
-
-/* Hide all the checkboxes */
-#base_price_label,
-#base_price_regular,
-#base_price_sale {
-	display: none !important;
-	opacity: 0;
-	margin-left: -9999px;
-}
-
-/* Style the labels */
-.base-price-label,
-.base-price-regular,
-.base-price-regular-has-sale,
-.base-price-sale {
-	color: #696969;
-	font-size: 14px !important;
-	margin-left: -1.5em;
-}
-
-/* When sale price exists */
-.base-price-regular-has-sale {
-	text-decoration: line-through !important;
-	color: #A0A0A0 !important;
-}

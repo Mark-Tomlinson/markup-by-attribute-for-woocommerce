@@ -515,6 +515,47 @@ class Product {
 
 		// In Product class constructor
 		add_action('wp_ajax_mt2mba_get_formatted_price', [$this, 'ajax_get_formatted_price']);
+		// In Product::__construct()
+		add_action('woocommerce_product_options_general_product_data', function() {
+			global $post;
+			
+			if ($post) {
+				$base_regular_price = get_post_meta($post->ID, 'mt2mba_base_regular_price', true);
+				$base_sale_price = get_post_meta($post->ID, 'mt2mba_base_sale_price', true);
+
+				echo '<div class="options_group show_if_variable">';
+				
+				// Regular Price Field
+				woocommerce_wp_text_input([
+					'id'            => 'base_regular_price',
+					'label'         => __('Base regular price', 'markup-by-attribute'),
+					'description'   => __('Base price for variations before markup', 'markup-by-attribute'),
+					'value'         => $base_regular_price,
+					'type'         => 'text',
+					'desc_tip'     => true,
+					'class'        => 'wc_input_price',
+					'data_type'    => 'price',
+					'custom_attributes' => ['readonly' => 'readonly']
+				]);
+
+				// Sale Price Field (if exists)
+				if ($base_sale_price !== '') {
+					woocommerce_wp_text_input([
+						'id'            => 'base_sale_price',
+						'label'         => __('Base sale price', 'markup-by-attribute'),
+						'description'   => __('Base sale price for variations before markup', 'markup-by-attribute'),
+						'value'         => $base_sale_price,
+						'type'         => 'text',
+						'desc_tip'     => true,
+						'class'        => 'wc_input_price',
+						'data_type'    => 'price',
+						'custom_attributes' => ['readonly' => 'readonly']
+					]);
+				}
+
+				echo '</div>';
+			}
+		});
 	}
 
 	/**

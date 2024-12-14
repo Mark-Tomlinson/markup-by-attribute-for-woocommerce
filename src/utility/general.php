@@ -133,7 +133,7 @@ class General {
 	 */
 	public function remove_bracketed_string($beginning, $ending, $string) {
 		$beginningPos = strpos($string, $beginning, 0);
-		$endingPos	= strpos($string, $ending, $beginningPos);
+		$endingPos = strpos($string, $ending, $beginningPos);
 
 		if ($beginningPos === FALSE || $endingPos === FALSE) return trim($string);
 

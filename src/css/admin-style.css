@@ -1,62 +1,65 @@
-/* admin-style.css */
+/* ==========================================================================
+   Markup by Attribute Admin Styles
+   ========================================================================== */
 
-/* Need to eliminate the [Add price] button to prevent
- * conflicts with the [Set regular prices] bulk function */
- .woocommerce-add-variation-price-container {
+/* Hide WooCommerce's Add Price Button
+   Prevents conflicts with Set Regular Prices bulk function 
+   ========================================================================== */
+.woocommerce-add-variation-price-container {
 	display: none !important;
 }
 
-/* Product list table layout */
+/* Product List Table Styles
+   Basic table layout and cell formatting
+   ========================================================================== */
 .wp-list-table {
 	table-layout: fixed;
 }
+
+/* Column Widths and Alignment */
 .wp-list-table .column-product_attributes {
 	width: 11%;
 }
 
-/* Base price column */
 .wp-list-table .column-mt2mba_base_price {
-    width: 8%;
-    text-align: center;
-}
-.wp-list-table .column-mt2mba_base_price .woocommerce-Price-amount {
-    opacity: 0.75;
+	width: 8%;
+	text-align: center;
 }
 
-/* Ensure price aligns with WooCommerce price column */
-.wp-list-table .column-mt2mba_base_price .woocommerce-Price-amount {
-    margin-right: 12px;
-} 
-
+/* Cell Text Overflow */
 .wp-list-table td {
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
 
-/* Bulk reapply markup progress notice styles */
-.mt2mba-bulk-progress {
-	margin: 5px 0 15px;
-}
-
-.mt2mba-bulk-progress .spinner {
-	float: none;
-	margin: 0 10px;
-}
-
-/* Product list markup icon styles*/
+/* Reprice Link Styles
+   Markup reapplication icon and interaction states
+   ========================================================================== */
 .js-mt2mba-reapply-markup {
 	color: #2271b1;
-	margin: 2px 0 0 4px;
-	display: inline-block;
 }
- 
+
+/* Icon Sizing */
 .js-mt2mba-reapply-markup .dashicons {
 	font-size: 20px;
 	width: 22px;
 	height: 22px;
 }
 
+/* Link States */
+.js-mt2mba-reapply-markup:hover {
+	color: #135e96;  /* WP admin blue hover color */
+	text-decoration: none;
+}
+
+.js-mt2mba-reapply-markup:focus {
+	color: #2271b1;
+	outline: none;
+	box-shadow: none;
+}
+
 .js-mt2mba-reapply-markup.processing {
+	color: #2271b1;
 	opacity: 0.5;
 }
 
@@ -64,17 +67,21 @@
 	color: red;
 }
 
-/* Remove focus outline from reprice link*/
-.js-mt2mba-reapply-markup:focus {
-	outline: none;
-	box-shadow: none;
+/* Progress Indicators
+   Styles for bulk operation progress display
+   ========================================================================== */
+/* Progress Notice Container */
+.mt2mba-bulk-progress {
+	margin: 5px 0 15px;
 }
 
-.js-mt2mba-reapply-markup:hover {
-	color: #135e96;  /* WP admin blue hover color*/
-	text-decoration: none;
+/* WordPress Spinner */
+.mt2mba-bulk-progress .spinner {
+	float: none;
+	margin: 0 10px;
 }
 
+/* Spinning Icon Animation */
 @keyframes spin {
 	100% { transform: rotate(360deg); }
 }
@@ -83,7 +90,9 @@
 	animation: spin 1.5s linear infinite;
 }
 
-/* Overlay styles */
+/* Processing Overlay
+   Semi-transparent overlay during bulk operations
+   ========================================================================== */
 .mt2mba-processing-overlay {
 	position: absolute;
 	top: 0;
@@ -93,4 +102,29 @@
 	background: rgba(224, 224, 224, 0.5);
 	z-index: 1000;
 	cursor: wait;
+}
+
+/* Hide all the checkboxes */
+#base_price_label,
+#base_price_regular,
+#base_price_sale {
+	display: none !important;
+	opacity: 0;
+	margin-left: -9999px;
+}
+
+/* Style the labels */
+.base-price-label,
+.base-price-regular,
+.base-price-regular-has-sale,
+.base-price-sale {
+	color: #696969;
+	font-size: 14px !important;
+	margin-left: -1.5em;
+}
+
+/* When sale price exists */
+.base-price-regular-has-sale {
+	text-decoration: line-through !important;
+	color: #A0A0A0 !important;
 }

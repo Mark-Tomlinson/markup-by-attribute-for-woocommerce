@@ -43,13 +43,13 @@ class Term {
 	// Private constructor
 	private function __construct() {
 		// Define labels and contents.
-		$this->markup_label			= __('Markup (or markdown)', 'markup-by-attribute');
-		$this->markup_description	= __('Markup or markdown associated with this option. Signed, floating point numeric allowed.', 'markup-by-attribute');
-		$this->rewrite_label		= __('Add Markup to Name?', 'markup-by-attribute');
-		$this->rewrite_description	= __('Rename the attribute to include the markup. Often needed if the option drop-down box is overwritten by another plugin or theme and markup is no longer visible.', 'markup-by-attribute');
-		$this->text_add				= __('(Add', 'markup-by-attribute');
-		$this->text_subtract		= __('(Subtract', 'markup-by-attribute');
-		$this->placeholder			= "[+|-]" . wc_format_localized_decimal('0.00') ." or [+|-]" . wc_format_localized_decimal('00.0%');
+		$this->markup_label = __('Markup (or markdown)', 'markup-by-attribute');
+		$this->markup_description = __('Markup or markdown associated with this option. Signed, floating point numeric allowed.', 'markup-by-attribute');
+		$this->rewrite_label	 = __('Add Markup to Name?', 'markup-by-attribute');
+		$this->rewrite_description = __('Rename the attribute to include the markup. Often needed if the option drop-down box is overwritten by another plugin or theme and markup is no longer visible.', 'markup-by-attribute');
+		$this->text_add	 = __('(Add', 'markup-by-attribute');
+		$this->text_subtract	 = __('(Subtract', 'markup-by-attribute');
+		$this->placeholder = "[+|-]" . wc_format_localized_decimal('0.00') ." or [+|-]" . wc_format_localized_decimal('00.0%');
 
 		// Get all attributes
 		$attribute_taxonomies = wc_get_attribute_taxonomies();
@@ -126,7 +126,7 @@ class Term {
 	function mt2mba_add_attribute_fields() {
 		if (isset($_POST['add_new_attribute'])) {
 			// [Add attribute] button pressed, save the rewrite flag
-			$rewrite_flag	= isset($_POST['term_name_rewrite']) ? 'yes' : 'no';
+			$rewrite_flag = isset($_POST['term_name_rewrite']) ? 'yes' : 'no';
 
 			// Get all attributes
 			$attribute_taxonomies = wc_get_attribute_taxonomies();
@@ -155,15 +155,15 @@ class Term {
 		// Retrieve the existing rewrite flag for this attribute(NULL results are valid)
 		if (isset($_POST['save_attribute'])) {
 			// [Update] button pressed, set rewrite flag and save
-			$rewrite_flag	= isset($_POST['term_name_rewrite']) ? 'yes' : 'no';
+			$rewrite_flag = isset($_POST['term_name_rewrite']) ? 'yes' : 'no';
 			update_option(REWRITE_OPTION_PREFIX . $_GET['edit'], $rewrite_flag);
 		} else {
 			// First time in, set rewrite flag from Options database
-			$rewrite_flag	= get_option(REWRITE_OPTION_PREFIX . $_GET['edit'], FALSE);
+			$rewrite_flag = get_option(REWRITE_OPTION_PREFIX . $_GET['edit'], FALSE);
 		}
 
 		// Build row and fill field with current markup
-		$checked_flag		= $rewrite_flag == 'yes' ? ' checked' : "";
+		$checked_flag = $rewrite_flag == 'yes' ? ' checked' : "";
 		?>
 		<tr class="form-field">
 			<th scope="row" valign="top"><label for="term_name_rewrite"><?php echo($this->rewrite_label); ?></label></th>
@@ -226,15 +226,15 @@ class Term {
 		define('MT2MBA_ATTRB_RECURSION', TRUE);
 
 		global			$mt2mba_utility;
-		$term			= get_term($term_id);
-		$taxonomy_name	= sanitize_key($term->taxonomy);
+		$term = get_term($term_id);
+		$taxonomy_name = sanitize_key($term->taxonomy);
 
 		// Remove any previous markup information from term name.
-		$name			= $term->name;
-		$name			= trim($mt2mba_utility->remove_bracketed_string(ATTRB_MARKUP_NAME_BEG, ATTRB_MARKUP_END, $name));
+		$name = $term->name;
+		$name = trim($mt2mba_utility->remove_bracketed_string(ATTRB_MARKUP_NAME_BEG, ATTRB_MARKUP_END, $name));
 		// Clean up legacy descriptions.
-		$description	= $term->description;
-		$description	= trim($mt2mba_utility->remove_bracketed_string(ATTRB_MARKUP_DESC_BEG, ATTRB_MARKUP_END, $description));
+		$description = $term->description;
+		$description = trim($mt2mba_utility->remove_bracketed_string(ATTRB_MARKUP_DESC_BEG, ATTRB_MARKUP_END, $description));
 
 		// Remove old metadata, regardless of next steps
 		delete_term_meta($term_id, 'mt2mba_markup');
@@ -254,18 +254,17 @@ class Term {
 			update_term_meta($term_id, 'mt2mba_markup', $markup);
 
 			// Update term name, if rewrite flag is set, so markup is visible in the name
-			$rewrite_flag	= get_option(REWRITE_OPTION_PREFIX . wc_attribute_taxonomy_id_by_name($taxonomy_name));
+			$rewrite_flag = get_option(REWRITE_OPTION_PREFIX . wc_attribute_taxonomy_id_by_name($taxonomy_name));
 			if ($rewrite_flag == 'yes') {
 				$markup = $mt2mba_utility->format_option_markup($markup);
 				$markup = strpos($markup, "+") ? str_replace("(+", $this->text_add . " ", $markup) : str_replace("(-", $this->text_subtract . " ", $markup);
-				$name	.= $markup;
+				$name .= $markup;
 			}
 		}
 		// Rewrite term if name or description changed
-		if ($term->name != $name ||
-			$term->description != $description) {
+		if ($term->name != $name || $term->description != $description) {
 				wp_update_term($term_id, $taxonomy_name, array('description' => trim($description), 'name' => trim($name)));
-			}
+		}
 	}
 
 }	// End	class MT2MBA_BACKEND_TERM

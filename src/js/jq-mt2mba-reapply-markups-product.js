@@ -70,21 +70,10 @@ jQuery(document).ready(function($) {
                                             success: function(html) {
                                                 // Replace the variations content
                                                 $wrapper.html(html);
+                                                // Tell WooCommerce the variations panel is reloaded
                                                 $wrapper.trigger('woocommerce_variations_loaded');
-                                                
-                                                // Reload the general product data panel
-                                                $.ajax({
-                                                    url: mt2mbaLocal.ajaxUrl,
-                                                    data: {
-                                                        action: 'woocommerce_load_product_data',
-                                                        product_id: product_id,
-                                                        security: mt2mbaLocal.variationsNonce
-                                                    },
-                                                    type: 'POST',
-                                                    success: function(generalHtml) {
-                                                        $('.options_group.show_if_variable').html(generalHtml);
-                                                    }
-                                                });
+                                                // Tell WooCommerce to update all related panels
+                                                $('body').trigger('woocommerce_variations_saved');
                                             }
                                         });
                                     }

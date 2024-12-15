@@ -61,7 +61,7 @@ class General {
 		if ($current_db_version >= MT2MBA_DB_VERSION) return;
 
 		global $wpdb;
-
+	
 		// --------------------------------------------------------------
 		// Update database from version 1.x. Leave 1.x data for fallback.
 		// --------------------------------------------------------------

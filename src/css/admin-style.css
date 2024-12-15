@@ -103,3 +103,7 @@
 	z-index: 1000;
 	cursor: wait;
 }
+
+span.base-price-info {
+	font-size: 18px;
+}

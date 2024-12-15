@@ -553,6 +553,10 @@ class Product {
 					]);
 				}
 
+				echo '<div id="base_price_info"><p class="form-field">' .
+					'<span class="base-price-info dashicons dashicons-info"></span>' .
+					__("Base prices can be changed on the Variations tab.", "markup-by-attribute") .
+					'</p></div>';
 				echo '</div>';
 			}
 		});

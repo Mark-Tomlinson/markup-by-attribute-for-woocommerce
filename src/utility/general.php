@@ -33,10 +33,11 @@ class General {
 	// Private constructor
 	private function __construct() {
 		// Check database version
-		if (get_site_option('mt2mba_db_version') < MT2MBA_DB_VERSION) {
-			// And upgrade if necessary
+		$current_version = get_site_option('mt2mba_db_version', '1.0');
+		if (floatval($current_version) < floatval(MT2MBA_DB_VERSION)) {
 			$this->mt2mba_db_upgrade();
 		}
+
 		// Set global values used throughout the code
 		if (!defined('MT2MBA_CURRENCY_SYMBOL')) {
 			$settings = Backend\Settings::get_instance();
@@ -57,11 +58,11 @@ class General {
 	 */
 	function mt2mba_db_upgrade() {
 		// Failsafe
-		$current_db_version = get_site_option('mt2mba_db_version', 1);
-		if ($current_db_version >= MT2MBA_DB_VERSION) return;
+		$current_db_version = floatval(get_site_option('mt2mba_db_version', '1.0'));
+		if ($current_db_version >= floatval(MT2MBA_DB_VERSION)) return;
 
 		global $wpdb;
-	
+
 		// --------------------------------------------------------------
 		// Update database from version 1.x. Leave 1.x data for fallback.
 		// --------------------------------------------------------------
@@ -149,10 +150,13 @@ class General {
 	 * @return	string			Properly formatted price with currency indicator
 	 */
 	public function clean_up_price($price) {
-		if (is_numeric($price))	{	// Might be a percentage in rare cases
-			return strip_tags(wc_price(abs($price)));
+		if (strpos($price, "%")) {
+			// Markup is a percentage
+			return trim(abs(floatval($price)) . '%');
+		} else {
+			// Markup is a flat amount
+			return trim(strip_tags(wc_price(abs($price))));
 		}
-		return '';
 	}
 
 	/**
@@ -197,7 +201,10 @@ class General {
 	 */
 	function format_description_markup($markup, $attrb_name, $term_name) {
 		if ($markup <> "" && $markup <> 0) {
-			// Two different translation strings based on whether attribute name is included
+			// Clean any existing markup from the term name before formatting
+			$term_name = $this->stripMarkupAnnotation($term_name);
+	
+			// Two different translation strings based on whether attribute name is included 
 			if (MT2MBA_INCLUDE_ATTRB_NAME == 'yes') {
 				// Translators; %1$s is the formatted price, %2$s is the attribute name, %3$s is the term name
 				$desc_format = $markup < 0 ? 
@@ -212,8 +219,7 @@ class General {
 						$term_name
 					)
 				);
-			} else {
-				// Translators; %1$s is the formatted price, %2$s is the term name
+			} else {				// Translators; %1$s is the formatted price, %2$s is the term name
 				$desc_format = $markup < 0 ? 
 					__('Subtract %1$s for %2$s', 'markup-by-attribute') : 
 					__('Add %1$s for %2$s', 'markup-by-attribute');
@@ -229,6 +235,59 @@ class General {
 		}
 		// No markup; return empty string
 		return '';
+	}
+
+	/**
+	 * Strip markup annotation from term name
+	 * 
+	 * @param	string	$text	The text to process
+	 * @return	string			Text with markup annotation removed
+	 */
+	public function stripMarkupAnnotation($text) {
+		// Pattern for numbers that handles international formats
+		$number_pattern = '(?:[\p{Sc}\s]*[0-9]+(?:[.,][0-9]+)*(?:[.,][0-9]{2})?[\p{Sc}\s]*|[0-9]+(?:[.,][0-9]+)*%)';
+
+		// Convert Add and Subtract constants to regex with international number pattern
+		$add_pattern = '/[ \n]' . str_replace('%s', $number_pattern, preg_quote(MT2MBA_MARKUP_NAME_PATTERN_ADD)) . '/u';
+		$subtract_pattern = '/[ \n]' . str_replace('%s', $number_pattern, preg_quote(MT2MBA_MARKUP_NAME_PATTERN_SUBTRACT)) . '/u';
+
+		// Remove markup annotations
+		$text = preg_replace($add_pattern, '', $text);
+		$text = preg_replace($subtract_pattern, '', $text);
+
+		return trim($text);
+	}
+	
+	/**
+	 * Add markup annotation to term name
+	 * 
+	 * @param	string	$text			Base text
+	 * @param	string	$markup			Markup value (with % or currency)
+	 * @param	bool	$is_negative	Whether this is a negative markup
+	 * @return	string					Text with markup annotation added
+	 */
+	public function addMarkupToName($text, $markup, $is_negative = false) {
+		// Format the markup value using clean_up_price()
+		$formatted_markup = $this->clean_up_price($markup);
+
+		$pattern = $is_negative ? MT2MBA_MARKUP_NAME_PATTERN_SUBTRACT : MT2MBA_MARKUP_NAME_PATTERN_ADD;
+		return $text . " " . sprintf($pattern, $formatted_markup);
+	}
+
+	/**
+	 * Add markup annotation to term description
+	 * 
+	 * @param	string	$text			Base text
+	 * @param	string	$markup			Markup value (with % or currency)
+	 * @param	bool	$is_negative	Whether this is a negative markup
+	 * @return	string					Text with markup annotation added
+	 */
+	public function addMarkupToDescription($description, $markup, $is_negative = false) {
+		// Format the markup value using clean_up_price()
+		$formatted_markup = $this->clean_up_price($markup);
+
+		$pattern = $is_negative ? MT2MBA_MARKUP_NAME_PATTERN_SUBTRACT : MT2MBA_MARKUP_NAME_PATTERN_ADD;
+		return trim($description . "\n" . trim(sprintf($pattern, $formatted_markup)));
 	}
 
 }	//	End class MT2MBA_UTILITY_GENERAL

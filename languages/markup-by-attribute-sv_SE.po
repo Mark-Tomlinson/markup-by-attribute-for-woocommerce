@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Markup by Attribute for WooCommerce - MT² Tech\n"
 "Report-Msgid-Bugs-To: markupbyattribute@mail.com\n"
 "POT-Creation-Date: 2020-04-17 00:43+0000\n"
-"PO-Revision-Date: 2024-12-13 06:13+0000\n"
+"PO-Revision-Date: 2024-12-18 05:56+0000\n"
 "Last-Translator: \n"
 "Language-Team: Swedish\n"
 "Language: sv_SE\n"
@@ -14,42 +14,47 @@ msgstr ""
 "X-Generator: Loco https://localise.biz/\n"
 "X-Loco-Version: 2.6.14; wp-6.7.1"
 
-#: src/backend/productlist.php:93 src/backend/productlist.php:99
+#: src/backend/productlist.php:134 src/backend/productlist.php:140
 #, php-format
 msgid "%s product processed successfully."
 msgid_plural "%s products processed successfully."
 msgstr[0] "%s produkt bearbetades"
 msgstr[1] "%s produkter bearbetades"
 
-#: src/backend/term.php:50
-msgid "(Add"
-msgstr "(Lägg till"
-
-#: src/backend/term.php:51
-msgid "(Subtract"
-msgstr "(Dra av"
-
 #: src/backend/settings.php:180
 msgid "A 10% markup on a $30 regular price yields a $3 markup. If you set a $20 sale price, setting this option ON yields a $2 markup, setting it OFF leaves the markup at $3."
 msgstr "Ett påslag på 10% på ett ordinarie pris på 30 kr ger ett påslag på 3 kr. Om du ställer in ett kampanjpris på 20 kr, ger aktivering av detta alternativ ett påslag på 2 kr, avstängning lämnar påslaget på 3 kr."
 
-#: src/utility/general.php:219
+#: markup-by-attribute-for-woocommerce.php:112
+#| msgid "(Add"
+msgid "Add"
+msgstr "Lägg till"
+
+#: src/utility/general.php:225
 #, php-format
 msgid "Add %1$s for %2$s"
 msgstr "Lägg till %1$s för %2$s"
 
-#: src/utility/general.php:205
+#: src/utility/general.php:212
 #, php-format
 msgid "Add %1$s for %2$s: %3$s"
 msgstr "Lägg till %1$s för %2$s: %3$s"
 
-#: src/backend/term.php:48
+#: src/backend/term.php:55
+msgid "Add Markup to Description?"
+msgstr ""
+
+#: src/backend/term.php:50
 msgid "Add Markup to Name?"
 msgstr "Lägg till påslag till namnet?"
 
 #: src/backend/settings.php:126
 msgid "Add pricing information to the end of the existing description."
 msgstr "Lägg till prisinformation i slutet av den befintliga beskrivningen."
+
+#: src/backend/term.php:57
+msgid "Add the markup to the option's description."
+msgstr ""
 
 #: src/backend/settings.php:78
 #, php-format
@@ -64,12 +69,24 @@ msgstr "Lägger till produktvariationspåslag efter attribut i WooCommerce."
 msgid "Allow Zero Price"
 msgstr "Tillåt nollpris"
 
-#: src/backend/productlist.php:183
+#: src/backend/productlist.php:188
 msgid "Attributes"
 msgstr "Attribut"
 
-#: src/backend/productlist.php:180
+#: src/backend/productlist.php:185
 msgid "Base Price"
+msgstr ""
+
+#: src/backend/product.php:58
+msgid "Base regular price for the variations before markup"
+msgstr ""
+
+#: src/backend/product.php:72
+msgid "Base sale price for the variations before markup"
+msgstr ""
+
+#: src/backend/product.php:84
+msgid "Change base prices with the <em>Bulk actions</em> on the <b>Variations</b> tab."
 msgstr ""
 
 #: src/backend/settings.php:125
@@ -84,7 +101,7 @@ msgstr "Visa INTE grundpriset i produktbeskrivningen."
 msgid "Do NOT show the markup in the options drop-down box."
 msgstr "Visa INTE påslaget i rullgardinsmenyn."
 
-#: src/backend/product.php:565
+#: src/backend/product.php:163
 msgid "Failed to reapply markups. Please try again."
 msgstr "Det gick inte att återanvända påslagen. Försök igen."
 
@@ -118,7 +135,7 @@ msgstr "Inkludera attributnamnet i produktvariationens beskrivning. <b>Lägg til
 msgid "Instructions"
 msgstr "Instruktioner"
 
-#: src/backend/product.php:593
+#: src/backend/product.php:264
 #| msgid "Invalid product"
 msgid "Invalid product ID"
 msgstr "Ogiltigt produkt-ID"
@@ -127,11 +144,11 @@ msgstr "Ogiltigt produkt-ID"
 msgid "MarkTomlinson"
 msgstr "MarkTomlinson"
 
-#: src/backend/term.php:82
+#: src/backend/term.php:90
 msgid "Markup"
 msgstr "Påslag"
 
-#: src/backend/term.php:46
+#: src/backend/term.php:48
 msgid "Markup (or markdown)"
 msgstr "Påslag (eller prisnedsättning)"
 
@@ -155,13 +172,9 @@ msgstr "Påslagsberäkning"
 msgid "Markup Display"
 msgstr "Påslagsvisning"
 
-#: src/backend/term.php:47
+#: src/backend/term.php:49
 msgid "Markup or markdown associated with this option. Signed, floating point numeric allowed."
 msgstr "Påslag eller prisnedsättning kopplat till detta alternativ. Tecken och decimaltal är tillåtna."
-
-#: markup-by-attribute-for-woocommerce.php:108
-msgid "Markup:"
-msgstr "Påslag:"
 
 #: src/utility/pointers.php:101
 msgid "Markups can be fixed values such as <code>5</code> or <code>5.95</code>, or percentages such as <code>5%</code> or <code>1.23%</code>. Use plus or minus signs (like <code>+5.95</code> or <code>-1.23%</code>) for increases or decreases.<br/>Markups are applied when setting prices or reapplying markups to variations."
@@ -175,6 +188,10 @@ msgstr "Max antal variationer"
 msgid "Maximum number of variations that can be created per run."
 msgstr "Maximalt antal variationer som kan skapas per körning."
 
+#: src/backend/term.php:53 src/backend/term.php:58
+msgid "Often needed if the option drop-down box is overwritten by another plugin or theme and markup is no longer visible."
+msgstr ""
+
 #: src/backend/settings.php:101
 msgid "Option Drop-down Behavior"
 msgstr "Beteende för rullgardinsmenyn"
@@ -187,41 +204,49 @@ msgstr "Övrigt"
 msgid "Overwrite the variation description with price information."
 msgstr "Skriv över variationsbeskrivningen med prisinformation."
 
-#: src/backend/product.php:581 src/backend/product.php:586
+#: src/backend/product.php:253 src/backend/product.php:258
 msgid "Permission denied"
 msgstr "Åtkomst nekad"
 
-#: src/backend/productlist.php:92
+#: src/backend/productlist.php:133
 #, php-format
 msgid "Please wait; processing product %1$s of %2$s..."
 msgstr "Vänligen vänta; bearbetar produkt %1$s av %2$s..."
+
+#: src/backend/product.php:57
+msgid "Product base regular price"
+msgstr ""
+
+#: src/backend/product.php:71
+msgid "Product base sale price"
+msgstr ""
 
 #: markup-by-attribute-for-woocommerce.php:104
 msgid "Product price"
 msgstr "Produktpris"
 
-#: src/backend/productlist.php:142 src/backend/productlist.php:308
+#: src/backend/productlist.php:298 src/backend/productlist.php:396
 msgid "Reapply Markups"
 msgstr "Återanvänd påslag"
 
-#: src/backend/product.php:563
+#: src/backend/product.php:161
 msgid "Reapply markups to prices"
 msgstr "Återanvänd påslag på priser"
 
-#: src/backend/productlist.php:317
+#: src/backend/productlist.php:307
 #, php-format
 msgid "Reapply markups using base price: %s"
 msgstr ""
 
-#: src/backend/term.php:49
-msgid "Rename the attribute to include the markup. Often needed if the option drop-down box is overwritten by another plugin or theme and markup is no longer visible."
-msgstr "Döp om attributet för att inkludera påslaget. Ofta nödvändigt om rullgardinsmenyn skrivs över av ett annat tillägg eller tema och påslaget inte längre är synligt."
+#: src/backend/term.php:52
+msgid "Rename the option to include the markup."
+msgstr ""
 
-#: src/backend/productlist.php:310
+#: src/backend/productlist.php:300
 msgid "Reprice"
 msgstr "Ompris"
 
-#: src/backend/product.php:564
+#: src/backend/product.php:162
 #, php-format
 msgid "Reprice variations at %s, plus or minus the markups?"
 msgstr "Omprisätta variationer till %s, plus eller minus påslagen?"
@@ -266,12 +291,17 @@ msgstr "Visa påslaget UTAN valutasymbol i rullgardinsmenyn."
 msgid "Some stores want prices with specific numbers below the decimal place (such as xx.00 or xx.95). Rounding percentage markups will keep the value below the decimal intact."
 msgstr "Vissa butiker vill ha priser med specifika siffror efter decimalen (som xx.00 eller xx.95). Avrundning av procentpåslag kommer att behålla värdet efter decimalen intakt."
 
-#: src/utility/general.php:218
+#: markup-by-attribute-for-woocommerce.php:113
+#| msgid "(Subtract"
+msgid "Subtract"
+msgstr "Dra av"
+
+#: src/utility/general.php:224
 #, php-format
 msgid "Subtract %1$s for %2$s"
 msgstr "Dra av %1$s för %2$s"
 
-#: src/utility/general.php:204
+#: src/utility/general.php:211
 #, php-format
 msgid "Subtract %1$s for %2$s: %3$s"
 msgstr "Dra av %1$s för %2$s: %3$s"

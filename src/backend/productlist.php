@@ -12,23 +12,38 @@ if (!defined('ABSPATH')) exit; // Exit if accessed directly
 
 class ProductList {
 	/**
-	 * Singleton because we only want one instance of the product list at a time.
+	 * Singleton instance of ProductList
+	 * 
+	 * @var ProductList|null
 	 */
 	private static $instance = null;
 
 	/**
-	 * Cache for variable product IDs to avoid repeated checks
-	 * @var array
+	 * Cache of variable product IDs to avoid repeated lookups
+	 * 
+	 * @var	array
 	 */
 	private $variable_products = [];
 
 	/**
-	 * Product base price used throughout
-	 * @var array
+	 * Current base price being processed
+	 * 
+	 * @var	string
 	 */
 	private $base_price = '';
 
-	// Public method to get the instance
+	/**
+	 * Cache of markup values by taxonomy
+	 * 
+	 * @var	array
+	 */
+	private static $markup_cache = [];
+
+	/**
+	 * Get singleton instance of ProductList
+	 * 
+	 * @return	ProductList	Single instance of this class
+	 */
 	public static function get_instance() {
 		if (self::$instance === null) {
 			self::$instance = new self();
@@ -36,36 +51,62 @@ class ProductList {
 		return self::$instance;
 	}
 
-	// Prevent cloning of the instance
+	/**
+	 * Prevent object cloning
+	 */
 	public function __clone() {}
 
-	// Prevent unserializing of the instance
+	/**
+	 * Prevent object unserialization
+	 */
 	public function __wakeup() {}
 
-	// Private constructor
+	/**
+	 * Initialize ProductList and register WordPress hooks
+	 */
 	private function __construct() {
-		// Add filter to modify product columns
-		add_filter('manage_edit-product_columns', array($this, 'modify_product_columns'), 20);
+		// Column Management
+		add_filter('manage_edit-product_columns', [$this, 'add_custom_columns'], 20);
+		add_action('manage_product_posts_custom_column', [$this, 'render_column_content'], 10, 2);
+		
+		// Attribute Filtering
+		add_action('pre_get_posts', [$this, 'filter_products_by_attribute']);
 
-		// Add action to populate columns
-		add_action('manage_product_posts_custom_column', array($this, 'populate_columns'), 10, 2);
+		// Asset Management  
+		add_action('admin_enqueue_scripts', [$this, 'enqueue_assets']);
 
-		// Add action to filter products by attribute
-		add_action('pre_get_posts', array($this, 'filter_products_by_attribute'));
-
-		// Add action to enqueue our JavaScript
-		add_action('admin_enqueue_scripts', array($this, 'enqueue_scripts'));
-
-		// Add bulk action
-		add_filter('bulk_actions-edit-product', array($this, 'register_bulk_action'));
-		add_filter('handle_bulk_actions-edit-product', array($this, 'handle_bulk_action'), 10, 3);
-
-		// Add action to include custom CSS
-		add_action('admin_enqueue_scripts', array($this, 'enqueue_styles'));
+		// Bulk Actions
+		add_filter('bulk_actions-edit-product', [$this, 'add_bulk_actions']);
+		add_filter('handle_bulk_actions-edit-product', [$this, 'process_bulk_actions'], 10, 3);
 	}
 
 	/**
-	 * Enqueue scripts needed for product list markup handling
+	 * Enqueue required assets for product list functionality
+	 * 
+	 * @param	string	$hook	Current admin page hook
+	 */
+	public function enqueue_assets($hook) {
+		if (!$this->is_product_list_page($hook)) return;
+		$this->enqueue_scripts($hook);
+		$this->enqueue_styles($hook);
+	}
+
+	/**
+	 * Check if current page is the WooCommerce product list
+	 *
+	 * @param	string	$hook	Current admin page hook
+	 * @return	bool			True if on product list page
+	 */
+	private function is_product_list_page($hook) {
+		return $hook === 'edit.php' && 
+			   isset($_GET['post_type']) && 
+			   $_GET['post_type'] === 'product';
+	}
+
+	/**
+	 * Enqueue JavaScript files for product list
+	 * 
+	 * @param	string	$hook	Current admin page hook
 	 */
 	public function enqueue_scripts($hook) {
 		if ($hook !== 'edit.php') {
@@ -87,7 +128,7 @@ class ProductList {
 			'mt2mba-product-list-markup', 
 			'mt2mbaListLocal',
 			array(
-				'security' => wp_create_nonce('mt2mba_reapply_markup'),
+				'security' => wp_create_nonce('handleMarkupReapplication'),
 				'i18n' => array(
 					'processing' => __('Please wait; processing product %1$s of %2$s...', 'markup-by-attribute'),
 					'processed' => _n(
@@ -108,7 +149,9 @@ class ProductList {
 	}
 	
 	/**
-	 * Enqueue styles for product list handling
+	 * Enqueue CSS files for product list
+	 * 
+	 * @param	string	$hook	Current admin page hook
 	 */
 	public function enqueue_styles($hook) {
 		if ($hook !== 'edit.php') {
@@ -128,55 +171,17 @@ class ProductList {
 	}
 
 	/**
-	 * Register the bulk action
+	 * Add custom columns to product list table
+	 * 
+	 * @param	array	$columns	Existing columns
+	 * @return	array				Modified columns
 	 */
-	public function register_bulk_action($bulk_actions) {
-		$new_actions = array();
-		
-		// Rebuild the array in our desired order
-		foreach ($bulk_actions as $key => $action) {
-			$new_actions[$key] = $action;
-			
-			// Add our action after 'Edit'
-			if ($key === 'edit') {
-				$new_actions['reapply_markups'] = __('Reapply Markups', 'markup-by-attribute');
-			}
-		}
-		return $new_actions;
-	}
-
-	/**
-	 * Handle the bulk action
-	 */
-	public function handle_bulk_action($redirect_to, $doaction, $post_ids) {
-		if ($doaction !== 'reapply_markups') {
-			return $redirect_to;
-		}
-
-		// Filter to only get variable products
-		$variable_products = array_filter($post_ids, function($product_id) {
-			$product = wc_get_product($product_id);
-			return $product && $product->is_type('variable');
-		});
-
-		if (!empty($variable_products)) {
-			// Add products to process to the redirect URL
-			$redirect_to = add_query_arg('reapply_markups_ids', implode(',', $variable_products), $redirect_to);
-		}
-		return $redirect_to;
-	}
-
-	/**
-	 * Modify the columns in the product list table
-	 *
-	 * @param   array   $columns	Existing columns.
-	 * @return  array			   Modified columns.
-	 */
-	public function modify_product_columns($columns) {
+	public function add_custom_columns($columns) {
 		$new_columns = array();
 		foreach ($columns as $key => $column) {
 			$new_columns[$key] = $column;
 			if ($key === 'price') {
+				// This column will get both sets of classes 
 				$new_columns['mt2mba_base_price'] = __('Base Price', 'markup-by-attribute');
 			}
 			if ($key === 'product_tag') {
@@ -187,46 +192,12 @@ class ProductList {
 	}
 
 	/**
-	 * Static cache for term markups to avoid repeated database queries
-	 */
-	private static $markup_cache = [];
-
-	/**
-	 * Check if an attribute has any markup terms
+	 * Render content for custom columns
 	 * 
-	 * @param string $taxonomy The attribute taxonomy
-	 * @return bool True if any terms have markup
+	 * @param	string	$column		Column identifier
+	 * @param	int		$post_id	Product ID
 	 */
-	private function attribute_has_markup($taxonomy) {
-		// Check cache first
-		if (isset(self::$markup_cache[$taxonomy])) {
-			return self::$markup_cache[$taxonomy];
-		}
-
-		$terms = get_terms([
-			'taxonomy' => $taxonomy,
-			'hide_empty' => false,
-		]);
-
-		foreach ($terms as $term) {
-			$markup = get_term_meta($term->term_id, 'mt2mba_markup', true);
-			if (!empty($markup)) {		// Set flag and return true when the first markup is found
-				self::$markup_cache[$taxonomy] = true;
-				return true;
-			}
-		}
-
-		self::$markup_cache[$taxonomy] = false;
-		return false;
-	}
-
-	/**
-	 * Populate the custom columns
-	 *
-	 * @param	string	$column  Name of the column to display.
-	 * @param	int		$post_id ID of the current product.
-	 */
-	public function populate_columns($column, $post_id) {
+	public function render_column_content($column, $post_id) {	// renamed from populate_columns
 		// Get product
 		$product = wc_get_product($post_id);
 		// Get appropriate base price
@@ -248,32 +219,43 @@ class ProductList {
 				break;
 
 			case 'mt2mba_base_price':
-				if (!$this->variable_products[$post_id]) {
-					echo '<span class="na">–</span>';
-					break;
-				}
-				
-				$base_regular_price = get_post_meta($post_id, 'mt2mba_base_regular_price', true);
-				$base_sale_price = get_post_meta($post_id, 'mt2mba_base_sale_price', true);
-				
-				if ($base_sale_price !== '') {
-					printf(
-						'<del>%s</del><br>%s',
-						wc_price($base_regular_price),
-						wc_price($base_sale_price)
-					);
-				} else {
-					echo wc_price($base_regular_price);
-				}
+				$this->render_base_price_column($product, $post_id);
 				break;
 		}
 	}
 
 	/**
-	 * Render the attributes column content
-	 *
-	 * @param WC_Product $product Product object
-	 * @param int		$post_id Product ID
+	 * Render base price column content with regular and sale prices
+	 * 
+	 * @param	WC_Product	$product	Product object
+	 * @param	int			$post_id	Product ID
+	 */
+	private function render_base_price_column($product, $post_id) {
+		if (!$this->variable_products[$post_id]) {
+			echo '<span class="na">–</span>';
+			return;
+		}
+
+		$base_regular_price = get_post_meta($post_id, 'mt2mba_base_regular_price', true);
+		$base_sale_price = get_post_meta($post_id, 'mt2mba_base_sale_price', true);
+
+		if ($base_sale_price !== '') {
+			printf(
+				'<del>%s</del><br>%s',
+				wc_price($base_regular_price),
+				wc_price($base_sale_price)
+			);
+		} else {
+			echo wc_price($base_regular_price);
+		}
+		return;
+	}
+
+	/**
+	 * Render attributes column content with markup information
+	 * 
+	 * @param	WC_Product	$product	Product object
+	 * @param	int			$post_id	Product ID
 	 */
 	private function render_attributes_column($product, $post_id) {
 		$attributes = $product->get_attributes();
@@ -332,8 +314,38 @@ class ProductList {
 	}
 
 	/**
-	 * Filter products by attribute in the admin product list.
-	 * @param	WP_Query	$query	The WordPress query object.
+	 * Check if an attribute taxonomy has any terms with markup
+	 * 
+	 * @param	string	$taxonomy	Attribute taxonomy name
+	 * @return	bool				True if markup exists
+	 */
+	private function attribute_has_markup($taxonomy) {
+		// Check cache first
+		if (isset(self::$markup_cache[$taxonomy])) {
+			return self::$markup_cache[$taxonomy];
+		}
+
+		$terms = get_terms([
+			'taxonomy' => $taxonomy,
+			'hide_empty' => false,
+		]);
+
+		foreach ($terms as $term) {
+			$markup = get_term_meta($term->term_id, 'mt2mba_markup', true);
+			if (!empty($markup)) {		// Set flag and return true when the first markup is found
+				self::$markup_cache[$taxonomy] = true;
+				return true;
+			}
+		}
+
+		self::$markup_cache[$taxonomy] = false;
+		return false;
+	}
+
+	/**
+	 * Filter products in admin list by attribute
+	 * 
+	 * @param	WP_Query	$query	WordPress query object
 	 */
 	public function filter_products_by_attribute($query) {
 		global $typenow, $wp_query;
@@ -365,4 +377,52 @@ class ProductList {
 			}
 		}
 	}
+
+	/**
+	 * Add bulk actions for markup handling
+	 * 
+	 * @param	array	$bulk_actions	Existing bulk actions
+	 * @return	array					Modified bulk actions
+	 */
+	public function add_bulk_actions($bulk_actions) {
+		$new_actions = array();
+		
+		// Rebuild the array in our desired order
+		foreach ($bulk_actions as $key => $action) {
+			$new_actions[$key] = $action;
+			
+			// Add our action after 'Edit'
+			if ($key === 'edit') {
+				$new_actions['reapply_markups'] = __('Reapply Markups', 'markup-by-attribute');
+			}
+		}
+		return $new_actions;
+	}
+
+	/**
+	 * Process bulk markup actions
+	 * 
+	 * @param	string	$redirect_to	Redirect URL
+	 * @param	string	$doaction		Action being performed
+	 * @param	array	$post_ids		Selected product IDs
+	 * @return	string					Modified redirect URL
+	 */
+	public function process_bulk_actions($redirect_to, $doaction, $post_ids) {
+		if ($doaction !== 'reapply_markups') {
+			return $redirect_to;
+		}
+
+		// Filter to only get variable products
+		$variable_products = array_filter($post_ids, function($product_id) {
+			$product = wc_get_product($product_id);
+			return $product && $product->is_type('variable');
+		});
+
+		if (!empty($variable_products)) {
+			// Add products to process to the redirect URL
+			$redirect_to = add_query_arg('reapply_markups_ids', implode(',', $variable_products), $redirect_to);
+		}
+		return $redirect_to;
+	}
+
 }

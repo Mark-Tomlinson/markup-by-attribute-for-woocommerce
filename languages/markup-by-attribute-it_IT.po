@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Markup by Attribute for WooCommerce - MT² Tech\n"
 "Report-Msgid-Bugs-To: markupbyattribute@mail.com\n"
 "POT-Creation-Date: 2020-04-17 00:43+0000\n"
-"PO-Revision-Date: 2024-12-13 06:13+0000\n"
+"PO-Revision-Date: 2024-12-18 05:55+0000\n"
 "Last-Translator: \n"
 "Language-Team: Italian\n"
 "Language: it_IT\n"
@@ -14,42 +14,47 @@ msgstr ""
 "X-Generator: Loco https://localise.biz/\n"
 "X-Loco-Version: 2.6.14; wp-6.7.1"
 
-#: src/backend/productlist.php:93 src/backend/productlist.php:99
+#: src/backend/productlist.php:134 src/backend/productlist.php:140
 #, php-format
 msgid "%s product processed successfully."
 msgid_plural "%s products processed successfully."
 msgstr[0] "%s prodotto elaborato con successo."
 msgstr[1] "%s prodotti elaborati con successo."
 
-#: src/backend/term.php:50
-msgid "(Add"
-msgstr "(Aggiungi"
-
-#: src/backend/term.php:51
-msgid "(Subtract"
-msgstr "(Sottrai"
-
 #: src/backend/settings.php:180
 msgid "A 10% markup on a $30 regular price yields a $3 markup. If you set a $20 sale price, setting this option ON yields a $2 markup, setting it OFF leaves the markup at $3."
 msgstr "Un ricarico del 10% su un prezzo normale di 30 € produce un ricarico di 3 €. Se imposti un prezzo scontato di 20 €, attivando questa opzione si ottiene un ricarico di 2 €, disattivandola il ricarico rimane a 3 €."
 
-#: src/utility/general.php:219
+#: markup-by-attribute-for-woocommerce.php:112
+#| msgid "(Add"
+msgid "Add"
+msgstr "Aggiungi"
+
+#: src/utility/general.php:225
 #, php-format
 msgid "Add %1$s for %2$s"
 msgstr "Aggiungi %1$s per %2$s"
 
-#: src/utility/general.php:205
+#: src/utility/general.php:212
 #, php-format
 msgid "Add %1$s for %2$s: %3$s"
 msgstr "Aggiungere %1$s per %2$s: %3$s"
 
-#: src/backend/term.php:48
+#: src/backend/term.php:55
+msgid "Add Markup to Description?"
+msgstr ""
+
+#: src/backend/term.php:50
 msgid "Add Markup to Name?"
 msgstr "Aggiungi il markup al nome?"
 
 #: src/backend/settings.php:126
 msgid "Add pricing information to the end of the existing description."
 msgstr "Aggiungi le informazioni sul prezzo alla fine della descrizione esistente."
+
+#: src/backend/term.php:57
+msgid "Add the markup to the option's description."
+msgstr ""
 
 #: src/backend/settings.php:78
 #, php-format
@@ -64,12 +69,24 @@ msgstr "Aggiunge ricarichi alle variazioni di prodotto per attributo in WooComme
 msgid "Allow Zero Price"
 msgstr "Permettere prezzo zero"
 
-#: src/backend/productlist.php:183
+#: src/backend/productlist.php:188
 msgid "Attributes"
 msgstr "Attributi"
 
-#: src/backend/productlist.php:180
+#: src/backend/productlist.php:185
 msgid "Base Price"
+msgstr ""
+
+#: src/backend/product.php:58
+msgid "Base regular price for the variations before markup"
+msgstr ""
+
+#: src/backend/product.php:72
+msgid "Base sale price for the variations before markup"
+msgstr ""
+
+#: src/backend/product.php:84
+msgid "Change base prices with the <em>Bulk actions</em> on the <b>Variations</b> tab."
 msgstr ""
 
 #: src/backend/settings.php:125
@@ -84,7 +101,7 @@ msgstr "NON mostrare il prezzo base nella descrizione del prodotto."
 msgid "Do NOT show the markup in the options drop-down box."
 msgstr "NON mostrare il ricarico nel menu a tendina delle opzioni."
 
-#: src/backend/product.php:565
+#: src/backend/product.php:163
 msgid "Failed to reapply markups. Please try again."
 msgstr "Impossibile riapplicare i ricarichi. Riprova."
 
@@ -118,7 +135,7 @@ msgstr "Includere il nome dell'attributo nella descrizione del prodotto variabil
 msgid "Instructions"
 msgstr "Istruzioni"
 
-#: src/backend/product.php:593
+#: src/backend/product.php:264
 #| msgid "Invalid product"
 msgid "Invalid product ID"
 msgstr "ID prodotto non valido"
@@ -127,11 +144,11 @@ msgstr "ID prodotto non valido"
 msgid "MarkTomlinson"
 msgstr "MarkTomlinson"
 
-#: src/backend/term.php:82
+#: src/backend/term.php:90
 msgid "Markup"
 msgstr "Ricarico"
 
-#: src/backend/term.php:46
+#: src/backend/term.php:48
 msgid "Markup (or markdown)"
 msgstr "Ricarico (o sconto)"
 
@@ -155,13 +172,9 @@ msgstr "Calcolo ricarico"
 msgid "Markup Display"
 msgstr "Visualizzazione ricarico"
 
-#: src/backend/term.php:47
+#: src/backend/term.php:49
 msgid "Markup or markdown associated with this option. Signed, floating point numeric allowed."
 msgstr "Ricarico o sconto associati a questa opzione. È consentito un numero con segno e a virgola mobile."
-
-#: markup-by-attribute-for-woocommerce.php:108
-msgid "Markup:"
-msgstr "Ricarico:"
 
 #: src/utility/pointers.php:101
 msgid "Markups can be fixed values such as <code>5</code> or <code>5.95</code>, or percentages such as <code>5%</code> or <code>1.23%</code>. Use plus or minus signs (like <code>+5.95</code> or <code>-1.23%</code>) for increases or decreases.<br/>Markups are applied when setting prices or reapplying markups to variations."
@@ -175,6 +188,10 @@ msgstr "Variazioni massime"
 msgid "Maximum number of variations that can be created per run."
 msgstr "Numero massimo di variazioni che possono essere create per esecuzione."
 
+#: src/backend/term.php:53 src/backend/term.php:58
+msgid "Often needed if the option drop-down box is overwritten by another plugin or theme and markup is no longer visible."
+msgstr ""
+
 #: src/backend/settings.php:101
 msgid "Option Drop-down Behavior"
 msgstr "Comportamento menu a tendina"
@@ -187,41 +204,49 @@ msgstr "Altro"
 msgid "Overwrite the variation description with price information."
 msgstr "Sovrascrivi la descrizione della variazione con le informazioni sul prezzo."
 
-#: src/backend/product.php:581 src/backend/product.php:586
+#: src/backend/product.php:253 src/backend/product.php:258
 msgid "Permission denied"
 msgstr "Permesso negato"
 
-#: src/backend/productlist.php:92
+#: src/backend/productlist.php:133
 #, php-format
 msgid "Please wait; processing product %1$s of %2$s..."
 msgstr "Attendere prego; elaborazione prodotto %1$s di %2$s..."
+
+#: src/backend/product.php:57
+msgid "Product base regular price"
+msgstr ""
+
+#: src/backend/product.php:71
+msgid "Product base sale price"
+msgstr ""
 
 #: markup-by-attribute-for-woocommerce.php:104
 msgid "Product price"
 msgstr "Prezzo del prodotto"
 
-#: src/backend/productlist.php:142 src/backend/productlist.php:308
+#: src/backend/productlist.php:298 src/backend/productlist.php:396
 msgid "Reapply Markups"
 msgstr "Riapplica ricarichi"
 
-#: src/backend/product.php:563
+#: src/backend/product.php:161
 msgid "Reapply markups to prices"
 msgstr "Riapplica ricarichi ai prezzi"
 
-#: src/backend/productlist.php:317
+#: src/backend/productlist.php:307
 #, php-format
 msgid "Reapply markups using base price: %s"
 msgstr ""
 
-#: src/backend/term.php:49
-msgid "Rename the attribute to include the markup. Often needed if the option drop-down box is overwritten by another plugin or theme and markup is no longer visible."
-msgstr "Rinomina l'attributo per includere il markup. Spesso necessario se la casella a discesa delle opzioni viene sovrascritta da un altro plugin o tema e il markup non è più visibile."
+#: src/backend/term.php:52
+msgid "Rename the option to include the markup."
+msgstr ""
 
-#: src/backend/productlist.php:310
+#: src/backend/productlist.php:300
 msgid "Reprice"
 msgstr "Riprezzo"
 
-#: src/backend/product.php:564
+#: src/backend/product.php:162
 #, php-format
 msgid "Reprice variations at %s, plus or minus the markups?"
 msgstr "Ricalcolare le variazioni a %s, più o meno i ricarichi?"
@@ -266,12 +291,17 @@ msgstr "Mostra il ricarico SENZA il simbolo della valuta nel menu a tendina dell
 msgid "Some stores want prices with specific numbers below the decimal place (such as xx.00 or xx.95). Rounding percentage markups will keep the value below the decimal intact."
 msgstr "Alcuni negozi vogliono prezzi con numeri specifici dopo la virgola (come xx.00 o xx.95). L'arrotondamento dei ricarichi percentuali manterrà intatto il valore dopo la virgola."
 
-#: src/utility/general.php:218
+#: markup-by-attribute-for-woocommerce.php:113
+#| msgid "(Subtract"
+msgid "Subtract"
+msgstr "Sottrai"
+
+#: src/utility/general.php:224
 #, php-format
 msgid "Subtract %1$s for %2$s"
 msgstr "Sottrai %1$s per %2$s"
 
-#: src/utility/general.php:204
+#: src/utility/general.php:211
 #, php-format
 msgid "Subtract %1$s for %2$s: %3$s"
 msgstr "Sottrarre %1$s per %2$s: %3$s"

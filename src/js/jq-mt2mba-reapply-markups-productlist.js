@@ -98,7 +98,7 @@ jQuery(document).ready(function($) {
 			url: ajaxurl,
 			type: 'POST',
 			data: {
-				action: 'mt2mba_reapply_markup',
+				action: 'handleMarkupReapplication',
 				product_id: productId,
 				security: mt2mbaListLocal.security
 			},

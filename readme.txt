@@ -16,7 +16,7 @@ Tested up to:			6.7.1
 Requires at least:		4.6
 PHP tested up to:		8.3.14
 Requires PHP:			5.6
-WC tested up to:		9.4.3
+WC tested up to:		9.5.1
 WC requires at least:	3.0
 MySQL tested up to:		8.0.40
 

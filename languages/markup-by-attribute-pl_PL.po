@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Markup by Attribute for WooCommerce - MT² Tech\n"
 "Report-Msgid-Bugs-To: markupbyattribute@mail.com\n"
 "POT-Creation-Date: 2020-04-17 00:43+0000\n"
-"PO-Revision-Date: 2024-12-13 06:12+0000\n"
+"PO-Revision-Date: 2024-12-18 05:54+0000\n"
 "Last-Translator: \n"
 "Language-Team: Polish\n"
 "Language: pl_PL\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Generator: Loco https://localise.biz/\n"
 "X-Loco-Version: 2.6.14; wp-6.7.1"
 
-#: src/backend/productlist.php:93 src/backend/productlist.php:99
+#: src/backend/productlist.php:134 src/backend/productlist.php:140
 #, php-format
 msgid "%s product processed successfully."
 msgid_plural "%s products processed successfully."
@@ -22,35 +22,40 @@ msgstr[0] "%s produkt przetworzony pomyślnie."
 msgstr[1] "%s produkty przetworzone pomyślnie."
 msgstr[2] ""
 
-#: src/backend/term.php:50
-msgid "(Add"
-msgstr "(Dodatkowo"
-
-#: src/backend/term.php:51
-msgid "(Subtract"
-msgstr "(Obniżka"
-
 #: src/backend/settings.php:180
 msgid "A 10% markup on a $30 regular price yields a $3 markup. If you set a $20 sale price, setting this option ON yields a $2 markup, setting it OFF leaves the markup at $3."
 msgstr "Narzut 10% na regularną cenę 30 zł daje narzut w wysokości 3 zł. Jeśli ustawisz cenę promocyjną na 20 zł, włączenie tej opcji spowoduje narzut 2 zł, wyłączenie pozostawi narzut na poziomie 3 zł."
 
-#: src/utility/general.php:219
+#: markup-by-attribute-for-woocommerce.php:112
+#| msgid "(Add"
+msgid "Add"
+msgstr "Dodatkowo"
+
+#: src/utility/general.php:225
 #, php-format
 msgid "Add %1$s for %2$s"
 msgstr "Dodatkowo %1$s za %2$s"
 
-#: src/utility/general.php:205
+#: src/utility/general.php:212
 #, php-format
 msgid "Add %1$s for %2$s: %3$s"
 msgstr "Dodaj %1$s za %2$s: %3$s"
 
-#: src/backend/term.php:48
+#: src/backend/term.php:55
+msgid "Add Markup to Description?"
+msgstr ""
+
+#: src/backend/term.php:50
 msgid "Add Markup to Name?"
 msgstr "Dodaj zmianę ceny do nazwy?"
 
 #: src/backend/settings.php:126
 msgid "Add pricing information to the end of the existing description."
 msgstr "Dopisz informację o cenie na końcu istniejącego opisu."
+
+#: src/backend/term.php:57
+msgid "Add the markup to the option's description."
+msgstr ""
 
 #: src/backend/settings.php:78
 #, php-format
@@ -65,12 +70,24 @@ msgstr "Dodaje narzut na warianty produktów według atrybutów do WooCommerce."
 msgid "Allow Zero Price"
 msgstr "Zezwól na cenę zero"
 
-#: src/backend/productlist.php:183
+#: src/backend/productlist.php:188
 msgid "Attributes"
 msgstr "Atrybuty"
 
-#: src/backend/productlist.php:180
+#: src/backend/productlist.php:185
 msgid "Base Price"
+msgstr ""
+
+#: src/backend/product.php:58
+msgid "Base regular price for the variations before markup"
+msgstr ""
+
+#: src/backend/product.php:72
+msgid "Base sale price for the variations before markup"
+msgstr ""
+
+#: src/backend/product.php:84
+msgid "Change base prices with the <em>Bulk actions</em> on the <b>Variations</b> tab."
 msgstr ""
 
 #: src/backend/settings.php:125
@@ -85,7 +102,7 @@ msgstr "NIE pokazuj ceny bazowej w opisie produktu."
 msgid "Do NOT show the markup in the options drop-down box."
 msgstr "NIE pokazuj  zmiany ceny w liście rozwijanej. (Bez zmian)"
 
-#: src/backend/product.php:565
+#: src/backend/product.php:163
 msgid "Failed to reapply markups. Please try again."
 msgstr "Nie udało się ponownie zastosować narzutów. Proszę spróbować ponownie."
 
@@ -120,7 +137,7 @@ msgstr "Dołącz nazwę atrybutu do opisu wariantu produktu. <b>Dodaj 1,50 zł z
 msgid "Instructions"
 msgstr "Instrukcja"
 
-#: src/backend/product.php:593
+#: src/backend/product.php:264
 #| msgid "Invalid product"
 msgid "Invalid product ID"
 msgstr "Nieprawidłowy ID produktu"
@@ -129,11 +146,11 @@ msgstr "Nieprawidłowy ID produktu"
 msgid "MarkTomlinson"
 msgstr "MarkTomlinson"
 
-#: src/backend/term.php:82
+#: src/backend/term.php:90
 msgid "Markup"
 msgstr "Narzut"
 
-#: src/backend/term.php:46
+#: src/backend/term.php:48
 msgid "Markup (or markdown)"
 msgstr "Narzut (lub obniżka)"
 
@@ -157,13 +174,9 @@ msgstr "Obliczanie narzutu"
 msgid "Markup Display"
 msgstr "Wyświetlanie narzutu"
 
-#: src/backend/term.php:47
+#: src/backend/term.php:49
 msgid "Markup or markdown associated with this option. Signed, floating point numeric allowed."
 msgstr "Dodatnia lub ujemna liczba całkowita. Może być zmiennoprzecinkowa. Może być znak % na końcu."
-
-#: markup-by-attribute-for-woocommerce.php:108
-msgid "Markup:"
-msgstr "Zmiana ceny: "
 
 #: src/utility/pointers.php:101
 msgid "Markups can be fixed values such as <code>5</code> or <code>5.95</code>, or percentages such as <code>5%</code> or <code>1.23%</code>. Use plus or minus signs (like <code>+5.95</code> or <code>-1.23%</code>) for increases or decreases.<br/>Markups are applied when setting prices or reapplying markups to variations."
@@ -177,6 +190,10 @@ msgstr "Maksymalna liczba wariantów"
 msgid "Maximum number of variations that can be created per run."
 msgstr "Maksymalna liczba wariantów, która może zostać utworzona w jednym przebiegu."
 
+#: src/backend/term.php:53 src/backend/term.php:58
+msgid "Often needed if the option drop-down box is overwritten by another plugin or theme and markup is no longer visible."
+msgstr ""
+
 #: src/backend/settings.php:101
 msgid "Option Drop-down Behavior"
 msgstr "Zachowanie listy rozwijanej"
@@ -189,43 +206,51 @@ msgstr "Inne"
 msgid "Overwrite the variation description with price information."
 msgstr "Nadpisz opis wariantu informacją o zmianie ceny."
 
-#: src/backend/product.php:581 src/backend/product.php:586
+#: src/backend/product.php:253 src/backend/product.php:258
 msgid "Permission denied"
 msgstr ""
 "Brak uprawnień\n"
 ""
 
-#: src/backend/productlist.php:92
+#: src/backend/productlist.php:133
 #, php-format
 msgid "Please wait; processing product %1$s of %2$s..."
 msgstr "Proszę czekać; przetwarzanie produktu %1$s z %2$s..."
+
+#: src/backend/product.php:57
+msgid "Product base regular price"
+msgstr ""
+
+#: src/backend/product.php:71
+msgid "Product base sale price"
+msgstr ""
 
 #: markup-by-attribute-for-woocommerce.php:104
 msgid "Product price"
 msgstr "Cena produktu"
 
-#: src/backend/productlist.php:142 src/backend/productlist.php:308
+#: src/backend/productlist.php:298 src/backend/productlist.php:396
 msgid "Reapply Markups"
 msgstr "Ponowne zastosowanie narzutów"
 
-#: src/backend/product.php:563
+#: src/backend/product.php:161
 msgid "Reapply markups to prices"
 msgstr "Ponownie zastosuj narzuty do cen"
 
-#: src/backend/productlist.php:317
+#: src/backend/productlist.php:307
 #, php-format
 msgid "Reapply markups using base price: %s"
 msgstr ""
 
-#: src/backend/term.php:49
-msgid "Rename the attribute to include the markup. Often needed if the option drop-down box is overwritten by another plugin or theme and markup is no longer visible."
-msgstr "Zmień nazwę atrybutu, aby uwzględnić marżę. Często potrzebne, jeśli pole wyboru opcji jest nadpisywane przez inny plugin lub motyw i marża przestaje być widoczna."
+#: src/backend/term.php:52
+msgid "Rename the option to include the markup."
+msgstr ""
 
-#: src/backend/productlist.php:310
+#: src/backend/productlist.php:300
 msgid "Reprice"
 msgstr "Przelicz"
 
-#: src/backend/product.php:564
+#: src/backend/product.php:162
 #, php-format
 msgid "Reprice variations at %s, plus or minus the markups?"
 msgstr "Przeliczyć warianty po %s, plus lub minus narzuty?"
@@ -271,12 +296,17 @@ msgstr "Pokaż zmianę ceny BEZ symbolu waluty w liście rozwijanej."
 msgid "Some stores want prices with specific numbers below the decimal place (such as xx.00 or xx.95). Rounding percentage markups will keep the value below the decimal intact."
 msgstr "Niektóre sklepy preferują ceny z konkretnymi liczbami po przecinku (takimi jak xx,00 lub xx,95). Zaokrąglanie procentowych narzutów zachowa niezmienioną wartość po przecinku."
 
-#: src/utility/general.php:218
+#: markup-by-attribute-for-woocommerce.php:113
+#| msgid "(Subtract"
+msgid "Subtract"
+msgstr "Obniżka"
+
+#: src/utility/general.php:224
 #, php-format
 msgid "Subtract %1$s for %2$s"
 msgstr "Obniżka %1$s za %2$s"
 
-#: src/utility/general.php:204
+#: src/utility/general.php:211
 #, php-format
 msgid "Subtract %1$s for %2$s: %3$s"
 msgstr "Odejmij %1$s za %2$s: %3$s"

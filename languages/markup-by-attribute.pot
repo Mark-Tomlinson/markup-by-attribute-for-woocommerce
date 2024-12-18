@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Markup by Attribute for WooCommerce - MT² Tech\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-12-13 06:12+0000\n"
+"POT-Creation-Date: 2024-12-18 05:53+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -14,41 +14,45 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Loco https://localise.biz/"
 
-#: src/backend/productlist.php:93 src/backend/productlist.php:99
+#: src/backend/productlist.php:134 src/backend/productlist.php:140
 #, php-format
 msgid "%s product processed successfully."
 msgid_plural "%s products processed successfully."
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/backend/term.php:50
-msgid "(Add"
-msgstr ""
-
-#: src/backend/term.php:51
-msgid "(Subtract"
-msgstr ""
-
 #: src/backend/settings.php:180
 msgid "A 10% markup on a $30 regular price yields a $3 markup. If you set a $20 sale price, setting this option ON yields a $2 markup, setting it OFF leaves the markup at $3."
 msgstr ""
 
-#: src/utility/general.php:219
+#: markup-by-attribute-for-woocommerce.php:112
+msgid "Add"
+msgstr ""
+
+#: src/utility/general.php:225
 #, php-format
 msgid "Add %1$s for %2$s"
 msgstr ""
 
-#: src/utility/general.php:205
+#: src/utility/general.php:212
 #, php-format
 msgid "Add %1$s for %2$s: %3$s"
 msgstr ""
 
-#: src/backend/term.php:48
+#: src/backend/term.php:55
+msgid "Add Markup to Description?"
+msgstr ""
+
+#: src/backend/term.php:50
 msgid "Add Markup to Name?"
 msgstr ""
 
 #: src/backend/settings.php:126
 msgid "Add pricing information to the end of the existing description."
+msgstr ""
+
+#: src/backend/term.php:57
+msgid "Add the markup to the option's description."
 msgstr ""
 
 #: src/backend/settings.php:78
@@ -64,12 +68,24 @@ msgstr ""
 msgid "Allow Zero Price"
 msgstr ""
 
-#: src/backend/productlist.php:183
+#: src/backend/productlist.php:188
 msgid "Attributes"
 msgstr ""
 
-#: src/backend/productlist.php:180
+#: src/backend/productlist.php:185
 msgid "Base Price"
+msgstr ""
+
+#: src/backend/product.php:58
+msgid "Base regular price for the variations before markup"
+msgstr ""
+
+#: src/backend/product.php:72
+msgid "Base sale price for the variations before markup"
+msgstr ""
+
+#: src/backend/product.php:84
+msgid "Change base prices with the <em>Bulk actions</em> on the <b>Variations</b> tab."
 msgstr ""
 
 #: src/backend/settings.php:125
@@ -84,7 +100,7 @@ msgstr ""
 msgid "Do NOT show the markup in the options drop-down box."
 msgstr ""
 
-#: src/backend/product.php:565
+#: src/backend/product.php:163
 msgid "Failed to reapply markups. Please try again."
 msgstr ""
 
@@ -117,7 +133,7 @@ msgstr ""
 msgid "Instructions"
 msgstr ""
 
-#: src/backend/product.php:593
+#: src/backend/product.php:264
 msgid "Invalid product ID"
 msgstr ""
 
@@ -125,11 +141,11 @@ msgstr ""
 msgid "MarkTomlinson"
 msgstr ""
 
-#: src/backend/term.php:82
+#: src/backend/term.php:90
 msgid "Markup"
 msgstr ""
 
-#: src/backend/term.php:46
+#: src/backend/term.php:48
 msgid "Markup (or markdown)"
 msgstr ""
 
@@ -153,12 +169,8 @@ msgstr ""
 msgid "Markup Display"
 msgstr ""
 
-#: src/backend/term.php:47
+#: src/backend/term.php:49
 msgid "Markup or markdown associated with this option. Signed, floating point numeric allowed."
-msgstr ""
-
-#: markup-by-attribute-for-woocommerce.php:108
-msgid "Markup:"
 msgstr ""
 
 #: src/utility/pointers.php:101
@@ -173,6 +185,10 @@ msgstr ""
 msgid "Maximum number of variations that can be created per run."
 msgstr ""
 
+#: src/backend/term.php:53 src/backend/term.php:58
+msgid "Often needed if the option drop-down box is overwritten by another plugin or theme and markup is no longer visible."
+msgstr ""
+
 #: src/backend/settings.php:101
 msgid "Option Drop-down Behavior"
 msgstr ""
@@ -185,41 +201,49 @@ msgstr ""
 msgid "Overwrite the variation description with price information."
 msgstr ""
 
-#: src/backend/product.php:581 src/backend/product.php:586
+#: src/backend/product.php:253 src/backend/product.php:258
 msgid "Permission denied"
 msgstr ""
 
-#: src/backend/productlist.php:92
+#: src/backend/productlist.php:133
 #, php-format
 msgid "Please wait; processing product %1$s of %2$s..."
+msgstr ""
+
+#: src/backend/product.php:57
+msgid "Product base regular price"
+msgstr ""
+
+#: src/backend/product.php:71
+msgid "Product base sale price"
 msgstr ""
 
 #: markup-by-attribute-for-woocommerce.php:104
 msgid "Product price"
 msgstr ""
 
-#: src/backend/productlist.php:142 src/backend/productlist.php:308
+#: src/backend/productlist.php:298 src/backend/productlist.php:396
 msgid "Reapply Markups"
 msgstr ""
 
-#: src/backend/product.php:563
+#: src/backend/product.php:161
 msgid "Reapply markups to prices"
 msgstr ""
 
-#: src/backend/productlist.php:317
+#: src/backend/productlist.php:307
 #, php-format
 msgid "Reapply markups using base price: %s"
 msgstr ""
 
-#: src/backend/term.php:49
-msgid "Rename the attribute to include the markup. Often needed if the option drop-down box is overwritten by another plugin or theme and markup is no longer visible."
+#: src/backend/term.php:52
+msgid "Rename the option to include the markup."
 msgstr ""
 
-#: src/backend/productlist.php:310
+#: src/backend/productlist.php:300
 msgid "Reprice"
 msgstr ""
 
-#: src/backend/product.php:564
+#: src/backend/product.php:162
 #, php-format
 msgid "Reprice variations at %s, plus or minus the markups?"
 msgstr ""
@@ -264,12 +288,16 @@ msgstr ""
 msgid "Some stores want prices with specific numbers below the decimal place (such as xx.00 or xx.95). Rounding percentage markups will keep the value below the decimal intact."
 msgstr ""
 
-#: src/utility/general.php:218
+#: markup-by-attribute-for-woocommerce.php:113
+msgid "Subtract"
+msgstr ""
+
+#: src/utility/general.php:224
 #, php-format
 msgid "Subtract %1$s for %2$s"
 msgstr ""
 
-#: src/utility/general.php:204
+#: src/utility/general.php:211
 #, php-format
 msgid "Subtract %1$s for %2$s: %3$s"
 msgstr ""

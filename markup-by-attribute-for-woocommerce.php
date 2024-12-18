@@ -30,7 +30,7 @@ use mt2Tech\MarkupByAttribute\Utility	as Utility;
  * Requires at least:		4.6
  * PHP tested up to:		8.3.14
  * Requires PHP:			5.6
- * WC tested up to:			9.4.3
+ * WC tested up to:			9.5.1
  * WC requires at least:	3.0
  * MySQL tested up to:		8.0.40
  */
@@ -104,10 +104,13 @@ function mt2mba_main() {
 	define('MT2MBA_PRICE_META', __('Product price', 'markup-by-attribute') . ' ');
 	define('PRODUCT_MARKUP_DESC_BEG', '<span id="mbainfo">');
 	define('PRODUCT_MARKUP_DESC_END', '</span>');
-	define('REWRITE_OPTION_PREFIX', 'mt2mba_rewrite_attrb_name_');
-	define('ATTRB_MARKUP_DESC_BEG', '(' . __('Markup:', 'markup-by-attribute') . ' ');
-	define('ATTRB_MARKUP_NAME_BEG', ' (');
-	define('ATTRB_MARKUP_END', ')');
+	define('REWRITE_TERM_NAME_PREFIX', 'mt2mba_rewrite_attrb_name_');
+	define('REWRITE_TERM_DESC_PREFIX', 'mt2mba_rewrite_attrb_desc_');
+	/**
+	 * Constants for markup text formatting
+	 */
+	define('MT2MBA_MARKUP_NAME_PATTERN_ADD', '(' . __('Add', 'markup-by-attribute') . ' %s)');
+	define('MT2MBA_MARKUP_NAME_PATTERN_SUBTRACT', '(' . __('Subtract', 'markup-by-attribute') . ' %s)');
 
 	$admin_messages = [
 		'info' => [

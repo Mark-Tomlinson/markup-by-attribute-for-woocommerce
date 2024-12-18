@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Markup by Attribute for WooCommerce - MT² Tech\n"
 "Report-Msgid-Bugs-To: markupbyattribute@mail.com\n"
 "POT-Creation-Date: 2020-04-17 00:43+0000\n"
-"PO-Revision-Date: 2024-12-13 06:12+0000\n"
+"PO-Revision-Date: 2024-12-18 05:55+0000\n"
 "Last-Translator: \n"
 "Language-Team: German\n"
 "Language: de_DE\n"
@@ -14,42 +14,47 @@ msgstr ""
 "X-Generator: Loco https://localise.biz/\n"
 "X-Loco-Version: 2.6.14; wp-6.7.1"
 
-#: src/backend/productlist.php:93 src/backend/productlist.php:99
+#: src/backend/productlist.php:134 src/backend/productlist.php:140
 #, php-format
 msgid "%s product processed successfully."
 msgid_plural "%s products processed successfully."
 msgstr[0] "%s Produkt erfolgreich verarbeitet."
 msgstr[1] "%s Produkte erfolgreich verarbeitet."
 
-#: src/backend/term.php:50
-msgid "(Add"
-msgstr "(Zuzüglich"
-
-#: src/backend/term.php:51
-msgid "(Subtract"
-msgstr "(Abzüglich"
-
 #: src/backend/settings.php:180
 msgid "A 10% markup on a $30 regular price yields a $3 markup. If you set a $20 sale price, setting this option ON yields a $2 markup, setting it OFF leaves the markup at $3."
 msgstr "Ein Aufschlag von 10 % auf einen regulären Preis von 30 € ergibt einen Aufschlag von 3 €. Wenn Sie einen Verkaufspreis von 20 € festlegen, ergibt die Aktivierung dieser Option einen Aufschlag von 2 €, bei Deaktivierung bleibt der Aufschlag bei 3 €."
 
-#: src/utility/general.php:219
+#: markup-by-attribute-for-woocommerce.php:112
+#| msgid "(Add"
+msgid "Add"
+msgstr "Zuzüglich"
+
+#: src/utility/general.php:225
 #, php-format
 msgid "Add %1$s for %2$s"
 msgstr "Aufpreis %1$s für %2$s"
 
-#: src/utility/general.php:205
+#: src/utility/general.php:212
 #, php-format
 msgid "Add %1$s for %2$s: %3$s"
 msgstr "Aufpreis %1$s für %2$s: %3$s"
 
-#: src/backend/term.php:48
+#: src/backend/term.php:55
+msgid "Add Markup to Description?"
+msgstr ""
+
+#: src/backend/term.php:50
 msgid "Add Markup to Name?"
 msgstr "Aufschlag zum Namen hinzufügen."
 
 #: src/backend/settings.php:126
 msgid "Add pricing information to the end of the existing description."
 msgstr "Zusätzliche Preisinformation an das Ende der bestehenden Artikelbeschreibung hinzufügen."
+
+#: src/backend/term.php:57
+msgid "Add the markup to the option's description."
+msgstr ""
 
 #: src/backend/settings.php:78
 #, php-format
@@ -64,12 +69,24 @@ msgstr "Fügt Produktvarianten-Aufschläge nach Attribut zu WooCommerce hinzu."
 msgid "Allow Zero Price"
 msgstr "Null-Preis Erlauben"
 
-#: src/backend/productlist.php:183
+#: src/backend/productlist.php:188
 msgid "Attributes"
 msgstr "Attribute"
 
-#: src/backend/productlist.php:180
+#: src/backend/productlist.php:185
 msgid "Base Price"
+msgstr ""
+
+#: src/backend/product.php:58
+msgid "Base regular price for the variations before markup"
+msgstr ""
+
+#: src/backend/product.php:72
+msgid "Base sale price for the variations before markup"
+msgstr ""
+
+#: src/backend/product.php:84
+msgid "Change base prices with the <em>Bulk actions</em> on the <b>Variations</b> tab."
 msgstr ""
 
 #: src/backend/settings.php:125
@@ -84,7 +101,7 @@ msgstr "Grundpreis NICHT in der Produktbeschreibung anzeigen"
 msgid "Do NOT show the markup in the options drop-down box."
 msgstr "Zeige keinen Preis Auf/Abschlag im Drop-Down-Feld"
 
-#: src/backend/product.php:565
+#: src/backend/product.php:163
 msgid "Failed to reapply markups. Please try again."
 msgstr "Aufschläge konnten nicht neu angewendet werden. Bitte versuchen Sie es erneut."
 
@@ -119,7 +136,7 @@ msgstr "Den Namen des Attributs in der Produktvarianten-Beschreibung einschließ
 msgid "Instructions"
 msgstr "Anleitung"
 
-#: src/backend/product.php:593
+#: src/backend/product.php:264
 #| msgid "Invalid product"
 msgid "Invalid product ID"
 msgstr "Ungültige Produkt-ID"
@@ -128,11 +145,11 @@ msgstr "Ungültige Produkt-ID"
 msgid "MarkTomlinson"
 msgstr "MarkTomlinson"
 
-#: src/backend/term.php:82
+#: src/backend/term.php:90
 msgid "Markup"
 msgstr "Aufschlag"
 
-#: src/backend/term.php:46
+#: src/backend/term.php:48
 msgid "Markup (or markdown)"
 msgstr "Preis Auf (oder Abschlag)."
 
@@ -156,13 +173,9 @@ msgstr "Aufschlagsberechnung"
 msgid "Markup Display"
 msgstr "Aufschlagsanzeige"
 
-#: src/backend/term.php:47
+#: src/backend/term.php:49
 msgid "Markup or markdown associated with this option. Signed, floating point numeric allowed."
 msgstr "Der Preis Auf oder Abschlag wird mit dieser Angabe berechnet. Mit ″ + ″ oder ″ - ″ Zeichen versehene Nummern sind zugelassen."
-
-#: markup-by-attribute-for-woocommerce.php:108
-msgid "Markup:"
-msgstr "Aufschlag:"
 
 #: src/utility/pointers.php:101
 msgid "Markups can be fixed values such as <code>5</code> or <code>5.95</code>, or percentages such as <code>5%</code> or <code>1.23%</code>. Use plus or minus signs (like <code>+5.95</code> or <code>-1.23%</code>) for increases or decreases.<br/>Markups are applied when setting prices or reapplying markups to variations."
@@ -176,6 +189,10 @@ msgstr "Maximale Variationen"
 msgid "Maximum number of variations that can be created per run."
 msgstr "Maximale Anzahl von Variationen, die pro Durchlauf erstellt werden können."
 
+#: src/backend/term.php:53 src/backend/term.php:58
+msgid "Often needed if the option drop-down box is overwritten by another plugin or theme and markup is no longer visible."
+msgstr ""
+
 #: src/backend/settings.php:101
 msgid "Option Drop-down Behavior"
 msgstr "Verhalten des Auswahlmenüs für Optionen"
@@ -188,41 +205,49 @@ msgstr "Sonstiges"
 msgid "Overwrite the variation description with price information."
 msgstr "Berschreibe die Variations-Artikelbeschreibung mit der Preisinformation"
 
-#: src/backend/product.php:581 src/backend/product.php:586
+#: src/backend/product.php:253 src/backend/product.php:258
 msgid "Permission denied"
 msgstr "Zugriff verweigert"
 
-#: src/backend/productlist.php:92
+#: src/backend/productlist.php:133
 #, php-format
 msgid "Please wait; processing product %1$s of %2$s..."
 msgstr "Bitte warten; Verarbeitung von Produkt %1$s von %2$s ..."
+
+#: src/backend/product.php:57
+msgid "Product base regular price"
+msgstr ""
+
+#: src/backend/product.php:71
+msgid "Product base sale price"
+msgstr ""
 
 #: markup-by-attribute-for-woocommerce.php:104
 msgid "Product price"
 msgstr "Produkt Preis"
 
-#: src/backend/productlist.php:142 src/backend/productlist.php:308
+#: src/backend/productlist.php:298 src/backend/productlist.php:396
 msgid "Reapply Markups"
 msgstr "Aufschläge neu anwenden"
 
-#: src/backend/product.php:563
+#: src/backend/product.php:161
 msgid "Reapply markups to prices"
 msgstr "Aufschläge auf Preise neu anwenden"
 
-#: src/backend/productlist.php:317
+#: src/backend/productlist.php:307
 #, php-format
 msgid "Reapply markups using base price: %s"
 msgstr ""
 
-#: src/backend/term.php:49
-msgid "Rename the attribute to include the markup. Often needed if the option drop-down box is overwritten by another plugin or theme and markup is no longer visible."
-msgstr "Benennen Sie das Attribut um, um die Marge einzuschließen. Häufig erforderlich, wenn das Options-Dropdown-Feld von einem anderen Plugin oder Theme überschrieben wird und die Marge nicht mehr sichtbar ist."
+#: src/backend/term.php:52
+msgid "Rename the option to include the markup."
+msgstr ""
 
-#: src/backend/productlist.php:310
+#: src/backend/productlist.php:300
 msgid "Reprice"
 msgstr "Neupreis"
 
-#: src/backend/product.php:564
+#: src/backend/product.php:162
 #, php-format
 msgid "Reprice variations at %s, plus or minus the markups?"
 msgstr "Variationen neu berechnen zu %s, plus oder minus die Aufschläge?"
@@ -268,12 +293,17 @@ msgstr "Zeige den Preisaufschlag OHNE das Währungszeichen im Drop-Down-Feld an.
 msgid "Some stores want prices with specific numbers below the decimal place (such as xx.00 or xx.95). Rounding percentage markups will keep the value below the decimal intact."
 msgstr "Einige Shops möchten Preise mit bestimmten Zahlen nach dem Komma (wie xx,00 oder xx,95). Das Runden prozentualer Aufschläge behält den Wert nach dem Komma bei."
 
-#: src/utility/general.php:218
+#: markup-by-attribute-for-woocommerce.php:113
+#| msgid "(Subtract"
+msgid "Subtract"
+msgstr "Abzüglich"
+
+#: src/utility/general.php:224
 #, php-format
 msgid "Subtract %1$s for %2$s"
 msgstr "Abzüglich %1$s für %2$s"
 
-#: src/utility/general.php:204
+#: src/utility/general.php:211
 #, php-format
 msgid "Subtract %1$s for %2$s: %3$s"
 msgstr "Preisabzug %1$s für %2$s: %3$s"

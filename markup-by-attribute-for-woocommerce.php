@@ -7,7 +7,7 @@ use mt2Tech\MarkupByAttribute\Utility	as Utility;
  * This file is part of the Markup by Attribute for WooCommerce plugin by Mark Tomlinson
  *
  * @package	markup-by-attribute-for-woocommerce
- * @version	4.2
+ * @version	4.3.2
  * @license	GPL-2.0+
  */
 
@@ -23,14 +23,13 @@ use mt2Tech\MarkupByAttribute\Utility	as Utility;
  * License URI:				https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:				markup-by-attribute
  * Domain Path:				/languages
- * Version:					4.2
- * Build:					202449.03
+ * Version:					4.3.3
  * Stable tag:				trunk
  * Tested up to:			6.7.1
  * Requires at least:		4.6
- * PHP tested up to:		8.3.14
+ * PHP tested up to:		8.3.11
  * Requires PHP:			5.6
- * WC tested up to:			9.4.3
+ * WC tested up to:			9.6.0
  * WC requires at least:	3.0
  * MySQL tested up to:		8.0.40
  */
@@ -50,8 +49,8 @@ Autoloader::register();
  */
 function add_links($links) {
 	$mt2mba_links = [
-		'settings' => '<a id="mt2mba_settings" href="admin.php?page=wc-settings&tab=products&section=mt2mba">' . __('Settings', 'markup-by-attribute') . '</a>',
-		'instructions' => '<a id="mt2mba_instructions" href="https://wordpress.org/plugins/markup-by-attribute-for-woocommerce/#installation" target="_blank">' . __('Instructions', 'markup-by-attribute') . '</a>'
+		'settings' => '<a id="mt2mba_settings" href="admin.php?page=wc-settings&tab=products&section=mt2mba">' . __('Settings', 'markup-by-attribute-for-woocommerce') . '</a>',
+		'instructions' => '<a id="mt2mba_instructions" href="https://wordpress.org/plugins/markup-by-attribute-for-woocommerce/#installation" target="_blank">' . __('Instructions', 'markup-by-attribute-for-woocommerce') . '</a>'
 	];
 	return array_merge($mt2mba_links, $links);
 }
@@ -89,32 +88,34 @@ add_action('before_woocommerce_init', function() {
 // Move this function outside of any other function or class
 function mt2mba_main() {
 	// Load translations
-	load_plugin_textdomain('markup-by-attribute', false, dirname(plugin_basename(__FILE__)) . '/languages');
+	load_plugin_textdomain('markup-by-attribute-for-woocommerce', false, dirname(plugin_basename(__FILE__)) . '/languages');
 
 	// Set plugin information
 	define('MT2MBA_PLUGIN_PREFIX', 'MT2MBA');
-	define('MT2MBA_VERSION', '4.2');
-	define('MT2MBA_BUILD', 202449.03);
+	define('MT2MBA_VERSION', '4.3.3');
 	define('MT2MBA_DB_VERSION', 2.2);
 	define('MT2MBA_SITE_URL', get_bloginfo('wpurl'));
 	define('MT2MBA_PLUGIN_DIR', plugin_dir_path(__FILE__));
 	define('MT2MBA_PLUGIN_URL', plugin_dir_url(__FILE__));
 	define('MT2MBA_PLUGIN_BASENAME', plugin_basename(__FILE__));
-	define('MT2MBA_PLUGIN_NAME', __('Markup by Attribute', 'markup-by-attribute'));
-	define('MT2MBA_PRICE_META', __('Product price', 'markup-by-attribute') . ' ');
+	define('MT2MBA_PLUGIN_NAME', __('Markup by Attribute', 'markup-by-attribute-for-woocommerce'));
+	define('MT2MBA_PRICE_META', __('Product price', 'markup-by-attribute-for-woocommerce') . ' ');
 	define('PRODUCT_MARKUP_DESC_BEG', '<span id="mbainfo">');
 	define('PRODUCT_MARKUP_DESC_END', '</span>');
-	define('REWRITE_OPTION_PREFIX', 'mt2mba_rewrite_attrb_name_');
-	define('ATTRB_MARKUP_DESC_BEG', '(' . __('Markup:', 'markup-by-attribute') . ' ');
-	define('ATTRB_MARKUP_NAME_BEG', ' (');
-	define('ATTRB_MARKUP_END', ')');
+	define('REWRITE_TERM_NAME_PREFIX', 'mt2mba_rewrite_attrb_name_');
+	define('REWRITE_TERM_DESC_PREFIX', 'mt2mba_rewrite_attrb_desc_');
+	define('DONT_OVERWRITE_THEME_PREFIX', 'mt2mba_dont_overwrite_theme_');
+	/**
+	 * Constants for markup text formatting
+	 */
+	define('MT2MBA_MARKUP_NAME_PATTERN_ADD', '(' . __('Add', 'markup-by-attribute-for-woocommerce') . ' %s)');
+	define('MT2MBA_MARKUP_NAME_PATTERN_SUBTRACT', '(' . __('Subtract', 'markup-by-attribute-for-woocommerce') . ' %s)');
 
 	$admin_messages = [
 		'info' => [
 			/* Add administrative info messages in the following format
 			 *
 			array("message_name", "This is a dismissable messages."),
-			 *
 			 */
 		],
 		'warning' => [

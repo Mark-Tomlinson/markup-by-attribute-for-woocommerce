@@ -5,7 +5,7 @@
 /* Hide WooCommerce's Add Price Button
    Prevents conflicts with Set Regular Prices bulk function 
    ========================================================================== */
-   .woocommerce-add-variation-price-container {
+.woocommerce-add-variation-price-container {
 	display: none !important;
 }
 
@@ -16,9 +16,14 @@
 	table-layout: fixed;
 }
 
-/* Column Widths */
+/* Column Widths and Alignment */
 .wp-list-table .column-product_attributes {
 	width: 11%;
+}
+
+.wp-list-table .column-mt2mba_base_price {
+	width: 8%;
+	text-align: center;
 }
 
 /* Cell Text Overflow */
@@ -32,8 +37,6 @@
    ========================================================================== */
 .js-mt2mba-reapply-markup {
 	color: #2271b1;
-	margin: 2px 0 0 4px;
-	display: inline-block;
 }
 
 /* Icon Sizing */
@@ -50,11 +53,13 @@
 }
 
 .js-mt2mba-reapply-markup:focus {
+	color: #2271b1;
 	outline: none;
 	box-shadow: none;
 }
 
 .js-mt2mba-reapply-markup.processing {
+	color: #2271b1;
 	opacity: 0.5;
 }
 
@@ -97,4 +102,8 @@
 	background: rgba(224, 224, 224, 0.5);
 	z-index: 1000;
 	cursor: wait;
+}
+
+span.base-price-info {
+	font-size: 18px;
 }

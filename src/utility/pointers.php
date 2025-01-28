@@ -99,7 +99,7 @@ class Pointers {
 			'<h3><em>%s</em></h3><p>%s</p>',
 			MT2MBA_PLUGIN_NAME,
 			__('Markups can be fixed values such as <code>5</code> or <code>5.95</code>, or percentages such as <code>5%</code> or <code>1.23%</code>. Use plus or minus signs (like <code>+5.95</code> or <code>-1.23%</code>) for increases or decreases.<br/>Markups are applied when setting prices or reapplying markups to variations.',
-			'markup-by-attribute')
+			'markup-by-attribute-for-woocommerce')
 		);
 		
 		$pointers = array (
@@ -130,7 +130,7 @@ class Pointers {
 		$pointer_content = sprintf (
 			'<h3>%s</h3><p>%s</p>',
 			MT2MBA_PLUGIN_NAME,
-			__('Using this plugin is simple, but might be a little obscure. This link to the instructions may help get you started.<br/>We\'ll just leave the instructions link right here.', 'markup-by-attribute')
+			__('Using this plugin is simple, but might be a little obscure. This link to the instructions may help get you started.<br/>We\'ll just leave the instructions link right here.', 'markup-by-attribute-for-woocommerce')
 		);
 
 		$pointers = array (

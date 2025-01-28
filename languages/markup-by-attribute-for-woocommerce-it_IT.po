@@ -1,0 +1,357 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Markup by Attribute for WooCommerce - MT² Tech\n"
+"Report-Msgid-Bugs-To: markupbyattribute@mail.com\n"
+"POT-Creation-Date: 2020-04-17 00:43+0000\n"
+"PO-Revision-Date: 2025-01-05 00:41+0000\n"
+"Last-Translator: GitHub user Zjadlbymcos, WordPress.org user @silentstepsch, Anthropic Claude 3.5 Sonnet\n"
+"Language-Team: Italian\n"
+"Language: it_IT\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.6.14; wp-6.7.1"
+
+#: src/backend/productlist.php:126 src/backend/productlist.php:132
+#, php-format
+msgid "%s product processed successfully."
+msgid_plural "%s products processed successfully."
+msgstr[0] "%s prodotto elaborato con successo."
+msgstr[1] "%s prodotti elaborati con successo."
+
+#: src/backend/settings.php:180
+msgid "A 10% markup on a $30 regular price yields a $3 markup. If you set a $20 sale price, setting this option ON yields a $2 markup, setting it OFF leaves the markup at $3."
+msgstr "Un ricarico del 10% su un prezzo normale di 30 € produce un ricarico di 3 €. Se imposti un prezzo scontato di 20 €, attivando questa opzione si ottiene un ricarico di 2 €, disattivandola il ricarico rimane a 3 €."
+
+#: markup-by-attribute-for-woocommerce.php:113
+#| msgid "(Add"
+msgid "Add"
+msgstr "Aggiungi"
+
+#: src/utility/general.php:223
+#, php-format
+msgid "Add %1$s for %2$s"
+msgstr "Aggiungi %1$s per %2$s"
+
+#: src/utility/general.php:210
+#, php-format
+msgid "Add %1$s for %2$s: %3$s"
+msgstr "Aggiungere %1$s per %2$s: %3$s"
+
+#: src/backend/term.php:93
+msgid "Add Markup to Description?"
+msgstr "Aggiungere ricarico alla descrizione?"
+
+#: src/backend/term.php:88
+msgid "Add Markup to Name?"
+msgstr "Aggiungi il markup al nome?"
+
+#: src/backend/settings.php:126
+msgid "Add pricing information to the end of the existing description."
+msgstr "Aggiungi le informazioni sul prezzo alla fine della descrizione esistente."
+
+#: src/backend/term.php:95
+msgid "Add the markup to the option's description."
+msgstr "Aggiungi il ricarico alla descrizione dell'opzione."
+
+#: src/backend/settings.php:78
+#, php-format
+msgid "Additional help can be found in the <a href=\"%1$s\" target=\"_blank\">Markup by Attribute wiki</a> on the <code>Settings</code> page."
+msgstr "Ulteriore aiuto è disponibile nella <a href=\\\"%1$s\\\" target=\\\"_blank\\\">wiki di Markup by Attribute</a> nella pagina <code>Impostazioni</code>."
+
+#. Description of the plugin
+msgid "Adds product variation markup by attribute to WooCommerce."
+msgstr "Aggiunge ricarichi alle variazioni di prodotto per attributo in WooCommerce."
+
+#: src/backend/productlist.php:172
+msgid "Attributes"
+msgstr "Attributi"
+
+#: src/backend/productlist.php:169
+msgid "Base Price"
+msgstr "Prezzo base"
+
+#: src/backend/product.php:85
+msgid "Change base prices with the <em>Bulk actions</em> on the <b>Variations</b> tab."
+msgstr "Modifica i prezzi base con le <em>Azioni di massa</em> nella scheda <b>Variazioni</b>."
+
+#: src/backend/settings.php:125
+msgid "Do NOT add pricing information to the description field."
+msgstr "NON aggiungere informazioni sul prezzo nel campo descrizione."
+
+#: src/backend/term.php:100
+msgid "Do not overwrite the option selection mechanism provided with your theme."
+msgstr "Non sovrascrivere il meccanismo di selezione delle opzioni fornito dal tuo tema."
+
+#: src/backend/term.php:98
+msgid "Do Not Overwrite Theme"
+msgstr "Non Sovrascrivere il Tema"
+
+#: src/backend/settings.php:151
+msgid "Do NOT show the base price in the product description."
+msgstr "NON mostrare il prezzo base nella descrizione del prodotto."
+
+#: src/backend/settings.php:107
+msgid "Do NOT show the markup in the options drop-down box."
+msgstr "NON mostrare il ricarico nel menu a tendina delle opzioni."
+
+#: src/backend/product.php:164
+msgid "Failed to reapply markups. Please try again."
+msgstr "Impossibile riapplicare i ricarichi. Riprova."
+
+#: src/backend/settings.php:150
+msgid "Hide Base Price"
+msgstr "Nascondi prezzo base"
+
+#: src/backend/settings.php:120
+msgid "How should Markup-by-Attribute handle adding price markup information to the product variation description?"
+msgstr "Come deve gestire Markup-by-Attribute l'aggiunta delle informazioni sul ricarico nella descrizione della variazione del prodotto?"
+
+#. URI of the plugin
+msgid "https://wordpress.org/plugins/markup-by-attribute-for-woocommerce/"
+msgstr "https://wordpress.org/plugins/markup-by-attribute-for-woocommerce/"
+
+#: src/backend/settings.php:82
+#, php-format
+msgid "If you find this plugin helpful, please consider <a href=\"%1$s\" target=\"_blank\">a small donation</a>."
+msgstr "Se trovi utile questo plugin, considera <a href=\\\"%1$s\\\" target=\\\"_blank\\\">una piccola donazione</a>."
+
+#: src/backend/settings.php:136
+msgid "Include Attribute Names in Variation Descriptions"
+msgstr "Includere i nomi degli attributi nelle descrizioni delle varianti"
+
+#: src/backend/settings.php:137
+#| msgid "Include the name of the attribute in the variable product's description. <b>Add $1.50 for Blue</b> becomes <b>Add $1.50 for Color Blue</b>."
+msgid "Include the name of the attribute in the variable product's description. <b>Add $1.50 for Blue</b> becomes <b>Add $1.50 for Color: Blue</b>."
+msgstr "Includere il nome dell'attributo nella descrizione del prodotto variabile. <b>Aggiungere $1.50 per Blu</b> diventa <b>Aggiungere $1.50 per Colore: Blu</b>."
+
+#: markup-by-attribute-for-woocommerce.php:54
+msgid "Instructions"
+msgstr "Istruzioni"
+
+#: src/backend/product.php:265
+#| msgid "Invalid product"
+msgid "Invalid product ID"
+msgstr "ID prodotto non valido"
+
+#. Author of the plugin
+msgid "MarkTomlinson"
+msgstr "MarkTomlinson"
+
+#: src/backend/term.php:154
+msgid "Markup"
+msgstr "Ricarico"
+
+#: src/backend/term.php:86
+msgid "Markup (or markdown)"
+msgstr "Ricarico (o sconto)"
+
+#: markup-by-attribute-for-woocommerce.php:103 src/backend/settings.php:52
+msgid "Markup by Attribute"
+msgstr "Markup by Attribute"
+
+#. Name of the plugin
+msgid "Markup by Attribute for WooCommerce"
+msgstr "Ricarico per Attributo per WooCommerce"
+
+#: src/backend/settings.php:74
+msgid "Markup by Attribute Settings"
+msgstr "Impostazioni Markup by Attribute"
+
+#: src/backend/settings.php:165
+msgid "Markup Calculation"
+msgstr "Calcolo ricarico"
+
+#: src/backend/settings.php:90
+msgid "Markup Display"
+msgstr "Visualizzazione ricarico"
+
+#: src/backend/term.php:87
+msgid "Markup or markdown associated with this option. Signed, floating point numeric allowed."
+msgstr "Ricarico o sconto associati a questa opzione. È consentito un numero con segno e a virgola mobile."
+
+#: src/utility/pointers.php:101
+msgid "Markups can be fixed values such as <code>5</code> or <code>5.95</code>, or percentages such as <code>5%</code> or <code>1.23%</code>. Use plus or minus signs (like <code>+5.95</code> or <code>-1.23%</code>) for increases or decreases.<br/>Markups are applied when setting prices or reapplying markups to variations."
+msgstr "I ricarichi possono essere valori fissi come <code>5</code> o <code>5.95</code>, o percentuali come <code>5%</code> o <code>1.23%</code>. Usa i segni più o meno (come <code>+5.95</code> o <code>-1.23%</code>) per aumenti o diminuzioni.<br/>I ricarichi vengono applicati quando si impostano i prezzi o si riapplicano i ricarichi alle variazioni."
+
+#: src/backend/settings.php:240
+msgid "Max Variations"
+msgstr "Variazioni massime"
+
+#: src/backend/settings.php:241
+msgid "Maximum number of variations that can be created per run."
+msgstr "Numero massimo di variazioni che possono essere create per esecuzione."
+
+#: src/backend/term.php:91 src/backend/term.php:96
+msgid "Often needed if the option drop-down box is overwritten by another plugin or theme and markup is no longer visible."
+msgstr "Spesso necessario quando il menu a tendina delle opzioni viene sovrascritto da un altro plugin o tema e il ricarico non è più visibile."
+
+#: src/backend/settings.php:101
+msgid "Option Drop-down Behavior"
+msgstr "Comportamento menu a tendina"
+
+#: src/backend/settings.php:228
+msgid "Other"
+msgstr "Altro"
+
+#: src/backend/settings.php:127
+msgid "Overwrite the variation description with price information."
+msgstr "Sovrascrivi la descrizione della variazione con le informazioni sul prezzo."
+
+#: src/backend/product.php:254 src/backend/product.php:259
+msgid "Permission denied"
+msgstr "Permesso negato"
+
+#: src/backend/productlist.php:125
+#, php-format
+msgid "Please wait; processing product %1$s of %2$s..."
+msgstr "Attendere prego; elaborazione prodotto %1$s di %2$s..."
+
+#: src/backend/settings.php:211
+msgid "Preserve Zero Prices"
+msgstr "Mantenere i prezzi zero"
+
+#: src/backend/productlist.php:430
+msgid "Product not found"
+msgstr "Prodotto non trovato"
+
+#: markup-by-attribute-for-woocommerce.php:104
+msgid "Product price"
+msgstr "Prezzo del prodotto"
+
+#: src/backend/productlist.php:293 src/backend/productlist.php:391
+msgid "Reapply Markups"
+msgstr "Riapplica ricarichi"
+
+#: src/backend/product.php:162
+msgid "Reapply markups to prices"
+msgstr "Riapplica ricarichi ai prezzi"
+
+#: src/backend/productlist.php:302
+#, php-format
+msgid "Reapply markups using base price: %s"
+msgstr "Riapplica ricarichi usando il prezzo base: %s"
+
+#: src/backend/product.php:58
+msgid "Regular base price"
+msgstr "Prezzo base normale"
+
+#: src/backend/product.php:59
+#| msgid "Base regular price for the variations before markup"
+msgid "Regular base price for the variations before markup"
+msgstr "Prezzo base normale per le varianti prima del ricarico"
+
+#: src/backend/term.php:90
+msgid "Rename the option to include the markup."
+msgstr "Rinomina l'opzione per includere il ricarico."
+
+#: src/backend/productlist.php:295
+msgid "Reprice"
+msgstr "Riprezzo"
+
+#: src/backend/product.php:163
+#, php-format
+msgid "Reprice variations at %s, plus or minus the markups?"
+msgstr "Ricalcolare le variazioni a %s, più o meno i ricarichi?"
+
+#: src/backend/settings.php:195
+msgid "Round Markup"
+msgstr "Arrotonda ricarico"
+
+#: src/backend/settings.php:196
+msgid "Round percentage markups to keep the value below the decimal intact?"
+msgstr "Arrotondare i ricarichi percentuali per mantenere intatto il valore dopo la virgola?"
+
+#: src/backend/product.php:72
+msgid "Sale base price"
+msgstr "Prezzo base scontato"
+
+#: src/backend/product.php:73
+#| msgid "Base sale price for the variations before markup"
+msgid "Sale base price for the variations before markup"
+msgstr "Prezzo base scontato per le varianti prima del ricarico"
+
+#: src/backend/settings.php:178
+msgid "Sale Price Markup"
+msgstr "Ricarico prezzo scontato"
+
+#: markup-by-attribute-for-woocommerce.php:53
+msgid "Settings"
+msgstr "Impostazioni"
+
+#: src/backend/settings.php:102
+msgid "Should Markup-by-Attribute add the markup to the options drop-down box, and should the currency symbol be displayed?"
+msgstr "Markup-by-Attribute deve aggiungere il ricarico nel menu a tendina delle opzioni e mostrare il simbolo della valuta?"
+
+#: src/backend/settings.php:179
+msgid "Should Markup-by-Attribute calculate percentage markups on sale prices?"
+msgstr "Markup-by-Attribute deve calcolare i ricarichi percentuali sui prezzi scontati?"
+
+#: src/backend/settings.php:212
+msgid "Should Markup-by-Attribute keep zero-priced products at zero?"
+msgstr "Markup-by-Attribute deve mantenere a zero i prodotti con prezzo zero?"
+
+#: src/backend/settings.php:108
+msgid "Show the markup WITH the currency symbol in the options drop-down box."
+msgstr "Mostra il ricarico CON il simbolo della valuta nel menu a tendina delle opzioni."
+
+#: src/backend/settings.php:109
+msgid "Show the markup WITHOUT the currency symbol in the options drop-down box."
+msgstr "Mostra il ricarico SENZA il simbolo della valuta nel menu a tendina delle opzioni."
+
+#: src/backend/settings.php:197
+msgid "Some stores want prices with specific numbers below the decimal place (such as xx.00 or xx.95). Rounding percentage markups will keep the value below the decimal intact."
+msgstr "Alcuni negozi vogliono prezzi con numeri specifici dopo la virgola (come xx.00 o xx.95). L'arrotondamento dei ricarichi percentuali manterrà intatto il valore dopo la virgola."
+
+#: markup-by-attribute-for-woocommerce.php:114
+#| msgid "(Subtract"
+msgid "Subtract"
+msgstr "Sottrai"
+
+#: src/utility/general.php:222
+#, php-format
+msgid "Subtract %1$s for %2$s"
+msgstr "Sottrai %1$s per %2$s"
+
+#: src/utility/general.php:209
+#, php-format
+msgid "Subtract %1$s for %2$s: %3$s"
+msgstr "Sottrarre %1$s per %2$s: %3$s"
+
+#: src/backend/settings.php:76
+msgid "The following options are used to configure variation markups by attribute."
+msgstr "Le seguenti opzioni sono utilizzate per configurare i ricarichi delle variazioni per attributo."
+
+#: src/backend/settings.php:66
+msgid "This setting affects all products and takes effect immediately."
+msgstr "Questa impostazione influisce su tutti i prodotti e ha effetto immediato."
+
+#: src/backend/settings.php:67
+msgid "This setting affects products individually and takes effect when you recalculate prices or reapply markups."
+msgstr "Questa impostazione influisce sui prodotti individualmente e ha effetto quando ricalcoli i prezzi o riapplichi i ricarichi."
+
+#: src/backend/term.php:101
+msgid "Use this if the option drop-down box is overwriting a preferred method provided by another plugin or your theme."
+msgstr "Usa questo se il menu a tendina delle opzioni sta sovrascrivendo un metodo preferito fornito da un altro plugin o dal tuo tema."
+
+#: src/utility/pointers.php:133
+msgid "Using this plugin is simple, but might be a little obscure. This link to the instructions may help get you started.<br/>We'll just leave the instructions link right here."
+msgstr "L'uso di questo plugin è semplice, ma potrebbe essere un po' oscuro. Questo link alle istruzioni può aiutarti a iniziare.<br/>Lasciamo il link alle istruzioni proprio qui."
+
+#: src/backend/settings.php:119
+msgid "Variation Description Behavior"
+msgstr "Comportamento descrizione variazione"
+
+#: src/backend/settings.php:213
+msgid "When set OFF, markup calculations proceed normally even when the base price is zero. This allows using attributes to determine the entire price."
+msgstr "Quando disattivato, i calcoli del ricarico procedono normalmente anche quando il prezzo base è zero. Questo permette di utilizzare gli attributi per determinare l'intero prezzo."
+
+#: src/backend/settings.php:214
+msgid "When set ON, variations with zero prices remain at zero, ignoring any markups. This preserves zero prices for giveaway items."
+msgstr "Quando attivato, le varianti con prezzi zero rimangono a zero, ignorando qualsiasi ricarico. Questo mantiene i prezzi zero per gli articoli omaggio."
+
+#: src/backend/settings.php:242
+msgid "You can always create more by running 'Create variations from all attributes' again."
+msgstr "Puoi sempre crearne altre eseguendo nuovamente 'Crea variazioni da tutti gli attributi'."

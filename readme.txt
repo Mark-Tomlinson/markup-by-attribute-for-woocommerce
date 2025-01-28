@@ -2,22 +2,21 @@
 
 Plugin Name:			Markup by Attribute for WooCommerce
 Description:			This plugin adds product variation markup by attribute to WooCommerce -- the ability to add a markup (or markdown) to an attribute term and have that change the regular and sale price of the associated product variations.
-Plugin URI:			https://wordpress.org/plugins/markup-by-attribute-for-woocommerce/
-Tags:				WooCommerce, Attribute, Price, Variation, Markup
-Author:				MarkTomlinson
+Plugin URI:				https://wordpress.org/plugins/markup-by-attribute-for-woocommerce/
+Tags:					WooCommerce, Attribute, Price, Variation, Markup
+Author:					MarkTomlinson
 Contributors:			MarkTomlinson
 Donate link:			https://www.paypal.me/MT2Dev/5
-License:			GPLv3
+License:				GPLv3
 License URI:			https://www.gnu.org/licenses/gpl-3.0.html
-Version:			4.2
-Build:				202449.03
-Stable tag:			trunk
+Version:				4.3.3
+Stable tag:				trunk
 Tested up to:			6.7.1
 Requires at least:		4.6
-PHP tested up to:		8.3.14
+PHP tested up to:		8.3.11
 Requires PHP:			5.6
-WC tested up to:		9.4.3
-WC requires at least:		3.0
+WC tested up to:		9.6.0
+WC requires at least:	3.0
 MySQL tested up to:		8.0.40
 
 This plugin adds product variation markup by attribute to WooCommerce and adjusts product variation regular and sale prices accordingly.
@@ -26,19 +25,35 @@ This plugin adds product variation markup by attribute to WooCommerce and adjust
 
 = Varying Prices on Product Variations is Tedious and Error-Prone =
 
-Want to add $5 to every blue product you sell? Maybe you sell jewelry with birthstones, and some stones just cost more than others. If all “X-Large” products cost 7.5% more, you have to manually calculate and change every “X-Large” variation of every product.
+Want to add $5 to every blue product you sell? Maybe you sell jewelry with birthstones, and some stones cost more than others. If all "X-Large" products cost 7.5% more, you'd have to manually calculate and change every "X-Large" variation of every product.
 
 = Markup by Attribute Adds 'Markup' to Attribute Terms =
 
-Markup by Attribute solves this problem by allowing you to add a markup (or markdown) to global attribute terms. If the attribute is 'color', then Markup by Attribute allows you to add “+5” to Blue while leaving Green and Yellow alone. When you set regular and sale prices, every blue product will be $5.00 more.
+Markup by Attribute solves this by letting you add a markup (or markdown) to global attribute terms. If the attribute is 'Color', you can add "+5" to Blue while leaving Green and Yellow alone. When you set regular and sale prices, every blue product will automatically be $5.00 more.
 
-Markup by Attribute:
+This plugin does one thing - it adds pricing control to WooCommerce's global product attributes. If your products vary in price based on options like size, color, or material, Markup by Attribute lets you set those price differences once at the attribute level rather than manually adjusting each product variation.
 
-* Can create a fixed value markup (such as $5), or a percentage markup (such as 5%).
-* The markup value can be positive, yielding an increase in price, or negative, yielding a decrease in price.
-* Uses familiar WooCommerce bulk edit actions `Set regular price` and `Set sale price`.
-* Puts the price increase (or decrease) in the options drop-down box alongside of the terms, so customers can make informed decisions. (Or, optionally, does not).
-* Can write a breakdown of the price modifications in the variation description, so the itemization is visible to the customer.
+= Key Features =
+* Fixed value markups (like $5) or percentage markups (like 5%)
+* Positive markups for price increases, negative for decreases
+* Integrates with WooCommerce's existing 'Set regular price' and 'Set sale price' bulk actions
+* Shows price differences in the dropdown options to help customers make informed decisions
+* Provides itemized price breakdowns in variation descriptions
+* Quick bulk update tools to reapply markups when values change
+* Support for both regular and sale prices
+* Option to show or hide markup details in various places
+
+= Use Cases =
+* Size-based pricing: Charge more for larger sizes, less for smaller sizes
+* Material upgrades: Add costs for premium materials
+* Add-on services: Pricing for monogramming, gift wrapping, etc.
+* Attribute-driven costs: Any situation where product options consistently affect pricing
+
+= New in Version 4.3 =
+* New Base Price column for easier price management
+* Improved markup visualization in the product editor
+* Enhanced bulk update tools
+* Better multilingual support with new translations
 
 == Installation ==
 
@@ -98,9 +113,37 @@ _NOTE:_ These instructions assume you are familiar with WooCommerce global Produ
 After changing a markup value, you have several ways to update the affected products:
 1. For new products or variations, Markup-by-Attribute is incorporated into the `Set regular price` bulk action to set the variation price with the appropriate markup.
 2. For existing products:
-   - Use the "Reapply Markups" bulk action to update multiple products at once
-   - Click the refresh icon next to individual products to update them one at a time
-   - In the product editor, use "Reapply markups to prices" in the variations bulk actions
+- Use the "Reapply Markups" bulk action to update multiple products at once
+- Click the refresh icon next to individual products to update them one at a time
+- In the product editor, use "Reapply markups to prices" in the variations bulk actions
+
+= How do I bulk update prices for multiple products at once? =
+
+If you change a markup value for an option, you can quickly update affected products one two ways.
+1. There is a "Reapply Markups" bulk action on the 'All Products' product list. You can even select all items on the page, and Markup-by-Attribute will find items with markups and update the prices and descriptions.
+2. There is a refresh icon beneath the attributes of individual products on the 'All Products' product list. You can filter the list by selecting the attribute in question, and then click "⟳ Reprice" on the products that you want to reapply the markup to.
+
+Additionally, a "Reapply markups to prices" option in the product's variation bulk actions. While this only works on the product you are editing, it does provide a method that is faster than setting the prices again.
+
+= What happens to existing markups when I change an attribute's settings? =
+
+Nothing. Products have to have their prices set again ("Set regular prices" in the variation bulk actions), or you can do a bulk reapplication of the markup to many products at once (see above).
+
+Not automatically changing the variation prices is important if a shop has existing inventory they want to sell at the original markup, and new products that require the new markup. You can select which product retain their old prices, and which ones are repriced with the new markup.
+
+= Can I use both percentage and fixed-amount markups together? =
+
+Yes! Usually, attributes like 'Size' will have a percentage markup, whereas attributes like stitching a logo on a shirt will be fixed in price. Combining both the size markup and the logo markup on the same product is perfectly valid. But, what if you want to add a percentage and a fixed-price markup to two of the same attribute? For instance, anything that is plaid gets marked up by 5%, but anything yellow is reduced by $1. You can do this, too.
+
+Any option listed under any attribute is calculated independently of any other. Any combination of positive or negative amounts or percentages are all valid.
+
+= How do markups work with sale prices? =
+
+Fixed-amount markups are added to (or subtracted from) sales prices, just as they are for regular prices. However, percentage markups can be calculated on sale prices in one of two ways.
+1. The markup is calculated on the regular price, and then applied to the sales price.
+2. The markup is calculated on the sale price before being applied to the sale price.
+
+You decide which way you want the percentage markups calculated with the **Sale Price Markup** option on the Markup-by-Attribute settings page.
 
 = It's not working. Why? =
 
@@ -119,15 +162,15 @@ Then do nothing. Prices, descriptions, and option drop-downs for products will r
 
 = Does this support languages other than English? =
 
-Yes. However, the developer only speaks American English.  I can provide translations via OpenAI's ChatGPT or Anthropic's Claude. But, I would prefer it if a native speaker translated the text. The .POT file is found in the /languages folder of the plugin. If you don't have access to your server, you can also find it on [GitHub](https://github.com/Mark-Tomlinson/markup-by-attribute-for-woocommerce).
+Yes. However, the developer only speaks American English. I can provide translations via OpenAI's ChatGPT or Anthropic's Claude. But, I would prefer it if a native speaker translated the text. The .POT file is found in the /languages folder of the plugin. If you don't have access to your server, you can also find it on [GitHub](https://github.com/Mark-Tomlinson/markup-by-attribute-for-woocommerce).
 
-What's a .POT file? If you'd like to help but don't know how to use a template file, don't worry. A .POT file is a text file that contains all the English phrases found in Markup-by-Attribute.  You can simply open it and translate what you read there.  Send me the translations and I will incorporate them in the next release.
+What's a .POT file? If you'd like to help but don't know how to use a template file, don't worry. A .POT file is a text file that contains all the English phrases found in Markup-by-Attribute. You can simply open it and translate what you read there. Send me the translations and I will incorporate them in the next release.
 
 Many thanks to [Zjadlbymcos](https://github.com/Zjadlbymcos) on GitHub for his Polish Translation and @silentstepsch for several variations of German.
 
 = I'd like to donate. =
 
-Thanks! The donation button assumes $5.00 USD. But please don't hesitate to adjust that amount up or down as you feel it's appropriate. I'm a retired guy who's living off his savings, so every bit helps.
+Thanks! The donation button assumes $5.00 USD. But please don't hesitate to adjust that amount up or down as you feel it's appropriate. I'm a retired guy who's living off his savings, so every little bit helps.
 
 If you use Markup-by-Attribute and want to see me continuing support for it, I encourage you to encourage me with a small donation.
 
@@ -142,6 +185,47 @@ If you use Markup-by-Attribute and want to see me continuing support for it, I e
 7. The settings page allows configuration of how the markup is displayed.
 
 == Changelog ==
+= 4.3.3 =
+*Release Date: January 2025*
+
+**Bug Fixes**
+* Reworked option autoload logic to selectively set autoloading
+* Reworked attribute option logic to delete the option from the database when not needed
+
+= 4.3.2 =
+*Release Date: January 2025*
+
+**Features**
+* Added Spanish translation files. Plugin now supports German, French, Italian, Polish, Swedish, and Spanish translations
+
+**Bug Fixes**
+* Corrected the way Markup-by-Attribute handles translation files. Many thanks to Knut Sparhell (@knutsp) on WordPress.org.
+* Corrected incorrect error message when displaying non-taxonomy attributes
+* Set all Markup-by-Attribute options to NOT autoload
+
+= 4.3.1 =
+*Release Date: January 2025*
+
+**Bug Fixes**
+* Corrected logic for stripping the markup out of the option dropdown
+
+= 4.3 =
+*Release Date: January 2025*
+
+**Features**
+* Added Base Price column to Products ⇾ All Products page
+* Added Base Price to General tab of variable products
+* Added setting to prevent options dropdown from overwriting theme or other plugins
+* Added option to put markups in attribute option's description
+
+**Maintenance**
+* Restructured code for better performance and maintainability
+* Updated compatibility with WooCommerce 9.5.1
+
+**Bug Fixes**
+* Changed version checking on startup to reduce false positives
+* Corrected to differentiate between setting the price to NULL (no price) versus zero
+
 = 4.2 =
 _Build 202447.07_
 **MAINTENANCE**: Converted spaces into tabs for compactness.

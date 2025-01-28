@@ -1,6 +1,8 @@
 <?php
 namespace mt2Tech\MarkupByAttribute\Utility;
 use mt2Tech\MarkupByAttribute\Backend as Backend;
+use mt2Tech\MarkupByAttribute\Frontend as Frontend;
+
 /**
  * Utility functions used by Markup-by-Attribute
  *
@@ -33,10 +35,17 @@ class General {
 	// Private constructor
 	private function __construct() {
 		// Check database version
-		if (get_site_option('mt2mba_db_version') < MT2MBA_DB_VERSION) {
-			// And upgrade if necessary
+		$current_version = get_site_option('mt2mba_db_version', false);
+
+		// Handle first-time installation
+		if ($current_version === false) {
+			// Set initial version and avoid triggering upgrade
+			update_option('mt2mba_db_version', MT2MBA_DB_VERSION, false);
+		} elseif (version_compare($current_version, MT2MBA_DB_VERSION, '<')) {
+			// Perform upgrade if required
 			$this->mt2mba_db_upgrade();
 		}
+
 		// Set global values used throughout the code
 		if (!defined('MT2MBA_CURRENCY_SYMBOL')) {
 			$settings = Backend\Settings::get_instance();
@@ -48,7 +57,7 @@ class General {
 			define('MT2MBA_ROUND_MARKUP', get_option('mt2mba_round_markup', $settings->round_markup));
 			define('MT2MBA_ALLOW_ZERO', get_option('mt2mba_allow_zero', $settings->allow_zero));
 			define('MT2MBA_MAX_VARIATIONS', get_option('mt2mba_max_variations', $settings->max_variations));
-			define('MT2MBA_CURRENCY_SYMBOL', get_woocommerce_currency_symbol(get_woocommerce_currency()));
+			define('MT2MBA_CURRENCY_SYMBOL', html_entity_decode(get_woocommerce_currency_symbol(get_woocommerce_currency())));
 		}
 	}
 
@@ -56,31 +65,18 @@ class General {
 	 * Database has been determined to be wrong version; upgrade
 	 */
 	function mt2mba_db_upgrade() {
-		// Failsafe
-		$current_db_version = get_site_option('mt2mba_db_version', 1);
-		if ($current_db_version >= MT2MBA_DB_VERSION) return;
-
 		global $wpdb;
 
 		// --------------------------------------------------------------
 		// Update database from version 1.x. Leave 1.x data for fallback.
 		// --------------------------------------------------------------
-		if ($current_db_version < 2.0) {
+		if (version_compare($current_db_version, '2.0', '<')) {
 			// Add prefix to attribute markup meta data key
 			$results = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}termmeta WHERE meta_key LIKE 'markup'");
 			foreach ($results as $row) {
 				if (strpos($row->meta_key, 'mt2mba_') === FALSE) {
 					add_term_meta($row->term_id, "mt2mba_" . $row->meta_key, $row->meta_value, TRUE);
 				}
-			}
-
-			// Add markup description to attribute terms
-			$results = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}termmeta WHERE meta_key LIKE 'mt2mba_markup'");
-			foreach ($results as $row) {
-				$term = get_term((integer) $row->term_id);
-				$description = trim($this->remove_bracketed_string(ATTRB_MARKUP_DESC_BEG, ATTRB_MARKUP_END, trim($term->description)));
-				$description .= PHP_EOL . ATTRB_MARKUP_DESC_BEG . $row->meta_value . ATTRB_MARKUP_END;
-				wp_update_term($row->term_id, $term->taxonomy, array('description' => trim($description)));
 			}
 
 			// Add prefix to product markup meta data
@@ -114,12 +110,12 @@ class General {
 		}
 
 		//	Delete discontinued setting, mt2mba_show_attrb_list
-		if($current_db_version < 2.2) {
+		if ($current_db_version < 2.2) {
 			$wpdb->delete("{$wpdb->prefix}options", array('option_name'=>'mt2mba_show_attrb_list'));
 		}
 
 		// Made it this far, update database version
-		update_option('mt2mba_db_version', MT2MBA_DB_VERSION);
+		update_option('mt2mba_db_version', MT2MBA_DB_VERSION, false);
 	}
 
 
@@ -133,7 +129,7 @@ class General {
 	 */
 	public function remove_bracketed_string($beginning, $ending, $string) {
 		$beginningPos = strpos($string, $beginning, 0);
-		$endingPos	= strpos($string, $ending, $beginningPos);
+		$endingPos = strpos($string, $ending, $beginningPos);
 
 		if ($beginningPos === FALSE || $endingPos === FALSE) return trim($string);
 
@@ -145,14 +141,20 @@ class General {
 	/**
 	 * Clean up the price or markup and reformat according to currency options
 	 *
-	 * @param	string	$price	A number that will be reformatted into the local currency
+	 * @param	string	$text	A number that will be reformatted into the local currency
 	 * @return	string			Properly formatted price with currency indicator
 	 */
-	public function clean_up_price($price) {
-		if (is_numeric($price))	{	// Might be a percentage in rare cases
-			return strip_tags(wc_price(abs($price)));
+	public function cleanUpPrice($text) {
+		// Extract amount from string and set to absolute
+		$amount = abs(floatval($text));
+
+		if (strpos($text, "%")) {		// Text is a percentage?
+			// Amount, trimmed and percent symbol added
+			return trim($amount . '%');
+		} else {						// Text is an amount
+			// Amount formatted as local currency, no HTML tags, HTML decoded, and trimmed
+			return trim(html_entity_decode(strip_tags(wc_price($amount))));
 		}
-		return '';
 	}
 
 	/**
@@ -161,7 +163,7 @@ class General {
 	 * @param	float	$markup	Signed markup amount
 	 * @return	string			Formatted markup
 	 */
-	function format_option_markup($markup) {
+	function formatOptionMarkup($markup) {
 		if ($markup <> "" && $markup <> 0) {
 			// Jump out if markup is not to be displayed.
 			if (MT2MBA_DROPDOWN_BEHAVIOR == 'hide') {
@@ -177,10 +179,10 @@ class General {
 				$markup = trim(html_entity_decode($markup));
 			} elseif (MT2MBA_DROPDOWN_BEHAVIOR == 'add') {
 				// Return formatted with symbol
-				$markup = html_entity_decode($sign . $this->clean_up_price($markup));
+				$markup = html_entity_decode($sign . $this->cleanUpPrice($markup));
 			} else {
 				// Return formatted without symbol
-				$markup = html_entity_decode($sign . trim(str_replace(MT2MBA_CURRENCY_SYMBOL, "", $this->clean_up_price($markup))));
+				$markup = html_entity_decode($sign . trim(str_replace(MT2MBA_CURRENCY_SYMBOL, "", $this->cleanUpPrice($markup))));
 			}
 			return " (" . $markup . ")";
 		}
@@ -195,33 +197,35 @@ class General {
 	 * @param string $term_name  Attribute term that the markup applies to
 	 * @return string		   Formatted description 
 	 */
-	function format_description_markup($markup, $attrb_name, $term_name) {
+	function formatVariationMarkupDescription($markup, $attrb_name, $term_name) {
 		if ($markup <> "" && $markup <> 0) {
-			// Two different translation strings based on whether attribute name is included
+			// Clean any existing markup from the term name before formatting
+			$term_name = $this->stripMarkupAnnotation($term_name);
+	
+			// Two different translation strings based on whether attribute name is included 
 			if (MT2MBA_INCLUDE_ATTRB_NAME == 'yes') {
 				// Translators; %1$s is the formatted price, %2$s is the attribute name, %3$s is the term name
 				$desc_format = $markup < 0 ? 
-					__('Subtract %1$s for %2$s: %3$s', 'markup-by-attribute') : 
-					__('Add %1$s for %2$s: %3$s', 'markup-by-attribute');
+					__('Subtract %1$s for %2$s: %3$s', 'markup-by-attribute-for-woocommerce') : 
+					__('Add %1$s for %2$s: %3$s', 'markup-by-attribute-for-woocommerce');
 				
 				return html_entity_decode(
 					sprintf(
 						$desc_format,
-						$this->clean_up_price($markup),
+						$this->cleanUpPrice($markup),
 						$attrb_name,
 						$term_name
 					)
 				);
-			} else {
-				// Translators; %1$s is the formatted price, %2$s is the term name
+			} else {				// Translators; %1$s is the formatted price, %2$s is the term name
 				$desc_format = $markup < 0 ? 
-					__('Subtract %1$s for %2$s', 'markup-by-attribute') : 
-					__('Add %1$s for %2$s', 'markup-by-attribute');
+					__('Subtract %1$s for %2$s', 'markup-by-attribute-for-woocommerce') : 
+					__('Add %1$s for %2$s', 'markup-by-attribute-for-woocommerce');
 				
 				return html_entity_decode(
 					sprintf(
 						$desc_format,
-						$this->clean_up_price($markup),
+						$this->cleanUpPrice($markup),
 						$term_name
 					)
 				);
@@ -229,6 +233,62 @@ class General {
 		}
 		// No markup; return empty string
 		return '';
+	}
+
+	/**
+	 * Strip markup annotation from term name
+	 * 
+	 * @param	string	$text	The text to process
+	 * @return	string			Text with markup annotation removed
+	 */
+	public function stripMarkupAnnotation($text) {
+		// Pattern for numbers that handles international formats
+		$number_pattern = '[0-9.,\s%\p{Sc}A-Z]*';
+
+		// Convert Add and Subtract constants to regex with international number pattern
+		$add_pattern = '/(?:^|\s)' . str_replace('%s', $number_pattern, preg_quote(MT2MBA_MARKUP_NAME_PATTERN_ADD)) . '/u';
+		$subtract_pattern = '/(^|\s)' . str_replace('%s', $number_pattern, preg_quote(MT2MBA_MARKUP_NAME_PATTERN_SUBTRACT)) . '/u';
+
+		// Decoded HTML encoding
+		$text = html_entity_decode($text);
+
+		// Remove markup annotations
+		$text = preg_replace($add_pattern, '', $text);
+		$text = preg_replace($subtract_pattern, '', $text);
+
+		return trim($text);
+	}
+	
+	/**
+	 * Add markup annotation to term name
+	 * 
+	 * @param	string	$text			Base text
+	 * @param	string	$markup			Markup value (with % or currency)
+	 * @param	bool	$is_negative	Whether this is a negative markup
+	 * @return	string					Text with markup annotation added
+	 */
+	public function addMarkupToName($text, $markup, $is_negative = false) {
+		// Format the markup value using cleanUpPrice()
+		$formatted_markup = $this->cleanUpPrice($markup);
+
+		$pattern = $is_negative ? MT2MBA_MARKUP_NAME_PATTERN_SUBTRACT : MT2MBA_MARKUP_NAME_PATTERN_ADD;
+		return $text . " " . sprintf($pattern, $formatted_markup);
+	}
+
+	/**
+	 * Add markup annotation to term description
+	 * 
+	 * @param	string	$text			Base text
+	 * @param	string	$markup			Markup value (with % or currency)
+	 * @param	bool	$is_negative	Whether this is a negative markup
+	 * @return	string					Text with markup annotation added
+	 */
+	public function addMarkupToTermDescription($description, $markup, $is_negative = false) {
+		// Format the markup value using cleanUpPrice()
+		$formatted_markup = $this->cleanUpPrice($markup);
+
+		$pattern = $is_negative ? MT2MBA_MARKUP_NAME_PATTERN_SUBTRACT : MT2MBA_MARKUP_NAME_PATTERN_ADD;
+		return trim($description . "\n" . trim(sprintf($pattern, $formatted_markup)));
 	}
 
 }	//	End class MT2MBA_UTILITY_GENERAL

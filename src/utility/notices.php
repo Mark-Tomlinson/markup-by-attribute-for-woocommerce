@@ -54,7 +54,7 @@ class Notices {
 	public function action_admin_init() {
 		if (isset($_GET['mt2mba_dismiss'])) {
 			$dismiss_option = htmlspecialchars($_GET['mt2mba_dismiss']);
-			update_option("mt2mba_dismissed_$dismiss_option", true);
+			update_option("mt2mba_dismissed_$dismiss_option", true, false);
 			wp_die();
 		}
 	}

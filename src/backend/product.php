@@ -28,8 +28,9 @@ class Product {
 
 		// Add base price fields to product general options panel
 		add_action('woocommerce_product_options_general_product_data', [$this, 'addBasePriceFields']);
+
 		// Handle AJAX requests to reapply markups to variations
-		add_action('wp_ajax_handleMarkupReapplication', [$this, 'handleMarkupReapplication'], 10, 1);
+		add_action('wp_ajax_handleMarkupReapplication', [$this, 'handleMarkupReapplication']);
 
 		// Handle AJAX requests to get formatted base price for confirmation messages
 		add_action('wp_ajax_getFormattedBasePrice', [$this, 'getFormattedBasePrice']);

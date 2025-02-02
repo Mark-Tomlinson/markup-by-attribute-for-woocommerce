@@ -1,17 +1,17 @@
-/* ==========================================================================
-   Markup by Attribute Admin Styles
-   ========================================================================== */
+/*	==========================================================================
+	Markup by Attribute Admin Styles
+	========================================================================== */
 
-/* Hide WooCommerce's Add Price Button
-   Prevents conflicts with Set Regular Prices bulk function 
-   ========================================================================== */
+/*	Hide WooCommerce's Add Price Button
+	Prevents conflicts with Set Regular Prices bulk function 
+	========================================================================== */
 .woocommerce-add-variation-price-container {
 	display: none !important;
 }
 
-/* Product List Table Styles
-   Basic table layout and cell formatting
-   ========================================================================== */
+/*	Product List Table Styles
+	Basic table layout and cell formatting
+	========================================================================== */
 .wp-list-table {
 	table-layout: fixed;
 }
@@ -32,9 +32,9 @@
 	text-overflow: ellipsis;
 }
 
-/* Reprice Link Styles
-   Markup reapplication icon and interaction states
-   ========================================================================== */
+/*	Reprice Link Styles
+	Markup reapplication icon and interaction states
+	========================================================================== */
 .js-mt2mba-reapply-markup {
 	color: #2271b1;
 }
@@ -67,9 +67,9 @@
 	color: red;
 }
 
-/* Progress Indicators
-   Styles for bulk operation progress display
-   ========================================================================== */
+/*	Progress Indicators
+	Styles for bulk operation progress display
+	========================================================================== */
 /* Progress Notice Container */
 .mt2mba-bulk-progress {
 	margin: 5px 0 15px;
@@ -90,9 +90,9 @@
 	animation: spin 1.5s linear infinite;
 }
 
-/* Processing Overlay
-   Semi-transparent overlay during bulk operations
-   ========================================================================== */
+/*	Processing Overlay
+	Semi-transparent overlay during bulk operations
+	========================================================================== */
 .mt2mba-processing-overlay {
 	position: absolute;
 	top: 0;

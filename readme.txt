@@ -9,7 +9,7 @@ Contributors:			MarkTomlinson
 Donate link:			https://www.paypal.me/MT2Dev/5
 License:				GPLv3
 License URI:			https://www.gnu.org/licenses/gpl-3.0.html
-Version:				4.3.3
+Version:				4.3.4
 Stable tag:				trunk
 Tested up to:			6.7.1
 Requires at least:		4.6
@@ -185,6 +185,19 @@ If you use Markup-by-Attribute and want to see me continuing support for it, I e
 7. The settings page allows configuration of how the markup is displayed.
 
 == Changelog ==
+= 4.3.4 =
+*Release Date: January 2025*
+
+**Bug Fixes**
+* Fixed a misnamed function in abstract class priceUpdateHandler
+* Corrected for a WP issue regarding update_post_meta()
+
+= 4.3.2 =
+*Release Date: January 2025*
+
+**Features**
+* Added Spanish translation files. Plugin now supports German, French, Italian, Polish, Swedish, and Spanish translations
+
 = 4.3.3 =
 *Release Date: January 2025*
 

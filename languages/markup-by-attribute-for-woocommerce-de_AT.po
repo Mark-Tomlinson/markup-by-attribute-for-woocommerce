@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: Markup by Attribute for WooCommerce - MT² Tech\n"
 "Report-Msgid-Bugs-To: markupbyattribute@mail.com\n"
 "POT-Creation-Date: 2020-04-17 00:43+0000\n"
-"PO-Revision-Date: 2025-01-05 00:26+0000\n"
-"Last-Translator: GitHub user Zjadlbymcos, WordPress.org user @silentstepsch, Anthropic Claude 3.5 Sonnet\n"
+"PO-Revision-Date: 2025-01-30 01:54+0000\n"
+"Last-Translator: Anthropic Claude 3.5 Sonnet via @MarkTomlinson OpenAI GPT-4o\n"
 "Language-Team: German (Austria)\n"
 "Language: de_AT\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Loco https://localise.biz/\n"
-"X-Loco-Version: 2.6.14; wp-6.7.1"
+"X-Loco-Version: 2.7.1; wp-6.7.1"
 
 #: src/backend/productlist.php:126 src/backend/productlist.php:132
 #, php-format
@@ -21,11 +21,15 @@ msgid_plural "%s products processed successfully."
 msgstr[0] "%s Produkt erfolgreich verarbeitet."
 msgstr[1] "%s Produkte erfolgreich verarbeitet."
 
+#: src/backend/settings.php:242
+msgid "<em>Use Cautiously:</em> WooCommerce limits the number of linked variations you can create at a time to 50 to prevent server overload. Setting the number too high can cause timeout errors; you may have to experiment. You can always create more by running 'Create variations from all attributes' again."
+msgstr "<em>Vorsicht geboten:</em> WooCommerce begrenzt die Anzahl der verknüpften Variationen, die Sie gleichzeitig erstellen können, auf 50, um eine Serverüberlastung zu vermeiden. Wenn Sie die Anzahl zu hoch einstellen, kann dies zu Zeitüberschreitungsfehlern führen; Sie müssen eventuell experimentieren. Sie können jederzeit weitere erstellen, indem Sie 'Varianten aus allen Attributen erstellen' erneut ausführen."
+
 #: src/backend/settings.php:180
 msgid "A 10% markup on a $30 regular price yields a $3 markup. If you set a $20 sale price, setting this option ON yields a $2 markup, setting it OFF leaves the markup at $3."
 msgstr "Ein Aufschlag von 10 % auf einen regulären Preis von 30 € ergibt einen Aufschlag von 3 €. Wenn Sie einen Verkaufspreis von 20 € festlegen, ergibt die Aktivierung dieser Option einen Aufschlag von 2 €, bei Deaktivierung bleibt der Aufschlag bei 3 €."
 
-#: markup-by-attribute-for-woocommerce.php:113
+#: markup-by-attribute-for-woocommerce.php:111
 #| msgid "(Add"
 msgid "Add"
 msgstr "Zuzüglich"
@@ -73,7 +77,7 @@ msgstr "Attribute"
 msgid "Base Price"
 msgstr "Grundpreis"
 
-#: src/backend/product.php:85
+#: src/backend/product.php:86
 msgid "Change base prices with the <em>Bulk actions</em> on the <b>Variations</b> tab."
 msgstr "Grundpreise mit den <em>Massenaktionen</em> auf der Registerkarte <b>Variationen</b> ändern."
 
@@ -97,7 +101,7 @@ msgstr "Grundpreis NICHT in der Produktbeschreibung anzeigen"
 msgid "Do NOT show the markup in the options drop-down box."
 msgstr "Zeige keinen Preis Auf/Abschlag im Drop-Down-Feld"
 
-#: src/backend/product.php:164
+#: src/backend/product.php:165
 msgid "Failed to reapply markups. Please try again."
 msgstr "Aufschläge konnten nicht neu angewendet werden. Bitte versuchen Sie es erneut."
 
@@ -128,11 +132,11 @@ msgstr "Attributnamen in Variationsbeschreibungen einschließen"
 msgid "Include the name of the attribute in the variable product's description. <b>Add $1.50 for Blue</b> becomes <b>Add $1.50 for Color: Blue</b>."
 msgstr "Den Namen des Attributs in der Produktvarianten-Beschreibung einschließen. <b>Aufpreis 1,50 € für Blau</b> wird zu <b>Aufpreis 1,50 € für Farbe: Blau</b>."
 
-#: markup-by-attribute-for-woocommerce.php:54
+#: markup-by-attribute-for-woocommerce.php:53
 msgid "Instructions"
 msgstr "Anleitung"
 
-#: src/backend/product.php:265
+#: src/backend/product.php:266
 #| msgid "Invalid product"
 msgid "Invalid product ID"
 msgstr "Ungültige Produkt-ID"
@@ -149,7 +153,7 @@ msgstr "Aufschlag"
 msgid "Markup (or markdown)"
 msgstr "Preis Auf (oder Abschlag)."
 
-#: markup-by-attribute-for-woocommerce.php:103 src/backend/settings.php:52
+#: markup-by-attribute-for-woocommerce.php:101 src/backend/settings.php:52
 msgid "Markup by Attribute"
 msgstr "Markup by Attribute"
 
@@ -201,7 +205,7 @@ msgstr "Sonstiges"
 msgid "Overwrite the variation description with price information."
 msgstr "Berschreibe die Variations-Artikelbeschreibung mit der Preisinformation"
 
-#: src/backend/product.php:254 src/backend/product.php:259
+#: src/backend/product.php:255 src/backend/product.php:260
 msgid "Permission denied"
 msgstr "Zugriff verweigert"
 
@@ -218,7 +222,7 @@ msgstr "Null-Preise beibehalten"
 msgid "Product not found"
 msgstr "Produkt nicht gefunden"
 
-#: markup-by-attribute-for-woocommerce.php:104
+#: markup-by-attribute-for-woocommerce.php:102
 msgid "Product price"
 msgstr "Produkt Preis"
 
@@ -226,7 +230,7 @@ msgstr "Produkt Preis"
 msgid "Reapply Markups"
 msgstr "Aufschläge neu anwenden"
 
-#: src/backend/product.php:162
+#: src/backend/product.php:163
 msgid "Reapply markups to prices"
 msgstr "Aufschläge auf Preise neu anwenden"
 
@@ -235,11 +239,11 @@ msgstr "Aufschläge auf Preise neu anwenden"
 msgid "Reapply markups using base price: %s"
 msgstr "Aufschläge mit Grundpreis neu anwenden: %s"
 
-#: src/backend/product.php:58
+#: src/backend/product.php:59
 msgid "Regular base price"
 msgstr "Regulärer Grundpreis"
 
-#: src/backend/product.php:59
+#: src/backend/product.php:60
 #| msgid "Base regular price for the variations before markup"
 msgid "Regular base price for the variations before markup"
 msgstr "Regulärer Grundpreis für die Varianten vor Aufschlag"
@@ -252,7 +256,7 @@ msgstr "Option umbenennen, um den Aufschlag einzuschließen."
 msgid "Reprice"
 msgstr "Neupreis"
 
-#: src/backend/product.php:163
+#: src/backend/product.php:164
 #, php-format
 msgid "Reprice variations at %s, plus or minus the markups?"
 msgstr "Variationen neu berechnen zu %s, plus oder minus die Aufschläge?"
@@ -265,11 +269,11 @@ msgstr "Gerundete Auf/Abschläge"
 msgid "Round percentage markups to keep the value below the decimal intact?"
 msgstr "Prozentuale Aufschläge runden, um den Wert nach dem Komma unverändert zu lassen?"
 
-#: src/backend/product.php:72
+#: src/backend/product.php:73
 msgid "Sale base price"
 msgstr "Grundverkaufspreis"
 
-#: src/backend/product.php:73
+#: src/backend/product.php:74
 #| msgid "Base sale price for the variations before markup"
 msgid "Sale base price for the variations before markup"
 msgstr "Grundverkaufspreis für die Varianten vor Aufschlag"
@@ -278,7 +282,7 @@ msgstr "Grundverkaufspreis für die Varianten vor Aufschlag"
 msgid "Sale Price Markup"
 msgstr "Verkaufspreis-Aufschlag"
 
-#: markup-by-attribute-for-woocommerce.php:53
+#: markup-by-attribute-for-woocommerce.php:52
 msgid "Settings"
 msgstr "Einstellungen"
 
@@ -307,7 +311,7 @@ msgstr "Zeige den Preisaufschlag OHNE das Währungszeichen im Drop-Down-Feld an.
 msgid "Some stores want prices with specific numbers below the decimal place (such as xx.00 or xx.95). Rounding percentage markups will keep the value below the decimal intact."
 msgstr "Einige Shops möchten Preise mit bestimmten Zahlen nach dem Komma (wie xx,00 oder xx,95). Das Runden prozentualer Aufschläge behält den Wert nach dem Komma bei."
 
-#: markup-by-attribute-for-woocommerce.php:114
+#: markup-by-attribute-for-woocommerce.php:112
 #| msgid "(Subtract"
 msgid "Subtract"
 msgstr "Abzüglich"
@@ -353,7 +357,3 @@ msgstr "Wenn ausgeschaltet, werden Aufpreisberechnungen normal durchgeführt, au
 #: src/backend/settings.php:214
 msgid "When set ON, variations with zero prices remain at zero, ignoring any markups. This preserves zero prices for giveaway items."
 msgstr "Wenn eingeschaltet, bleiben Variationen mit Null-Preis bei Null, ungeachtet der Aufpreise. Dies bewahrt Null-Preise für Werbegeschenke."
-
-#: src/backend/settings.php:242
-msgid "You can always create more by running 'Create variations from all attributes' again."
-msgstr "Sie können jederzeit mehr erstellen, indem Sie 'Varianten generieren' erneut ausführen."

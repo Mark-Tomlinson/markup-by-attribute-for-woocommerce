@@ -98,8 +98,8 @@ class ProductList {
 	 */
 	private function is_product_list_page($hook) {
 		return $hook === 'edit.php' && 
-			   isset($_GET['post_type']) && 
-			   $_GET['post_type'] === 'product';
+				isset($_GET['post_type']) && 
+				$_GET['post_type'] === 'product';
 	}
 
 	/**

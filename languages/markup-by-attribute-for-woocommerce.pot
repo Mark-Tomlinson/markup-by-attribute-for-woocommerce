@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Markup by Attribute for WooCommerce - MT² Tech\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-01-20 23:58+0000\n"
+"POT-Creation-Date: 2025-01-30 01:49+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -21,11 +21,15 @@ msgid_plural "%s products processed successfully."
 msgstr[0] ""
 msgstr[1] ""
 
+#: src/backend/settings.php:242
+msgid "<em>Use Cautiously:</em> WooCommerce limits the number of linked variations you can create at a time to 50 to prevent server overload. Setting the number too high can cause timeout errors; you may have to experiment. You can always create more by running 'Create variations from all attributes' again."
+msgstr ""
+
 #: src/backend/settings.php:180
 msgid "A 10% markup on a $30 regular price yields a $3 markup. If you set a $20 sale price, setting this option ON yields a $2 markup, setting it OFF leaves the markup at $3."
 msgstr ""
 
-#: markup-by-attribute-for-woocommerce.php:113
+#: markup-by-attribute-for-woocommerce.php:111
 msgid "Add"
 msgstr ""
 
@@ -72,7 +76,7 @@ msgstr ""
 msgid "Base Price"
 msgstr ""
 
-#: src/backend/product.php:85
+#: src/backend/product.php:86
 msgid "Change base prices with the <em>Bulk actions</em> on the <b>Variations</b> tab."
 msgstr ""
 
@@ -96,7 +100,7 @@ msgstr ""
 msgid "Do NOT show the markup in the options drop-down box."
 msgstr ""
 
-#: src/backend/product.php:164
+#: src/backend/product.php:165
 msgid "Failed to reapply markups. Please try again."
 msgstr ""
 
@@ -125,11 +129,11 @@ msgstr ""
 msgid "Include the name of the attribute in the variable product's description. <b>Add $1.50 for Blue</b> becomes <b>Add $1.50 for Color: Blue</b>."
 msgstr ""
 
-#: markup-by-attribute-for-woocommerce.php:54
+#: markup-by-attribute-for-woocommerce.php:53
 msgid "Instructions"
 msgstr ""
 
-#: src/backend/product.php:265
+#: src/backend/product.php:266
 msgid "Invalid product ID"
 msgstr ""
 
@@ -145,7 +149,7 @@ msgstr ""
 msgid "Markup (or markdown)"
 msgstr ""
 
-#: markup-by-attribute-for-woocommerce.php:103 src/backend/settings.php:52
+#: markup-by-attribute-for-woocommerce.php:101 src/backend/settings.php:52
 msgid "Markup by Attribute"
 msgstr ""
 
@@ -197,7 +201,7 @@ msgstr ""
 msgid "Overwrite the variation description with price information."
 msgstr ""
 
-#: src/backend/product.php:254 src/backend/product.php:259
+#: src/backend/product.php:255 src/backend/product.php:260
 msgid "Permission denied"
 msgstr ""
 
@@ -214,7 +218,7 @@ msgstr ""
 msgid "Product not found"
 msgstr ""
 
-#: markup-by-attribute-for-woocommerce.php:104
+#: markup-by-attribute-for-woocommerce.php:102
 msgid "Product price"
 msgstr ""
 
@@ -222,7 +226,7 @@ msgstr ""
 msgid "Reapply Markups"
 msgstr ""
 
-#: src/backend/product.php:162
+#: src/backend/product.php:163
 msgid "Reapply markups to prices"
 msgstr ""
 
@@ -231,11 +235,11 @@ msgstr ""
 msgid "Reapply markups using base price: %s"
 msgstr ""
 
-#: src/backend/product.php:58
+#: src/backend/product.php:59
 msgid "Regular base price"
 msgstr ""
 
-#: src/backend/product.php:59
+#: src/backend/product.php:60
 msgid "Regular base price for the variations before markup"
 msgstr ""
 
@@ -247,7 +251,7 @@ msgstr ""
 msgid "Reprice"
 msgstr ""
 
-#: src/backend/product.php:163
+#: src/backend/product.php:164
 #, php-format
 msgid "Reprice variations at %s, plus or minus the markups?"
 msgstr ""
@@ -260,11 +264,11 @@ msgstr ""
 msgid "Round percentage markups to keep the value below the decimal intact?"
 msgstr ""
 
-#: src/backend/product.php:72
+#: src/backend/product.php:73
 msgid "Sale base price"
 msgstr ""
 
-#: src/backend/product.php:73
+#: src/backend/product.php:74
 msgid "Sale base price for the variations before markup"
 msgstr ""
 
@@ -272,7 +276,7 @@ msgstr ""
 msgid "Sale Price Markup"
 msgstr ""
 
-#: markup-by-attribute-for-woocommerce.php:53
+#: markup-by-attribute-for-woocommerce.php:52
 msgid "Settings"
 msgstr ""
 
@@ -300,7 +304,7 @@ msgstr ""
 msgid "Some stores want prices with specific numbers below the decimal place (such as xx.00 or xx.95). Rounding percentage markups will keep the value below the decimal intact."
 msgstr ""
 
-#: markup-by-attribute-for-woocommerce.php:114
+#: markup-by-attribute-for-woocommerce.php:112
 msgid "Subtract"
 msgstr ""
 
@@ -344,8 +348,4 @@ msgstr ""
 
 #: src/backend/settings.php:214
 msgid "When set ON, variations with zero prices remain at zero, ignoring any markups. This preserves zero prices for giveaway items."
-msgstr ""
-
-#: src/backend/settings.php:242
-msgid "You can always create more by running 'Create variations from all attributes' again."
 msgstr ""

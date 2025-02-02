@@ -239,9 +239,8 @@ class Settings extends WC_Settings_API {
 			$mt2mba_settings[] = array(
 				'name'		=> __('Max Variations', 'markup-by-attribute-for-woocommerce'),
 				'desc'		=> __('Maximum number of variations that can be created per run.', 'markup-by-attribute-for-woocommerce') . '<br/>' .
-					__('<em>Use Cautiously:</em> WooCommerce limits the number of linked variations you can create at a time to 50 to prevent server overload. ' .
-					'Setting the number too high can cause timeout errors; you may have to experiment. ' .
-					'You can always create more by running \'Create variations from all attributes\' again.', 'markup-by-attribute-for-woocommerce'),
+				__("<em>Use Cautiously:</em> WooCommerce limits the number of linked variations you can create at a time to 50 to prevent server overload. Setting the number too high can cause timeout errors; you may have to experiment. You can always create more by running 'Create variations from all attributes' again.",
+				'markup-by-attribute-for-woocommerce'),
 				'id'		=> 'mt2mba_max_variations',
 				'type'		=> 'number',
 				'custom_attributes' => array(

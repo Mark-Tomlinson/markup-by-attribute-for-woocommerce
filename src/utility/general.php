@@ -192,10 +192,10 @@ class General {
 
 	/**
 	 * Format the add and subtract line items that appears in the variation description
-	 * @param float  $markup	 Signed markup amount
-	 * @param string $attrb_name Attribute name that the markup applies to
-	 * @param string $term_name  Attribute term that the markup applies to
-	 * @return string		   Formatted description 
+	 * @param	float	$markup		Signed markup amount
+	 * @param	string	$attrb_name	Attribute name that the markup applies to
+	 * @param	string	$term_name	Attribute term that the markup applies to
+	 * @return	string				Formatted description 
 	 */
 	function formatVariationMarkupDescription($markup, $attrb_name, $term_name) {
 		if ($markup <> "" && $markup <> 0) {

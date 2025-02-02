@@ -1,0 +1,354 @@
+# Translation of Plugins - Markup by Attribute for WooCommerce - Development (trunk) in Russian
+# This file is distributed under the same license as the Plugins - Markup by Attribute for WooCommerce - Development (trunk) package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2025-01-30 01:49+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n % 10 == 1 && n % 100 != 11) ? 0 : ((n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14)) ? 1 : 2);\n"
+"X-Generator: Loco https://localise.biz/\n"
+"Language: ru_RU\n"
+"Project-Id-Version: Plugins - Markup by Attribute for WooCommerce - Development (trunk)\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-01-29 22:37+0000\n"
+"Last-Translator: Irina @irinashl on WordPress.org, @vifwp on WordPress.org, @silvar_tia on WordPress.org, Anthropic Claude 3.5 Sonnet\n"
+"Language-Team: Russian\n"
+"X-Loco-Version: 2.7.1; wp-6.7.1"
+
+#: src/backend/productlist.php:126 src/backend/productlist.php:132
+#, php-format
+msgid "%s product processed successfully."
+msgid_plural "%s products processed successfully."
+msgstr[0] "%s товар обработан успешно."
+msgstr[1] "%s товара обработано успешно."
+msgstr[2] "%s товаров обработано успешно."
+
+#: src/backend/settings.php:242
+msgid "<em>Use Cautiously:</em> WooCommerce limits the number of linked variations you can create at a time to 50 to prevent server overload. Setting the number too high can cause timeout errors; you may have to experiment. You can always create more by running 'Create variations from all attributes' again."
+msgstr "<em>Используйте с осторожностью:</em> WooCommerce ограничивает количество связанных вариаций, которые можно создать за один раз, до 50, чтобы предотвратить перегрузку сервера. Установка слишком большого числа может вызвать ошибки тайм-аута; возможно, придется экспериментировать. Вы всегда можете создать больше, снова запустив 'Создать вариации из всех атрибутов'."
+
+#: src/backend/settings.php:180
+msgid "A 10% markup on a $30 regular price yields a $3 markup. If you set a $20 sale price, setting this option ON yields a $2 markup, setting it OFF leaves the markup at $3."
+msgstr "Наценка 10% на обычную цену $30 дает наценку $3. Если вы установите цену распродажи $20, включение этой опции даст наценку $2, выключение оставит наценку $3."
+
+#: markup-by-attribute-for-woocommerce.php:111
+msgid "Add"
+msgstr "Добавить"
+
+#: src/utility/general.php:223
+#, php-format
+msgid "Add %1$s for %2$s"
+msgstr "Дополнительно %1$s за %2$s"
+
+#: src/utility/general.php:210
+#, php-format
+msgid "Add %1$s for %2$s: %3$s"
+msgstr "Дополнительно %1$s за %2$s: %3$s"
+
+#: src/backend/term.php:93
+msgid "Add Markup to Description?"
+msgstr "Добавить наценку к описанию?"
+
+#: src/backend/term.php:88
+msgid "Add Markup to Name?"
+msgstr "Добавить наценку к имени?"
+
+#: src/backend/settings.php:126
+msgid "Add pricing information to the end of the existing description."
+msgstr "Добавить информацию о ценах в конец существующего описания."
+
+#: src/backend/term.php:95
+msgid "Add the markup to the option's description."
+msgstr "Добавить наценку к описанию параметра."
+
+#: src/backend/settings.php:78
+#, php-format
+msgid "Additional help can be found in the <a href=\"%1$s\" target=\"_blank\">Markup by Attribute wiki</a> on the <code>Settings</code> page."
+msgstr "Дополнительную справку можно найти на странице <a href=\"%1$s\" target=\"_blank\">Markup by Attribute wiki</a> on the <code>Settings</code>"
+
+#. Description of the plugin
+msgid "Adds product variation markup by attribute to WooCommerce."
+msgstr "Добавляет наценки на вариации товаров по атрибутам в WooCommerce."
+
+#: src/backend/productlist.php:172
+msgid "Attributes"
+msgstr "Атрибуты"
+
+#: src/backend/productlist.php:169
+msgid "Base Price"
+msgstr "Базовая цена"
+
+#: src/backend/product.php:86
+msgid "Change base prices with the <em>Bulk actions</em> on the <b>Variations</b> tab."
+msgstr "Изменяйте базовые цены с помощью <em>Массовых действий</em> на вкладке <b>Вариации</b>."
+
+#: src/backend/settings.php:125
+msgid "Do NOT add pricing information to the description field."
+msgstr "Не добавлять информацию о цене в поле описания"
+
+#: src/backend/term.php:100
+msgid "Do not overwrite the option selection mechanism provided with your theme."
+msgstr "Не перезаписывать механизм выбора параметров, предоставленный вашей темой."
+
+#: src/backend/term.php:98
+msgid "Do Not Overwrite Theme"
+msgstr "Не перезаписывать тему"
+
+#: src/backend/settings.php:151
+msgid "Do NOT show the base price in the product description."
+msgstr "Не показывать базовую цену в описании продукта"
+
+#: src/backend/settings.php:107
+msgid "Do NOT show the markup in the options drop-down box."
+msgstr "НЕ показывать наценку в раскрывающемся списке параметров."
+
+#: src/backend/product.php:165
+msgid "Failed to reapply markups. Please try again."
+msgstr "Не удалось повторно применить наценки. Пожалуйста, попробуйте снова."
+
+#: src/backend/settings.php:150
+msgid "Hide Base Price"
+msgstr "Скрыть базовую цену"
+
+#: src/backend/settings.php:120
+msgid "How should Markup-by-Attribute handle adding price markup information to the product variation description?"
+msgstr "Каким образом информация о наценка за атрибут добавляется к описанию варианта?"
+
+#. URI of the plugin
+msgid "https://wordpress.org/plugins/markup-by-attribute-for-woocommerce/"
+msgstr "https://wordpress.org/plugins/markup-by-attribute-for-woocommerce/"
+
+#: src/backend/settings.php:82
+#, php-format
+msgid "If you find this plugin helpful, please consider <a href=\"%1$s\" target=\"_blank\">a small donation</a>."
+msgstr "Если этот плагин нравится Вам, пожалуйста рассмотрите возможность небольшого поощрения автора <a href=\"%1$s\" target=\"_blank\">a small donation</a>."
+
+#: src/backend/settings.php:136
+msgid "Include Attribute Names in Variation Descriptions"
+msgstr "Включить названия атрибутов в описания вариаций"
+
+#: src/backend/settings.php:137
+msgid "Include the name of the attribute in the variable product's description. <b>Add $1.50 for Blue</b> becomes <b>Add $1.50 for Color: Blue</b>."
+msgstr "Включить название атрибута в описание вариативного товара. <b>Дополнительно $1.50 за Синий</b> становится <b>Дополнительно $1.50 за Цвет: Синий</b>."
+
+#: markup-by-attribute-for-woocommerce.php:53
+msgid "Instructions"
+msgstr "Инструкции"
+
+#: src/backend/product.php:266
+msgid "Invalid product ID"
+msgstr "Неверный ID товара"
+
+#. Author of the plugin
+msgid "MarkTomlinson"
+msgstr "MarkTomlinson"
+
+#: src/backend/term.php:154
+msgid "Markup"
+msgstr "Разметка"
+
+#: src/backend/term.php:86
+msgid "Markup (or markdown)"
+msgstr "Наценка (или уценка)"
+
+#: markup-by-attribute-for-woocommerce.php:101 src/backend/settings.php:52
+msgid "Markup by Attribute"
+msgstr "Наценка за атрибут"
+
+#. Name of the plugin
+msgid "Markup by Attribute for WooCommerce"
+msgstr "Наценка по атрибуту для WooCommerce"
+
+#: src/backend/settings.php:74
+msgid "Markup by Attribute Settings"
+msgstr "Настройки наценки за атрибут"
+
+#: src/backend/settings.php:165
+msgid "Markup Calculation"
+msgstr "Расчет наценки"
+
+#: src/backend/settings.php:90
+msgid "Markup Display"
+msgstr "Отображение разметки"
+
+#: src/backend/term.php:87
+msgid "Markup or markdown associated with this option. Signed, floating point numeric allowed."
+msgstr "Наценка или уценка, связанная с этим параметром. Допускаются положительные и отрицательные числа с плавающей запятой."
+
+#: src/utility/pointers.php:101
+msgid "Markups can be fixed values such as <code>5</code> or <code>5.95</code>, or percentages such as <code>5%</code> or <code>1.23%</code>. Use plus or minus signs (like <code>+5.95</code> or <code>-1.23%</code>) for increases or decreases.<br/>Markups are applied when setting prices or reapplying markups to variations."
+msgstr "Наценки могут быть фиксированными значениями, такими как <code>5</code> или <code>5.95</code>, или процентами, такими как <code>5%</code> или <code>1.23%</code>. Используйте знаки плюс или минус (например, <code>+5.95</code> или <code>-1.23%</code>) для увеличения или уменьшения.<br/>Наценки применяются при установке цен или повторном применении наценок к вариациям."
+
+#: src/backend/settings.php:240
+msgid "Max Variations"
+msgstr "Максимум вариаций"
+
+#: src/backend/settings.php:241
+msgid "Maximum number of variations that can be created per run."
+msgstr "Максимальное количество вариаций, которое можно создать за один запуск."
+
+#: src/backend/term.php:91 src/backend/term.php:96
+msgid "Often needed if the option drop-down box is overwritten by another plugin or theme and markup is no longer visible."
+msgstr "Часто необходимо, если раскрывающийся список параметров перезаписывается другим плагином или темой, и наценка больше не видна."
+
+#: src/backend/settings.php:101
+msgid "Option Drop-down Behavior"
+msgstr "Поведение при выборе выпадающего меню"
+
+#: src/backend/settings.php:228
+msgid "Other"
+msgstr "Другое"
+
+#: src/backend/settings.php:127
+msgid "Overwrite the variation description with price information."
+msgstr "Заменить описание варианта с информацией о цене."
+
+#: src/backend/product.php:255 src/backend/product.php:260
+msgid "Permission denied"
+msgstr "Доступ запрещен"
+
+#: src/backend/productlist.php:125
+#, php-format
+msgid "Please wait; processing product %1$s of %2$s..."
+msgstr "Пожалуйста, подождите; обработка товара %1$s из %2$s..."
+
+#: src/backend/settings.php:211
+msgid "Preserve Zero Prices"
+msgstr "Сохранять нулевые цены"
+
+#: src/backend/productlist.php:430
+msgid "Product not found"
+msgstr "Товар не найден"
+
+#: markup-by-attribute-for-woocommerce.php:102
+msgid "Product price"
+msgstr "Цена продукта"
+
+#: src/backend/productlist.php:293 src/backend/productlist.php:391
+msgid "Reapply Markups"
+msgstr "Повторно применить наценки"
+
+#: src/backend/product.php:163
+msgid "Reapply markups to prices"
+msgstr "Повторно применить наценки к ценам"
+
+#: src/backend/productlist.php:302
+#, php-format
+msgid "Reapply markups using base price: %s"
+msgstr "Повторно применить наценки, используя базовую цену: %s"
+
+#: src/backend/product.php:59
+msgid "Regular base price"
+msgstr "Обычная базовая цена"
+
+#: src/backend/product.php:60
+msgid "Regular base price for the variations before markup"
+msgstr "Обычная базовая цена для вариаций до наценки"
+
+#: src/backend/term.php:90
+msgid "Rename the option to include the markup."
+msgstr "Переименовать параметр, чтобы включить наценку."
+
+#: src/backend/productlist.php:295
+msgid "Reprice"
+msgstr "Переоценить"
+
+#: src/backend/product.php:164
+#, php-format
+msgid "Reprice variations at %s, plus or minus the markups?"
+msgstr "Переоценить вариации по %s, плюс или минус наценки?"
+
+#: src/backend/settings.php:195
+msgid "Round Markup"
+msgstr "Округлить наценку"
+
+#: src/backend/settings.php:196
+msgid "Round percentage markups to keep the value below the decimal intact?"
+msgstr "Округлять процентные наценки, чтобы сохранить значение после запятой неизменным?"
+
+#: src/backend/product.php:73
+msgid "Sale base price"
+msgstr "Базовая цена распродажи"
+
+#: src/backend/product.php:74
+msgid "Sale base price for the variations before markup"
+msgstr "Базовая цена распродажи для вариаций до наценки"
+
+#: src/backend/settings.php:178
+msgid "Sale Price Markup"
+msgstr "Надбавка к цене продажи"
+
+#: markup-by-attribute-for-woocommerce.php:52
+msgid "Settings"
+msgstr "Настройки"
+
+#: src/backend/settings.php:102
+msgid "Should Markup-by-Attribute add the markup to the options drop-down box, and should the currency symbol be displayed?"
+msgstr "Следует ли наценку за атрибут добавлять в раскрывающийся список параметров и должен ли отображаться символ валюты?"
+
+#: src/backend/settings.php:179
+msgid "Should Markup-by-Attribute calculate percentage markups on sale prices?"
+msgstr "Должен ли Markup-by-Attribute рассчитывать процентные наценки на цены распродажи?"
+
+#: src/backend/settings.php:212
+msgid "Should Markup-by-Attribute keep zero-priced products at zero?"
+msgstr "Должен ли Markup-by-Attribute сохранять нулевые цены для продуктов с нулевой ценой?"
+
+#: src/backend/settings.php:108
+msgid "Show the markup WITH the currency symbol in the options drop-down box."
+msgstr "Показывать наценку С символом валюты в раскрывающемся списке параметров."
+
+#: src/backend/settings.php:109
+msgid "Show the markup WITHOUT the currency symbol in the options drop-down box."
+msgstr "Показывать наценку БЕЗ символа валюты в раскрывающемся списке параметров."
+
+#: src/backend/settings.php:197
+msgid "Some stores want prices with specific numbers below the decimal place (such as xx.00 or xx.95). Rounding percentage markups will keep the value below the decimal intact."
+msgstr "Некоторые магазины указывают цены с конкретными числами ниже десятичного знака (например, xx.00 или xx.95). При округлении наценок, заданных в процентах, значение дробной части останется неизменным."
+
+#: markup-by-attribute-for-woocommerce.php:112
+msgid "Subtract"
+msgstr "Вычесть"
+
+#: src/utility/general.php:222
+#, php-format
+msgid "Subtract %1$s for %2$s"
+msgstr "Скидка %1$s за %2$s"
+
+#: src/utility/general.php:209
+#, php-format
+msgid "Subtract %1$s for %2$s: %3$s"
+msgstr "Скидка %1$s за %2$s: %3$s"
+
+#: src/backend/settings.php:76
+msgid "The following options are used to configure variation markups by attribute."
+msgstr "Следующие параметры используются для настройки наценки для вариантов по атрибуту."
+
+#: src/backend/settings.php:66
+msgid "This setting affects all products and takes effect immediately."
+msgstr "Этот параметр влияет на все продукты и вступает в силу немедленно."
+
+#: src/backend/settings.php:67
+msgid "This setting affects products individually and takes effect when you recalculate prices or reapply markups."
+msgstr "Этот параметр влияет на товары индивидуально и вступает в силу при пересчете цен или повторном применении наценок."
+
+#: src/backend/term.php:101
+msgid "Use this if the option drop-down box is overwriting a preferred method provided by another plugin or your theme."
+msgstr "Используйте это, если раскрывающийся список параметров перезаписывает предпочтительный метод, предоставленный другим плагином или вашей темой."
+
+#: src/utility/pointers.php:133
+msgid "Using this plugin is simple, but might be a little obscure. This link to the instructions may help get you started.<br/>We'll just leave the instructions link right here."
+msgstr "Использование этого плагина обычно интуитивно понятно. В случае затруднений Вы можете обратиться к инструкции, которая может помочь начать работу. <br/> Мы просто оставим ссылку на инструкции прямо здесь."
+
+#: src/backend/settings.php:119
+msgid "Variation Description Behavior"
+msgstr "Описание варианта Поведение"
+
+#: src/backend/settings.php:213
+msgid "When set OFF, markup calculations proceed normally even when the base price is zero. This allows using attributes to determine the entire price."
+msgstr "При выключении расчеты наценок выполняются как обычно, даже если базовая цена равна нулю. Это позволяет использовать атрибуты для определения полной цены."
+
+#: src/backend/settings.php:214
+msgid "When set ON, variations with zero prices remain at zero, ignoring any markups. This preserves zero prices for giveaway items."
+msgstr "При включении вариации с нулевыми ценами остаются нулевыми, игнорируя любые наценки. Это сохраняет нулевые цены для бесплатных товаров."

@@ -6,7 +6,7 @@ use mt2Tech\MarkupByAttribute\Utility as Utility;
  * Handles setting product prices and applying markups.
  * Used when directly setting variation prices through bulk actions.
  *
- * @package mt2Tech\MarkupByAttribute\Backend\Handlers
+ * @package	mt2Tech\MarkupByAttribute\Backend\Handlers
  */
 class PriceSetHandler extends PriceMarkupHandler {
 	//region PROPERTIES
@@ -88,6 +88,9 @@ class PriceSetHandler extends PriceMarkupHandler {
 				// if zero and ALLOW-ZERO is true,
 				if ($this->base_price == 0 && MT2MBA_ALLOW_ZERO === 'yes') {
 					// Set {price_type} base price metadata to 0
+					// update_post_meta() does not appear to change cached records. Deleting the
+					// record before rewriting it appears to be the only way to update the cache.
+					delete_post_meta($product_id, "mt2mba_base_{$this->price_type}");
 					update_post_meta($product_id, "mt2mba_base_{$this->price_type}", 0);
 					// Fall through to Regular Price check
 
@@ -97,8 +100,7 @@ class PriceSetHandler extends PriceMarkupHandler {
 					return false;
 				}
 
-			// Else ({base_price} is not numeric,
-			} else {
+			} else {	// Else ({base_price} is not numeric),
 				// Remove {price_type} base price metadata
 				delete_post_meta($product_id, "mt2mba_base_{$this->price_type}");
 				// Fall through to Regular Price check
@@ -240,6 +242,9 @@ class PriceSetHandler extends PriceMarkupHandler {
 	 * @return	string					Price description or empty string based on settings
 	 */
 	private function handleBasePriceUpdate($product_id, $rounded_base) {
+		// update_post_meta() does not appear to change cached records. Deleting the
+		// record before rewriting it appears to be the only way to update the cache.
+		delete_post_meta($product_id, "mt2mba_base_{$this->price_type}");
 		update_post_meta($product_id, "mt2mba_base_{$this->price_type}", $rounded_base);
 		if ($this->price_type === REGULAR_PRICE) {
 			set_transient('mt2mba_current_base_' . $product_id, $rounded_base, HOUR_IN_SECONDS);
@@ -286,11 +291,11 @@ class PriceSetHandler extends PriceMarkupHandler {
 	 * Build variation description with markup information.
 	 * Combines existing description with markup details based on settings.
 	 *
-	 * @param	WC_Product $variation			The variation product object
-	 * @param	string	 $base_price_description Base price description text
-	 * @param	string	 $markup_description   Markup-specific description text
-	 * @param	float	  $variation_price	  The calculated variation price
-	 * @return string Complete variation description
+	 * @param	WC_Product	$variation				The variation product object
+	 * @param	string		$base_price_description	Base price description text
+	 * @param	string		$markup_description		Markup-specific description text
+	 * @param	float		$variation_price		The calculated variation price
+	 * @return	string								Complete variation description
 	 */
 	protected function buildVariationDescription($variation, $base_price_description, $markup_description, $variation_price) {
 		global $mt2mba_utility;

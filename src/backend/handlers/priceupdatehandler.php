@@ -28,25 +28,25 @@ class PriceUpdateHandler extends PriceMarkupHandler {
 	 * @param	int		$product_id		The ID of the product
 	 * @param	array	$variations		List of variation IDs
 	 */
-	public function calculateAndApplyMarkups($bulk_action, $data, $product_id, $variations) {
+	public function processProductMarkups ($bulk_action, $data, $product_id, $variations) {
 		// If base price metadata is present, that means the product contains variables with attribute pricing.
 		$base_price = get_metadata("post", $product_id, "mt2mba_base_{$this->price_type}", true);
 		if ($base_price) {
 			// reapply a new base price according to the bulk action.
 			// Bulk action could be any of
-			//   * variable_regular_price_increase
-			//   * variable_regular_price_decrease
-			//   * variable_sale_price_increase
-			//   * variable_sale_price_decrease
+			//	* variable_regular_price_increase
+			//	* variable_regular_price_decrease
+			//	* variable_sale_price_increase
+			//	* variable_sale_price_decrease
 			$new_data = [];
 			$new_data["value"] = $this->calculateNewBasePrice($bulk_action, $data["value"], $base_price);
 			// And then loop back through changing the bulk action type to one of the two 'set price' options.
 			// This will reset the prices on all variations to the new base regular/sale price plus the
 			// attribute markup.
-			//   * variable_regular_price
-			//   * variable_sale_price
+			//	* variable_regular_price
+			//	* variable_sale_price
 			$handler = new PriceSetHandler("variable_{$this->price_type}", $new_data, $product_id, $variations);
-			$handler->calculateAndApplyMarkups($bulk_action, $data, $product_id, $variations);
+			$handler->processProductMarkups ($bulk_action, $data, $product_id, $variations);
 		}
 	}
 

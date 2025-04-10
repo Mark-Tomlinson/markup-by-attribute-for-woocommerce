@@ -9,13 +9,13 @@ Contributors:			MarkTomlinson
 Donate link:			https://www.paypal.me/MT2Dev/5
 License:				GPLv3
 License URI:			https://www.gnu.org/licenses/gpl-3.0.html
-Version:				4.3.5
+Version:				4.3.6
 Stable tag:				trunk
-Tested up to:			6.7.2
+Tested up to:			6.8
 Requires at least:		4.6
 PHP tested up to:		8.3.11
-Requires PHP:			5.6
-WC tested up to:		9.7.1
+Requires PHP:			7.4
+WC tested up to:		9.8.1
 WC requires at least:	3.0
 MySQL tested up to:		8.0.41
 
@@ -84,7 +84,7 @@ This plugin does one thing - it adds pricing control to WooCommerce's global pro
 
 _NOTE:_ These instructions assume you are familiar with WooCommerce global Product Attributes and with WooCommerce Product Variations. If not, you may want to review the WooCommerce documentation on [Product Attributes](https://docs.woocommerce.com/document/managing-product-taxonomies/#section-6) and [Variable Products](https://docs.woocommerce.com/document/variable-product/).
 
-# Three Easy Steps #
+= Three Easy Steps =
 
 1.	**While creating new global attribute terms or editing existing ones, add the markup.**
 	 * If the option needs a markup, put the amount of the markup in the term’s Markup field on either the `Add new attribute` panel or the `Edit attribute` panel.
@@ -184,12 +184,28 @@ If you use Markup-by-Attribute and want to see me continuing support for it, I e
 6. Markups are applied to sale prices just as they are with regular prices.
 7. The settings page allows configuration of how the markup is displayed.
 
+== Upgrade Notice ==
+
+= 4.3.6 =
+This version confirms compatibility with WordPress 6.8 and WooCommerce 9.8. No functional changes.
+
+= 4.3.0 =
+Major update! Includes new Base Price column and bulk update tools.
+
 == Changelog ==
+= 4.3.5 =
+*Release Date: April 2025*
+
+**Maintenance**
+* Updated compatibility to confirm support for WordPress 6.8.
+* Incremented plugin version number.
+* No functional code changes included in this specific version update.
+
 = 4.3.5 =
 *Release Date: March 2025*
 
 **Maintenance**
-* Updated to show compatibility up to Wordpress 6.7.2, WooCommerce 9.7.1, PHP 8.3.11, MySQL 8.0.41
+* Updated to show compatibility up to Wordpress 6.7.1, WooCommerce 9.7.1, PHP 8.3.11, MySQL 8.0.41
 * No code changes
 
 = 4.3.4 =

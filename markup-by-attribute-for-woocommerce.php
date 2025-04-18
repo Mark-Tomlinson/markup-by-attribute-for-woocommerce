@@ -24,7 +24,7 @@ use mt2Tech\MarkupByAttribute\Utility	as Utility;
  * Text Domain:				markup-by-attribute
  * Domain Path:				/languages
  * Version:					4.3.6
- * Stable tag:				trunk
+ * Stable tag:				4.3.6
  * Tested up to:			6.8
  * Requires at least:		4.6
  * PHP tested up to:		8.3.11

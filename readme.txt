@@ -10,7 +10,7 @@ Donate link:			https://www.paypal.me/MT2Dev/5
 License:				GPLv3
 License URI:			https://www.gnu.org/licenses/gpl-3.0.html
 Version:				4.3.6
-Stable tag:				trunk
+Stable tag:				4.3.6
 Tested up to:			6.8
 Requires at least:		4.6
 PHP tested up to:		8.3.11
@@ -187,10 +187,12 @@ If you use Markup-by-Attribute and want to see me continuing support for it, I e
 == Upgrade Notice ==
 
 = 4.3.6 =
-This version confirms compatibility with WordPress 6.8 and WooCommerce 9.8. No functional changes.
+*Release Date: April 2025*
 
-= 4.3.0 =
-Major update! Includes new Base Price column and bulk update tools.
+**Maintenance**
+* Updated compatibility to confirm support for WordPress 6.8, WooCommerce 9.8.1, and PHP 8.3.11.
+* Incremented plugin version number.
+* No functional code changes included in this update.
 
 == Changelog ==
 = 4.3.5 =

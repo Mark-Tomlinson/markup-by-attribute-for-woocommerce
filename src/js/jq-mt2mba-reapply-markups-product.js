@@ -24,7 +24,7 @@ jQuery(document).ready(function($) {
 		$pricingGroup.prepend(
 			$('<option>', {
 				value: 'reapply_markup',
-				text: mt2mbaLocal.i18n.reapplyMarkupss
+                                text: mt2mbaLocal.i18n.reapplyMarkups
 			})
 		);
 	}

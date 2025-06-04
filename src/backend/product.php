@@ -159,8 +159,8 @@ class Product {
 					'ajaxUrl' => admin_url('admin-ajax.php'),
 					'security' => wp_create_nonce('handleMarkupReapplication'),
 					'variationsNonce' => wp_create_nonce('load-variations'),
-					'i18n' => array(
-						'reapplyMarkupss' => __('Reapply markups to prices', 'markup-by-attribute-for-woocommerce'),
+                                        'i18n' => array(
+                                                'reapplyMarkups' => __('Reapply markups to prices', 'markup-by-attribute-for-woocommerce'),
 						'confirmReapply' => __('Reprice variations at %s, plus or minus the markups?', 'markup-by-attribute-for-woocommerce'),
 						'failedRecalculating' => __('Failed to reapply markups. Please try again.', 'markup-by-attribute-for-woocommerce')
 					)

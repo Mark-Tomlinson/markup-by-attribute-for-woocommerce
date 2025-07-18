@@ -9,15 +9,15 @@ Contributors:			MarkTomlinson
 Donate link:			https://www.paypal.me/MT2Dev/5
 License:				GPLv3
 License URI:			https://www.gnu.org/licenses/gpl-3.0.html
-Version:				4.3.6
-Stable tag:				4.3.6
-Tested up to:			6.8
+Version:				4.3.7
+Stable tag:				4.3.7
+Tested up to:			6.8.2
 Requires at least:		4.6
-PHP tested up to:		8.3.11
+PHP tested up to:		8.4.5
 Requires PHP:			7.4
-WC tested up to:		9.8.1
+WC tested up to:		10.0.2
 WC requires at least:	3.0
-MySQL tested up to:		8.0.41
+MySQL tested up to:		8.4.5
 
 This plugin adds product variation markup by attribute to WooCommerce and adjusts product variation regular and sale prices accordingly.
 
@@ -185,6 +185,14 @@ If you use Markup-by-Attribute and want to see me continuing support for it, I e
 7. The settings page allows configuration of how the markup is displayed.
 
 == Upgrade Notice ==
+
+= 4.3.7 =
+*Release Date: July 2025*
+
+**Maintenance**
+* Updated compatibility to confirm support for WordPress 6.8.2, WooCommerce 10.0.5, and PHP 8.4.5.
+* Incremented plugin version number.
+* Corrected spelling of "reapplyMarkups" in src/backend/product.php and src/js/jq-mt2mba-reapply-markups-product.js
 
 = 4.3.6 =
 *Release Date: April 2025*

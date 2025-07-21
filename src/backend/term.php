@@ -87,7 +87,7 @@ class Term {
 	 * 
 	 * @since 1.0.0
 	 */
-	public function __wakeup(): void {
+	public function __wakeup(): void {}
 
 	/**
 	 * Initialize the class and set up hooks

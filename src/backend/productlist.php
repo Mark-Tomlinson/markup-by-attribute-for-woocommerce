@@ -63,7 +63,7 @@ class ProductList {
 	 * 
 	 * @since 3.13.0
 	 */
-	public function __wakeup(): void {
+	public function __wakeup(): void {}
 
 	/**
 	 * Initialize ProductList and register WordPress hooks

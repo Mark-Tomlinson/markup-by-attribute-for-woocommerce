@@ -9,8 +9,8 @@ Contributors:			MarkTomlinson
 Donate link:			https://www.paypal.me/MT2Dev/5
 License:				GPLv3
 License URI:			https://www.gnu.org/licenses/gpl-3.0.html
-Version:				4.3.7
-Stable tag:				4.3.7
+Version:				4.3.8
+Stable tag:				4.3.8
 Tested up to:			6.8.2
 Requires at least:		4.6
 PHP tested up to:		8.4.5
@@ -185,6 +185,17 @@ If you use Markup-by-Attribute and want to see me continuing support for it, I e
 7. The settings page allows configuration of how the markup is displayed.
 
 == Upgrade Notice ==
+
+= 4.3.8 =
+*Release Date: January 2025*
+
+**Code Quality & Documentation Improvements**
+* Enhanced code readability with comprehensive PHPDoc standardization across all files
+* Added PHP type hints to all method parameters and return types for better IDE support and error prevention
+* Extracted magic numbers into meaningful named constants for improved maintainability
+* Added detailed inline comments explaining complex validation logic, security measures, and WordPress integration patterns
+* Improved input validation with centralized constants for markup limits and formatting
+* Enhanced code organization without any functional changes to existing features
 
 = 4.3.7 =
 *Release Date: July 2025*

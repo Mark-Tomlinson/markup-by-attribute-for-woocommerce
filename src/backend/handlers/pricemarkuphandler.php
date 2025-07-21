@@ -3,11 +3,16 @@ namespace mt2Tech\MarkupByAttribute\Backend\Handlers;
 use mt2Tech\MarkupByAttribute\Utility as Utility;
 
 /**
- * Abstract base class that provides the foundation for markup-by-attribute product variation handling.
- * Creates a shell with basic functions that are extended by specific handler classes based on
- * the type of bulk editing operation being performed.
+ * Abstract base class for markup-by-attribute product variation handling
+ * 
+ * Provides the foundation for all markup calculation operations. This class defines the common
+ * properties and initialization logic that all price handlers need, while allowing specific
+ * handlers to implement their own markup calculation strategies.
  *
- * @package mt2Tech\MarkupByAttribute\Backend\Handlers
+ * @package   mt2Tech\MarkupByAttribute\Backend\Handlers
+ * @author    Mark Tomlinson
+ * @license   GPL-2.0+
+ * @since     4.0.0
  */
 abstract class PriceMarkupHandler {
 	/** @var string The type of price being processed (regular or sale) */
@@ -26,11 +31,15 @@ abstract class PriceMarkupHandler {
 	protected $price_decimals;
 
 	/**
-	 * Initialize the PriceMarkupHandler with product information.
+	 * Initialize the PriceMarkupHandler with product information
+	 * 
+	 * Sets up the handler with essential product data and determines the price type
+	 * from the bulk action. Also configures currency formatting based on WooCommerce settings.
 	 *
-	 * @param	string	$bulk_action	The bulk action being performed (e.g., variable_regular_price)
-	 * @param	int		$product_id		The ID of the product being processed
-	 * @param	float	$base_price		The base price of the product before markup
+	 * @since 4.0.0
+	 * @param string $bulk_action The bulk action being performed (e.g., variable_regular_price)
+	 * @param int    $product_id  The ID of the product being processed
+	 * @param float  $base_price  The base price of the product before markup
 	 */
 	public function __construct($bulk_action, $product_id, $base_price) {
 		// Create 'regular_price' string in one place
@@ -41,7 +50,7 @@ abstract class PriceMarkupHandler {
 			define('SALE_PRICE', 'sale_price');
 		}
 
-		// Extract price_type from bulk_action
+		// Extract price_type from bulk_action (e.g., "variable_regular_price" -> "regular_price")
 		if ($bulk_action) {
 			$bulk_action_array = explode("_", $bulk_action);
 			$this->price_type = $bulk_action_array[1] . "_" . $bulk_action_array[2];

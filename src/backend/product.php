@@ -90,8 +90,13 @@ class Product {
 	}
 
 	/**
-	 * Handle AJAX request to refresh general panel content.
-	 * Updates base price display after price changes.
+	 * Handle AJAX request to refresh general panel content
+	 * 
+	 * Updates the product general panel display after price changes. Uses WordPress's
+	 * postdata system to temporarily set up the product context, then captures the
+	 * output of the general panel hooks for return via AJAX.
+	 *
+	 * @since 4.3.0
 	 */
 	public function refreshProductGeneralPanel() {
 		check_ajax_referer('handleMarkupReapplication', 'security');
@@ -103,16 +108,17 @@ class Product {
 			return;
 		}
 	
-		// Set up the global $post object
+		// Set up the global $post object to provide proper context for hooks
 		global $post;
 		$post = get_post($product_id);
 		setup_postdata($post);
 	
+		// Capture the output of all general panel hooks using output buffering
 		ob_start();
 		do_action('woocommerce_product_options_general_product_data');
 		$html = ob_get_clean();
 		
-		// Clean up
+		// Clean up global state to prevent side effects
 		wp_reset_postdata();
 		
 		wp_send_json_success(['html' => $html]);
@@ -202,8 +208,13 @@ class Product {
 	}
  
 	/**
-	 * Handle AJAX markup reapplication request.
-	 * Validates request and processes markup recalculation.
+	 * Handle AJAX markup reapplication request
+	 * 
+	 * Processes bulk reapplication of markups to all product variations. Uses database
+	 * transactions to ensure data consistency and includes comprehensive error handling.
+	 * Cleans up WooCommerce caches and transients after successful completion.
+	 *
+	 * @since 4.0.0
 	 */
 	public function handleMarkupReapplication() {
 		try {
@@ -216,25 +227,27 @@ class Product {
 			$product_id = $validation_result['product_id'];
 			$product = $validation_result['product'];
 
-			// Start transaction
+			// Start database transaction to ensure data consistency
 			global $wpdb;
 			$wpdb->query('START TRANSACTION');
 
 			try {
-				// Process variations
+				// Process all product variations with markup recalculation
 				$variations = $product->get_children();
 				if (!empty($variations)) {
 					$this->processVariationsWithMarkup($product_id, $variations);
 				}
 
+				// Commit transaction only after all operations succeed
 				$wpdb->query('COMMIT');
 				
-				// Clean up caches and transients
+				// Clean up WordPress and WooCommerce caches for updated data
 				$this->cleanupCachesAndTransients($product_id, $variations);
 
 				wp_send_json_success(['completed' => true]);
 
 			} catch (Exception $e) {
+				// Rollback transaction on any error to maintain data integrity
 				$wpdb->query('ROLLBACK');
 				throw $e;
 			}
@@ -245,10 +258,14 @@ class Product {
 	}
 
 	/**
-	 * Validate reapplication request parameters.
-	 * Checks permissions and validates product data.
+	 * Validate reapplication request parameters
+	 * 
+	 * Performs comprehensive security validation including nonce verification,
+	 * capability checks, and product type validation. Returns product data
+	 * on success or sends JSON error response on failure.
 	 *
-	 * @return	array|bool	Validation result or false on failure
+	 * @since 4.0.0
+	 * @return array|false Product data array on success, false on failure
 	 */
 	private function validateReapplyMarkupsRequest() {
 		if (!check_ajax_referer('handleMarkupReapplication', 'security', false)) {
@@ -331,8 +348,12 @@ class Product {
 	}
 
 	/**
-	 * Get formatted base price for confirmation messages.
-	 * Retrieves and formats current base price.
+	 * Get formatted base price for confirmation messages
+	 * 
+	 * Retrieves the current base price from transient cache (for performance) with
+	 * fallback to stored metadata. Returns formatted price for JavaScript confirmation dialogs.
+	 *
+	 * @since 4.0.0
 	 */
 	public function getFormattedBasePrice() {
 		check_ajax_referer('handleMarkupReapplication', 'security');
@@ -343,10 +364,10 @@ class Product {
 			return;
 		}
 	
-		// Check transient first
+		// Check transient cache first for performance (set during price operations)
 		$base_price = get_transient('mt2mba_current_base_' . $product_id);
 		if ($base_price === false) {
-			// Fall back to stored meta
+			// Fall back to stored metadata if transient expired
 			$base_price = get_post_meta($product_id, 'mt2mba_base_regular_price', true);
 		}
 	

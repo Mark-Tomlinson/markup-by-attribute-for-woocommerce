@@ -3,10 +3,16 @@ namespace mt2Tech\MarkupByAttribute\Backend\Handlers;
 use mt2Tech\MarkupByAttribute\Utility as Utility;
 
 /**
- * Handles setting product prices and applying markups.
- * Used when directly setting variation prices through bulk actions.
+ * Handles setting product prices and applying markups
+ * 
+ * Used when directly setting variation prices through WooCommerce bulk actions.
+ * This handler calculates markups based on attribute terms and applies them to
+ * the base price, then updates both the variation prices and descriptions.
  *
- * @package	mt2Tech\MarkupByAttribute\Backend\Handlers
+ * @package   mt2Tech\MarkupByAttribute\Backend\Handlers
+ * @author    Mark Tomlinson
+ * @license   GPL-2.0+
+ * @since     4.0.0
  */
 class PriceSetHandler extends PriceMarkupHandler {
 	//region PROPERTIES
@@ -17,25 +23,34 @@ class PriceSetHandler extends PriceMarkupHandler {
 	//endregion
 
 	/**
-	 * Initialize PriceSetHandler with product and markup information.
+	 * Initialize PriceSetHandler with product and markup information
+	 * 
+	 * Extracts the base price from the bulk action data and initializes the parent handler.
 	 *
-	 * @param	string $bulk_action The bulk action being performed
-	 * @param	array  $data		The data for price setting
-	 * @param	int	$product_id  The ID of the product
-	 * @param	array  $variations  List of variation IDs
+	 * @since 4.0.0
+	 * @param string $bulk_action The bulk action being performed
+	 * @param array  $data        The data for price setting (contains 'value' key)
+	 * @param int    $product_id  The ID of the product
+	 * @param array  $variations  List of variation IDs
 	 */
 	public function __construct($bulk_action, $data, $product_id, $variations) {
 		parent::__construct($bulk_action, $product_id, is_numeric($data["value"]) ? (float) $data["value"] : '');
 	}
 
 	/**
-	 * Process markup calculations and apply them to variations.
-	 * Core method that coordinates the markup calculation workflow.
+	 * Process markup calculations and apply them to variations
+	 * 
+	 * Core method that coordinates the entire markup calculation workflow:
+	 * 1. Validates the base price is not blank/zero (unless zero is allowed)
+	 * 2. Retrieves product attributes and builds markup calculation table
+	 * 3. Processes each variation to calculate final prices with markups
+	 * 4. Bulk updates all variation prices and descriptions in the database
 	 *
-	 * @param	string	$bulk_action	The bulk action being performed
-	 * @param	array	$data			The pricing data for the operation
-	 * @param	int		$product_id		The ID of the product
-	 * @param	array	$variations		List of variation IDs
+	 * @since 4.0.0
+	 * @param string $bulk_action The bulk action being performed
+	 * @param array  $data        The pricing data for the operation
+	 * @param int    $product_id  The ID of the product
+	 * @param array  $variations  List of variation IDs
 	 */
 	public function processProductMarkups($bulk_action, $data, $product_id, $variations) {
 		global $mt2mba_utility;
@@ -73,10 +88,15 @@ class PriceSetHandler extends PriceMarkupHandler {
 
 	/**
 	 * Check if price was blanked out or zero, and clean up metadata if so
+	 * 
+	 * Handles special cases where the base price is empty, zero, or negative.
+	 * If the price is being cleared, this method removes all markup metadata
+	 * and variation descriptions to prevent orphaned data.
 	 *
-	 * @param	int		$product_id		The ID of the product
-	 * @param	array	$variations		List of variation IDs
-	 * @return	boolean					True if price is blank, false if not
+	 * @since 4.0.0
+	 * @param int   $product_id The ID of the product
+	 * @param array $variations List of variation IDs
+	 * @return bool             True if price is blank/zero and processing should stop
 	 */
 	public function isBlankOrZeroPrice($product_id, $variations) {
 		// Condition #1: {base-price} is blank or =< 0
@@ -153,12 +173,16 @@ class PriceSetHandler extends PriceMarkupHandler {
 	}
 
 	/**
-	 * Build markup table for calculations.
-	 * Creates a structured array of markup values and descriptions for each attribute term.
+	 * Build markup table for calculations
+	 * 
+	 * Creates a structured array containing calculated markup values for each attribute term.
+	 * This method processes both percentage and fixed markups, applying appropriate rounding
+	 * and business logic based on plugin settings.
 	 *
-	 * @param	array	$attribute_data	Array of attributes with labels and terms
-	 * @param	int		$product_id		The ID of the product
-	 * @return	array					The markup table with calculated values
+	 * @since 4.0.0
+	 * @param array $attribute_data Array of attributes with labels and terms
+	 * @param int   $product_id     The ID of the product
+	 * @return array                Markup table indexed by [taxonomy][term_slug] with markup/description data
 	 */
 	protected function buildMarkupTable($attribute_data, $product_id) {
 		global $mt2mba_utility;
@@ -177,14 +201,15 @@ class PriceSetHandler extends PriceMarkupHandler {
 						$price = get_metadata("post", $product_id, "mt2mba_base_" . REGULAR_PRICE, true);
 					}
 	
-					// Is markup a percentage or a flat amount?
+					// Calculate markup value: percentage markups are calculated against the price,
+					// fixed markups are used as-is
 					if (strpos($markup, "%")) {
 						$markup_value = ($price * floatval($markup)) / 100;
 					} else {
 						$markup_value = floatval($markup);
 					}
 	
-					// Round markup value based on settings
+					// Round markup value based on plugin settings
 					$markup_value = MT2MBA_ROUND_MARKUP == "yes" ? round($markup_value, 0) : round($markup_value, $this->price_decimals);
 	
 					if ($markup_value != 0) {
@@ -362,10 +387,14 @@ class PriceSetHandler extends PriceMarkupHandler {
 	}
 
 	/**
-	 * Bulk update variation prices and descriptions in the database.
-	 * Uses MySQL's UPSERT functionality for efficient updates.
+	 * Bulk update variation prices and descriptions in the database
+	 * 
+	 * Performs efficient bulk database updates using transactions to ensure data consistency.
+	 * Updates both _price and _regular_price/_sale_price meta fields, plus variation descriptions.
+	 * Uses DELETE + INSERT pattern for better performance than individual UPDATEs.
 	 *
-	 * @param	array	$variation_updates	Array of variation data to update
+	 * @since 4.0.0
+	 * @param array $updates Array of variation data with id, price, and description keys
 	 */
 	protected function updateVariationPricesAndDescriptions($updates) {
 		global $wpdb;
@@ -396,10 +425,17 @@ class PriceSetHandler extends PriceMarkupHandler {
 			);
 
 			if (isset($update['description'])) {
+				// Preserve allowed HTML tags (span with id attribute) while sanitizing content
+				$allowed_html = array(
+					'span' => array(
+						'id' => array()
+					)
+				);
+				$sanitized_description = wp_kses($update['description'], $allowed_html);
 				$description_updates[] = $wpdb->prepare(
 					"(%d, '_variation_description', %s)", 
 					$update['id'], 
-					$update['description']
+					$sanitized_description
 				);
 			}
 		}

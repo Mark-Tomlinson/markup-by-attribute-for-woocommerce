@@ -4,33 +4,50 @@ use mt2Tech\MarkupByAttribute\Backend as Backend;
 use mt2Tech\MarkupByAttribute\Frontend as Frontend;
 
 /**
- * Utility functions used by Markup-by-Attribute
+ * Core utility functions for Markup-by-Attribute plugin
+ * 
+ * Provides essential utility functions including database upgrades, price formatting,
+ * markup validation and sanitization, text processing, and internationalization support.
+ * This class serves as the foundation for all plugin operations.
  *
- * @author	Mark Tomlinson
- *
+ * @package   mt2Tech\MarkupByAttribute\Utility
+ * @author    Mark Tomlinson
+ * @license   GPL-2.0+
+ * @since     1.0.0
  */
+
 // Exit if accessed directly
 if (!defined('ABSPATH')) exit();
 
 class General {
 	/**
-	 * Singleton because we only want one instance at a time.
+	 * Singleton instance
+	 * 
+	 * @var self|null
 	 */
-	private static $instance = null;
+	private static ?self $instance = null;
 
-	// Public method to get the instance
-	public static function get_instance() {
+	/**
+	 * Get singleton instance
+	 * 
+	 * @return self Single instance of this class
+	 */
+	public static function get_instance(): self {
 		if (self::$instance === null) {
 			self::$instance = new self();
 		}
 		return self::$instance;
 	}
 
-	// Prevent cloning of the instance
-	public function __clone() {}
+	/**
+	 * Prevent object cloning
+	 */
+	public function __clone(): void {}
 
-	// Prevent unserializing of the instance
-	public function __wakeup() {}
+	/**
+	 * Prevent object unserialization
+	 */
+	public function __wakeup(): void {}
 
 	// Private constructor
 	private function __construct() {
@@ -63,6 +80,12 @@ class General {
 
 	/**
 	 * Database has been determined to be wrong version; upgrade
+	 * 
+	 * Handles migration of markup data from older plugin versions to current schema.
+	 * This method preserves existing data while updating the storage format and
+	 * cleaning up deprecated settings.
+	 *
+	 * @since 2.0.0
 	 */
 	function mt2mba_db_upgrade() {
 		global $wpdb;
@@ -121,13 +144,18 @@ class General {
 
 	/**
 	 * Remove bracketed substring from string
+	 * 
+	 * Removes text between specified markers from a string. Used primarily to
+	 * strip markup descriptions from variation descriptions when prices are cleared.
+	 * The method handles cases where markers are not found gracefully.
 	 *
-	 * @param	string $beginning	Marker at the beginning of the string to be removed
-	 * @param	string $ending		Marker at the ending of the string to be removed
-	 * @param	string $string		The string to be processed
-	 * @return	string				The string minus the text to be removed and the beginning and ending markers
+	 * @since 2.0.0
+	 * @param string $beginning Marker at the beginning of the string to be removed
+	 * @param string $ending    Marker at the ending of the string to be removed
+	 * @param string $string    The string to be processed
+	 * @return string           The string minus the text to be removed and the beginning and ending markers
 	 */
-	public function remove_bracketed_string($beginning, $ending, $string) {
+	public function remove_bracketed_string(string $beginning, string $ending, string $string): string {
 		$beginningPos = strpos($string, $beginning, 0);
 		$endingPos = strpos($string, $ending, $beginningPos);
 
@@ -140,11 +168,15 @@ class General {
 
 	/**
 	 * Clean up the price or markup and reformat according to currency options
+	 * 
+	 * Formats numeric values for display, handling both percentage and currency amounts.
+	 * Uses WooCommerce's currency formatting for consistency with store settings.
 	 *
-	 * @param	string	$text	A number that will be reformatted into the local currency
-	 * @return	string			Properly formatted price with currency indicator
+	 * @since 2.0.0
+	 * @param string $text A number that will be reformatted into the local currency
+	 * @return string      Properly formatted price with currency indicator
 	 */
-	public function cleanUpPrice($text) {
+	public function cleanUpPrice(string $text): string {
 		// Extract amount from string and set to absolute
 		$amount = abs(floatval($text));
 
@@ -159,9 +191,13 @@ class General {
 
 	/**
 	 * Format the markup that appears in the options drop-down box
+	 * 
+	 * Creates formatted markup text for display in WooCommerce variation dropdowns.
+	 * Handles plugin settings for showing/hiding markup, currency symbols, and formatting.
 	 *
-	 * @param	float	$markup	Signed markup amount
-	 * @return	string			Formatted markup
+	 * @since 2.0.0
+	 * @param float $markup Signed markup amount
+	 * @return string       Formatted markup for dropdown display (e.g., " (+$5.00)")
 	 */
 	function formatOptionMarkup($markup) {
 		if ($markup <> "" && $markup <> 0) {
@@ -201,6 +237,10 @@ class General {
 		if ($markup <> "" && $markup <> 0) {
 			// Clean any existing markup from the term name before formatting
 			$term_name = $this->stripMarkupAnnotation($term_name);
+			
+			// Sanitize inputs for safe display (but preserve text content)
+			$term_name = sanitize_text_field($term_name);
+			$attrb_name = sanitize_text_field($attrb_name);
 	
 			// Two different translation strings based on whether attribute name is included 
 			if (MT2MBA_INCLUDE_ATTRB_NAME == 'yes') {
@@ -212,9 +252,9 @@ class General {
 				return html_entity_decode(
 					sprintf(
 						$desc_format,
-						$this->cleanUpPrice($markup),
-						$attrb_name,
-						$term_name
+						esc_html($this->cleanUpPrice($markup)),
+						esc_html($attrb_name),
+						esc_html($term_name)
 					)
 				);
 			} else {				// Translators; %1$s is the formatted price, %2$s is the term name
@@ -225,8 +265,8 @@ class General {
 				return html_entity_decode(
 					sprintf(
 						$desc_format,
-						$this->cleanUpPrice($markup),
-						$term_name
+						esc_html($this->cleanUpPrice($markup)),
+						esc_html($term_name)
 					)
 				);
 			}
@@ -238,10 +278,15 @@ class General {
 	/**
 	 * Strip markup annotation from term name
 	 * 
-	 * @param	string	$text	The text to process
-	 * @return	string			Text with markup annotation removed
+	 * Removes markup annotations (like "(Add $5.00)" or "(Subtract 10%)") from term names.
+	 * Uses internationalized patterns to handle different languages and currency formats.
+	 * This is used to clean term names before applying new markup annotations.
+	 *
+	 * @since 3.9.0
+	 * @param string $text The text to process
+	 * @return string      Text with markup annotation removed
 	 */
-	public function stripMarkupAnnotation($text) {
+	public function stripMarkupAnnotation(string $text): string {
 		// Pattern for numbers that handles international formats
 		$number_pattern = '[0-9.,\s%\p{Sc}A-Z]*';
 
@@ -262,12 +307,16 @@ class General {
 	/**
 	 * Add markup annotation to term name
 	 * 
-	 * @param	string	$text			Base text
-	 * @param	string	$markup			Markup value (with % or currency)
-	 * @param	bool	$is_negative	Whether this is a negative markup
-	 * @return	string					Text with markup annotation added
+	 * Appends formatted markup notation to term names (e.g., "Blue (Add $5.00)").
+	 * Used when the plugin is configured to show markup in attribute option names.
+	 *
+	 * @since 3.9.0
+	 * @param string $text        Base text
+	 * @param string $markup      Markup value (with % or currency)
+	 * @param bool   $is_negative Whether this is a negative markup
+	 * @return string             Text with markup annotation added
 	 */
-	public function addMarkupToName($text, $markup, $is_negative = false) {
+	public function addMarkupToName(string $text, string $markup, bool $is_negative = false): string {
 		// Format the markup value using cleanUpPrice()
 		$formatted_markup = $this->cleanUpPrice($markup);
 
@@ -278,17 +327,109 @@ class General {
 	/**
 	 * Add markup annotation to term description
 	 * 
-	 * @param	string	$text			Base text
-	 * @param	string	$markup			Markup value (with % or currency)
-	 * @param	bool	$is_negative	Whether this is a negative markup
-	 * @return	string					Text with markup annotation added
+	 * Appends formatted markup notation to term descriptions. Used when the plugin
+	 * is configured to show markup information in attribute term descriptions.
+	 *
+	 * @since 3.9.0
+	 * @param string $description Base description text
+	 * @param string $markup      Markup value (with % or currency)
+	 * @param bool   $is_negative Whether this is a negative markup
+	 * @return string             Description with markup annotation added
 	 */
-	public function addMarkupToTermDescription($description, $markup, $is_negative = false) {
+	public function addMarkupToTermDescription(string $description, string $markup, bool $is_negative = false): string {
 		// Format the markup value using cleanUpPrice()
 		$formatted_markup = $this->cleanUpPrice($markup);
 
 		$pattern = $is_negative ? MT2MBA_MARKUP_NAME_PATTERN_SUBTRACT : MT2MBA_MARKUP_NAME_PATTERN_ADD;
 		return trim($description . "\n" . trim(sprintf($pattern, $formatted_markup)));
+	}
+
+	/**
+	 * Validate and sanitize markup value input
+	 * 
+	 * @param	string	$markup		Raw markup input
+	 * @return	string|false		Validated markup or false if invalid
+	 */
+	public function validateMarkupValue(string $markup): string|false {
+		// Handle empty values - treat zero as empty markup (no price change)
+		if (empty($markup) || $markup === '0' || $markup === 0) {
+			return '';
+		}
+
+		// Sanitize input - remove any HTML tags and trim whitespace
+		$markup = sanitize_text_field(trim($markup));
+		
+		// Remove any non-standard whitespace characters
+		$markup = preg_replace('/\s+/', '', $markup);
+
+		// Determine markup type: percentage (ends with %) or fixed amount
+		$is_percentage = (substr($markup, -1) === '%');
+		
+		if ($is_percentage) {
+			// Strip the % symbol to validate just the numeric portion
+			$numeric_part = substr($markup, 0, -1);
+		} else {
+			// Fixed amount - validate the entire string as numeric
+			$numeric_part = $markup;
+		}
+
+		// Validate numeric format using regex pattern
+		// Pattern breakdown: ^[+-]?(?:\d+(?:\.\d{1,4})?|\d*\.\d{1,4})$
+		// ^[+-]? = optional plus or minus at start
+		// (?:...|...) = non-capturing group with two alternatives:
+		//   \d+(?:\.\d{1,4})? = one or more digits, optionally followed by decimal and 1-4 digits
+		//   \d*\.\d{1,4} = zero or more digits, required decimal point, 1-4 digits (for .5, .25, etc.)
+		if (!preg_match('/^[+-]?(?:\d+(?:\.\d{1,4})?|\d*\.\d{1,4})$/', $numeric_part)) {
+			return false;
+		}
+
+		// Convert to float for range validation and formatting
+		$numeric_value = floatval($numeric_part);
+
+		// Apply business logic validation based on markup type
+		if ($is_percentage) {
+			// Prevent unreasonable percentage values (-100% would zero the price, >1000% is excessive)
+			if ($numeric_value < MT2MBA_MIN_PERCENTAGE || $numeric_value > MT2MBA_MAX_PERCENTAGE) {
+				return false;
+			}
+			// Format percentage with consistent decimal places
+			return number_format($numeric_value, MT2MBA_DECIMAL_PLACES_PERCENTAGE, '.', '') . '%';
+		} else {
+			// Reasonable fixed amount limits
+			if (abs($numeric_value) > MT2MBA_MAX_FIXED_AMOUNT) {
+				return false;
+			}
+			// Return formatted fixed amount
+			return number_format($numeric_value, MT2MBA_DECIMAL_PLACES_FIXED, '.', '');
+		}
+	}
+
+	/**
+	 * Sanitize markup value for safe database storage
+	 * 
+	 * @param	string	$markup		Markup value to sanitize
+	 * @return	string				Sanitized markup value
+	 */
+	public function sanitizeMarkupForStorage(string $markup): string {
+		// First validate the markup
+		$validated = $this->validateMarkupValue($markup);
+		if ($validated === false) {
+			return '';
+		}
+		
+		// Additional sanitization for database storage
+		return sanitize_text_field($validated);
+	}
+
+	/**
+	 * Sanitize markup value for safe output display
+	 * 
+	 * @param	string	$markup		Markup value to sanitize
+	 * @return	string				Sanitized markup value for display
+	 */
+	public function sanitizeMarkupForDisplay(string $markup): string {
+		// Sanitize for HTML output
+		return esc_html(sanitize_text_field($markup));
 	}
 
 }	//	End class MT2MBA_UTILITY_GENERAL

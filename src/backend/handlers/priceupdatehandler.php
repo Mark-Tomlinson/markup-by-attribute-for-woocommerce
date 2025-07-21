@@ -3,30 +3,45 @@ namespace mt2Tech\MarkupByAttribute\Backend\Handlers;
 use mt2Tech\MarkupByAttribute\Utility as Utility;
 
 /**
- * Handles product price increases and decreases.
- * Used when modifying existing prices through bulk actions.
+ * Handles product price increases and decreases
+ * 
+ * Used when modifying existing prices through WooCommerce bulk actions.
+ * This handler calculates new base prices from increase/decrease operations
+ * and then delegates to PriceSetHandler to reapply markups.
+ *
+ * @package   mt2Tech\MarkupByAttribute\Backend\Handlers
+ * @author    Mark Tomlinson
+ * @license   GPL-2.0+
+ * @since     4.0.0
  */
 class PriceUpdateHandler extends PriceMarkupHandler {
 	/**
-	 * Initialize PriceUpdateHandler with update information.
+	 * Initialize PriceUpdateHandler with update information
+	 * 
+	 * Extracts the price change amount from the bulk action data.
 	 *
-	 * @param	string	$bulk_action	The bulk action being performed
-	 * @param	array	$data			The update data
-	 * @param	int		$product_id		The ID of the product
-	 * @param	array	$variations		List of variation IDs
+	 * @since 4.0.0
+	 * @param string $bulk_action The bulk action being performed
+	 * @param array  $data        The update data (contains 'value' key with change amount)
+	 * @param int    $product_id  The ID of the product
+	 * @param array  $variations  List of variation IDs
 	 */
 	public function __construct($bulk_action, $data, $product_id, $variations) {
 		parent::__construct($bulk_action, $product_id, is_numeric($data["value"]) ? (float) $data["value"] : 0);
 	}
 
 	/**
-	 * Process price updates and apply markups.
-	 * Recalculates base price and reapplies markups accordingly.
+	 * Process price updates and apply markups
+	 * 
+	 * Calculates new base price from increase/decrease amount and delegates to PriceSetHandler
+	 * to reapply all markups with the new base price. Only processes products that already
+	 * have markup-by-attribute metadata (base price stored).
 	 *
-	 * @param	string	$bulk_action	The bulk action being performed
-	 * @param	array	$data			The update data
-	 * @param	int		$product_id		The ID of the product
-	 * @param	array	$variations		List of variation IDs
+	 * @since 4.0.0
+	 * @param string $bulk_action The bulk action being performed
+	 * @param array  $data        The update data
+	 * @param int    $product_id  The ID of the product
+	 * @param array  $variations  List of variation IDs
 	 */
 	public function processProductMarkups ($bulk_action, $data, $product_id, $variations) {
 		// If base price metadata is present, that means the product contains variables with attribute pricing.
@@ -60,13 +75,19 @@ class PriceUpdateHandler extends PriceMarkupHandler {
 	 * @return	float					New calculated base price
 	 */
 	private function calculateNewBasePrice($bulk_action, $markup, $base_price) {
-		// Indicate whether we are increasing or decreasing
+		// Determine sign: decrease actions negate the markup value
+		// e.g., "decrease by 10%" becomes -10, "increase by 5" stays +5
 		$signed_data = strpos($bulk_action, "decrease") ? 0 - floatval($markup) : floatval($markup);
 
-		// Calc based on whether it is a percentage or fixed number
+		// Apply markup calculation based on type
 		if (strpos($markup, "%")) {
+			// Percentage markup: calculate percentage of base price and add/subtract
+			// Formula: new_price = base_price + (base_price * percentage / 100)
+			// e.g., $100 + 10% = $100 + ($100 * 10 / 100) = $110
 			return $base_price + ($base_price * $signed_data) / 100;
 		} else {
+			// Fixed amount markup: simply add/subtract the amount
+			// e.g., $100 + $5 = $105
 			return $base_price + $signed_data;
 		}
 	}

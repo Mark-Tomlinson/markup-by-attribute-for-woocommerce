@@ -7,7 +7,7 @@ use mt2Tech\MarkupByAttribute\Utility	as Utility;
  * This file is part of the Markup by Attribute for WooCommerce plugin by Mark Tomlinson
  *
  * @package	markup-by-attribute-for-woocommerce
- * @version	4.3.7
+ * @version	4.3.8
  * @author	Mark Tomlinson
  * @license	GPL-2.0+
  */
@@ -24,8 +24,8 @@ use mt2Tech\MarkupByAttribute\Utility	as Utility;
  * License URI:				https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:				markup-by-attribute
  * Domain Path:				/languages
- * Version:					4.3.7
- * Stable tag:				4.3.7
+ * Version:					4.3.8
+ * Stable tag:				4.3.8
  * Tested up to:			6.8.2
  * Requires at least:		4.6
  * PHP tested up to:		8.4.5
@@ -43,12 +43,16 @@ require_once __DIR__ . '/autoloader.php';
 Autoloader::register();
 
 /**
- * Adds links to the plugin page.
+ * Add settings and instruction links to plugin action links
+ * 
+ * Enhances the plugin row on the plugins page with convenient links
+ * to settings and documentation.
  *
- * @param	array	$links	Existing links.
- * @return	array			Modified links with settings and instructions.
+ * @since 1.0.0
+ * @param array $links Existing plugin action links
+ * @return array       Modified links array with additional settings and instruction links
  */
-function add_links($links) {
+function add_links(array $links): array {
 	$mt2mba_links = [
 		'settings' => '<a id="mt2mba_settings" href="admin.php?page=wc-settings&tab=products&section=mt2mba">' . __('Settings', 'markup-by-attribute-for-woocommerce') . '</a>',
 		'instructions' => '<a id="mt2mba_instructions" href="https://wordpress.org/plugins/markup-by-attribute-for-woocommerce/#installation" target="_blank">' . __('Instructions', 'markup-by-attribute-for-woocommerce') . '</a>'
@@ -59,12 +63,15 @@ function add_links($links) {
 add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), __NAMESPACE__ . '\add_links' );
 
 /**
- * Enqueues custom admin stylesheet for WooCommerce product edit pages.
- * The stylesheet is used to hide the 'Add price' button for product variations.
+ * Enqueue admin styles for product edit pages
+ * 
+ * Loads custom CSS to modify the appearance of WooCommerce product
+ * edit interfaces, specifically hiding the 'Add price' button for variations.
  *
- * @param	string	$hook	The current admin page hook.
+ * @since 2.0.0
+ * @param string $hook Current admin page hook suffix
  */
-function enqueue_custom_admin_styles($hook) {
+function enqueue_custom_admin_styles(string $hook): void {
 	global $post_type;
 
 	if (($hook === 'post.php' || $hook === 'post-new.php') && $post_type === 'product') {
@@ -84,16 +91,24 @@ add_action('before_woocommerce_init', function() {
 });
 
 /**
- * Main initialization function for the plugin.
+ * Initialize the Markup-by-Attribute plugin
+ * 
+ * Main initialization function that sets up constants, loads translations,
+ * instantiates core classes, and initializes frontend or backend functionality
+ * based on the current context.
+ * 
+ * This function is called on the 'woocommerce_init' hook to ensure WooCommerce
+ * is fully loaded before plugin initialization.
+ *
+ * @since 1.0.0
  */
-// Move this function outside of any other function or class
-function mt2mba_main() {
+function mt2mba_main(): void {
 	// Load translations
 	load_plugin_textdomain('markup-by-attribute-for-woocommerce', false, dirname(plugin_basename(__FILE__)) . '/languages');
 
 	// Set plugin information
 	define('MT2MBA_PLUGIN_PREFIX', 'MT2MBA');
-	define('MT2MBA_VERSION', '4.3.7');
+	define('MT2MBA_VERSION', '4.3.8');
 	define('MT2MBA_DB_VERSION', 2.2);
 	define('MT2MBA_SITE_URL', get_bloginfo('wpurl'));
 	define('MT2MBA_PLUGIN_DIR', plugin_dir_path(__FILE__));
@@ -111,6 +126,22 @@ function mt2mba_main() {
 	 */
 	define('MT2MBA_MARKUP_NAME_PATTERN_ADD', '(' . __('Add', 'markup-by-attribute-for-woocommerce') . ' %s)');
 	define('MT2MBA_MARKUP_NAME_PATTERN_SUBTRACT', '(' . __('Subtract', 'markup-by-attribute-for-woocommerce') . ' %s)');
+	
+	/**
+	 * Constants for markup validation limits
+	 */
+	define('MT2MBA_MIN_PERCENTAGE', -100);
+	define('MT2MBA_MAX_PERCENTAGE', 1000);
+	define('MT2MBA_MAX_FIXED_AMOUNT', 999999.99);
+	define('MT2MBA_DECIMAL_PLACES_FIXED', 4);
+	define('MT2MBA_DECIMAL_PLACES_PERCENTAGE', 2);
+	
+	/**
+	 * Constants for WordPress and WooCommerce integration
+	 */
+	define('MT2MBA_MIN_WP_VERSION', '3.3');
+	define('MT2MBA_DEFAULT_MAX_VARIATIONS', 50);
+	define('MT2MBA_ADMIN_POINTER_PRIORITY', 1000);
 
 	$admin_messages = [
 		'info' => [

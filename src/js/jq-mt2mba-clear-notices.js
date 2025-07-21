@@ -1,6 +1,9 @@
 /**
- * Admin code for dismissing notifications.
+ * Handles dismissal of admin notifications for Markup by Attribute plugin.
+ * Provides AJAX functionality to permanently dismiss plugin notices when
+ * users click the dismiss button.
  *
+ * @requires jQuery
  */
  (function($) {
 	'use strict';

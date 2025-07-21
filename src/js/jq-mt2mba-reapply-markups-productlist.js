@@ -1,5 +1,10 @@
 /**
- * Handles markup recalculation from the WooCommerce product list page
+ * Handles markup recalculation from the WooCommerce product list page.
+ * Provides both individual and bulk markup reapplication functionality
+ * with visual feedback and progress indicators.
+ *
+ * @requires jQuery
+ * @requires mt2mbaListLocal (localized script data)
  */
 jQuery(document).ready(function($) {
 	// Process bulk reapply if needed

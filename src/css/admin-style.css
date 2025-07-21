@@ -1,22 +1,16 @@
-/*	==========================================================================
-	Markup by Attribute Admin Styles
-	========================================================================== */
+/* Markup by Attribute Admin Styles */
 
-/*	Hide WooCommerce's Add Price Button
-	Prevents conflicts with Set Regular Prices bulk function 
-	========================================================================== */
+/* Hide WooCommerce's Add Price Button - prevents conflicts with bulk pricing */
 .woocommerce-add-variation-price-container {
 	display: none !important;
 }
 
-/*	Product List Table Styles
-	Basic table layout and cell formatting
-	========================================================================== */
+/* Product List Table Styles */
 .wp-list-table {
 	table-layout: fixed;
 }
 
-/* Column Widths and Alignment */
+/* Table Column Layout */
 .wp-list-table .column-product_attributes {
 	width: 11%;
 }
@@ -26,27 +20,22 @@
 	text-align: center;
 }
 
-/* Cell Text Overflow */
+/* Text Overflow Handling */
 .wp-list-table td {
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
 
-/*	Reprice Link Styles
-	Markup reapplication icon and interaction states
-	========================================================================== */
+/* Reprice Action Link Styles */
 .js-mt2mba-reapply-markup {
 	color: #2271b1;
 }
 
-/* Icon Sizing */
 .js-mt2mba-reapply-markup .dashicons {
 	font-size: 20px;
 	width: 22px;
 	height: 22px;
 }
-
-/* Link States */
 .js-mt2mba-reapply-markup:hover {
 	color: #135e96;  /* WP admin blue hover color */
 	text-decoration: none;
@@ -67,21 +56,17 @@
 	color: red;
 }
 
-/*	Progress Indicators
-	Styles for bulk operation progress display
-	========================================================================== */
-/* Progress Notice Container */
+/* Progress Indicators */
 .mt2mba-bulk-progress {
 	margin: 5px 0 15px;
 }
 
-/* WordPress Spinner */
 .mt2mba-bulk-progress .spinner {
 	float: none;
 	margin: 0 10px;
 }
 
-/* Spinning Icon Animation */
+/* Spinning Animation */
 @keyframes spin {
 	100% { transform: rotate(360deg); }
 }
@@ -90,9 +75,7 @@
 	animation: spin 1.5s linear infinite;
 }
 
-/*	Processing Overlay
-	Semi-transparent overlay during bulk operations
-	========================================================================== */
+/* Processing Overlay */
 .mt2mba-processing-overlay {
 	position: absolute;
 	top: 0;

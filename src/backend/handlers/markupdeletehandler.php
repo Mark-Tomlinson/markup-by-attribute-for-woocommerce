@@ -2,40 +2,54 @@
 namespace mt2Tech\MarkupByAttribute\Backend\Handlers;
 
 /**
- * Handles deletion of markup metadata.
+ * Handles deletion of markup metadata
+ * 
  * Used when removing variations to clean up associated markup data.
+ * This handler ensures that orphaned metadata is properly removed from
+ * the database when products or variations are deleted.
  *
- * @package mt2Tech\MarkupByAttribute\Backend\Handlers
+ * @package   mt2Tech\MarkupByAttribute\Backend\Handlers
+ * @author    Mark Tomlinson
+ * @license   GPL-2.0+
+ * @since     4.0.0
  */
 class MarkupDeleteHandler extends PriceMarkupHandler {
 	/**
-	 * Initialize MarkupDeleteHandler.
-	 * Overrides parent constructor to prevent initialization.
+	 * Initialize MarkupDeleteHandler
+	 * 
+	 * Overrides parent constructor to prevent initialization since delete operations
+	 * don't need price calculation setup.
 	 *
-	 * @param	string	$var1		Empty string (unused)
-	 * @param	string	$var2		Empty string (unused)
-	 * @param	int		$product_id	The ID of the product
-	 * @param	array	$var4		Empty array (unused)
+	 * @since 4.0.0
+	 * @param string $unused1    Unused parameter (maintaining interface compatibility)
+	 * @param string $unused2    Unused parameter (maintaining interface compatibility)
+	 * @param int    $product_id The ID of the product
+	 * @param array  $unused4    Unused parameter (maintaining interface compatibility)
 	 */
-	public function __construct($var1, $var2, $product_id, $var4) {
-		// Nessacary __construct() to prevent parent::__construct() from firing
+	public function __construct($unused1, $unused2, $product_id, $unused4) {
+		// Necessary __construct() to prevent parent::__construct() from firing
 	}
 
 	/**
-	 * Delete all markup metadata for a product.
-	 * Cleans up markup data when variations are deleted.
+	 * Delete all markup metadata for a product
+	 * 
+	 * Removes all markup-by-attribute metadata from the database when products
+	 * or variations are deleted. This prevents orphaned data accumulation.
 	 *
-	 * @param	string	$var1		Empty string (unused)
-	 * @param	string	$var2		Empty string (unused)
-	 * @param	int		$product_id	The ID of the product
-	 * @param	array	$var4		Empty array (unused)
+	 * @since 4.0.0
+	 * @param string $unused1    Unused parameter (maintaining interface compatibility)
+	 * @param string $unused2    Unused parameter (maintaining interface compatibility)
+	 * @param int    $product_id The ID of the product
+	 * @param array  $unused4    Unused parameter (maintaining interface compatibility)
 	 */
-	public function processProductMarkups($var1, $var2, $product_id, $var4) {
-		// Delete all Markup-by-Attribute metadata for product
+	public function processProductMarkups($unused1, $unused2, $product_id, $unused4) {
 		global $wpdb;
-		$wpdb->query(
-			"DELETE FROM {$wpdb->postmeta} WHERE post_id = '{$product_id}' AND meta_key LIKE 'mt2mba_%'"
-		);
+		
+		// Delete all Markup-by-Attribute metadata for the product using prepared statement
+		$wpdb->query($wpdb->prepare(
+			"DELETE FROM {$wpdb->postmeta} WHERE post_id = %d AND meta_key LIKE 'mt2mba_%'",
+			$product_id
+		));
 	}
 }
 ?>

@@ -4,18 +4,24 @@ use mt2Tech\MarkupByAttribute\Utility as Utility;
 use WP_Meta_Query;
 
 /**
- * Contains markup capabilities related to the backend attribute term admin page.
- * Manages markup metadata fields for product attribute terms.
+ * Attribute term management with markup functionality
+ * 
+ * Manages markup metadata fields for WooCommerce product attribute terms.
+ * Handles the admin interface for adding markup values to global attribute terms,
+ * including form generation, data validation, and metadata storage.
  *
- * @package mt2Tech\MarkupByAttribute\Backend
+ * @package   mt2Tech\MarkupByAttribute\Backend
+ * @author    Mark Tomlinson
+ * @license   GPL-2.0+
+ * @since     1.0.0
  */
 class Term {
 	//region PROPERTIES
 	/**
 	 * Singleton instance
-	 * @var Term|null
+	 * @var self|null
 	 */
-	private static $instance = null;
+	private static ?self $instance = null;
 
 	/** @var string Label for markup field */
 	private $markup_label;
@@ -58,20 +64,38 @@ class Term {
 
 	/**
 	 * Get singleton instance
+	 * 
+	 * @since 1.0.0
+	 * @return Term Single instance of this class
 	 */
-	public static function get_instance() {
+	public static function get_instance(): self {
 		if (self::$instance === null) {
 			self::$instance = new self();
 		}
 		return self::$instance;
 	}
 
-	private function __clone() {}
+	/**
+	 * Prevent object cloning
+	 * 
+	 * @since 1.0.0
+	 */
+	private function __clone(): void {}
 
-	public function __wakeup() {}
+	/**
+	 * Prevent object unserialization
+	 * 
+	 * @since 1.0.0
+	 */
+	public function __wakeup(): void {
 
 	/**
 	 * Initialize the class and set up hooks
+	 * 
+	 * Sets up WordPress hooks for attribute and term management, including
+	 * form field generation, data saving, and admin interface integration.
+	 * 
+	 * @since 1.0.0
 	 */
 	private function __construct() {
 		$this->initializeLabels();
@@ -81,8 +105,12 @@ class Term {
 
 	/**
 	 * Initialize text labels and descriptions
+	 * 
+	 * Sets up all translatable strings used in the admin interface.
+	 * 
+	 * @since 3.0.0
 	 */
-	private function initializeLabels() {
+	private function initializeLabels(): void {
 		$this->markup_label = __('Markup (or markdown)', 'markup-by-attribute-for-woocommerce');
 		$this->markup_description = __('Markup or markdown associated with this option. Signed, floating point numeric allowed.', 'markup-by-attribute-for-woocommerce');
 		$this->rewrite_name_label = __('Add Markup to Name?', 'markup-by-attribute-for-woocommerce');
@@ -105,8 +133,12 @@ class Term {
 
 	/**
 	 * Register hooks for attribute actions
+	 * 
+	 * Sets up WordPress hooks for global attribute management.
+	 * 
+	 * @since 3.0.0
 	 */
-	private function registerAttributeHooks() {
+	private function registerAttributeHooks(): void {
 		// Add fields to forms
 		add_action("woocommerce_after_add_attribute_fields", array($this, 'addAttributeFields'), 10, 2);
 		add_action("woocommerce_after_edit_attribute_fields", array($this, 'editAttributeFields'), 10, 2);
@@ -122,10 +154,13 @@ class Term {
 	/**
 	 * Register hooks for taxonomies
 	 */
-	private function registerTaxonomyHooks() {
+	private function registerTaxonomyHooks(): void {
+		// Get all WooCommerce global attributes (like Color, Size, etc.)
 		$attribute_taxonomies = wc_get_attribute_taxonomies();
 		
 		foreach ($attribute_taxonomies as $attribute_taxonomy) {
+			// WooCommerce prefixes attribute taxonomies with 'pa_' (Product Attribute)
+			// e.g., 'color' becomes 'pa_color'
 			$taxonomy = 'pa_' . $attribute_taxonomy->attribute_name;
 			$this->registerTermHooks($taxonomy);
 			$this->registerColumnHooks($taxonomy);
@@ -135,12 +170,14 @@ class Term {
 	/**
 	 * Register term-related hooks for a taxonomy
 	 */
-	private function registerTermHooks($taxonomy) {
-		// Hook into 'new' and 'edit' term panels
+	private function registerTermHooks(string $taxonomy): void {
+		// WordPress dynamically creates hooks for each taxonomy
+		// Add our markup fields to the term add/edit forms
 		add_action("{$taxonomy}_add_form_fields", array($this, 'addTermFields'), 10, 2);
 		add_action("{$taxonomy}_edit_form_fields", array($this, 'editTermFields'), 10, 2);
 
-		// Hook save function into both the 'new' and 'edit' functions
+		// Process markup data when terms are saved
+		// 'created_' fires when new terms are added, 'edited_' when existing terms are updated
 		add_action("created_{$taxonomy}", array($this, 'handleTermMarkupSave'), 10, 2);
 		add_action("edited_{$taxonomy}", array($this, 'handleTermMarkupSave'), 10, 2);
 	}
@@ -148,7 +185,7 @@ class Term {
 	/**
 	 * Register column-related hooks for a taxonomy
 	 */
-	private function registerColumnHooks($taxonomy) {
+	private function registerColumnHooks(string $taxonomy): void {
 		// Add 'Markup' column
 		add_filter("manage_edit-{$taxonomy}_columns", function ($columns) {
 			$columns['markup'] = __('Markup', 'markup-by-attribute-for-woocommerce');
@@ -158,7 +195,9 @@ class Term {
 		// Add content to Markup column
 		add_action("manage_{$taxonomy}_custom_column", function ($string, $column_name, $term_id) {
 			if ($column_name == 'markup') {
-				echo wc_format_localized_decimal(get_term_meta($term_id, 'mt2mba_markup', true));
+				global $mt2mba_utility;
+				$markup = get_term_meta($term_id, 'mt2mba_markup', true);
+				echo esc_html($mt2mba_utility->sanitizeMarkupForDisplay(wc_format_localized_decimal($markup)));
 			}
 			return;
 		}, 10, 3);
@@ -177,7 +216,7 @@ class Term {
 	/**
 	 * Build form fields for attribute add panel
 	 */
-	function addAttributeFields() {
+	function addAttributeFields(): void {
 		if (isset($_POST['add_new_attribute'])) {
 			$taxonomy_id = wc_attribute_taxonomy_id_by_name(sanitize_title($_POST['attribute_label']));
 			
@@ -226,7 +265,7 @@ class Term {
 	/**
 	 * Build form fields for attribute edit panel
 	 */
-	function editAttributeFields() {
+	function editAttributeFields(): void {
 		// Retrieve the existing rewrite name flag for this attribute (NULL results are valid)
 		if (isset($_POST['save_attribute'])) {
 			$attribute_id = $_GET['edit'];
@@ -292,7 +331,7 @@ class Term {
 	/**
 	 * Build form fields for term add panel
 	 */
-	function addTermFields($taxonomy) {
+	function addTermFields(string $taxonomy): void {
 		// Build <DIV>
 		?>
 		<div class="form-field">
@@ -306,7 +345,7 @@ class Term {
 	/**
 	 * Build form fields for term edit panel
 	 */
-	function editTermFields($term) {
+	function editTermFields(object $term): void {
 		// Retrieve the existing markup for this term(NULL results are valid)
 		$term_markup = wc_format_localized_decimal(get_term_meta($term->term_id, "mt2mba_markup", TRUE));
 
@@ -327,11 +366,22 @@ class Term {
 	/**
 	 * Save the term markup metadata
 	 */
-	function handleTermMarkupSave($term_id) {
+	function handleTermMarkupSave(int $term_id): void {
 		// Sanity check
 		if (!isset($_POST['term_markup'])) return;
 	
-		// Prevent recursion when wp_update_term() is called later
+		// WordPress nonce verification for CSRF protection
+		// Different nonce actions are used for editing existing vs. creating new terms
+		if (!isset($_POST['_wpnonce']) || !wp_verify_nonce($_POST['_wpnonce'], 'update-tag_' . $term_id)) {
+			// Fallback: check if this is a new term creation (uses different nonce action)
+			if (!wp_verify_nonce($_POST['_wpnonce'] ?? '', 'add-tag')) {
+				// Neither nonce verified - reject the request
+				return;
+			}
+		}
+	
+		// Prevent infinite recursion: wp_update_term() triggers this hook again
+		// Use a constant flag to detect if we're already processing this term
 		if (defined('MT2MBA_ATTRB_RECURSION')) return;
 		define('MT2MBA_ATTRB_RECURSION', TRUE);
 	
@@ -339,43 +389,56 @@ class Term {
 		$term = get_term($term_id);
 		$taxonomy_name = sanitize_key($term->taxonomy);
 	
-		// Remove any previous markup information from term name and description
+		// Clean slate: remove any existing markup annotations from term data
+		// This ensures we don't duplicate markup text when reapplying
 		$name = $mt2mba_utility->stripMarkupAnnotation($term->name);
 		$description = $mt2mba_utility->stripMarkupAnnotation($term->description);
 
-		// Remove old metadata, regardless of next steps
+		// Clear existing markup metadata first (will be re-added if validation passes)
 		delete_term_meta($term_id, 'mt2mba_markup');
 	
-		// Add Markup metadata if present
-		if (esc_attr($_POST['term_markup'] <> "" && $_POST['term_markup'] <> 0)) {
-			$term_markup = esc_attr($_POST['term_markup']);
-	
-			// If term_markup has a value other than zero, add/update the value to the metadata table
-			if (strpos($term_markup, "%")) {
-				// If term_markup has a percentage sign, save as a formatted percent
-				$markup = sprintf("%+g%%", wc_format_decimal($term_markup));
-			} else {
-				// If term_markup does not have percentage sign, save as a formatted floating point number
-				$markup = sprintf("%+g", wc_format_decimal($term_markup));
-			}
+		// Get and validate the markup input
+		$raw_markup = sanitize_text_field($_POST['term_markup']);
+		
+		// Validate markup using centralized validation
+		$validated_markup = $mt2mba_utility->validateMarkupValue($raw_markup);
+		
+		// Only proceed if markup validation passed and isn't empty
+		if ($validated_markup !== false && $validated_markup !== '') {
+			// Final sanitization pass before database storage
+			$markup = $mt2mba_utility->sanitizeMarkupForStorage($validated_markup);
+			
+			// Save markup to term metadata table
 			update_term_meta($term_id, 'mt2mba_markup', $markup);
 
-			// See if we are rewriting anything
+			// Check global attribute settings for term name/description rewriting
+			// These options control whether markup should be visible in dropdowns
 			$rewrite_name_flag	= get_option(REWRITE_TERM_NAME_PREFIX . wc_attribute_taxonomy_id_by_name($taxonomy_name));
 			$rewrite_desc_flag	= get_option(REWRITE_TERM_DESC_PREFIX . wc_attribute_taxonomy_id_by_name($taxonomy_name));
 
-			// Determine if the markup is negative
+			// Check markup sign for proper formatting (discount vs. surcharge)
 			$is_negative = strpos($markup, '-') === 0;
 
-			// Update term name if rewrite flag is set, so markup is visible in the name
+			// Conditionally modify term name based on attribute settings
+			// e.g., "Blue" becomes "Blue (+$5.00)" if name rewriting is enabled
 			if ($rewrite_name_flag == 'yes') {
 				$name = $mt2mba_utility->addMarkupToName($name, $markup, $is_negative);
 			}
 
-			// Update term description if rewrite flag is set, so markup is visible in the description
+			// Conditionally modify term description for markup visibility
 			if ($rewrite_desc_flag == 'yes') {
 				$description = $mt2mba_utility->addMarkupToTermDescription($description, $markup, $is_negative);
 			}
+		} elseif ($validated_markup === false) {
+			// Invalid markup - add admin notice
+			add_action('admin_notices', function() use ($raw_markup) {
+				echo '<div class="notice notice-error is-dismissible"><p>' . 
+					sprintf(
+						__('Invalid markup value "%s". Please use format like "5.00", "-2.50", "10%" or "-5%".', 'markup-by-attribute-for-woocommerce'),
+						esc_html($raw_markup)
+					) . 
+					'</p></div>';
+			});
 		}
 
 		// Rewrite term if name and/or description have changed
@@ -384,8 +447,8 @@ class Term {
 				$term_id,
 				$taxonomy_name,
 				array(
-					'name' => trim($name),
-					'description' => trim($description)
+					'name' => sanitize_text_field(trim($name)),
+					'description' => sanitize_textarea_field(trim($description))
 				)
 			);
 		}
@@ -396,7 +459,7 @@ class Term {
 	/**
 	* Handle markup column sorting
 	*/
-	function handleMarkupColumnSort($term_query) {
+	function handleMarkupColumnSort(object $term_query): void {
 		// WP_Term_Query does not define a get() or a set() method,
 		// so the query_vars member must be manipulated directly
 		if (isset($_GET['orderby']) && 'markup' == $_GET['orderby']) {

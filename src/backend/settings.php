@@ -2,65 +2,135 @@
 namespace mt2Tech\MarkupByAttribute\Backend;
 use WC_Settings_API;
 
+/**
+ * WooCommerce settings integration for Markup-by-Attribute
+ * 
+ * Extends WooCommerce's settings API to provide configuration options for the plugin.
+ * Manages all plugin settings including markup behavior, display options, and limits.
+ *
+ * @package   mt2Tech\MarkupByAttribute\Backend
+ * @author    Mark Tomlinson
+ * @license   GPL-2.0+
+ * @since     2.0.0
+ */
+
 if (!defined('ABSPATH')) exit; // Exit if accessed directly
 
 if (!class_exists('Settings')) :
 
 class Settings extends WC_Settings_API {
 	/**
-	 * Singleton because we only want one instance at a time.
+	 * Singleton instance
+	 * @var self|null
 	 */
-	private static $instance = null;
+	private static ?self $instance = null;
 
-	// Default values as properties
-	public $desc_behavior		= 'append';
-	public $dropdown_behavior	= 'add';
-	public $include_attrb_name	= 'no';
-	public $hide_base_price		= 'no';
-	public $sale_price_markup	= 'yes';
-	public $round_markup		= 'no';
-	public $allow_zero			= 'no';
-	public $max_variations		= 50;
+	/**
+	 * How markup descriptions are handled in variation descriptions
+	 * @var string
+	 */
+	public string $desc_behavior = 'append';
 
-	// Public method to get the instance
-	public static function get_instance() {
+	/**
+	 * How markup is displayed in dropdown options
+	 * @var string
+	 */
+	public string $dropdown_behavior = 'add';
+
+	/**
+	 * Whether to include attribute name in markup descriptions
+	 * @var string
+	 */
+	public string $include_attrb_name = 'no';
+
+	/**
+	 * Whether to hide base price in variation descriptions
+	 * @var string
+	 */
+	public string $hide_base_price = 'no';
+
+	/**
+	 * How percentage markups are calculated for sale prices
+	 * @var string
+	 */
+	public string $sale_price_markup = 'yes';
+
+	/**
+	 * Whether to round markup calculations to whole numbers
+	 * @var string
+	 */
+	public string $round_markup = 'no';
+
+	/**
+	 * Whether to allow zero-priced variations
+	 * @var string
+	 */
+	public string $allow_zero = 'no';
+
+	/**
+	 * Maximum number of variations to process at once
+	 * @var int
+	 */
+	public int $max_variations = MT2MBA_DEFAULT_MAX_VARIATIONS;
+
+	/**
+	 * Get singleton instance
+	 * 
+	 * @since 2.0.0
+	 * @return Settings Single instance of this class
+	 */
+	public static function get_instance(): self {
 		if (self::$instance === null) {
 			self::$instance = new self();
 		}
 		return self::$instance;
 	}
 
-	// Prevent cloning of the instance
-	public function __clone() {}
+	/**
+	 * Prevent cloning of the instance
+	 * 
+	 * @since 2.0.0
+	 */
+	public function __clone(): void {}
 
-	// Prevent unserializing of the instance
-	public function __wakeup() {}
+	/**
+	 * Prevent unserializing of the instance
+	 * 
+	 * @since 2.0.0
+	 */
+	public function __wakeup(): void {}
 
-	// Private constructor
+	/**
+	 * Initialize settings and register WooCommerce hooks
+	 * 
+	 * @since 2.0.0
+	 */
 	private function __construct() {
 		add_filter('woocommerce_get_sections_products', array($this, 'add_section'));
 		add_filter('woocommerce_get_settings_products', array($this, 'get_settings'), 10, 2);
 	}
 
 	/**
-	 * Add a new section to the Product settings tab.
+	 * Add a new section to the Product settings tab
 	 *
-	 * @param	array	$sections	Existing sections.
-	 * @return	array				Sections with new section added.
+	 * @since 2.0.0
+	 * @param array $sections Existing sections
+	 * @return array          Sections with markup-by-attribute section added
 	 */
-	public function add_section($sections) {
+	public function add_section(array $sections): array {
 		$sections['mt2mba'] = __('Markup by Attribute', 'markup-by-attribute-for-woocommerce');
 		return $sections;
 	}
 
 	/**
-	 * Get settings array.
+	 * Get settings array for markup-by-attribute section
 	 *
-	 * @param	array	$settings			Existing settings.
-	 * @param	string	$current_section	Current section name.
-	 * @return	array
+	 * @since 2.0.0
+	 * @param array  $settings         Existing settings
+	 * @param string $current_section  Current section name
+	 * @return array                   Complete settings configuration array
 	 */
-	public function get_settings($settings, $current_section) {
+	public function get_settings(array $settings, string $current_section): array {
 		if ('mt2mba' === $current_section) {
 			// Repeating strings
 			$immediately = __('This setting affects all products and takes effect immediately.', 'markup-by-attribute-for-woocommerce');
@@ -244,7 +314,7 @@ class Settings extends WC_Settings_API {
 				'id'		=> 'mt2mba_max_variations',
 				'type'		=> 'number',
 				'custom_attributes' => array(
-					'min'	=> 50,
+					'min'	=> MT2MBA_DEFAULT_MAX_VARIATIONS,
 					'step'	=> 1
 				),
 				'default'	=> $this->max_variations

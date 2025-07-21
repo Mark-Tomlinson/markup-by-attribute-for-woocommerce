@@ -1,26 +1,55 @@
 <?php
 namespace mt2Tech\MarkupByAttribute;
 
+/**
+ * PSR-4 compliant autoloader for Markup-by-Attribute plugin
+ * 
+ * Provides automatic class loading for the plugin's namespace-organized classes.
+ * Follows PSR-4 standards for mapping namespaces to file system paths.
+ *
+ * @package   mt2Tech\MarkupByAttribute
+ * @author    Mark Tomlinson
+ * @license   GPL-2.0+
+ * @since     3.0.0
+ */
 class Autoloader {
-	public static function register($prepend = false) {
+	/**
+	 * Register the autoloader with PHP's SPL autoloader stack
+	 * 
+	 * @since 3.0.0
+	 * @param bool $prepend Whether to prepend the autoloader or append it
+	 */
+	public static function register(bool $prepend = false): void {
 		spl_autoload_register([new self, 'autoload'], true, $prepend);
 	}
 
-	public static function autoload($class) {
-		// Base directory for your plugin classes
+	/**
+	 * Autoload classes within the plugin namespace
+	 * 
+	 * Converts namespaced class names to file paths and includes the appropriate
+	 * PHP file if it exists within the plugin's src directory structure.
+	 * 
+	 * @since 3.0.0
+	 * @param string $class Fully qualified class name to load
+	 */
+	public static function autoload(string $class): void {
+		// Base directory for plugin classes (src/ subdirectory)
 		$base_dir = dirname(__FILE__) . '/src/';
 
-		// Check if the class uses the namespace prefix
+		// Only handle classes within our namespace to avoid conflicts
 		$len = strlen(__NAMESPACE__);
 		if (strncmp(__NAMESPACE__, $class, $len) !== 0) {
 			return; // Not our class, let other autoloaders handle it
 		}
 
-		// Get the relative class name
+		// Extract the part of the class name after our base namespace
+		// e.g., 'mt2Tech\MarkupByAttribute\Backend\Term' becomes '\Backend\Term'
 		$relative_class = substr($class, $len);
 
-		// Replace namespace separators with directory separators in the relative class name
-		// and convert to lowercase for file system compatibility
+		// Convert namespace path to file system path
+		// 1. Replace namespace separators (\) with directory separators (/)
+		// 2. Convert to lowercase for case-insensitive file systems
+		// Result: '\Backend\Term' becomes '/backend/term.php'
 		$file = $base_dir . str_replace('\\', '/', strtolower($relative_class)) . '.php';
 
 		// If the file exists, require it

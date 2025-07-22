@@ -1,16 +1,30 @@
-/* Markup by Attribute Admin Styles */
+/* =============================================================================
+   Markup by Attribute Admin Styles
+   ========================================================================== */
+
+/* =============================================================================
+   WooCommerce Integration
+   ========================================================================== */
 
 /* Hide WooCommerce's Add Price Button - prevents conflicts with bulk pricing */
 .woocommerce-add-variation-price-container {
 	display: none !important;
 }
 
-/* Product List Table Styles */
+/* =============================================================================
+   Product List Table
+   ========================================================================== */
+
 .wp-list-table {
 	table-layout: fixed;
 }
 
-/* Table Column Layout */
+.wp-list-table td {
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+/* Column Layout */
 .wp-list-table .column-product_attributes {
 	width: 11%;
 }
@@ -20,15 +34,13 @@
 	text-align: center;
 }
 
-/* Text Overflow Handling */
-.wp-list-table td {
-	overflow: hidden;
-	text-overflow: ellipsis;
-}
+/* =============================================================================
+   Action Links & Buttons
+   ========================================================================== */
 
-/* Reprice Action Link Styles */
 .js-mt2mba-reapply-markup {
 	color: #2271b1;
+	text-decoration: none;
 }
 
 .js-mt2mba-reapply-markup .dashicons {
@@ -36,8 +48,9 @@
 	width: 22px;
 	height: 22px;
 }
+
 .js-mt2mba-reapply-markup:hover {
-	color: #135e96;  /* WP admin blue hover color */
+	color: #135e96;
 	text-decoration: none;
 }
 
@@ -47,16 +60,20 @@
 	box-shadow: none;
 }
 
+/* Action Link States */
 .js-mt2mba-reapply-markup.processing {
 	color: #2271b1;
 	opacity: 0.5;
 }
 
 .js-mt2mba-reapply-markup.error {
-	color: red;
+	color: #dc3232;
 }
 
-/* Progress Indicators */
+/* =============================================================================
+   Progress Indicators & Animations
+   ========================================================================== */
+
 .mt2mba-bulk-progress {
 	margin: 5px 0 15px;
 }
@@ -66,16 +83,20 @@
 	margin: 0 10px;
 }
 
-/* Spinning Animation */
 @keyframes spin {
-	100% { transform: rotate(360deg); }
+	100% { 
+		transform: rotate(360deg); 
+	}
 }
 
 .dashicons-update-spin {
 	animation: spin 1.5s linear infinite;
 }
 
-/* Processing Overlay */
+/* =============================================================================
+   Overlays & UI States
+   ========================================================================== */
+
 .mt2mba-processing-overlay {
 	position: absolute;
 	top: 0;
@@ -86,6 +107,10 @@
 	z-index: 1000;
 	cursor: wait;
 }
+
+/* =============================================================================
+   Base Price Information
+   ========================================================================== */
 
 span.base-price-info {
 	font-size: 18px;

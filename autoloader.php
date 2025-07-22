@@ -28,8 +28,9 @@ class Autoloader {
 	 * 
 	 * Converts namespaced class names to file paths and includes the appropriate
 	 * PHP file if it exists within the plugin's src directory structure.
+	 * Handles both subdirectory classes and root-level classes like Config.
 	 * 
-	 * @since 3.0.0
+	 * @since 2.0.0
 	 * @param string $class Fully qualified class name to load
 	 */
 	public static function autoload(string $class): void {
@@ -44,13 +45,17 @@ class Autoloader {
 
 		// Extract the part of the class name after our base namespace
 		// e.g., 'mt2Tech\MarkupByAttribute\Backend\Term' becomes '\Backend\Term'
+		// e.g., 'mt2Tech\MarkupByAttribute\Config' becomes '\Config'
 		$relative_class = substr($class, $len);
 
-		// Convert namespace path to file system path
-		// 1. Replace namespace separators (\) with directory separators (/)
-		// 2. Convert to lowercase for case-insensitive file systems
-		// Result: '\Backend\Term' becomes '/backend/term.php'
-		$file = $base_dir . str_replace('\\', '/', strtolower($relative_class)) . '.php';
+		// Handle root-level classes (no subdirectory)
+		if (strpos($relative_class, '\\') === false) {
+			// Root-level class like Config
+			$file = $base_dir . strtolower(ltrim($relative_class, '\\')) . '.php';
+		} else {
+			// Subdirectory class like Backend\Term
+			$file = $base_dir . str_replace('\\', '/', strtolower($relative_class)) . '.php';
+		}
 
 		// If the file exists, require it
 		if (file_exists($file)) {

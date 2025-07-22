@@ -18,6 +18,7 @@ namespace mt2Tech\MarkupByAttribute\Utility;
 if (!defined('ABSPATH')) exit();
 
 class Pointers {
+	//region PROPERTIES
 	/**
 	 * Singleton instance
 	 * 
@@ -33,7 +34,9 @@ class Pointers {
 	 * @since 1.0.0
 	 */
 	private string $pointer_title;
+	//endregion
 
+	//region INSTANCE MANAGEMENT
 	/**
 	 * Get singleton instance
 	 * 
@@ -75,7 +78,9 @@ class Pointers {
 		// Admin pointer for plugin page
 		add_filter('mt2mba_admin_pointers-plugins', array($this, 'mt2mba_admin_pointers_plugins'));
 	}
+	//endregion
 
+	//region HOOKS & CALLBACKS
 	/**
 	 * Load admin pointers for current screen
 	 * 
@@ -199,5 +204,6 @@ class Pointers {
 		);
 		return $pointers;
 	}
+	//endregion
 
 }

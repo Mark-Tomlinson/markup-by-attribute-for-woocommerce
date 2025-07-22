@@ -22,6 +22,7 @@ class PriceSetHandler extends PriceMarkupHandler {
 	protected $term_meta_cache;
 	//endregion
 
+	//region INITIALIZATION
 	/**
 	 * Initialize PriceSetHandler with product and markup information
 	 * 
@@ -36,7 +37,9 @@ class PriceSetHandler extends PriceMarkupHandler {
 	public function __construct($bulk_action, $data, $product_id, $variations) {
 		parent::__construct($bulk_action, $product_id, is_numeric($data["value"]) ? (float) $data["value"] : '');
 	}
+	//endregion
 
+	//region PUBLIC API
 	/**
 	 * Process markup calculations and apply them to variations
 	 * 
@@ -85,7 +88,9 @@ class PriceSetHandler extends PriceMarkupHandler {
 			$this->updateVariationPricesAndDescriptions($variation_updates);
 		}
 	}
+	//endregion
 
+	//region VALIDATION & SANITIZATION
 	/**
 	 * Check if price was blanked out or zero, and clean up metadata if so
 	 * 
@@ -171,7 +176,9 @@ class PriceSetHandler extends PriceMarkupHandler {
 		// Else {base-price} is > 0, continue markup logic
 		return false;
 	}
+	//endregion
 
+	//region MARKUP CALCULATIONS
 	/**
 	 * Build markup table for calculations
 	 * 
@@ -232,30 +239,6 @@ class PriceSetHandler extends PriceMarkupHandler {
 			}
 		}
 		return $markup_table;
-	}
-	
-	/**
-	 * Get attribute data for a product.
-	 * Retrieves and formats all taxonomy attribute information.
-	 *
-	 * @param	int		$product_id	The ID of the product
-	 * @return	array				Formatted attribute data with labels and terms
-	 */
-	private function getAttributeData($product_id) {
-		$attribute_data = [];
-		foreach (wc_get_product($product_id)->get_attributes() as $pa_attrb) {
-			if ($pa_attrb->is_taxonomy()) {
-				$taxonomy = $pa_attrb->get_name();
-				$attribute_data[$taxonomy] = [
-					'label' => wc_attribute_label($taxonomy),
-					'terms' => get_terms([
-						"taxonomy" => $taxonomy, 
-						"hide_empty" => false
-					])
-				];
-			}
-		}
-		return $attribute_data;
 	}
 
 	/**
@@ -348,7 +331,9 @@ class PriceSetHandler extends PriceMarkupHandler {
 		
 		return $description;
 	}
+	//endregion
 
+	//region DATABASE OPERATIONS
 	/**
 	 * Apply markup value updates to the product.
 	 *
@@ -489,5 +474,32 @@ class PriceSetHandler extends PriceMarkupHandler {
 			throw $e;
 		}
 	}
+	//endregion
+
+	//region UTILITY METHODS
+	/**
+	 * Get attribute data for a product.
+	 * Retrieves and formats all taxonomy attribute information.
+	 *
+	 * @param	int		$product_id	The ID of the product
+	 * @return	array				Formatted attribute data with labels and terms
+	 */
+	private function getAttributeData($product_id) {
+		$attribute_data = [];
+		foreach (wc_get_product($product_id)->get_attributes() as $pa_attrb) {
+			if ($pa_attrb->is_taxonomy()) {
+				$taxonomy = $pa_attrb->get_name();
+				$attribute_data[$taxonomy] = [
+					'label' => wc_attribute_label($taxonomy),
+					'terms' => get_terms([
+						"taxonomy" => $taxonomy, 
+						"hide_empty" => false
+					])
+				];
+			}
+		}
+		return $attribute_data;
+	}
+	//endregion
 }
 ?>

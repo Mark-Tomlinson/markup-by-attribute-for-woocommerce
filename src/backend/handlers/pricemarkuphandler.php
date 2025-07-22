@@ -15,6 +15,7 @@ use mt2Tech\MarkupByAttribute\Utility as Utility;
  * @since     4.0.0
  */
 abstract class PriceMarkupHandler {
+	//region PROPERTIES
 	/** @var string The type of price being processed (regular or sale) */
 	protected $price_type;
   
@@ -29,7 +30,9 @@ abstract class PriceMarkupHandler {
   
 	/** @var int Number of decimal places to use in price calculations */
 	protected $price_decimals;
+	//endregion
 
+	//region INITIALIZATION
 	/**
 	 * Initialize the PriceMarkupHandler with product information
 	 * 
@@ -61,7 +64,9 @@ abstract class PriceMarkupHandler {
 		$this->base_price_formatted = is_numeric($base_price) ? strip_tags(wc_price(abs($this->base_price))) : '';
 		$this->price_decimals = wc_get_price_decimals();
 	}
+	//endregion
 
+	//region ABSTRACT METHODS
 	/**
 	 * Apply markup calculations to product variations.
 	 * Must be implemented by child classes to handle specific markup scenarios.
@@ -72,5 +77,6 @@ abstract class PriceMarkupHandler {
 	 * @param	array	$variations		List of variation IDs for the product
 	 */
 	abstract public function processProductMarkups($price_type, $data, $product_id, $variations);
+	//endregion
 }
 ?>

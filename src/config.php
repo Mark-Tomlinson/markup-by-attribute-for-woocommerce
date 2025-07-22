@@ -17,6 +17,7 @@ namespace mt2Tech\MarkupByAttribute;
 if (!defined('ABSPATH')) exit();
 
 final class Config {
+	//region PLUGIN CONSTANTS
 	/**
 	 * Plugin metadata constants
 	 */
@@ -40,13 +41,15 @@ final class Config {
 	public const MAX_PERCENTAGE = 1000;
 	public const MAX_FIXED_AMOUNT = 999999.99;
 	public const DECIMAL_PLACES_FIXED = 4;
-	public const DECIMAL_PLACES_PERCENTAGE = 2;
+	public const DECIMAL_PLACES_PERCENTAGE = 3;
 	
 	/**
 	 * Default settings
 	 */
 	public const DEFAULT_MAX_VARIATIONS = 50;
+	//endregion
 	
+	//region PUBLIC API
 	/**
 	 * Initialize all WordPress-defined constants
 	 * 
@@ -126,7 +129,7 @@ final class Config {
 		define('MT2MBA_DECIMAL_PLACES_FIXED', self::DECIMAL_PLACES_FIXED);
 		define('MT2MBA_DECIMAL_PLACES_PERCENTAGE', self::DECIMAL_PLACES_PERCENTAGE);
 	}
-	
+
 	/**
 	 * Get plugin information for headers
 	 * 
@@ -150,5 +153,6 @@ final class Config {
 			'WC requires at least' => self::MIN_WC_VERSION
 		];
 	}
+	//endregion
 }
 ?>

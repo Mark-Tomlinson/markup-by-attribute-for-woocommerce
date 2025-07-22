@@ -14,6 +14,7 @@ namespace mt2Tech\MarkupByAttribute\Backend\Handlers;
  * @since     4.0.0
  */
 class MarkupDeleteHandler extends PriceMarkupHandler {
+	//region INITIALIZATION
 	/**
 	 * Initialize MarkupDeleteHandler
 	 * 
@@ -29,7 +30,9 @@ class MarkupDeleteHandler extends PriceMarkupHandler {
 	public function __construct($unused1, $unused2, $product_id, $unused4) {
 		// Necessary __construct() to prevent parent::__construct() from firing
 	}
+	//endregion
 
+	//region PUBLIC API
 	/**
 	 * Delete all markup metadata for a product
 	 * 
@@ -51,5 +54,6 @@ class MarkupDeleteHandler extends PriceMarkupHandler {
 			$product_id
 		));
 	}
+	//endregion
 }
 ?>

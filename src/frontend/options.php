@@ -18,9 +18,21 @@ namespace mt2Tech\MarkupByAttribute\Frontend;
 if (!defined('ABSPATH')) exit();
 
 class Options {
+	//region PROPERTIES
+	/**
+	 * Singleton instance
+	 * 
+	 * @var self|null
+	 */
 	private static $instance = null;
+	//endregion
 
-	// Public method to get the instance
+	//region INSTANCE MANAGEMENT
+	/**
+	 * Get singleton instance
+	 * 
+	 * @return self Single instance of this class
+	 */
 	public static function get_instance() {
 		if (self::$instance === null) {
 			self::$instance = new self();
@@ -28,17 +40,27 @@ class Options {
 		return self::$instance;
 	}
 
-	// Prevent cloning of the instance
+	/**
+	 * Prevent object cloning
+	 */
 	public function __clone() {}
 
-	// Prevent unserializing of the instance
+	/**
+	 * Prevent object unserialization
+	 */
 	public function __wakeup() {}
 
-	// Private constructor
+	/**
+	 * Initialize WordPress hooks
+	 * 
+	 * Sets up filter to modify WooCommerce variation dropdown HTML.
+	 */
 	private function __construct() {
 		add_filter('woocommerce_dropdown_variation_attribute_options_html', array($this, 'mt2mbaDropdownOptionsMarkupHTML'), 10, 2);
 	}
+	//endregion
 
+	//region HOOKS & CALLBACKS
 	/**
 	 * Add markups to the option dropdown HTML
 	 * 
@@ -175,5 +197,7 @@ class Options {
 		// Close <SELECT> and return HTML
 		return $html . PHP_EOL . '</select>';
 	}
+	//endregion
+
 }	// END class MT2MBA_MARKUP_FRONTEND
 ?>

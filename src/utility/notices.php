@@ -18,6 +18,7 @@ namespace mt2Tech\MarkupByAttribute\Utility;
 if (!defined('ABSPATH')) exit();
 
 class Notices {
+	//region PROPERTIES
 	/**
 	 * Singleton instance
 	 * 
@@ -25,7 +26,9 @@ class Notices {
 	 * @since 1.0.0
 	 */
 	private static ?self $instance = null;
+	//endregion
 
+	//region INSTANCE MANAGEMENT
 	/**
 	 * Get singleton instance
 	 * 
@@ -66,7 +69,9 @@ class Notices {
 		//	Action to set the message dismissal option
 		add_action('admin_init', array($this, 'action_admin_init'));
 	}
+	//endregion
 
+	//region HOOKS & CALLBACKS
 	/**
 	 * Enqueue JavaScript for notice dismissal
 	 * 
@@ -98,7 +103,9 @@ class Notices {
 			wp_die();
 		}
 	}
+	//endregion
 
+	//region PUBLIC API
 	/**
 	 * Display admin notices from structured array
 	 * 
@@ -117,7 +124,9 @@ class Notices {
 			};
 		};
 	}
+	//endregion
 
+	//region PRIVATE METHODS
 	/**
 	 * Display a single admin notice
 	 * 
@@ -150,5 +159,6 @@ class Notices {
 			}	//	End function
 		);
 	}
+	//endregion
 
 }

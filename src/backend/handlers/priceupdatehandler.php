@@ -15,6 +15,7 @@ use mt2Tech\MarkupByAttribute\Utility as Utility;
  * @since     4.0.0
  */
 class PriceUpdateHandler extends PriceMarkupHandler {
+	//region INITIALIZATION
 	/**
 	 * Initialize PriceUpdateHandler with update information
 	 * 
@@ -29,7 +30,9 @@ class PriceUpdateHandler extends PriceMarkupHandler {
 	public function __construct($bulk_action, $data, $product_id, $variations) {
 		parent::__construct($bulk_action, $product_id, is_numeric($data["value"]) ? (float) $data["value"] : 0);
 	}
+	//endregion
 
+	//region PUBLIC API
 	/**
 	 * Process price updates and apply markups
 	 * 
@@ -64,7 +67,9 @@ class PriceUpdateHandler extends PriceMarkupHandler {
 			$handler->processProductMarkups ($bulk_action, $data, $product_id, $variations);
 		}
 	}
+	//endregion
 
+	//region UTILITY METHODS
 	/**
 	 * Calculate new base price based on update type.
 	 * Handles both percentage and fixed amount updates.
@@ -91,5 +96,6 @@ class PriceUpdateHandler extends PriceMarkupHandler {
 			return $base_price + $signed_data;
 		}
 	}
+	//endregion
 }
 ?>

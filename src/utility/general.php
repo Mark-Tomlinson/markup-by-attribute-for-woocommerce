@@ -20,13 +20,16 @@ use mt2Tech\MarkupByAttribute\Frontend as Frontend;
 if (!defined('ABSPATH')) exit();
 
 class General {
+	//region PROPERTIES
 	/**
 	 * Singleton instance
 	 * 
 	 * @var self|null
 	 */
 	private static ?self $instance = null;
+	//endregion
 
+	//region INSTANCE MANAGEMENT
 	/**
 	 * Get singleton instance
 	 * 
@@ -140,32 +143,9 @@ class General {
 		// Made it this far, update database version
 		update_option('mt2mba_db_version', MT2MBA_DB_VERSION, false);
 	}
+	//endregion
 
-
-	/**
-	 * Remove bracketed substring from string
-	 * 
-	 * Removes text between specified markers from a string. Used primarily to
-	 * strip markup descriptions from variation descriptions when prices are cleared.
-	 * The method handles cases where markers are not found gracefully.
-	 *
-	 * @since 2.0.0
-	 * @param string $beginning Marker at the beginning of the string to be removed
-	 * @param string $ending    Marker at the ending of the string to be removed
-	 * @param string $string    The string to be processed
-	 * @return string           The string minus the text to be removed and the beginning and ending markers
-	 */
-	public function remove_bracketed_string(string $beginning, string $ending, string $string): string {
-		$beginningPos = strpos($string, $beginning, 0);
-		$endingPos = strpos($string, $ending, $beginningPos);
-
-		if ($beginningPos === FALSE || $endingPos === FALSE) return trim($string);
-
-		$textToDelete = substr($string, $beginningPos, ($endingPos + strlen($ending)) - $beginningPos);
-
-		return trim(str_replace($textToDelete, '', $string));
-	}
-
+	//region FORMATTING METHODS
 	/**
 	 * Clean up the price or markup and reformat according to currency options
 	 * 
@@ -274,6 +254,32 @@ class General {
 		// No markup; return empty string
 		return '';
 	}
+	//endregion
+
+	//region STRING UTILITIES
+	/**
+	 * Remove bracketed substring from string
+	 * 
+	 * Removes text between specified markers from a string. Used primarily to
+	 * strip markup descriptions from variation descriptions when prices are cleared.
+	 * The method handles cases where markers are not found gracefully.
+	 *
+	 * @since 2.0.0
+	 * @param string $beginning Marker at the beginning of the string to be removed
+	 * @param string $ending    Marker at the ending of the string to be removed
+	 * @param string $string    The string to be processed
+	 * @return string           The string minus the text to be removed and the beginning and ending markers
+	 */
+	public function remove_bracketed_string(string $beginning, string $ending, string $string): string {
+		$beginningPos = strpos($string, $beginning, 0);
+		$endingPos = strpos($string, $ending, $beginningPos);
+
+		if ($beginningPos === FALSE || $endingPos === FALSE) return trim($string);
+
+		$textToDelete = substr($string, $beginningPos, ($endingPos + strlen($ending)) - $beginningPos);
+
+		return trim(str_replace($textToDelete, '', $string));
+	}
 
 	/**
 	 * Strip markup annotation from term name
@@ -343,7 +349,9 @@ class General {
 		$pattern = $is_negative ? MT2MBA_MARKUP_NAME_PATTERN_SUBTRACT : MT2MBA_MARKUP_NAME_PATTERN_ADD;
 		return trim($description . "\n" . trim(sprintf($pattern, $formatted_markup)));
 	}
+	//endregion
 
+	//region VALIDATION & SANITIZATION
 	/**
 	 * Validate and sanitize markup value input
 	 * 
@@ -431,6 +439,7 @@ class General {
 		// Sanitize for HTML output
 		return esc_html(sanitize_text_field($markup));
 	}
+	//endregion
 
 }	//	End class MT2MBA_UTILITY_GENERAL
 ?>

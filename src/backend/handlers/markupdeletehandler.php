@@ -3,7 +3,7 @@ namespace mt2Tech\MarkupByAttribute\Backend\Handlers;
 
 /**
  * Handles deletion of markup metadata
- * 
+ *
  * Used when removing variations to clean up associated markup data.
  * This handler ensures that orphaned metadata is properly removed from
  * the database when products or variations are deleted.
@@ -17,7 +17,7 @@ class MarkupDeleteHandler extends PriceMarkupHandler {
 	//region INITIALIZATION
 	/**
 	 * Initialize MarkupDeleteHandler
-	 * 
+	 *
 	 * Overrides parent constructor to prevent initialization since delete operations
 	 * don't need price calculation setup.
 	 *
@@ -35,7 +35,7 @@ class MarkupDeleteHandler extends PriceMarkupHandler {
 	//region PUBLIC API
 	/**
 	 * Delete all markup metadata for a product
-	 * 
+	 *
 	 * Removes all markup-by-attribute metadata from the database when products
 	 * or variations are deleted. This prevents orphaned data accumulation.
 	 *
@@ -47,7 +47,7 @@ class MarkupDeleteHandler extends PriceMarkupHandler {
 	 */
 	public function processProductMarkups($unused1, $unused2, $product_id, $unused4) {
 		global $wpdb;
-		
+
 		// Delete all Markup-by-Attribute metadata for the product using prepared statement
 		$wpdb->query($wpdb->prepare(
 			"DELETE FROM {$wpdb->postmeta} WHERE post_id = %d AND meta_key LIKE 'mt2mba_%'",

@@ -7,7 +7,7 @@ use mt2Tech\MarkupByAttribute\Utility as Utility;
 
 /**
  * Markup by Attribute for WooCommerce
- * 
+ *
  * This file is part of the Markup by Attribute for WooCommerce plugin by Mark Tomlinson
  *
  * @package   markup-by-attribute-for-woocommerce
@@ -42,13 +42,22 @@ use mt2Tech\MarkupByAttribute\Utility as Utility;
 // Sanity check. Exit if accessed directly.
 if (!defined('ABSPATH')) exit;
 
+// Define plugin constants
+define('MT2MBA_VERSION', '4.3.8');
+define('MT2MBA_DB_VERSION', 2.2);
+define('MT2MBA_TEXT_DOMAIN', 'markup-by-attribute-for-woocommerce');
+define('MT2MBA_MIN_WP_VERSION', '3.3');
+define('MT2MBA_ADMIN_POINTER_PRIORITY', 1000);
+define('MT2MBA_INTERNAL_PRECISION', 6);
+define('MT2MBA_DEFAULT_MAX_VARIATIONS', 50);
+
 // Register class autoloader
 require_once __DIR__ . '/autoloader.php';
 Autoloader::register();
 
 /**
  * Add settings and instruction links to plugin action links
- * 
+ *
  * Enhances the plugin row on the plugins page with convenient links
  * to settings and documentation.
  *
@@ -68,7 +77,7 @@ add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), __NAMESPACE__ . 
 
 /**
  * Enqueue admin styles for product edit pages
- * 
+ *
  * Loads custom CSS to modify the appearance of WooCommerce product
  * edit interfaces, specifically hiding the 'Add price' button for variations.
  *
@@ -96,24 +105,38 @@ add_action('before_woocommerce_init', function() {
 
 /**
  * Initialize the Markup-by-Attribute plugin
- * 
+ *
  * Main initialization function that sets up constants, loads translations,
  * instantiates core classes, and initializes frontend or backend functionality
  * based on the current context.
- * 
+ *
  * This function is called on the 'woocommerce_init' hook to ensure WooCommerce
  * is fully loaded before plugin initialization.
  *
  * @since 1.0.0
  */
 function mt2mba_main(): void {
-	// Initialize configuration constants
-	Config::initialize();
+	// Define WordPress-dependent constants
+	define('MT2MBA_PLUGIN_DIR', plugin_dir_path(__FILE__));
+	define('MT2MBA_PLUGIN_URL', plugin_dir_url(__FILE__));
+	define('MT2MBA_PLUGIN_BASENAME', plugin_basename(__FILE__));
+	define('MT2MBA_SITE_URL', get_bloginfo('wpurl'));
+	define('MT2MBA_PLUGIN_NAME', __('Markup by Attribute', MT2MBA_TEXT_DOMAIN));
+	define('MT2MBA_PRICE_META', __('Product price', MT2MBA_TEXT_DOMAIN) . ' ');
+	define('PRODUCT_MARKUP_DESC_BEG', '<span id="mbainfo">');
+	define('PRODUCT_MARKUP_DESC_END', '</span>');
+	define('REWRITE_TERM_NAME_PREFIX', 'mt2mba_rewrite_attrb_name_');
+	define('REWRITE_TERM_DESC_PREFIX', 'mt2mba_rewrite_attrb_desc_');
+	define('DONT_OVERWRITE_THEME_PREFIX', 'mt2mba_dont_overwrite_theme_');
+	define('MT2MBA_MARKUP_NAME_PATTERN_ADD', '(' . __('Add', MT2MBA_TEXT_DOMAIN) . ' %s)');
+	define('MT2MBA_MARKUP_NAME_PATTERN_SUBTRACT', '(' . __('Subtract', MT2MBA_TEXT_DOMAIN) . ' %s)');
+	define('REGULAR_PRICE', 'regular_price');
+	define('SALE_PRICE', 'sale_price');
 
 	// Load translations
 	load_plugin_textdomain(
-		Config::TEXT_DOMAIN, 
-		false, 
+		MT2MBA_TEXT_DOMAIN,
+		false,
 		dirname(plugin_basename(__FILE__)) . '/languages'
 	);
 
@@ -136,7 +159,7 @@ function mt2mba_main(): void {
 
 /**
  * Initialize core plugin components based on context
- * 
+ *
  * Separates initialization logic for better maintainability and testing.
  * Instantiates different components for admin vs frontend contexts.
  *
@@ -159,7 +182,7 @@ function initializeCoreComponents(array $admin_messages): void {
 
 /**
  * Initialize backend (admin) components
- * 
+ *
  * @since 4.4.0
  * @param array $admin_messages Array of admin notice messages
  */
@@ -175,7 +198,7 @@ function initializeBackendComponents(array $admin_messages): void {
 
 /**
  * Initialize frontend components
- * 
+ *
  * @since 4.4.0
  */
 function initializeFrontendComponents(): void {

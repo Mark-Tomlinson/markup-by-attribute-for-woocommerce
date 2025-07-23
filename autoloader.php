@@ -3,7 +3,7 @@ namespace mt2Tech\MarkupByAttribute;
 
 /**
  * PSR-4 compliant autoloader for Markup-by-Attribute plugin
- * 
+ *
  * Provides automatic class loading for the plugin's namespace-organized classes.
  * Follows PSR-4 standards for mapping namespaces to file system paths.
  *
@@ -15,7 +15,7 @@ namespace mt2Tech\MarkupByAttribute;
 class Autoloader {
 	/**
 	 * Register the autoloader with PHP's SPL autoloader stack
-	 * 
+	 *
 	 * @since 3.0.0
 	 * @param bool $prepend Whether to prepend the autoloader or append it
 	 */
@@ -25,11 +25,11 @@ class Autoloader {
 
 	/**
 	 * Autoload classes within the plugin namespace
-	 * 
+	 *
 	 * Converts namespaced class names to file paths and includes the appropriate
 	 * PHP file if it exists within the plugin's src directory structure.
 	 * Handles both subdirectory classes and root-level classes like Config.
-	 * 
+	 *
 	 * @since 2.0.0
 	 * @param string $class Fully qualified class name to load
 	 */

@@ -20,7 +20,7 @@ jQuery(document).ready(function($) {
 		e.preventDefault();
 		const $link = $(this);
 		const productId = $link.data('product-id');
-		
+
 		if (productId) {
 			processReapply(productId, $link);
 		} else {
@@ -37,9 +37,9 @@ jQuery(document).ready(function($) {
 		const $overlay = $('<div class="mt2mba-processing-overlay"></div>');
 		$table.css('position', 'relative').append($overlay);
 
-		const $notice = $('<div class="notice notice-info mt2mba-bulk-progress"><p>' + 
-			'<span class="progress-text">' + 
-			mt2mbaListLocal.i18n.processing.replace('%1$s', '1').replace('%2$s', total) + 
+		const $notice = $('<div class="notice notice-info mt2mba-bulk-progress"><p>' +
+			'<span class="progress-text">' +
+			mt2mbaListLocal.i18n.processing.replace('%1$s', '1').replace('%2$s', total) +
 			'</span>' +
 			'<span class="spinner is-active"></span>' +
 			'</p></div>').insertAfter('.wp-header-end');
@@ -61,7 +61,7 @@ jQuery(document).ready(function($) {
 				}, 5000);
 				return;
 			}
-	
+
 			const productId = productIds[processed];
 			const $link = $('.js-mt2mba-reapply-markup[data-product-id="' + productId + '"]');
 

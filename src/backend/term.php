@@ -5,7 +5,7 @@ use WP_Meta_Query;
 
 /**
  * Attribute term management with markup functionality
- * 
+ *
  * Manages markup metadata fields for WooCommerce product attribute terms.
  * Handles the admin interface for adding markup values to global attribute terms,
  * including form generation, data validation, and metadata storage.
@@ -64,7 +64,7 @@ class Term {
 
 	/**
 	 * Get singleton instance
-	 * 
+	 *
 	 * @since 1.0.0
 	 * @return Term Single instance of this class
 	 */
@@ -77,24 +77,24 @@ class Term {
 
 	/**
 	 * Prevent object cloning
-	 * 
+	 *
 	 * @since 1.0.0
 	 */
 	private function __clone(): void {}
 
 	/**
 	 * Prevent object unserialization
-	 * 
+	 *
 	 * @since 1.0.0
 	 */
 	public function __wakeup(): void {}
 
 	/**
 	 * Initialize the class and set up hooks
-	 * 
+	 *
 	 * Sets up WordPress hooks for attribute and term management, including
 	 * form field generation, data saving, and admin interface integration.
-	 * 
+	 *
 	 * @since 1.0.0
 	 */
 	private function __construct() {
@@ -105,9 +105,9 @@ class Term {
 
 	/**
 	 * Initialize text labels and descriptions
-	 * 
+	 *
 	 * Sets up all translatable strings used in the admin interface.
-	 * 
+	 *
 	 * @since 3.0.0
 	 */
 	private function initializeLabels(): void {
@@ -133,9 +133,9 @@ class Term {
 
 	/**
 	 * Register hooks for attribute actions
-	 * 
+	 *
 	 * Sets up WordPress hooks for global attribute management.
-	 * 
+	 *
 	 * @since 3.0.0
 	 */
 	private function registerAttributeHooks(): void {
@@ -157,7 +157,7 @@ class Term {
 	private function registerTaxonomyHooks(): void {
 		// Get all WooCommerce global attributes (like Color, Size, etc.)
 		$attribute_taxonomies = wc_get_attribute_taxonomies();
-		
+
 		foreach ($attribute_taxonomies as $attribute_taxonomy) {
 			// WooCommerce prefixes attribute taxonomies with 'pa_' (Product Attribute)
 			// e.g., 'color' becomes 'pa_color'
@@ -219,14 +219,14 @@ class Term {
 	function addAttributeFields(): void {
 		if (isset($_POST['add_new_attribute'])) {
 			$taxonomy_id = wc_attribute_taxonomy_id_by_name(sanitize_title($_POST['attribute_label']));
-			
+
 			$options = [
 				REWRITE_TERM_NAME_PREFIX . $taxonomy_id => [
 					'value' => isset($_POST['term_name_rewrite']),
 					'autoload' => true
 				],
 				REWRITE_TERM_DESC_PREFIX . $taxonomy_id => [
-					'value' => isset($_POST['term_desc_rewrite']), 
+					'value' => isset($_POST['term_desc_rewrite']),
 					'autoload' => false
 				],
 				DONT_OVERWRITE_THEME_PREFIX . $taxonomy_id => [
@@ -234,7 +234,7 @@ class Term {
 					'autoload' => true
 				]
 			];
-		
+
 			foreach ($options as $option_name => $settings) {
 				if ($settings['value']) {
 					update_option($option_name, 'yes', $settings['autoload']);
@@ -275,7 +275,7 @@ class Term {
 					'autoload' => true
 				],
 				REWRITE_TERM_DESC_PREFIX . $attribute_id => [
-					'value' => isset($_POST['term_desc_rewrite']), 
+					'value' => isset($_POST['term_desc_rewrite']),
 					'autoload' => false
 				],
 				DONT_OVERWRITE_THEME_PREFIX . $attribute_id => [
@@ -283,7 +283,7 @@ class Term {
 					'autoload' => true
 				]
 			];
-		
+
 			foreach ($options as $option_name => $settings) {
 				if ($settings['value']) {
 					update_option($option_name, 'yes', $settings['autoload']);
@@ -362,14 +362,14 @@ class Term {
 	}
 	//endregion
 
-	//region TERM METADATA HANDLERS	
+	//region TERM METADATA HANDLERS
 	/**
 	 * Save the term markup metadata
 	 */
 	function handleTermMarkupSave(int $term_id): void {
 		// Sanity check
 		if (!isset($_POST['term_markup'])) return;
-	
+
 		// WordPress nonce verification for CSRF protection
 		// Different nonce actions are used for editing existing vs. creating new terms
 		if (!isset($_POST['_wpnonce']) || !wp_verify_nonce($_POST['_wpnonce'], 'update-tag_' . $term_id)) {
@@ -379,16 +379,16 @@ class Term {
 				return;
 			}
 		}
-	
+
 		// Prevent infinite recursion: wp_update_term() triggers this hook again
 		// Use a constant flag to detect if we're already processing this term
 		if (defined('MT2MBA_ATTRB_RECURSION')) return;
 		define('MT2MBA_ATTRB_RECURSION', TRUE);
-	
+
 		global $mt2mba_utility;
 		$term = get_term($term_id);
 		$taxonomy_name = sanitize_key($term->taxonomy);
-	
+
 		// Clean slate: remove any existing markup annotations from term data
 		// This ensures we don't duplicate markup text when reapplying
 		$name = $mt2mba_utility->stripMarkupAnnotation($term->name);
@@ -396,18 +396,18 @@ class Term {
 
 		// Clear existing markup metadata first (will be re-added if validation passes)
 		delete_term_meta($term_id, 'mt2mba_markup');
-	
+
 		// Get and validate the markup input
 		$raw_markup = sanitize_text_field($_POST['term_markup']);
-		
+
 		// Validate markup using centralized validation
 		$validated_markup = $mt2mba_utility->validateMarkupValue($raw_markup);
-		
+
 		// Only proceed if markup validation passed and isn't empty
 		if ($validated_markup !== false && $validated_markup !== '') {
 			// Final sanitization pass before database storage
 			$markup = $mt2mba_utility->sanitizeMarkupForStorage($validated_markup);
-			
+
 			// Save markup to term metadata table
 			update_term_meta($term_id, 'mt2mba_markup', $markup);
 
@@ -432,11 +432,11 @@ class Term {
 		} elseif ($validated_markup === false) {
 			// Invalid markup - add admin notice
 			add_action('admin_notices', function() use ($raw_markup) {
-				echo '<div class="notice notice-error is-dismissible"><p>' . 
+				echo '<div class="notice notice-error is-dismissible"><p>' .
 					sprintf(
 						__('Invalid markup value "%s". Please use format like "5.00", "-2.50", "10%" or "-5%".', 'markup-by-attribute-for-woocommerce'),
 						esc_html($raw_markup)
-					) . 
+					) .
 					'</p></div>';
 			});
 		}

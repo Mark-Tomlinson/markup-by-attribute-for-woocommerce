@@ -3,7 +3,7 @@ namespace mt2Tech\MarkupByAttribute\Utility;
 
 /**
  * Admin notice management for Markup-by-Attribute
- * 
+ *
  * Handles the display and dismissal of admin notices throughout the plugin.
  * Provides functionality for showing dismissible messages to administrators
  * and storing dismissal preferences in the database.
@@ -21,7 +21,7 @@ class Notices {
 	//region PROPERTIES
 	/**
 	 * Singleton instance
-	 * 
+	 *
 	 * @var self|null
 	 * @since 1.0.0
 	 */
@@ -31,7 +31,7 @@ class Notices {
 	//region INSTANCE MANAGEMENT
 	/**
 	 * Get singleton instance
-	 * 
+	 *
 	 * @since 1.0.0
 	 * @return Notices Single instance of this class
 	 */
@@ -44,23 +44,23 @@ class Notices {
 
 	/**
 	 * Prevent object cloning
-	 * 
+	 *
 	 * @since 1.0.0
 	 */
 	public function __clone(): void {}
 
 	/**
 	 * Prevent object unserialization
-	 * 
+	 *
 	 * @since 1.0.0
 	 */
 	public function __wakeup(): void {}
 
 	/**
 	 * Initialize notice handling and register hooks
-	 * 
+	 *
 	 * Sets up admin notice scripts and dismissal handling.
-	 * 
+	 *
 	 * @since 1.0.0
 	 */
 	private function __construct() {
@@ -74,10 +74,10 @@ class Notices {
 	//region HOOKS & CALLBACKS
 	/**
 	 * Enqueue JavaScript for notice dismissal
-	 * 
+	 *
 	 * Loads the script that handles dismissible notice functionality
 	 * in the WordPress admin.
-	 * 
+	 *
 	 * @since 1.0.0
 	 */
 	public function action_admin_enqueue_scripts(): void {
@@ -90,10 +90,10 @@ class Notices {
 
 	/**
 	 * Handle notice dismissal requests
-	 * 
+	 *
 	 * Processes admin requests to dismiss notices by checking for the
 	 * 'mt2mba_dismiss' query parameter and storing dismissal status.
-	 * 
+	 *
 	 * @since 1.0.0
 	 */
 	public function action_admin_init(): void {
@@ -108,10 +108,10 @@ class Notices {
 	//region PUBLIC API
 	/**
 	 * Display admin notices from structured array
-	 * 
+	 *
 	 * Processes an array of notices organized by type and displays them
 	 * to administrators with appropriate styling and dismissal options.
-	 * 
+	 *
 	 * @since 1.0.0
 	 * @param array $admin_notices Structured array of notices:
 	 *                             - type (string): 'error', 'warning', 'success', 'info'
@@ -129,10 +129,10 @@ class Notices {
 	//region PRIVATE METHODS
 	/**
 	 * Display a single admin notice
-	 * 
+	 *
 	 * Creates and displays an admin notice of the specified type with
 	 * optional dismissal functionality.
-	 * 
+	 *
 	 * @since 1.0.0
 	 * @param string $type           Notice type: 'error', 'warning', 'success', 'info'
 	 * @param string $message        The notice message content

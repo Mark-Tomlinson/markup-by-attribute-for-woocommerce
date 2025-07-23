@@ -4,7 +4,7 @@ use mt2Tech\MarkupByAttribute\Utility as Utility;
 
 /**
  * Handles product price increases and decreases
- * 
+ *
  * Used when modifying existing prices through WooCommerce bulk actions.
  * This handler calculates new base prices from increase/decrease operations
  * and then delegates to PriceSetHandler to reapply markups.
@@ -18,7 +18,7 @@ class PriceUpdateHandler extends PriceMarkupHandler {
 	//region INITIALIZATION
 	/**
 	 * Initialize PriceUpdateHandler with update information
-	 * 
+	 *
 	 * Extracts the price change amount from the bulk action data.
 	 *
 	 * @since 4.0.0
@@ -35,7 +35,7 @@ class PriceUpdateHandler extends PriceMarkupHandler {
 	//region PUBLIC API
 	/**
 	 * Process price updates and apply markups
-	 * 
+	 *
 	 * Calculates new base price from increase/decrease amount and delegates to PriceSetHandler
 	 * to reapply all markups with the new base price. Only processes products that already
 	 * have markup-by-attribute metadata (base price stored).

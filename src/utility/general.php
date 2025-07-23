@@ -5,7 +5,7 @@ use mt2Tech\MarkupByAttribute\Frontend as Frontend;
 
 /**
  * Core utility functions for Markup-by-Attribute plugin
- * 
+ *
  * Provides essential utility functions including database upgrades, price formatting,
  * markup validation and sanitization, text processing, and internationalization support.
  * This class serves as the foundation for all plugin operations.
@@ -23,7 +23,7 @@ class General {
 	//region PROPERTIES
 	/**
 	 * Singleton instance
-	 * 
+	 *
 	 * @var self|null
 	 */
 	private static ?self $instance = null;
@@ -32,7 +32,7 @@ class General {
 	//region INSTANCE MANAGEMENT
 	/**
 	 * Get singleton instance
-	 * 
+	 *
 	 * @return self Single instance of this class
 	 */
 	public static function get_instance(): self {
@@ -83,7 +83,7 @@ class General {
 
 	/**
 	 * Database has been determined to be wrong version; upgrade
-	 * 
+	 *
 	 * Handles migration of markup data from older plugin versions to current schema.
 	 * This method preserves existing data while updating the storage format and
 	 * cleaning up deprecated settings.
@@ -148,7 +148,7 @@ class General {
 	//region FORMATTING METHODS
 	/**
 	 * Clean up the price or markup and reformat according to currency options
-	 * 
+	 *
 	 * Formats numeric values for display, handling both percentage and currency amounts.
 	 * Uses WooCommerce's currency formatting for consistency with store settings.
 	 *
@@ -171,7 +171,7 @@ class General {
 
 	/**
 	 * Format the markup that appears in the options drop-down box
-	 * 
+	 *
 	 * Creates formatted markup text for display in WooCommerce variation dropdowns.
 	 * Handles plugin settings for showing/hiding markup, currency symbols, and formatting.
 	 *
@@ -211,24 +211,24 @@ class General {
 	 * @param	float	$markup		Signed markup amount
 	 * @param	string	$attrb_name	Attribute name that the markup applies to
 	 * @param	string	$term_name	Attribute term that the markup applies to
-	 * @return	string				Formatted description 
+	 * @return	string				Formatted description
 	 */
 	function formatVariationMarkupDescription($markup, $attrb_name, $term_name) {
 		if ($markup <> "" && $markup <> 0) {
 			// Clean any existing markup from the term name before formatting
 			$term_name = $this->stripMarkupAnnotation($term_name);
-			
+
 			// Sanitize inputs for safe display (but preserve text content)
 			$term_name = sanitize_text_field($term_name);
 			$attrb_name = sanitize_text_field($attrb_name);
-	
-			// Two different translation strings based on whether attribute name is included 
+
+			// Two different translation strings based on whether attribute name is included
 			if (MT2MBA_INCLUDE_ATTRB_NAME == 'yes') {
 				// Translators; %1$s is the formatted price, %2$s is the attribute name, %3$s is the term name
-				$desc_format = $markup < 0 ? 
-					__('Subtract %1$s for %2$s: %3$s', 'markup-by-attribute-for-woocommerce') : 
+				$desc_format = $markup < 0 ?
+					__('Subtract %1$s for %2$s: %3$s', 'markup-by-attribute-for-woocommerce') :
 					__('Add %1$s for %2$s: %3$s', 'markup-by-attribute-for-woocommerce');
-				
+
 				return html_entity_decode(
 					sprintf(
 						$desc_format,
@@ -238,10 +238,10 @@ class General {
 					)
 				);
 			} else {				// Translators; %1$s is the formatted price, %2$s is the term name
-				$desc_format = $markup < 0 ? 
-					__('Subtract %1$s for %2$s', 'markup-by-attribute-for-woocommerce') : 
+				$desc_format = $markup < 0 ?
+					__('Subtract %1$s for %2$s', 'markup-by-attribute-for-woocommerce') :
 					__('Add %1$s for %2$s', 'markup-by-attribute-for-woocommerce');
-				
+
 				return html_entity_decode(
 					sprintf(
 						$desc_format,
@@ -259,7 +259,7 @@ class General {
 	//region STRING UTILITIES
 	/**
 	 * Remove bracketed substring from string
-	 * 
+	 *
 	 * Removes text between specified markers from a string. Used primarily to
 	 * strip markup descriptions from variation descriptions when prices are cleared.
 	 * The method handles cases where markers are not found gracefully.
@@ -283,7 +283,7 @@ class General {
 
 	/**
 	 * Strip markup annotation from term name
-	 * 
+	 *
 	 * Removes markup annotations (like "(Add $5.00)" or "(Subtract 10%)") from term names.
 	 * Uses internationalized patterns to handle different languages and currency formats.
 	 * This is used to clean term names before applying new markup annotations.
@@ -309,10 +309,10 @@ class General {
 
 		return trim($text);
 	}
-	
+
 	/**
 	 * Add markup annotation to term name
-	 * 
+	 *
 	 * Appends formatted markup notation to term names (e.g., "Blue (Add $5.00)").
 	 * Used when the plugin is configured to show markup in attribute option names.
 	 *
@@ -332,7 +332,7 @@ class General {
 
 	/**
 	 * Add markup annotation to term description
-	 * 
+	 *
 	 * Appends formatted markup notation to term descriptions. Used when the plugin
 	 * is configured to show markup information in attribute term descriptions.
 	 *
@@ -354,7 +354,7 @@ class General {
 	//region VALIDATION & SANITIZATION
 	/**
 	 * Validate and sanitize markup value input
-	 * 
+	 *
 	 * @param	string	$markup		Raw markup input
 	 * @return	string|false		Validated markup or false if invalid
 	 */
@@ -366,13 +366,13 @@ class General {
 
 		// Sanitize input - remove any HTML tags and trim whitespace
 		$markup = sanitize_text_field(trim($markup));
-		
+
 		// Remove any non-standard whitespace characters
 		$markup = preg_replace('/\s+/', '', $markup);
 
 		// Determine markup type: percentage (ends with %) or fixed amount
 		$is_percentage = (substr($markup, -1) === '%');
-		
+
 		if ($is_percentage) {
 			// Strip the % symbol to validate just the numeric portion
 			$numeric_part = substr($markup, 0, -1);
@@ -394,27 +394,19 @@ class General {
 		// Convert to float for range validation and formatting
 		$numeric_value = floatval($numeric_part);
 
-		// Apply business logic validation based on markup type
+		// Format validated markup value based on type
 		if ($is_percentage) {
-			// Prevent unreasonable percentage values (-100% would zero the price, >1000% is excessive)
-			if ($numeric_value < MT2MBA_MIN_PERCENTAGE || $numeric_value > MT2MBA_MAX_PERCENTAGE) {
-				return false;
-			}
-			// Format percentage with consistent decimal places
-			return number_format($numeric_value, MT2MBA_DECIMAL_PLACES_PERCENTAGE, '.', '') . '%';
+			// Format percentage with maximum precision, truncating trailing zeros
+			return rtrim(rtrim(number_format($numeric_value, MT2MBA_INTERNAL_PRECISION, '.', ''), '0'), '.') . '%';
 		} else {
-			// Reasonable fixed amount limits
-			if (abs($numeric_value) > MT2MBA_MAX_FIXED_AMOUNT) {
-				return false;
-			}
-			// Return formatted fixed amount
-			return number_format($numeric_value, MT2MBA_DECIMAL_PLACES_FIXED, '.', '');
+			// Return formatted fixed amount, truncating trailing zeros
+			return rtrim(rtrim(number_format($numeric_value, MT2MBA_INTERNAL_PRECISION, '.', ''), '0'), '.');
 		}
 	}
 
 	/**
 	 * Sanitize markup value for safe database storage
-	 * 
+	 *
 	 * @param	string	$markup		Markup value to sanitize
 	 * @return	string				Sanitized markup value
 	 */
@@ -424,14 +416,14 @@ class General {
 		if ($validated === false) {
 			return '';
 		}
-		
+
 		// Additional sanitization for database storage
 		return sanitize_text_field($validated);
 	}
 
 	/**
 	 * Sanitize markup value for safe output display
-	 * 
+	 *
 	 * @param	string	$markup		Markup value to sanitize
 	 * @return	string				Sanitized markup value for display
 	 */

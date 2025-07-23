@@ -4,7 +4,7 @@ use WC_Settings_API;
 
 /**
  * WooCommerce settings integration for Markup-by-Attribute
- * 
+ *
  * Extends WooCommerce's settings API to provide configuration options for the plugin.
  * Manages all plugin settings including markup behavior, display options, and limits.
  *
@@ -19,6 +19,7 @@ if (!defined('ABSPATH')) exit; // Exit if accessed directly
 if (!class_exists('Settings')) :
 
 class Settings extends WC_Settings_API {
+	//region PROPERTIES
 	/**
 	 * Singleton instance
 	 * @var self|null
@@ -72,10 +73,12 @@ class Settings extends WC_Settings_API {
 	 * @var int
 	 */
 	public int $max_variations = MT2MBA_DEFAULT_MAX_VARIATIONS;
+	//endregion
 
+	//region INSTANCE MANAGEMENT
 	/**
 	 * Get singleton instance
-	 * 
+	 *
 	 * @since 2.0.0
 	 * @return Settings Single instance of this class
 	 */
@@ -88,28 +91,30 @@ class Settings extends WC_Settings_API {
 
 	/**
 	 * Prevent cloning of the instance
-	 * 
+	 *
 	 * @since 2.0.0
 	 */
 	public function __clone(): void {}
 
 	/**
 	 * Prevent unserializing of the instance
-	 * 
+	 *
 	 * @since 2.0.0
 	 */
 	public function __wakeup(): void {}
 
 	/**
 	 * Initialize settings and register WooCommerce hooks
-	 * 
+	 *
 	 * @since 2.0.0
 	 */
 	private function __construct() {
 		add_filter('woocommerce_get_sections_products', array($this, 'add_section'));
 		add_filter('woocommerce_get_settings_products', array($this, 'get_settings'), 10, 2);
 	}
+	//endregion
 
+	//region WOOCOMMERCE INTEGRATION
 	/**
 	 * Add a new section to the Product settings tab
 	 *
@@ -330,7 +335,7 @@ class Settings extends WC_Settings_API {
 				$setting_ids = array_column(
 					array_filter($mt2mba_settings, function($item) {
 						return isset($item['id']) && strpos($item['id'], 'mt2mba_') === 0;
-					}), 
+					}),
 					'id'
 				);
 
@@ -353,6 +358,7 @@ class Settings extends WC_Settings_API {
 			return $settings;
 		}
 	}
+	//endregion
 }
 
 endif;

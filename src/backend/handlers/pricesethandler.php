@@ -4,7 +4,7 @@ use mt2Tech\MarkupByAttribute\Utility as Utility;
 
 /**
  * Handles setting product prices and applying markups
- * 
+ *
  * Used when directly setting variation prices through WooCommerce bulk actions.
  * This handler calculates markups based on attribute terms and applies them to
  * the base price, then updates both the variation prices and descriptions.
@@ -25,7 +25,7 @@ class PriceSetHandler extends PriceMarkupHandler {
 	//region INITIALIZATION
 	/**
 	 * Initialize PriceSetHandler with product and markup information
-	 * 
+	 *
 	 * Extracts the base price from the bulk action data and initializes the parent handler.
 	 *
 	 * @since 4.0.0
@@ -42,7 +42,7 @@ class PriceSetHandler extends PriceMarkupHandler {
 	//region PUBLIC API
 	/**
 	 * Process markup calculations and apply them to variations
-	 * 
+	 *
 	 * Core method that coordinates the entire markup calculation workflow:
 	 * 1. Validates the base price is not blank/zero (unless zero is allowed)
 	 * 2. Retrieves product attributes and builds markup calculation table
@@ -65,24 +65,24 @@ class PriceSetHandler extends PriceMarkupHandler {
 
 		// Retrieve all attributes and their terms for the product
 		$attribute_data = $this->getAttributeData($product_id);
-	
+
 		// Build a table of the markup values for the product
 		$markup_table = $this->buildMarkupTable($attribute_data, $product_id);
-	
+
 		// Bulk save product markup values
 		if ($this->price_type === REGULAR_PRICE) {
 			$this->bulkSaveProductMarkupValues($markup_table);
 		}
-	
+
 		$rounded_base = round($this->base_price, $this->price_decimals);
 		$base_price_description = $this->handleBasePriceUpdate($product_id, $rounded_base);
-	
+
 		// Process each variation
 		$variation_updates = [];
 		foreach ($variations as $variation_id) {
 			$variation_updates[] = $this->processVariation($variation_id, $markup_table, $base_price_description);
 		}
-	
+
 		// Bulk update all variations from the variations_update table
 		if (!empty($variation_updates)) {
 			$this->updateVariationPricesAndDescriptions($variation_updates);
@@ -93,7 +93,7 @@ class PriceSetHandler extends PriceMarkupHandler {
 	//region VALIDATION & SANITIZATION
 	/**
 	 * Check if price was blanked out or zero, and clean up metadata if so
-	 * 
+	 *
 	 * Handles special cases where the base price is empty, zero, or negative.
 	 * If the price is being cleared, this method removes all markup metadata
 	 * and variation descriptions to prevent orphaned data.
@@ -150,7 +150,7 @@ class PriceSetHandler extends PriceMarkupHandler {
 					if ($markup_pos === false) {
 						continue;
 					}
-				
+
 					// If the description begins with markup information, delete the description
 					if ($markup_pos === 0) {
 						$new_description = '';
@@ -162,7 +162,7 @@ class PriceSetHandler extends PriceMarkupHandler {
 							$description
 						);
 					}
-				
+
 					// Update the variation with the new description
 					$variation->set_description($new_description);
 					$variation->save();
@@ -181,7 +181,7 @@ class PriceSetHandler extends PriceMarkupHandler {
 	//region MARKUP CALCULATIONS
 	/**
 	 * Build markup table for calculations
-	 * 
+	 *
 	 * Creates a structured array containing calculated markup values for each attribute term.
 	 * This method processes both percentage and fixed markups, applying appropriate rounding
 	 * and business logic based on plugin settings.
@@ -194,12 +194,12 @@ class PriceSetHandler extends PriceMarkupHandler {
 	protected function buildMarkupTable($attribute_data, $product_id) {
 		global $mt2mba_utility;
 		$markup_table = [];
-	
+
 		foreach ($attribute_data as $taxonomy => $data) {
 			$attrb_label = $data['label'];
 			foreach ($data['terms'] as $term) {
 				$markup = get_term_meta($term->term_id, 'mt2mba_markup', true);
-	
+
 				if (!empty($markup)) {
 					// Determine price to calculate markup against based on settings
 					if ($this->price_type === REGULAR_PRICE || MT2MBA_SALE_PRICE_MARKUP === 'yes') {
@@ -207,7 +207,7 @@ class PriceSetHandler extends PriceMarkupHandler {
 					} else {
 						$price = get_metadata("post", $product_id, "mt2mba_base_" . REGULAR_PRICE, true);
 					}
-	
+
 					// Calculate markup value: percentage markups are calculated against the price,
 					// fixed markups are used as-is
 					if (strpos($markup, "%")) {
@@ -215,22 +215,22 @@ class PriceSetHandler extends PriceMarkupHandler {
 					} else {
 						$markup_value = floatval($markup);
 					}
-	
+
 					// Round markup value based on plugin settings
 					$markup_value = MT2MBA_ROUND_MARKUP == "yes" ? round($markup_value, 0) : round($markup_value, $this->price_decimals);
-	
+
 					if ($markup_value != 0) {
 						$markup_table[$taxonomy][$term->slug] = [
 							'term_id' => $term->term_id,
 							'markup' => $markup_value,
 						];
-						
+
 						// Only add description if not ignored and this is regular price
 						if (MT2MBA_DESC_BEHAVIOR !== "ignore" && $this->price_type === REGULAR_PRICE) {
-							$markup_table[$taxonomy][$term->slug]['description'] = 
+							$markup_table[$taxonomy][$term->slug]['description'] =
 								$mt2mba_utility->formatVariationMarkupDescription(
 									$markup_value,
-									$attrb_label, 
+									$attrb_label,
 									$term->name
 								);
 						}
@@ -257,7 +257,7 @@ class PriceSetHandler extends PriceMarkupHandler {
 		if ($this->price_type === REGULAR_PRICE) {
 			set_transient('mt2mba_current_base_' . $product_id, $rounded_base, HOUR_IN_SECONDS);
 		}
-		return MT2MBA_HIDE_BASE_PRICE === 'no' ? 
+		return MT2MBA_HIDE_BASE_PRICE === 'no' ?
 			html_entity_decode(MT2MBA_PRICE_META . $this->base_price_formatted) : '';
 	}
 
@@ -275,7 +275,7 @@ class PriceSetHandler extends PriceMarkupHandler {
 		$variation = wc_get_product($variation_id);
 		$variation_price = $this->base_price;
 		$markup_description = '';
-	  
+
 		foreach ($variation->get_attributes() as $attribute_id => $term_id) {
 			if (isset($markup_table[$attribute_id][$term_id])) {
 				$markup = (float) $markup_table[$attribute_id][$term_id]["markup"];
@@ -308,27 +308,27 @@ class PriceSetHandler extends PriceMarkupHandler {
 	protected function buildVariationDescription($variation, $base_price_description, $markup_description, $variation_price) {
 		global $mt2mba_utility;
 		$description = "";
-		
+
 		if ($this->price_type === REGULAR_PRICE) {
 			// Only modify existing description if not overwriting
 			if (MT2MBA_DESC_BEHAVIOR !== "overwrite") {
 				$description = $variation->get_description();
 				$description = $mt2mba_utility->remove_bracketed_string(
-					PRODUCT_MARKUP_DESC_BEG, 
-					PRODUCT_MARKUP_DESC_END, 
+					PRODUCT_MARKUP_DESC_BEG,
+					PRODUCT_MARKUP_DESC_END,
 					$description
 				);
 			}
-	
+
 			// Only add markup description if we have markups and behavior isn't ignore
 			if ($markup_description && $variation_price != null && MT2MBA_DESC_BEHAVIOR !== "ignore") {
-				$description .= PHP_EOL . PRODUCT_MARKUP_DESC_BEG . 
-							  $base_price_description . 
-							  $markup_description . 
+				$description .= PHP_EOL . PRODUCT_MARKUP_DESC_BEG .
+							  $base_price_description .
+							  $markup_description .
 							  PRODUCT_MARKUP_DESC_END;
 			}
 		}
-		
+
 		return $description;
 	}
 	//endregion
@@ -373,7 +373,7 @@ class PriceSetHandler extends PriceMarkupHandler {
 
 	/**
 	 * Bulk update variation prices and descriptions in the database
-	 * 
+	 *
 	 * Performs efficient bulk database updates using transactions to ensure data consistency.
 	 * Updates both _price and _regular_price/_sale_price meta fields, plus variation descriptions.
 	 * Uses DELETE + INSERT pattern for better performance than individual UPDATEs.
@@ -383,11 +383,11 @@ class PriceSetHandler extends PriceMarkupHandler {
 	 */
 	protected function updateVariationPricesAndDescriptions($updates) {
 		global $wpdb;
-	
+
 		$variation_ids = [];
 		$price_inserts = [];
 		$description_updates = [];
-	
+
 		// Build arrays for our SQL operations
 		foreach ($updates as $update) {
 			$variation_ids[] = (int)$update['id'];
@@ -401,10 +401,10 @@ class PriceSetHandler extends PriceMarkupHandler {
 			$price_inserts[] = $wpdb->prepare(
 				"(%d, %s, %s),
 				(%d, %s, %s)",
-				$update['id'], 
+				$update['id'],
 				'_price',
 				$update['price'],
-				$update['id'], 
+				$update['id'],
 				'_' . $this->price_type,
 				$update['price']
 			);
@@ -418,8 +418,8 @@ class PriceSetHandler extends PriceMarkupHandler {
 				);
 				$sanitized_description = wp_kses($update['description'], $allowed_html);
 				$description_updates[] = $wpdb->prepare(
-					"(%d, '_variation_description', %s)", 
-					$update['id'], 
+					"(%d, '_variation_description', %s)",
+					$update['id'],
 					$sanitized_description
 				);
 			}
@@ -427,29 +427,29 @@ class PriceSetHandler extends PriceMarkupHandler {
 
 		// Start transaction for data consistency
 		$wpdb->query('START TRANSACTION');
-	
+
 		try {
 			// Delete existing price records first
 			if (!empty($variation_ids)) {
 				$placeholders = array_fill(0, count($variation_ids), '%d');
 				$meta_keys = array('_price', '_' . $this->price_type);
-				
+
 				$wpdb->query($wpdb->prepare(
-					"DELETE FROM {$wpdb->postmeta} 
+					"DELETE FROM {$wpdb->postmeta}
 					WHERE post_id IN (" . implode(',', $placeholders) . ")
 					AND meta_key IN (%s, %s)",
 					array_merge($variation_ids, $meta_keys)
 				));
 			}
-	
+
 			// Insert new price records
 			if (!empty($price_inserts)) {
 				$wpdb->query(
-					"INSERT INTO {$wpdb->postmeta} (post_id, meta_key, meta_value) 
+					"INSERT INTO {$wpdb->postmeta} (post_id, meta_key, meta_value)
 					VALUES " . implode(", ", $price_inserts)
 				);
 			}
-	
+
 			// Handle descriptions for regular price updates
 			if ($this->price_type === REGULAR_PRICE && !empty($description_updates)) {
 				// Remove existing descriptions
@@ -459,16 +459,16 @@ class PriceSetHandler extends PriceMarkupHandler {
 					AND meta_key = '_variation_description'",
 					$variation_ids
 				));
-	
+
 				// Insert new descriptions
 				$wpdb->query(
 					"INSERT INTO {$wpdb->postmeta} (post_id, meta_key, meta_value)
 					VALUES " . implode(", ", $description_updates)
 				);
 			}
-	
+
 			$wpdb->query('COMMIT');
-	
+
 		} catch (Exception $e) {
 			$wpdb->query('ROLLBACK');
 			throw $e;
@@ -492,7 +492,7 @@ class PriceSetHandler extends PriceMarkupHandler {
 				$attribute_data[$taxonomy] = [
 					'label' => wc_attribute_label($taxonomy),
 					'terms' => get_terms([
-						"taxonomy" => $taxonomy, 
+						"taxonomy" => $taxonomy,
 						"hide_empty" => false
 					])
 				];

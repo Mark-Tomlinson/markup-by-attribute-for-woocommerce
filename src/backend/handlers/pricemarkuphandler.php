@@ -4,7 +4,7 @@ use mt2Tech\MarkupByAttribute\Utility as Utility;
 
 /**
  * Abstract base class for markup-by-attribute product variation handling
- * 
+ *
  * Provides the foundation for all markup calculation operations. This class defines the common
  * properties and initialization logic that all price handlers need, while allowing specific
  * handlers to implement their own markup calculation strategies.
@@ -18,16 +18,16 @@ abstract class PriceMarkupHandler {
 	//region PROPERTIES
 	/** @var string The type of price being processed (regular or sale) */
 	protected $price_type;
-  
+
 	/** @var int The ID of the product being processed */
 	protected $product_id;
-  
+
 	/** @var float The base price of the product before markup */
 	protected $base_price;
-  
+
 	/** @var string The base price formatted according to store currency settings */
 	protected $base_price_formatted;
-  
+
 	/** @var int Number of decimal places to use in price calculations */
 	protected $price_decimals;
 	//endregion
@@ -35,7 +35,7 @@ abstract class PriceMarkupHandler {
 	//region INITIALIZATION
 	/**
 	 * Initialize the PriceMarkupHandler with product information
-	 * 
+	 *
 	 * Sets up the handler with essential product data and determines the price type
 	 * from the bulk action. Also configures currency formatting based on WooCommerce settings.
 	 *

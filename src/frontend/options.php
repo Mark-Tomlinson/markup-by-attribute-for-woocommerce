@@ -3,7 +3,7 @@ namespace mt2Tech\MarkupByAttribute\Frontend;
 
 /**
  * Frontend dropdown options handler for WooCommerce variation attributes
- * 
+ *
  * Manages the display of markup pricing information in WooCommerce product
  * variation dropdowns. Handles complex logic for theme compatibility,
  * plugin settings, and price display formatting.
@@ -21,7 +21,7 @@ class Options {
 	//region PROPERTIES
 	/**
 	 * Singleton instance
-	 * 
+	 *
 	 * @var self|null
 	 */
 	private static $instance = null;
@@ -30,7 +30,7 @@ class Options {
 	//region INSTANCE MANAGEMENT
 	/**
 	 * Get singleton instance
-	 * 
+	 *
 	 * @return self Single instance of this class
 	 */
 	public static function get_instance() {
@@ -52,7 +52,7 @@ class Options {
 
 	/**
 	 * Initialize WordPress hooks
-	 * 
+	 *
 	 * Sets up filter to modify WooCommerce variation dropdown HTML.
 	 */
 	private function __construct() {
@@ -63,7 +63,7 @@ class Options {
 	//region HOOKS & CALLBACKS
 	/**
 	 * Add markups to the option dropdown HTML
-	 * 
+	 *
 	 * Replaces WooCommerce's default variation dropdown with one that includes markup pricing.
 	 * Handles complex logic for when to show markups based on plugin settings, theme compatibility,
 	 * and product pricing states. Only processes global (taxonomy) attributes.
@@ -102,18 +102,18 @@ class Options {
 		// Exit early based on plugin configuration and compatibility settings
 		if (
 			// Don't overwrite if admin configured this attribute to preserve theme styling
-			get_option(DONT_OVERWRITE_THEME_PREFIX . $attribute_id) == 'yes' || 
-			
+			get_option(DONT_OVERWRITE_THEME_PREFIX . $attribute_id) == 'yes' ||
+
 			// Prevent duplicate markup display if markup is already included in term names
 			get_option(REWRITE_TERM_NAME_PREFIX . wc_attribute_taxonomy_id_by_name($attribute)) == 'yes'
 		) {
 			return $html;
 		}
-		
+
 		// Determine if markups should be stripped for zero-priced products
 		$strip_markups = false;
 		if (
-			$args['product'] && $args['product']->is_type('variable') && 
+			$args['product'] && $args['product']->is_type('variable') &&
 			$args['product']->get_variation_price('min') == 0 &&
 			$args['product']->get_variation_price('max') == 0
 		) {
@@ -123,7 +123,7 @@ class Options {
 
 		// Set globals
 		global $mt2mba_utility;
-	
+
 		// Extract remaining content from $args
 		$product				= $args['product'];
 		$name					= $args['name'] ? $args['name'] : 'attribute_' . sanitize_title($attribute);
@@ -132,13 +132,13 @@ class Options {
 		$show_option_none		= $args['show_option_none'] ? TRUE : FALSE;
 		$show_option_none_text	= $args['show_option_none'] ? $args['show_option_none'] : __('Choose an option', 'woocommerce');
 		$options				= $args['options'];
-	
+
 		// If $options is empty, get them from the product attributes
 		if (empty($options) && !empty($product) && !empty($attribute)) {
 			$attributes = $product->get_variation_attributes();
 			$options = $attributes[$attribute];
 		}
-	
+
 		// Start building output HTML
 		$html = PHP_EOL .
 			'<select ' .
@@ -149,7 +149,7 @@ class Options {
 			'data-show_option_none="' . ($show_option_none ? 'yes' : 'no') . '">' .
 			PHP_EOL .
 			'<option value="">' . esc_html($show_option_none_text) . '</option>';
-	
+
 		// Build individual <OPTION> elements within the <SELECT>
 		if (!empty($options)) {
 			if ($product && taxonomy_exists($attribute)) {  // product exists and attribute is global
@@ -166,7 +166,7 @@ class Options {
 							// Get and format markup for display in dropdown
 							$term_name = $mt2mba_utility->sanitizeMarkupForDisplay($term->name);
 							$raw_markup = get_metadata('post', $product->get_id(), 'mt2mba_' . $term->term_id . '_markup_amount', TRUE);
-							
+
 							// Sanitize and format markup for display
 							if ($raw_markup) {
 								$sanitized_markup = $mt2mba_utility->sanitizeMarkupForDisplay($raw_markup);
@@ -193,7 +193,7 @@ class Options {
 				}
 			}
 		}
-		
+
 		// Close <SELECT> and return HTML
 		return $html . PHP_EOL . '</select>';
 	}

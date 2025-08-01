@@ -42,15 +42,6 @@ use mt2Tech\MarkupByAttribute\Utility as Utility;
 // Sanity check. Exit if accessed directly.
 if (!defined('ABSPATH')) exit;
 
-// Define plugin constants
-define('MT2MBA_VERSION', '4.3.8');
-define('MT2MBA_DB_VERSION', 2.2);
-define('MT2MBA_TEXT_DOMAIN', 'markup-by-attribute-for-woocommerce');
-define('MT2MBA_MIN_WP_VERSION', '3.3');
-define('MT2MBA_ADMIN_POINTER_PRIORITY', 1000);
-define('MT2MBA_INTERNAL_PRECISION', 6);
-define('MT2MBA_DEFAULT_MAX_VARIATIONS', 50);
-
 // Register class autoloader
 require_once __DIR__ . '/autoloader.php';
 Autoloader::register();
@@ -104,34 +95,60 @@ add_action('before_woocommerce_init', function() {
 });
 
 /**
- * Initialize the Markup-by-Attribute plugin
+ * Define all plugin constants
  *
- * Main initialization function that sets up constants, loads translations,
- * instantiates core classes, and initializes frontend or backend functionality
- * based on the current context.
- *
- * This function is called on the 'woocommerce_init' hook to ensure WooCommerce
- * is fully loaded before plugin initialization.
+ * Centralizes all constant definitions for the plugin, including WordPress-dependent
+ * paths, version information, configuration values, and UI elements.
  *
  * @since 1.0.0
  */
-function mt2mba_main(): void {
-	// Define WordPress-dependent constants
+function define_constants(): void {
+	// WordPress-dependent paths and URLs
 	define('MT2MBA_PLUGIN_DIR', plugin_dir_path(__FILE__));
 	define('MT2MBA_PLUGIN_URL', plugin_dir_url(__FILE__));
 	define('MT2MBA_PLUGIN_BASENAME', plugin_basename(__FILE__));
 	define('MT2MBA_SITE_URL', get_bloginfo('wpurl'));
+
+	// Plugin version and compatibility
+	define('MT2MBA_VERSION', '4.3.8');
+	define('MT2MBA_DB_VERSION', 2.2);
+	define('MT2MBA_MIN_WP_VERSION', '3.3');
+	define('MT2MBA_ADMIN_POINTER_PRIORITY', 1000);
+
+	// Configuration and precision settings
+	define('MT2MBA_INTERNAL_PRECISION', 6);
+	define('MT2MBA_DEFAULT_MAX_VARIATIONS', 50);
+
+	// Translatable strings and UI elements
+	define('MT2MBA_TEXT_DOMAIN', 'markup-by-attribute-for-woocommerce');
 	define('MT2MBA_PLUGIN_NAME', __('Markup by Attribute', MT2MBA_TEXT_DOMAIN));
 	define('MT2MBA_PRICE_META', __('Product price', MT2MBA_TEXT_DOMAIN) . ' ');
+	define('MT2MBA_MARKUP_NAME_PATTERN_ADD', '(' . __('Add', MT2MBA_TEXT_DOMAIN) . ' %s)');
+	define('MT2MBA_MARKUP_NAME_PATTERN_SUBTRACT', '(' . __('Subtract', MT2MBA_TEXT_DOMAIN) . ' %s)');
 	define('PRODUCT_MARKUP_DESC_BEG', '<span id="mbainfo">');
 	define('PRODUCT_MARKUP_DESC_END', '</span>');
+
+	// Option and meta key prefixes
 	define('REWRITE_TERM_NAME_PREFIX', 'mt2mba_rewrite_attrb_name_');
 	define('REWRITE_TERM_DESC_PREFIX', 'mt2mba_rewrite_attrb_desc_');
 	define('DONT_OVERWRITE_THEME_PREFIX', 'mt2mba_dont_overwrite_theme_');
-	define('MT2MBA_MARKUP_NAME_PATTERN_ADD', '(' . __('Add', MT2MBA_TEXT_DOMAIN) . ' %s)');
-	define('MT2MBA_MARKUP_NAME_PATTERN_SUBTRACT', '(' . __('Subtract', MT2MBA_TEXT_DOMAIN) . ' %s)');
+
+	// Price type constants (Used by WooCommerce, do not translate)
 	define('REGULAR_PRICE', 'regular_price');
 	define('SALE_PRICE', 'sale_price');
+}
+
+/**
+ * Initialize the Markup-by-Attribute plugin
+ *
+ * Main initialization function that sets up constants, loads translations,
+ * and initializes core components based on context (admin vs frontend).
+ *
+ * @since 1.0.0
+ */
+function mt2mba_main(): void {
+	// Define all plugin constants
+	define_constants();
 
 	// Load translations
 	load_plugin_textdomain(
@@ -140,69 +157,37 @@ function mt2mba_main(): void {
 		dirname(plugin_basename(__FILE__)) . '/languages'
 	);
 
-	// Define admin messages for notices
-	$admin_messages = [
-		'info' => [
-			/* Add administrative info messages in the following format
-			 *
-			array("message_name", "This is a dismissable messages."),
-			 */
-		],
-		'warning' => [
-			/* Add any warning messages here in the above format */
-		]
-	];
-
-	// Initialize core components
-	initializeCoreComponents($admin_messages);
-}
-
-/**
- * Initialize core plugin components based on context
- *
- * Separates initialization logic for better maintainability and testing.
- * Instantiates different components for admin vs frontend contexts.
- *
- * @since 4.4.0
- * @param array $admin_messages Array of admin notice messages
- */
-function initializeCoreComponents(array $admin_messages): void {
 	// Instantiate utility class (global for backward compatibility)
 	global $mt2mba_utility;
 	$mt2mba_utility = Utility\General::get_instance();
 
+	// Initialize context-specific components
 	if (is_admin()) {
-		// Backend components
-		initializeBackendComponents($admin_messages);
+		// Admin messages for notices
+		$admin_messages = [
+			'info' => [
+				// ["message_name1", "This is a dismissable info message."],
+				// ["message_name2", "This is another dismissable info message."]
+			],
+			'warning' => [
+				// ["message_name3", "This is a dismissable warning message."],
+				// ["message_name4", "This is another dismissable warning message."]
+			]
+		];
+
+		// Initialize backend components
+		$notices = Utility\Notices::get_instance();
+		$notices->send_notice_array($admin_messages);
+
+		Utility\Pointers::get_instance();
+		Backend\Term::get_instance();
+		Backend\ProductList::get_instance();
+		new Backend\Product();  // Product class cannot be singleton due to hook requirements
 	} else {
-		// Frontend components
-		initializeFrontendComponents();
+		// Initialize frontend components
+		Frontend\Options::get_instance();
 	}
-}
 
-/**
- * Initialize backend (admin) components
- *
- * @since 4.4.0
- * @param array $admin_messages Array of admin notice messages
- */
-function initializeBackendComponents(array $admin_messages): void {
-	$notices = Utility\Notices::get_instance();
-	$notices->send_notice_array($admin_messages);
-
-	Utility\Pointers::get_instance();
-	Backend\Term::get_instance();
-	Backend\ProductList::get_instance();
-	new Backend\Product();  // Product class cannot be singleton due to hook requirements
-}
-
-/**
- * Initialize frontend components
- *
- * @since 4.4.0
- */
-function initializeFrontendComponents(): void {
-	Frontend\Options::get_instance();
 }
 
 // Make sure this line is outside any function

@@ -29,7 +29,7 @@ Want to add $5 to every blue product you sell? Maybe you sell jewelry with birth
 
 = Markup by Attribute Adds 'Markup' to Attribute Terms =
 
-Markup by Attribute solves this by letting you add a markup (or markdown) to global attribute terms. If the attribute is 'Color', you can add "+5" to Blue while leaving Green and Yellow alone. When you set regular and sale prices, every blue product will automatically be $5.00 more.
+Markup by Attribute solves this by letting you add a markup (or markdown) to global attribute terms. If the attribute is 'Color,' you can add "+5" to Blue while leaving Green and Yellow alone. When you set regular and sale prices, every blue product will automatically be $5.00 more.
 
 This plugin does one thing - it adds pricing control to WooCommerce's global product attributes. If your products vary in price based on options like size, color, or material, Markup by Attribute lets you set those price differences once at the attribute level rather than manually adjusting each product variation.
 
@@ -188,7 +188,7 @@ Many thanks to [Zjadlbymcos](https://github.com/Zjadlbymcos) on GitHub for his P
 
 Thanks! The donation button assumes $5.00 USD. But please don't hesitate to adjust that amount up or down as you feel it's appropriate. I'm a retired guy who's living off his savings, so every little bit helps.
 
-If you use Markup-by-Attribute and want to see me continuing support for it, I encourage you to encourage me with a small donation.
+If you use Markup-by-Attribute and want to see me continue support for it, I encourage you to encourage me with a small donation.
 
 == Screenshots ==
 
@@ -203,7 +203,10 @@ If you use Markup-by-Attribute and want to see me continuing support for it, I e
 == Upgrade Notice ==
 
 = 4.3.8 =
-*Release Date: January 2025*
+*Release Date: August 2025*
+
+**Bug Fixes**
+* Fixed European decimal notation handling in markup validation and price processing functions to support comma decimal separators properly (e.g., "5,50" instead of "5.50").
 
 **Code Quality & Documentation Improvements**
 * Enhanced code readability with comprehensive PHPDoc standardization across all files
@@ -352,7 +355,7 @@ Build 202428.01
 
 = 3.12.2 =
 Build 202425.01
-**FIX**: Correct code to eliminate "Creation of dynamic property" depreciation notices.
+**FIX**: Correct code to eliminate "creation of dynamic property" depreciation notices.
 **FIX**: Hid WooCommerce [Add price] button because it is redundant with the 'Set regular prices' function and does not hook into this plugin.
 **MAINTENANCE**: Ensured compatibility with current versions of WordPress, WooCommerce, and PHP.
 
@@ -430,10 +433,10 @@ Build 202152.01
 = 3.9.6 =
 Build 202113.02
 **FIX**: Empty and non-zero evaluations are no longer the same in PHP 8. Corrected to check each individually.
-**MAINTENANCE**: Tested with PHP 8.0.3 and update `PHP tested up to:` information.
+**MAINTENANCE**: Tested with PHP 8.0.3 and updated `PHP tested up to:` information.
 Build 202113.03
-**MAINTENANCE**: Add customer facing Swedish translations.
-**MAINTENANCE**: Tested with PHP 8.0.8, WordPress 5.7.2, WooCommerce 5.4.1.
+**MAINTENANCE**: Add customer-facing Swedish translations.
+**MAINTENANCE**: Tested with PHP 8.0.8, WordPress 5.7.2, and WooCommerce 5.4.1.
 
 = 3.9.5 =
 **MAINTENANCE**: Tested with WordPress 5.7 and include new `Tested up to:` information.
@@ -474,7 +477,7 @@ Build 202113.03
 **MAINTENANCE**: Include new `Tested to:` information.
 
 = 3.4 =
-**FIX**: Show hidden attribute terms to correct error where WordPress/WooCommerce wrongly considers the term as unused.
+**FIX**: Show hidden attribute terms to correct the error where WordPress/WooCommerce wrongly considers the term as unused.
 **MAINTENANCE**: Updated instructions.
 **MAINTENANCE**: Removed v2.4 upgrade message.
 
@@ -490,12 +493,12 @@ Build 202113.03
 **MAINTENANCE**: Added donation language to Settings page.
 
 = 3.1 =
-**FEATURE**: Added ability to round percentage markups, so prices will retain digits below decimal. For shops that want to end all prices with .00, .95, .99 or whatever. Requested feature from shop where all prices end in .00.
+**FEATURE**: Added ability to round percentage markups, so prices will retain digits below the decimal. For shops that want to end all prices with .00, .95, .99, or whatever. Requested feature from shop where all prices end in .00.
 **FEATURE**: Fully tested with Gutenberg.
 **FEATURE**: Added Polish language files.
 
 = 3.0 =
-**FEATURE**: Now supports Internationalization and translation.
+**FEATURE**: Now supports internationalization and translation.
 **MAINTENANCE**: Simplified usage directions in readme.txt.
 **MAINTENANCE**: Restructured libraries and renamed files and classes for better organization.
 **MAINTENANCE**: Rebuilt admin notice class for supportability and improved performance.
@@ -515,16 +518,16 @@ Build 202113.03
 **FEATURE**: Add option to not display markup in the options drop-down box.
 **FIX**: Add missing 'Author:' tag.
 **FIX**: Ensure documentation is clear that this works on “global” attributes.
-**FIX**: Version 2.3 exposes a problem in an earlier version's database conversion where percentage markups show incorrectly in the options drop-down (For instance, a 10% markup on $40 shows as $10 instead of $4). To patch around it, version 2.3 will put the percentage in the drop-down instead of the actual markup. These items will need to have their regular prices reset to have the actual markup appear.
+**FIX**: Version 2.3 exposes a problem in an earlier version's database conversion where percentage markups show incorrectly in the options drop-down (for instance, a 10% markup on $40 shows as $10 instead of $4). To patch around it, version 2.3 will put the percentage in the drop-down instead of the actual markup. These items will need to have their regular prices reset to have the actual markup appear.
 
 = 2.2 =
-**FIX**: Plugin name and Description.
+**FIX**: Plugin name and description.
 **FIX**: Markup calculation on sale prices when using a percentage markup (percent of the regular price, not sale price).
 **FIX**: Clear Markup-by-Attribute metadata from the database on variation deletion.
 
 = 2.1 =
-**FEATURE**: Organize `Settings` page with subheadings.
-**FEATURE**: Provide a link to the wiki from `Settings` page.
+**FEATURE**: Organize the `Settings` page with subheadings.
+**FEATURE**: Provide a link to the wiki from the `Settings` page.
 **FEATURE**: Expand wiki to include help with settings.
 **FIX**: Improve readme.txt readability.
 
@@ -534,7 +537,7 @@ Build 202113.03
 **FEATURE**: The new settings page allows configuration of the way the markup is displayed, including the number of decimals and the currency symbol.
 **FEATURE**: Markup description now enclosed in <span> tags and can be modified with CSS (#mbainfo {}).
 **FEATURE**: Markup description added to the attribute term description and can be seen in the attribute term list.
-**FEATURE**: Markup now saved as a floating-point number and not limited to only two digits below the decimal point.
+**FEATURE**: Markup is now saved as a floating-point number and not limited to only two digits below the decimal point.
 **FEATURE**: Database and code change to enhance supportability.
 **FIX**: Corrected issue where Increase/Decrease Regular/Sale Price functions calculated based on variation price rather than base price, yielding incorrect prices when percentages were used.
 **FIX**: Corrected issue where Increase/Decrease Regular/Sale Price functions did not update variation descriptions.
@@ -552,12 +555,12 @@ FIX: Remove the error_log() statement accidentally left in.
 
 **FEATURE**: Added class backend-pointers for inline instructions.
 **FEATURE**: Added instructions link to Plugins page.
-**FIX**: Use only regular price markup in attribute drop-down on the frontend. Percentage markups were appearing different in dropdown and variation description.
+**FIX**: Use only regular price markup in the attribute drop-down on the frontend. Percentage markups were appearing different in the dropdown and variation description.
 
 = 1.2.0 =
 
  * Change backend-attrb and backend-product to allow percentage markup.
- * Change backend-product and frontend to store actual product-attribute markups in post meta.
+ * Change the backend product and frontend to store actual product-attribute markups in post meta.
 
 = 1.1.1 =
 
@@ -596,7 +599,7 @@ Fixed a bug where Markup-by-Attribute would overwrite the options' selector for 
 = 1.2.0 =
 
  * Now allows the use of percentage (5%) markups and markdowns, as well as fixed values ($5).
- * And it stores the actual markup value displayed in the attribute drop-down with the product. This allows changing of the markup in the attribute \without affecting the markup displayed with the product.
+ * And it stores the actual markup value displayed in the attribute drop-down with the product. This allows changing of the markup in the attribute without affecting the markup displayed with the product.
 
 = 1.1.1 =
 

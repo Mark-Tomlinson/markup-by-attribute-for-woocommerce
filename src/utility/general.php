@@ -381,6 +381,9 @@ class General {
 			$numeric_part = $markup;
 		}
 
+		// Convert localized decimal input to standardized format using WooCommerce
+		$numeric_part = wc_format_decimal($numeric_part, false, true);
+
 		// Validate numeric format using regex pattern
 		// Pattern breakdown: ^[+-]?(?:\d+(?:\.\d{1,4})?|\d*\.\d{1,4})$
 		// ^[+-]? = optional plus or minus at start

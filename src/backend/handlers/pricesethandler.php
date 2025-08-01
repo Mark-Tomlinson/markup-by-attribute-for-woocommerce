@@ -35,7 +35,9 @@ class PriceSetHandler extends PriceMarkupHandler {
 	 * @param array  $variations  List of variation IDs
 	 */
 	public function __construct($bulk_action, $data, $product_id, $variations) {
-		parent::__construct($bulk_action, $product_id, is_numeric($data["value"]) ? (float) $data["value"] : '');
+		// Convert localized decimal input to standardized format using WooCommerce
+		$cleaned_value = wc_format_decimal($data["value"], false, true);
+		parent::__construct($bulk_action, $product_id, is_numeric($cleaned_value) ? (float) $cleaned_value : '');
 	}
 	//endregion
 

@@ -30,11 +30,11 @@ use mt2Tech\MarkupByAttribute\Utility as Utility;
  * Domain Path:             /languages
  * Version:                 4.3.8
  * Stable tag:              4.3.8
- * Tested up to:            6.8.2
+ * Tested up to:            6.8.3
  * Requires at least:       4.6
  * PHP tested up to:        8.4.5
  * Requires PHP:            7.4
- * WC tested up to:         10.0.2
+ * WC tested up to:         10.0.4
  * WC requires at least:    3.0
  * MySQL tested up to:      8.4.5
  */

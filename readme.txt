@@ -11,11 +11,11 @@ License:				GPLv3
 License URI:			https://www.gnu.org/licenses/gpl-3.0.html
 Version:				4.3.8
 Stable tag:				4.3.8
-Tested up to:			6.8.2
+Tested up to:			6.8.3
 Requires at least:		4.6
 PHP tested up to:		8.4.5
 Requires PHP:			7.4
-WC tested up to:		10.0.2
+WC tested up to:		10.0.4
 WC requires at least:	3.0
 MySQL tested up to:		8.4.5
 
@@ -206,7 +206,8 @@ If you use Markup-by-Attribute and want to see me continue support for it, I enc
 *Release Date: August 2025*
 
 **Bug Fixes**
-* Fixed European decimal notation handling in markup validation and price processing functions to support comma decimal separators properly (e.g., "5,50" instead of "5.50").
+* Fixed European decimal notation handling in markup validation and price processing functions to support comma decimal separators properly (e.g., "5,50" instead of "5.50")
+* Fixed sale price description handling to maintain consistent regular price markup display
 
 **Code Quality & Documentation Improvements**
 * Enhanced code readability with comprehensive PHPDoc standardization across all files

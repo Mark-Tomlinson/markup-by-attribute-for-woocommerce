@@ -385,12 +385,12 @@ class General {
 		$numeric_part = wc_format_decimal($numeric_part, false, true);
 
 		// Validate numeric format using regex pattern
-		// Pattern breakdown: ^[+-]?(?:\d+(?:\.\d{1,4})?|\d*\.\d{1,4})$
+		// Pattern breakdown: ^[+-]?(?:\d+(?:\.\d+)?|\d*\.\d+)$
 		// ^[+-]? = optional plus or minus at start
 		// (?:...|...) = non-capturing group with two alternatives:
-		//   \d+(?:\.\d{1,4})? = one or more digits, optionally followed by decimal and 1-4 digits
-		//   \d*\.\d{1,4} = zero or more digits, required decimal point, 1-4 digits (for .5, .25, etc.)
-		if (!preg_match('/^[+-]?(?:\d+(?:\.\d{1,4})?|\d*\.\d{1,4})$/', $numeric_part)) {
+		//   \d+(?:\.\d+)? = one or more digits, optionally followed by decimal and one or more digits
+		//   \d*\.\d+ = zero or more digits, required decimal point, one or more digits (for .5, .25, etc.)
+		if (!preg_match('/^[+-]?(?:\d+(?:\.\d+)?|\d*\.\d+)$/', $numeric_part)) {
 			return false;
 		}
 

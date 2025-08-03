@@ -227,8 +227,8 @@ class PriceSetHandler extends PriceMarkupHandler {
 							'markup' => $markup_value,
 						];
 
-						// Only add description if not ignored and this is regular price
-						if (MT2MBA_DESC_BEHAVIOR !== "ignore" && $this->price_type === REGULAR_PRICE) {
+						// Add description if not ignored (for both regular and sale prices)
+						if (MT2MBA_DESC_BEHAVIOR !== "ignore") {
 							$markup_table[$taxonomy][$term->slug]['description'] =
 								$mt2mba_utility->formatVariationMarkupDescription(
 									$markup_value,
@@ -260,7 +260,7 @@ class PriceSetHandler extends PriceMarkupHandler {
 			set_transient('mt2mba_current_base_' . $product_id, $rounded_base, HOUR_IN_SECONDS);
 		}
 		return MT2MBA_HIDE_BASE_PRICE === 'no' ?
-			html_entity_decode(MT2MBA_PRICE_META . $this->base_price_formatted) : '';
+			html_entity_decode(MT2MBA_PRICE_META . $this->getRegularPriceForDescription($product_id)) . PHP_EOL : '';
 	}
 
 	/**
@@ -274,6 +274,12 @@ class PriceSetHandler extends PriceMarkupHandler {
 	 */
 	private function processVariation($variation_id, $markup_table, $base_price_description) {
 		global $mt2mba_utility;
+		// Clear WooCommerce caches to ensure fresh data, especially for sale price operations
+		wp_cache_delete($variation_id, 'posts');
+		wp_cache_delete($variation_id, 'post_meta');
+		wc_delete_product_transients($variation_id);
+
+		// Force fresh load of variation to avoid cached description data
 		$variation = wc_get_product($variation_id);
 		$variation_price = $this->base_price;
 		$markup_description = '';
@@ -283,7 +289,7 @@ class PriceSetHandler extends PriceMarkupHandler {
 				$markup = (float) $markup_table[$attribute_id][$term_id]["markup"];
 				$variation_price += $markup;
 				if (isset($markup_table[$attribute_id][$term_id]["description"])) {
-					$markup_description .= PHP_EOL . $markup_table[$attribute_id][$term_id]["description"];
+					$markup_description .= $markup_table[$attribute_id][$term_id]["description"] . PHP_EOL;
 				}
 			}
 		}
@@ -299,20 +305,25 @@ class PriceSetHandler extends PriceMarkupHandler {
 
 	/**
 	 * Build variation description with markup information.
-	 * Combines existing description with markup details based on settings.
+	 *
+	 * For regular prices: Builds new descriptions with current markup calculations using regular price as base.
+	 * For sale prices: Preserves existing descriptions to maintain consistent regular price markup display.
+	 * This ensures descriptions always show how the regular price was calculated, regardless of current sale prices.
 	 *
 	 * @param	WC_Product	$variation				The variation product object
-	 * @param	string		$base_price_description	Base price description text
+	 * @param	string		$base_price_description	Base price description text (regular price)
 	 * @param	string		$markup_description		Markup-specific description text
 	 * @param	float		$variation_price		The calculated variation price
 	 * @return	string								Complete variation description
 	 */
 	protected function buildVariationDescription($variation, $base_price_description, $markup_description, $variation_price) {
 		global $mt2mba_utility;
-		$description = "";
 
 		if ($this->price_type === REGULAR_PRICE) {
-			// Only modify existing description if not overwriting
+			// Build new description for regular prices and reapply markup operations
+			$description = "";
+
+			// Preserve existing non-markup description content unless overwriting
 			if (MT2MBA_DESC_BEHAVIOR !== "overwrite") {
 				$description = $variation->get_description();
 				$description = $mt2mba_utility->remove_bracketed_string(
@@ -322,16 +333,24 @@ class PriceSetHandler extends PriceMarkupHandler {
 				);
 			}
 
-			// Only add markup description if we have markups and behavior isn't ignore
-			if ($markup_description && $variation_price != null && MT2MBA_DESC_BEHAVIOR !== "ignore") {
-				$description .= PHP_EOL . PRODUCT_MARKUP_DESC_BEG .
-							  $base_price_description .
-							  $markup_description .
-							  PRODUCT_MARKUP_DESC_END;
+			// Add separator if description has content
+			if (!empty($description)) {
+				$description .= PHP_EOL;
 			}
-		}
 
-		return $description;
+			// Add markup information if we have markups and behavior allows it
+			if ($markup_description && $variation_price != null && MT2MBA_DESC_BEHAVIOR !== "ignore") {
+				$description .= PRODUCT_MARKUP_DESC_BEG .
+							$base_price_description .
+							$markup_description .
+							PRODUCT_MARKUP_DESC_END;
+			}
+
+			return trim($description);
+		} else {
+			// For sale prices: preserve existing description to maintain regular price markup consistency
+			return $variation->get_description();
+		}
 	}
 	//endregion
 
@@ -452,8 +471,8 @@ class PriceSetHandler extends PriceMarkupHandler {
 				);
 			}
 
-			// Handle descriptions for regular price updates
-			if ($this->price_type === REGULAR_PRICE && !empty($description_updates)) {
+			// Handle descriptions for both regular and sale price updates
+			if (!empty($description_updates)) {
 				// Remove existing descriptions
 				$wpdb->query($wpdb->prepare(
 					"DELETE FROM {$wpdb->postmeta}
@@ -479,6 +498,24 @@ class PriceSetHandler extends PriceMarkupHandler {
 	//endregion
 
 	//region UTILITY METHODS
+	/**
+	 * Get formatted regular price for description display.
+	 * Always returns the regular price formatting, regardless of which price type is being set.
+	 *
+	 * @param	int		$product_id	The ID of the product
+	 * @return	string				Formatted regular price for description
+	 */
+	private function getRegularPriceForDescription($product_id) {
+		if ($this->price_type === REGULAR_PRICE) {
+			// We're setting regular price, use the current value being set
+			return $this->base_price_formatted;
+		} else {
+			// We're setting sale price, get stored regular price
+			$regular_price = get_metadata("post", $product_id, "mt2mba_base_" . REGULAR_PRICE, true);
+			return is_numeric($regular_price) ? strip_tags(wc_price(abs($regular_price))) : '';
+		}
+	}
+
 	/**
 	 * Get attribute data for a product.
 	 * Retrieves and formats all taxonomy attribute information.

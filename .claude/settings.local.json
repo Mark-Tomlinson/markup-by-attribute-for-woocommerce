@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:192.168.1.90)",
+      "Read(//c/Users/markt/**)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

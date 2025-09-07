@@ -45,7 +45,7 @@ class General {
 	/**
 	 * Prevent object cloning
 	 */
-	public function __clone(): void {}
+	public function __clone() {}
 
 	/**
 	 * Prevent object unserialization
@@ -358,7 +358,7 @@ class General {
 	 * @param	string	$markup		Raw markup input
 	 * @return	string|false		Validated markup or false if invalid
 	 */
-	public function validateMarkupValue(string $markup): string|false {
+	public function validateMarkupValue(string $markup) {
 		// Handle empty values - treat zero as empty markup (no price change)
 		if (empty($markup) || $markup === '0' || $markup === 0) {
 			return '';

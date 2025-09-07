@@ -11,7 +11,7 @@ use mt2Tech\MarkupByAttribute\Utility as Utility;
  * This file is part of the Markup by Attribute for WooCommerce plugin by Mark Tomlinson
  *
  * @package   markup-by-attribute-for-woocommerce
- * @version   4.3.8
+ * @version   4.3.9
  * @author    Mark Tomlinson
  * @license   GPL-2.0+
  */
@@ -28,14 +28,14 @@ use mt2Tech\MarkupByAttribute\Utility as Utility;
  * License URI:             https://www.gnu.org/licenses/gpl-3.0.html
  * Text Domain:             markup-by-attribute-for-woocommerce
  * Domain Path:             /languages
- * Version:                 4.3.8
- * Stable tag:              4.3.8
+ * Version:                 4.3.9
+ * Stable tag:              4.3.9
  * Tested up to:            6.8.3
- * Requires at least:       4.6
+ * Requires at least:       5.4
  * PHP tested up to:        8.4.5
  * Requires PHP:            7.4
  * WC tested up to:         10.0.4
- * WC requires at least:    3.0
+ * WC requires at least:    3.9
  * MySQL tested up to:      8.4.5
  */
 
@@ -110,7 +110,7 @@ function define_constants(): void {
 	define('MT2MBA_SITE_URL', get_bloginfo('wpurl'));
 
 	// Plugin version and compatibility
-	define('MT2MBA_VERSION', '4.3.8');
+	define('MT2MBA_VERSION', '4.3.9');
 	define('MT2MBA_DB_VERSION', 2.2);
 	define('MT2MBA_MIN_WP_VERSION', '3.3');
 	define('MT2MBA_ADMIN_POINTER_PRIORITY', 1000);

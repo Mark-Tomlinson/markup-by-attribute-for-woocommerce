@@ -80,14 +80,14 @@ class Term {
 	 *
 	 * @since 1.0.0
 	 */
-	private function __clone(): void {}
+	private function __clone() {}
 
 	/**
 	 * Prevent object unserialization
 	 *
 	 * @since 1.0.0
 	 */
-	public function __wakeup(): void {}
+	public function __wakeup() {}
 
 	/**
 	 * Initialize the class and set up hooks
@@ -110,7 +110,7 @@ class Term {
 	 *
 	 * @since 3.0.0
 	 */
-	private function initializeLabels(): void {
+	private function initializeLabels() {
 		$this->markup_label = __('Markup (or markdown)', 'markup-by-attribute-for-woocommerce');
 		$this->markup_description = __('Markup or markdown associated with this option. Signed, floating point numeric allowed.', 'markup-by-attribute-for-woocommerce');
 		$this->rewrite_name_label = __('Add Markup to Name?', 'markup-by-attribute-for-woocommerce');
@@ -138,7 +138,7 @@ class Term {
 	 *
 	 * @since 3.0.0
 	 */
-	private function registerAttributeHooks(): void {
+	private function registerAttributeHooks() {
 		// Add fields to forms
 		add_action("woocommerce_after_add_attribute_fields", array($this, 'addAttributeFields'), 10, 2);
 		add_action("woocommerce_after_edit_attribute_fields", array($this, 'editAttributeFields'), 10, 2);
@@ -154,7 +154,7 @@ class Term {
 	/**
 	 * Register hooks for taxonomies
 	 */
-	private function registerTaxonomyHooks(): void {
+	private function registerTaxonomyHooks() {
 		// Get all WooCommerce global attributes (like Color, Size, etc.)
 		$attribute_taxonomies = wc_get_attribute_taxonomies();
 
@@ -170,7 +170,7 @@ class Term {
 	/**
 	 * Register term-related hooks for a taxonomy
 	 */
-	private function registerTermHooks(string $taxonomy): void {
+	private function registerTermHooks(string $taxonomy) {
 		// WordPress dynamically creates hooks for each taxonomy
 		// Add our markup fields to the term add/edit forms
 		add_action("{$taxonomy}_add_form_fields", array($this, 'addTermFields'), 10, 2);
@@ -185,7 +185,7 @@ class Term {
 	/**
 	 * Register column-related hooks for a taxonomy
 	 */
-	private function registerColumnHooks(string $taxonomy): void {
+	private function registerColumnHooks(string $taxonomy) {
 		// Add 'Markup' column
 		add_filter("manage_edit-{$taxonomy}_columns", function ($columns) {
 			$columns['markup'] = __('Markup', 'markup-by-attribute-for-woocommerce');
@@ -216,7 +216,7 @@ class Term {
 	/**
 	 * Build form fields for attribute add panel
 	 */
-	function addAttributeFields(): void {
+	function addAttributeFields() {
 		if (isset($_POST['add_new_attribute'])) {
 			$taxonomy_id = wc_attribute_taxonomy_id_by_name(sanitize_title($_POST['attribute_label']));
 
@@ -265,7 +265,7 @@ class Term {
 	/**
 	 * Build form fields for attribute edit panel
 	 */
-	function editAttributeFields(): void {
+	function editAttributeFields() {
 		// Retrieve the existing rewrite name flag for this attribute (NULL results are valid)
 		if (isset($_POST['save_attribute'])) {
 			$attribute_id = $_GET['edit'];
@@ -331,7 +331,7 @@ class Term {
 	/**
 	 * Build form fields for term add panel
 	 */
-	function addTermFields(string $taxonomy): void {
+	function addTermFields(string $taxonomy) {
 		// Build <DIV>
 		?>
 		<div class="form-field">
@@ -345,7 +345,7 @@ class Term {
 	/**
 	 * Build form fields for term edit panel
 	 */
-	function editTermFields(object $term): void {
+	function editTermFields(object $term) {
 		// Retrieve the existing markup for this term(NULL results are valid)
 		$term_markup = wc_format_localized_decimal(get_term_meta($term->term_id, "mt2mba_markup", TRUE));
 
@@ -366,19 +366,25 @@ class Term {
 	/**
 	 * Save the term markup metadata
 	 */
-	function handleTermMarkupSave(int $term_id): void {
+	function handleTermMarkupSave(int $term_id) {
 		// Sanity check
 		if (!isset($_POST['term_markup'])) return;
 
 		// WordPress nonce verification for CSRF protection
-		// Different nonce actions are used for editing existing vs. creating new terms
-		if (!isset($_POST['_wpnonce']) || !wp_verify_nonce($_POST['_wpnonce'], 'update-tag_' . $term_id)) {
-			// Fallback: check if this is a new term creation (uses different nonce action)
-			if (!wp_verify_nonce($_POST['_wpnonce'] ?? '', 'add-tag')) {
-				// Neither nonce verified - reject the request
+		// Note: WordPress add term forms don't include nonces by default, only edit forms do
+		$term = get_term($term_id);
+		$taxonomy_name = sanitize_key($term->taxonomy);
+		
+		// Only validate nonce if one is present (edit operations)
+		// New term creation via created_{$taxonomy} hook typically has no nonce
+		if (isset($_POST['_wpnonce'])) {
+			// This is an edit operation - validate the nonce
+			if (!wp_verify_nonce($_POST['_wpnonce'], 'update-tag_' . $term_id)) {
+				// Invalid nonce for edit operation - reject
 				return;
 			}
 		}
+		// If no nonce is present, this is likely a new term creation - proceed without validation
 
 		// Prevent infinite recursion: wp_update_term() triggers this hook again
 		// Use a constant flag to detect if we're already processing this term
@@ -386,8 +392,6 @@ class Term {
 		define('MT2MBA_ATTRB_RECURSION', TRUE);
 
 		global $mt2mba_utility;
-		$term = get_term($term_id);
-		$taxonomy_name = sanitize_key($term->taxonomy);
 
 		// Clean slate: remove any existing markup annotations from term data
 		// This ensures we don't duplicate markup text when reapplying
@@ -459,7 +463,7 @@ class Term {
 	/**
 	* Handle markup column sorting
 	*/
-	function handleMarkupColumnSort(object $term_query): void {
+	function handleMarkupColumnSort(object $term_query) {
 		// WP_Term_Query does not define a get() or a set() method,
 		// so the query_vars member must be manipulated directly
 		if (isset($_GET['orderby']) && 'markup' == $_GET['orderby']) {

@@ -94,7 +94,7 @@ class Settings extends WC_Settings_API {
 	 *
 	 * @since 2.0.0
 	 */
-	public function __clone(): void {}
+	public function __clone() {}
 
 	/**
 	 * Prevent unserializing of the instance

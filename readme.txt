@@ -9,15 +9,15 @@ Contributors:			MarkTomlinson
 Donate link:			https://www.paypal.me/MT2Dev/5
 License:				GPLv3
 License URI:			https://www.gnu.org/licenses/gpl-3.0.html
-Version:				4.3.8
-Stable tag:				4.3.8
-Tested up to:			6.8.3
-Requires at least:		4.6
-PHP tested up to:		8.4.5
-Requires PHP:			7.4
-WC tested up to:		10.0.4
-WC requires at least:	3.0
-MySQL tested up to:		8.4.5
+Version:                4.3.9
+Stable tag:             4.3.9
+Tested up to:           6.8.3
+Requires at least:      5.4
+PHP tested up to:       8.4.5
+Requires PHP:           7.4
+WC tested up to:        10.0.4
+WC requires at least:   3.9
+MySQL tested up to:     8.4.5
 
 This plugin adds product variation markup by attribute to WooCommerce and adjusts product variation regular and sale prices accordingly.
 
@@ -201,6 +201,15 @@ If you use Markup-by-Attribute and want to see me continue support for it, I enc
 7. The settings page allows configuration of how the markup is displayed.
 
 == Upgrade Notice ==
+Version 4.3.9 - Ensured backward compatibility with PHP 7.4, WordPress 5.4, and WooCommerce 3.9.
+
+== Changelog ==
+= 4.3.9 =
+*Release Date: August 2025*
+
+**Bug Fixes**
+* Fixed markup saving when adding new terms with a markup
+* Ensured backward compatibility with PHP 7.4.3, WordPress 5.4, and WooCommerce 3.9
 
 = 4.3.8 =
 *Release Date: August 2025*
@@ -235,15 +244,6 @@ If you use Markup-by-Attribute and want to see me continue support for it, I enc
 * Updated compatibility to confirm support for WordPress 6.8, WooCommerce 9.8.1, and PHP 8.3.11.
 * Incremented plugin version number.
 * No functional code changes included in this update.
-
-== Changelog ==
-= 4.3.5 =
-*Release Date: April 2025*
-
-**Maintenance**
-* Updated compatibility to confirm support for WordPress 6.8.
-* Incremented plugin version number.
-* No functional code changes included in this specific version update.
 
 = 4.3.5 =
 *Release Date: March 2025*

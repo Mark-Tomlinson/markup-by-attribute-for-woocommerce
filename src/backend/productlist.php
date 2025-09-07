@@ -59,7 +59,7 @@ class ProductList {
 	 *
 	 * @since 3.13.0
 	 */
-	public function __clone(): void {}
+	public function __clone() {}
 
 	/**
 	 * Prevent object unserialization
@@ -271,7 +271,7 @@ class ProductList {
 	 * @param int        $product_id Product ID
 	 * @param float      $base_price Current base price for the product
 	 */
-	private function renderAttributesColumn(object $product, int $product_id, float|string $base_price): void {
+	private function renderAttributesColumn(object $product, int $product_id, $base_price): void {
 		$attributes = $product->get_attributes();
 
 		if (empty($attributes)) {

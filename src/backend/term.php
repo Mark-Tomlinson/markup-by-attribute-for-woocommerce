@@ -110,7 +110,7 @@ class Term {
 	 *
 	 * @since 3.0.0
 	 */
-	private function initializeLabels() {
+	private function initializeLabels(): void {
 		$this->markup_label = __('Markup (or markdown)', 'markup-by-attribute-for-woocommerce');
 		$this->markup_description = __('Markup or markdown associated with this option. Signed, floating point numeric allowed.', 'markup-by-attribute-for-woocommerce');
 		$this->rewrite_name_label = __('Add Markup to Name?', 'markup-by-attribute-for-woocommerce');
@@ -138,23 +138,26 @@ class Term {
 	 *
 	 * @since 3.0.0
 	 */
-	private function registerAttributeHooks() {
+	private function registerAttributeHooks(): void {
 		// Add fields to forms
 		add_action("woocommerce_after_add_attribute_fields", array($this, 'addAttributeFields'), 10, 2);
 		add_action("woocommerce_after_edit_attribute_fields", array($this, 'editAttributeFields'), 10, 2);
 
 		// Delete options when attribute is deleted
 		add_action("woocommerce_before_attribute_delete", function () {
-			delete_option(REWRITE_TERM_NAME_PREFIX . $_GET['delete']);
-			delete_option(REWRITE_TERM_DESC_PREFIX . $_GET['delete']);
-			delete_option(DONT_OVERWRITE_THEME_PREFIX . $_GET['delete']);
+			$delete_id = isset($_GET['delete']) ? absint($_GET['delete']) : 0;
+			if ($delete_id > 0) {
+				delete_option(REWRITE_TERM_NAME_PREFIX . $delete_id);
+				delete_option(REWRITE_TERM_DESC_PREFIX . $delete_id);
+				delete_option(DONT_OVERWRITE_THEME_PREFIX . $delete_id);
+			}
 		}, 10, 2);
 	}
 
 	/**
 	 * Register hooks for taxonomies
 	 */
-	private function registerTaxonomyHooks() {
+	private function registerTaxonomyHooks(): void {
 		// Get all WooCommerce global attributes (like Color, Size, etc.)
 		$attribute_taxonomies = wc_get_attribute_taxonomies();
 
@@ -170,7 +173,7 @@ class Term {
 	/**
 	 * Register term-related hooks for a taxonomy
 	 */
-	private function registerTermHooks(string $taxonomy) {
+	private function registerTermHooks(string $taxonomy): void {
 		// WordPress dynamically creates hooks for each taxonomy
 		// Add our markup fields to the term add/edit forms
 		add_action("{$taxonomy}_add_form_fields", array($this, 'addTermFields'), 10, 2);
@@ -185,7 +188,7 @@ class Term {
 	/**
 	 * Register column-related hooks for a taxonomy
 	 */
-	private function registerColumnHooks(string $taxonomy) {
+	private function registerColumnHooks(string $taxonomy): void {
 		// Add 'Markup' column
 		add_filter("manage_edit-{$taxonomy}_columns", function ($columns) {
 			$columns['markup'] = __('Markup', 'markup-by-attribute-for-woocommerce');
@@ -267,8 +270,15 @@ class Term {
 	 */
 	function editAttributeFields() {
 		// Retrieve the existing rewrite name flag for this attribute (NULL results are valid)
+		// Sanitize the attribute ID from GET parameter once at the top
+		$attribute_id = isset($_GET['edit']) ? absint($_GET['edit']) : 0;
+
+		// Early return if invalid ID
+		if ($attribute_id <= 0) {
+			return;
+		}
+
 		if (isset($_POST['save_attribute'])) {
-			$attribute_id = $_GET['edit'];
 			$options = [
 				REWRITE_TERM_NAME_PREFIX . $attribute_id => [
 					'value' => isset($_POST['term_name_rewrite']),
@@ -293,9 +303,9 @@ class Term {
 			}
 		}
 		// Set flags from Options database
-		$rewrite_name_flag			= get_option(REWRITE_TERM_NAME_PREFIX . $_GET['edit'], false);
-		$rewrite_desc_flag			= get_option(REWRITE_TERM_DESC_PREFIX . $_GET['edit'], false);
-		$dont_overwrite_theme_flag	= get_option(DONT_OVERWRITE_THEME_PREFIX . $_GET['edit'], false);
+		$rewrite_name_flag			= get_option(REWRITE_TERM_NAME_PREFIX . $attribute_id, false);
+		$rewrite_desc_flag			= get_option(REWRITE_TERM_DESC_PREFIX . $attribute_id, false);
+		$dont_overwrite_theme_flag	= get_option(DONT_OVERWRITE_THEME_PREFIX . $attribute_id, false);
 
 		// Build row and fill field with current markup
 		$checked_name_flag = $rewrite_name_flag == 'yes' ? ' checked' : "";
@@ -335,6 +345,7 @@ class Term {
 		// Build <DIV>
 		?>
 		<div class="form-field">
+			<?php wp_nonce_field('mt2mba_add_term', 'mt2mba_term_nonce'); ?>
 			<label for="term_markup"><?php echo($this->markup_label); ?></label>
 			<input type="text" placeholder="<?php echo($this->placeholder); ?>" name="term_markup" id="term_add_markup" value="">
 			<p class="description"><?php echo($this->markup_description); ?></p>
@@ -370,21 +381,35 @@ class Term {
 		// Sanity check
 		if (!isset($_POST['term_markup'])) return;
 
+		// Check if user has permission to edit terms
+		if (!current_user_can('manage_product_terms')) {
+			return;
+		}
+
 		// WordPress nonce verification for CSRF protection
-		// Note: WordPress add term forms don't include nonces by default, only edit forms do
 		$term = get_term($term_id);
 		$taxonomy_name = sanitize_key($term->taxonomy);
-		
-		// Only validate nonce if one is present (edit operations)
-		// New term creation via created_{$taxonomy} hook typically has no nonce
-		if (isset($_POST['_wpnonce'])) {
-			// This is an edit operation - validate the nonce
+
+		// Determine operation type and validate appropriate nonce
+		$is_edit = isset($_POST['_wpnonce']);
+		$is_add = isset($_POST['mt2mba_term_nonce']);
+
+		if ($is_edit) {
+			// Edit operation - validate WordPress's standard edit nonce
 			if (!wp_verify_nonce($_POST['_wpnonce'], 'update-tag_' . $term_id)) {
 				// Invalid nonce for edit operation - reject
 				return;
 			}
+		} elseif ($is_add) {
+			// Add operation - validate our custom add nonce
+			if (!wp_verify_nonce($_POST['mt2mba_term_nonce'], 'mt2mba_add_term')) {
+				// Invalid nonce for add operation - reject
+				return;
+			}
+		} else {
+			// No valid nonce present - reject to prevent CSRF
+			return;
 		}
-		// If no nonce is present, this is likely a new term creation - proceed without validation
 
 		// Prevent infinite recursion: wp_update_term() triggers this hook again
 		// Use a constant flag to detect if we're already processing this term

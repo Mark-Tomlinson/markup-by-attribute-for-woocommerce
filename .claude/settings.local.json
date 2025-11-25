@@ -1,0 +1,20 @@
+{
+    "permissions": {
+        "allow": [
+            "Read(**)",
+            "Glob(**)",
+            "Grep(**)",
+            "Write(.claude/**)",
+            "Update(.claude/**)",
+            "Delete(//d/Code/MarkupbyAttribute/.claude/**)",
+            "Bash(//d/Code/MarkupbyAttribute/.claude/**)"
+        ],
+        "deny": [
+        ],
+        "ask": [
+            "Bash(git push**)",
+            "Bash(**rm -rf**)",
+            "Bash(**--force**)"
+        ]
+    }
+}

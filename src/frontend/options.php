@@ -33,7 +33,7 @@ class Options {
 	 *
 	 * @return self Single instance of this class
 	 */
-	public static function get_instance() {
+	public static function get_instance(): self {
 		if (self::$instance === null) {
 			self::$instance = new self();
 		}
@@ -79,7 +79,7 @@ class Options {
 	 * }
 	 * @return string Modified dropdown HTML with markup information
 	 */
-	public function mt2mbaDropdownOptionsMarkupHTML($html, $args) {
+	public function mt2mbaDropdownOptionsMarkupHTML($html, $args): string {
 		// Extract attribute from $args
 		$attribute = $args['attribute'];
 
@@ -88,11 +88,12 @@ class Options {
 			// Get attribute ID for option lookups
 			$attribute_id = wc_attribute_taxonomy_id_by_name($attribute);
 			if ($attribute_id === 0) {
-				error_log(sprintf(
-					'Markup by Attribute: Failed to get taxonomy ID for global attribute %s',
-					$attribute
-				));
-				return $html;
+				if (defined('WP_DEBUG') && WP_DEBUG) {
+					error_log(sprintf(
+						'Markup by Attribute: Failed to get taxonomy ID for global attribute %s',
+						esc_html($attribute)
+					));
+				}
 			}
 		} else {
 			// Not a global attribute - return original HTML unchanged

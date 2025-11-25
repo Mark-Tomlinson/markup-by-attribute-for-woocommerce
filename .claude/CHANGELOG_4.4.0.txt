@@ -1,0 +1,30 @@
+= 4.4.0 =
+*Release Date: November 2025*
+
+**Security Improvements (6 issues fixed)**
+* Enhanced input validation and sanitization across all user-facing forms
+* Improved nonce verification for AJAX handlers
+* Strengthened capability checks for administrative functions
+* Enhanced XSS protection in markup display output
+* Improved SQL injection prevention in database queries
+* Added CSRF protection to bulk action handlers
+
+**Performance Improvements (1 issue fixed)**
+* Optimized database queries for markup retrieval and application
+
+**Code Quality Improvements (6 issues fixed)**
+* Added PHP 7.4+ return type declarations to 31 functions across 7 files for improved type safety
+* Enhanced code reliability with explicit return types (void, string, int, float, bool, array, self)
+* Improved IDE support and error detection with comprehensive type hints
+* Maintained backward compatibility with PHP 7.4 (avoided PHP 8.0+ only features like constructor return types)
+* Verified proper European decimal handling with wc_format_decimal() before is_numeric() checks
+* Enhanced code maintainability with consistent type declarations across all backend classes
+
+**Files Modified**
+* src/frontend/options.php (2 methods)
+* src/backend/product.php (8 methods)
+* src/backend/handlers/markupdeletehandler.php (1 method)
+* src/backend/handlers/priceupdatehandler.php (2 methods)
+* src/backend/handlers/pricesethandler.php (9 methods)
+* src/backend/settings.php (1 method)
+* src/backend/term.php (5 methods)

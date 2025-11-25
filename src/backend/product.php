@@ -46,7 +46,7 @@ class Product {
 	 *
 	 * @param	string	$hook	The current admin page hook
 	 */
-	public function enqueueMarkupScripts($hook) {
+	public function enqueueMarkupScripts($hook): void {
 		// Only load on product edit page
 		if (!in_array($hook, ['post.php', 'post-new.php'])) {
 			return;
@@ -102,7 +102,7 @@ class Product {
 	 *
 	 * @since 4.0.0
 	 */
-	public function handleMarkupReapplication() {
+	public function handleMarkupReapplication(): void {
 		try {
 			// Validate request and get product info
 			$validation_result = $this->validateReapplyMarkupsRequest();
@@ -151,7 +151,7 @@ class Product {
 	 *
 	 * @since 4.0.0
 	 */
-	public function getFormattedBasePrice() {
+	public function getFormattedBasePrice(): void {
 		check_ajax_referer('handleMarkupReapplication', 'security');
 
 		$product_id = isset($_POST['product_id']) ? absint($_POST['product_id']) : 0;
@@ -181,7 +181,7 @@ class Product {
 	 *
 	 * @since 4.3.0
 	 */
-	public function refreshProductGeneralPanel() {
+	public function refreshProductGeneralPanel(): void {
 		check_ajax_referer('handleMarkupReapplication', 'security');
 
 		$product_id = isset($_POST['product_id']) ? absint($_POST['product_id']) : 0;
@@ -218,7 +218,7 @@ class Product {
 	 * @param	int		$product_id		The ID of the product
 	 * @param	array	$variations		List of variation IDs
 	 */
-	public function handleBulkPriceAction($bulk_action, $data, $product_id, $variations) {
+	public function handleBulkPriceAction($bulk_action, $data, $product_id, $variations): void {
 		// Determine which class should extend PriceMarkupHandler based on the bulk_action
 		if ($bulk_action == "variable_regular_price" || $bulk_action == "variable_sale_price") {
 			// Set either the regular price or the sale price
@@ -247,7 +247,7 @@ class Product {
 	 * Display base price fields in product general options panel.
 	 * Shows readonly fields for base regular and sale prices.
 	 */
-	public function addBasePriceFields() {
+	public function addBasePriceFields(): void {
 		global $post;
 
 		if ($post) {
@@ -332,7 +332,7 @@ class Product {
 	 * @param	int		$product_id	The ID of the product
 	 * @param	array	$variations	List of variation IDs
 	 */
-	private function processVariationsWithMarkup($product_id, $variations) {
+	private function processVariationsWithMarkup($product_id, $variations): void {
 		$base_regular_price = get_post_meta($product_id, 'mt2mba_base_regular_price', true);
 		$data = ['value' => $base_regular_price];
 		$handler = new Handlers\PriceSetHandler('variable_regular_price', $data, $product_id, $variations);
@@ -353,9 +353,8 @@ class Product {
 	 * @param	int		$product_id	The ID of the product
 	 * @param	array	$variations	List of variation IDs
 	 */
-	private function cleanupCachesAndTransients($product_id, $variations) {
-		// Clear WordPress cache
-		wp_cache_flush();
+	private function cleanupCachesAndTransients($product_id, $variations): void {
+		// Clear post cache
 		clean_post_cache($product_id);
 
 		// Clear WooCommerce specific caches

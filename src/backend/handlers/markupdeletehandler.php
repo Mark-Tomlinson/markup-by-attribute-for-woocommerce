@@ -45,7 +45,7 @@ class MarkupDeleteHandler extends PriceMarkupHandler {
 	 * @param int    $product_id The ID of the product
 	 * @param array  $unused4    Unused parameter (maintaining interface compatibility)
 	 */
-	public function processProductMarkups($unused1, $unused2, $product_id, $unused4) {
+	public function processProductMarkups($unused1, $unused2, $product_id, $unused4): void {
 		global $wpdb;
 
 		// Delete all Markup-by-Attribute metadata for the product using prepared statement

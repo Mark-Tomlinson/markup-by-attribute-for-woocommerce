@@ -8,14 +8,6 @@
  * @requires mt2mbaLocal (localized script data)
  */
 jQuery(document).ready(function($) {
-	// Helper function to get cookie value
-	function getCookie(name) {
-		const value = `; ${document.cookie}`;
-		const parts = value.split(`; ${name}=`);
-		if (parts.length === 2) return parts.pop().split(';').shift();
-		return null;
-	}
-
 	// Find 'Pricing' group in bulk actions (second group)
 	var $select = $('#variable_product_options select.variation_actions');
 	var $pricingGroup = $select.find('optgroup').eq(1);
@@ -32,7 +24,8 @@ jQuery(document).ready(function($) {
 	// Add listener for clicking the General tab
 	$('.product_data_tabs .general_tab a').on('click', function() {
 		// Only refresh if prices were changed
-		if (getCookie('mt2mba_prices_changed')) {
+		if (sessionStorage.getItem('mt2mba_prices_changed')) {
+
 			var product_id = $('#post_ID').val();
 
 			// Refresh the [General] panel
@@ -48,8 +41,8 @@ jQuery(document).ready(function($) {
 					if (response.success) {
 						// Target the specific options group
 						$('.panel-wrap.product_data .options_group.show_if_variable').html(response.data.html);
-						// Clear the cookie since we've refreshed
-						document.cookie = 'mt2mba_prices_changed=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+						// Clear the prices-changed flag since we've refreshed
+						sessionStorage.removeItem('mt2mba_prices_changed');
 					}
 				},
 				error: function(jqXHR, textStatus, errorThrown) {  // Add error handler
@@ -64,9 +57,10 @@ jQuery(document).ready(function($) {
 		var $select = $(this);
 		var action = $select.val();
 
-		// Set cookie if this is a pricing action
+		// Set a prices-changed flag if this is a pricing action
 		if (action.includes('price')) {
-			document.cookie = 'mt2mba_prices_changed=true; Path=/;';
+			sessionStorage.setItem('mt2mba_prices_changed', 'true');
+
 		}
 
 		if (action === 'reapply_markup') {

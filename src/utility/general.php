@@ -93,10 +93,13 @@ class General {
 	function mt2mba_db_upgrade() {
 		global $wpdb;
 
+		// Get current version at start of function
+		$current_db_version = get_site_option('mt2mba_db_version', '0');
+
 		// --------------------------------------------------------------
 		// Update database from version 1.x. Leave 1.x data for fallback.
 		// --------------------------------------------------------------
-		if (version_compare($current_db_version, '2.0', '<')) {
+	    if (version_compare($current_db_version, '2.0', '<')) {
 			// Add prefix to attribute markup meta data key
 			$results = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}termmeta WHERE meta_key LIKE 'markup'");
 			foreach ($results as $row) {

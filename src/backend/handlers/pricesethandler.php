@@ -57,7 +57,7 @@ class PriceSetHandler extends PriceMarkupHandler {
 	 * @param int    $product_id  The ID of the product
 	 * @param array  $variations  List of variation IDs
 	 */
-	public function processProductMarkups($bulk_action, $data, $product_id, $variations) {
+	public function processProductMarkups($bulk_action, $data, $product_id, $variations): void {
 		global $mt2mba_utility;
 
 		// Was the price removed from variations, or is the price zero and zero is allowed?
@@ -105,7 +105,7 @@ class PriceSetHandler extends PriceMarkupHandler {
 	 * @param array $variations List of variation IDs
 	 * @return bool             True if price is blank/zero and processing should stop
 	 */
-	public function isBlankOrZeroPrice($product_id, $variations) {
+	public function isBlankOrZeroPrice($product_id, $variations): bool {
 		// Condition #1: {base-price} is blank or =< 0
 		if (floatval($this->base_price) <= 0) {
 
@@ -193,7 +193,7 @@ class PriceSetHandler extends PriceMarkupHandler {
 	 * @param int   $product_id     The ID of the product
 	 * @return array                Markup table indexed by [taxonomy][term_slug] with markup/description data
 	 */
-	protected function buildMarkupTable($attribute_data, $product_id) {
+	protected function buildMarkupTable($attribute_data, $product_id): array {
 		global $mt2mba_utility;
 		$markup_table = [];
 
@@ -251,7 +251,7 @@ class PriceSetHandler extends PriceMarkupHandler {
 	 * @param	float	$rounded_base	The rounded base price to save
 	 * @return	string					Price description or empty string based on settings
 	 */
-	private function handleBasePriceUpdate($product_id, $rounded_base) {
+	private function handleBasePriceUpdate($product_id, $rounded_base): string {
 		// update_post_meta() does not appear to change cached records. Deleting the
 		// record before rewriting it appears to be the only way to update the cache.
 		delete_post_meta($product_id, "mt2mba_base_{$this->price_type}");
@@ -272,7 +272,7 @@ class PriceSetHandler extends PriceMarkupHandler {
 	 * @param	string	$base_price_description	Base price description text
 	 * @return	array							Processed variation data
 	 */
-	private function processVariation($variation_id, $markup_table, $base_price_description) {
+	private function processVariation($variation_id, $markup_table, $base_price_description): array {
 		global $mt2mba_utility;
 		// Clear WooCommerce caches to ensure fresh data, especially for sale price operations
 		wp_cache_delete($variation_id, 'posts');
@@ -316,7 +316,7 @@ class PriceSetHandler extends PriceMarkupHandler {
 	 * @param	float		$variation_price		The calculated variation price
 	 * @return	string								Complete variation description
 	 */
-	protected function buildVariationDescription($variation, $base_price_description, $markup_description, $variation_price) {
+	protected function buildVariationDescription($variation, $base_price_description, $markup_description, $variation_price): string {
 		global $mt2mba_utility;
 
 		if ($this->price_type === REGULAR_PRICE) {
@@ -360,7 +360,7 @@ class PriceSetHandler extends PriceMarkupHandler {
 	 *
 	 * @param	array	$markup_table	The markup table for the product
 	 */
-	protected function bulkSaveProductMarkupValues($markup_table) {
+	protected function bulkSaveProductMarkupValues($markup_table): void {
 		global $wpdb;
 
 		// Delete all existing mt2mba_{term_id}_markup_amount records for this product
@@ -371,27 +371,27 @@ class PriceSetHandler extends PriceMarkupHandler {
 			$this->product_id
 		));
 
-		// Build queries, then bulk insert new mt2mba_{term_id}_markup_amount into postmeta.
-		$meta_data = [];
+		// Build complete query with proper placeholders
+		if (!empty($markup_table)) {
+			$placeholders = array();
+			$values = array();
 
-		foreach ($markup_table as $attribute => $options) {
-			foreach ($options as $option => $details) {
-				$term_id = $details['term_id'];
-				$markup = number_format(floatval($details['markup']), $this->price_decimals, '.', '');
-				$meta_key = "mt2mba_{$term_id}_markup_amount";
-				$meta_data[] = $wpdb->prepare("(%d, %s, %s)", $this->product_id, $meta_key, $markup);
+			foreach ($markup_table as $attribute => $options) {
+				foreach ($options as $option => $details) {
+					$placeholders[] = "(%d, %s, %s)";
+					$values[] = $this->product_id;
+					$values[] = "mt2mba_{$details['term_id']}_markup_amount";
+					$values[] = number_format(floatval($details['markup']), $this->price_decimals, '.', '');
+				}
 			}
-		}
 
-		if (!empty($meta_data)) {
-			// Bulk insert new records
-			$wpdb->query("
-				INSERT INTO {$wpdb->postmeta} (post_id, meta_key, meta_value)
-				VALUES " . implode(", ", $meta_data)
-			);
+			$sql = "INSERT INTO {$wpdb->postmeta} (post_id, meta_key, meta_value) VALUES ";
+			$sql .= implode(', ', $placeholders);
+
+			$wpdb->query($wpdb->prepare($sql, $values));
 		}
 	}
-
+	
 	/**
 	 * Bulk update variation prices and descriptions in the database
 	 *
@@ -402,12 +402,14 @@ class PriceSetHandler extends PriceMarkupHandler {
 	 * @since 4.0.0
 	 * @param array $updates Array of variation data with id, price, and description keys
 	 */
-	protected function updateVariationPricesAndDescriptions($updates) {
+	protected function updateVariationPricesAndDescriptions($updates): void {
 		global $wpdb;
 
 		$variation_ids = [];
-		$price_inserts = [];
-		$description_updates = [];
+		$price_placeholders = [];
+		$price_values = [];
+		$description_placeholders = [];
+		$description_values = [];
 
 		// Build arrays for our SQL operations
 		foreach ($updates as $update) {
@@ -419,16 +421,15 @@ class PriceSetHandler extends PriceMarkupHandler {
 			}
 
 			// Each variation needs both '_price' and price type records
-			$price_inserts[] = $wpdb->prepare(
-				"(%d, %s, %s),
-				(%d, %s, %s)",
-				$update['id'],
-				'_price',
-				$update['price'],
-				$update['id'],
-				'_' . $this->price_type,
-				$update['price']
-			);
+			$price_placeholders[] = "(%d, %s, %s)";
+			$price_values[] = $update['id'];
+			$price_values[] = '_price';
+			$price_values[] = $update['price'];
+
+			$price_placeholders[] = "(%d, %s, %s)";
+			$price_values[] = $update['id'];
+			$price_values[] = '_' . $this->price_type;
+			$price_values[] = $update['price'];
 
 			if (isset($update['description'])) {
 				// Preserve allowed HTML tags (span with id attribute) while sanitizing content
@@ -438,11 +439,11 @@ class PriceSetHandler extends PriceMarkupHandler {
 					)
 				);
 				$sanitized_description = wp_kses($update['description'], $allowed_html);
-				$description_updates[] = $wpdb->prepare(
-					"(%d, '_variation_description', %s)",
-					$update['id'],
-					$sanitized_description
-				);
+
+				$description_placeholders[] = "(%d, %s, %s)";
+				$description_values[] = $update['id'];
+				$description_values[] = '_variation_description';
+				$description_values[] = $sanitized_description;
 			}
 		}
 
@@ -452,40 +453,39 @@ class PriceSetHandler extends PriceMarkupHandler {
 		try {
 			// Delete existing price records first
 			if (!empty($variation_ids)) {
-				$placeholders = array_fill(0, count($variation_ids), '%d');
-				$meta_keys = array('_price', '_' . $this->price_type);
+				$id_placeholders = implode(',', array_fill(0, count($variation_ids), '%d'));
+				$delete_values = array_merge($variation_ids, ['_price', '_' . $this->price_type]);
 
 				$wpdb->query($wpdb->prepare(
 					"DELETE FROM {$wpdb->postmeta}
-					WHERE post_id IN (" . implode(',', $placeholders) . ")
+					WHERE post_id IN ($id_placeholders)
 					AND meta_key IN (%s, %s)",
-					array_merge($variation_ids, $meta_keys)
+					$delete_values
 				));
 			}
 
 			// Insert new price records
-			if (!empty($price_inserts)) {
-				$wpdb->query(
-					"INSERT INTO {$wpdb->postmeta} (post_id, meta_key, meta_value)
-					VALUES " . implode(", ", $price_inserts)
-				);
+			if (!empty($price_placeholders)) {
+				$sql = "INSERT INTO {$wpdb->postmeta} (post_id, meta_key, meta_value) VALUES ";
+				$sql .= implode(', ', $price_placeholders);
+				$wpdb->query($wpdb->prepare($sql, $price_values));
 			}
 
 			// Handle descriptions for both regular and sale price updates
-			if (!empty($description_updates)) {
+			if (!empty($description_placeholders)) {
 				// Remove existing descriptions
+				$desc_id_placeholders = implode(',', array_fill(0, count($variation_ids), '%d'));
 				$wpdb->query($wpdb->prepare(
 					"DELETE FROM {$wpdb->postmeta}
-					WHERE post_id IN (" . implode(',', array_fill(0, count($variation_ids), '%d')) . ")
-					AND meta_key = '_variation_description'",
-					$variation_ids
+					WHERE post_id IN ($desc_id_placeholders)
+					AND meta_key = %s",
+					array_merge($variation_ids, ['_variation_description'])
 				));
 
 				// Insert new descriptions
-				$wpdb->query(
-					"INSERT INTO {$wpdb->postmeta} (post_id, meta_key, meta_value)
-					VALUES " . implode(", ", $description_updates)
-				);
+				$sql = "INSERT INTO {$wpdb->postmeta} (post_id, meta_key, meta_value) VALUES ";
+				$sql .= implode(', ', $description_placeholders);
+				$wpdb->query($wpdb->prepare($sql, $description_values));
 			}
 
 			$wpdb->query('COMMIT');
@@ -523,7 +523,7 @@ class PriceSetHandler extends PriceMarkupHandler {
 	 * @param	int		$product_id	The ID of the product
 	 * @return	array				Formatted attribute data with labels and terms
 	 */
-	private function getAttributeData($product_id) {
+	private function getAttributeData($product_id): array {
 		$attribute_data = [];
 		foreach (wc_get_product($product_id)->get_attributes() as $pa_attrb) {
 			if ($pa_attrb->is_taxonomy()) {

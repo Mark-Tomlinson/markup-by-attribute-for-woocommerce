@@ -111,6 +111,7 @@ class Settings extends WC_Settings_API {
 	private function __construct() {
 		add_filter('woocommerce_get_sections_products', array($this, 'add_section'));
 		add_filter('woocommerce_get_settings_products', array($this, 'get_settings'), 10, 2);
+		add_filter('sanitize_option_mt2mba_max_variations', array($this, 'validate_max_variations'), 10, 1);
 	}
 	//endregion
 
@@ -345,11 +346,11 @@ class Settings extends WC_Settings_API {
 				 * For now, anyway
 				 */
 				foreach ($setting_ids as $id) {
-					$wpdb->query("
+					$wpdb->query($wpdb->prepare("
 						UPDATE {$wpdb->prefix}options
 						SET autoload = 'no'
-						WHERE option_name = '{$id}'
-					");
+						WHERE option_name = %s
+					", $id));
 				}
 			}
 
@@ -359,6 +360,44 @@ class Settings extends WC_Settings_API {
 		}
 	}
 	//endregion
+
+	/**
+	 * Validate and sanitize max variations setting
+	 *
+	 * WordPress filter callback for sanitizing the mt2mba_max_variations option.
+	 * Ensures the value is a positive integer >= 50. Rejects invalid input and keeps old value.
+	 * No arbitrary upper limit - users know their server capabilities best.
+	 *
+	 * @since 4.3.10
+	 * @param mixed $value The submitted value
+	 * @return int Validated value or old value if validation fails
+	 */
+	public function validate_max_variations($value): int {
+		// Convert to positive integer (handles NULL, empty string, '0000050', etc.)
+		$validated = absint($value);
+
+		// Check minimum - no arbitrary maximum
+		if ($validated < MT2MBA_DEFAULT_MAX_VARIATIONS) {
+			// Get the old value to preserve it
+			$old_value = get_option('mt2mba_max_variations', MT2MBA_DEFAULT_MAX_VARIATIONS);
+
+			// Show error message on next page load
+			add_action('admin_notices', function() {
+				echo '<div class="notice notice-error is-dismissible"><p>' .
+					sprintf(
+						__('Invalid value. Max Variations must be at least %d.', 'markup-by-attribute-for-woocommerce'),
+						MT2MBA_DEFAULT_MAX_VARIATIONS
+					) .
+					'</p></div>';
+			});
+
+			// Return the old value unchanged
+			return $old_value;
+		}
+
+		return $validated;
+	}
+
 }
 
 endif;

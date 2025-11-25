@@ -48,7 +48,7 @@ class PriceUpdateHandler extends PriceMarkupHandler {
 	 * @param int    $product_id  The ID of the product
 	 * @param array  $variations  List of variation IDs
 	 */
-	public function processProductMarkups ($bulk_action, $data, $product_id, $variations) {
+	public function processProductMarkups ($bulk_action, $data, $product_id, $variations): void {
 		// If base price metadata is present, that means the product contains variables with attribute pricing.
 		$base_price = get_metadata("post", $product_id, "mt2mba_base_{$this->price_type}", true);
 		if ($base_price) {
@@ -81,7 +81,7 @@ class PriceUpdateHandler extends PriceMarkupHandler {
 	 * @param	float	$base_price		Current base price
 	 * @return	float					New calculated base price
 	 */
-	private function calculateNewBasePrice($bulk_action, $markup, $base_price) {
+	private function calculateNewBasePrice($bulk_action, $markup, $base_price): float {
 		// Determine sign: decrease actions negate the markup value
 		// e.g., "decrease by 10%" becomes -10, "increase by 5" stays +5
 		$signed_data = strpos($bulk_action, "decrease") ? 0 - floatval($markup) : floatval($markup);

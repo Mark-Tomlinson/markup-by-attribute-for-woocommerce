@@ -1,13 +1,12 @@
 {
     "permissions": {
         "allow": [
-            "Read(**)",
-            "Glob(**)",
-            "Grep(**)",
+            "Read",
+            "Glob",
+            "Grep",
+            "Search",
             "Write(.claude/**)",
-            "Update(.claude/**)",
-            "Delete(//d/Code/MarkupbyAttribute/.claude/**)",
-            "Bash(//d/Code/MarkupbyAttribute/.claude/**)"
+            "Update(.claude/**)"
         ],
         "deny": [
         ],

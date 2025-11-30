@@ -9,15 +9,15 @@ Contributors:			MarkTomlinson
 Donate link:			https://www.paypal.me/MT2Dev/5
 License:				GPLv3
 License URI:			https://www.gnu.org/licenses/gpl-3.0.html
-Version:                4.3.9
-Stable tag:             4.3.9
-Tested up to:           6.8.3
-Requires at least:      5.4
-PHP tested up to:       8.4.5
-Requires PHP:           7.4
-WC tested up to:        10.0.4
-WC requires at least:   3.9
-MySQL tested up to:     8.4.5
+Version:                4.4.0
+Stable tag:             4.4.0
+Tested up to:           6.9
+Requires at least:      5.7
+PHP tested up to:       8.4.11
+Requires PHP:           7.4.3
+WC tested up to:        10.3.5
+WC requires at least:   5.0.0
+MySQL tested up to:     8.4.7
 
 This plugin adds product variation markup by attribute to WooCommerce and adjusts product variation regular and sale prices accordingly.
 
@@ -201,9 +201,35 @@ If you use Markup-by-Attribute and want to see me continue support for it, I enc
 7. The settings page allows configuration of how the markup is displayed.
 
 == Upgrade Notice ==
-Version 4.3.9 - Ensured backward compatibility with PHP 7.4, WordPress 5.4, and WooCommerce 3.9.
+Version 4.4.0 - Major security improvements with enhanced input validation, XSS protection, and CSRF protection. Performance optimizations and code quality improvements. Compatible with WordPress 6.9.
 
 == Changelog ==
+= 4.4.0 =
+*Release Date: November 2025*
+
+**Security Improvements (6 issues fixed)**
+* Enhanced input validation and sanitization across all user-facing forms
+* Improved nonce verification for AJAX handlers
+* Strengthened capability checks for administrative functions
+* Enhanced XSS protection in markup display output
+* Improved SQL injection prevention in database queries
+* Added CSRF protection to bulk action handlers
+
+**Performance Improvements (1 issue fixed)**
+* Optimized database queries for markup retrieval and application
+
+**Code Quality Improvements (6 issues fixed)**
+* Added PHP 7.4+ return type declarations to 31 functions across 7 files for improved type safety
+* Enhanced code reliability with explicit return types (void, string, int, float, bool, array, self)
+* Improved IDE support and error detection with comprehensive type hints
+* Maintained backward compatibility with PHP 7.4 (avoided PHP 8.0+ only features like constructor return types)
+* Verified proper European decimal handling with wc_format_decimal() before is_numeric() checks
+* Enhanced code maintainability with consistent type declarations across all backend classes
+
+**Maintenance**
+* Updated compatibility to confirm support for WordPress 6.9, WooCommerce 10.3.5, PHP 8.4.11, and MySQL 8.4.7
+* Updated minimum requirements: WordPress 5.7, WooCommerce 5.0.0, PHP 7.4.3
+
 = 4.3.9 =
 *Release Date: August 2025*
 

@@ -150,7 +150,7 @@ These can be tested with simple "set option → reapply markup → verify output
 2. Create new attribute named "Balderdash" (global attribute)
 3. Create 5 terms with different markup types:
    - `Zoom` - Positive percentage markup (e.g., +20%)
-   - `Pantsless` - Positive fixed markup (e.g., +$10.00)
+   - `Pantless` - Positive fixed markup (e.g., +$10.00)
    - `Flibbertigibbet` - Negative percentage markup (e.g., -15%)
    - `Widdershins` - Negative fixed markup (e.g., -$5.00)
    - `Cattywampus` - No markup (blank)
@@ -482,17 +482,20 @@ SELECT * FROM wp_termmeta WHERE term_id NOT IN (SELECT term_id FROM wp_terms);
 
 **Terms to Create:**
 
-| Term                  | Markup Type         | Markup Value | Description                  |
-| --------------------- | ------------------- | ------------ | ---------------------------- |
-| **3a: Zoom**   | Positive Percentage | `20%`      | "Small size with 20% markup" |
-| **3b: Pantsless**  | Positive Fixed      | `$10.00`   | (leave blank)                |
-| **3c: Flibbertigibbet**   | Negative Percentage | `-15%`     | "Large size with discount"   |
-| **3d: Widdershins** | Negative Fixed      | `-$5.00`   | (leave blank)                |
-| **3e: Cattywampus**  | No Markup           | (blank)      | "Custom size, no markup"     |
+| Term                          | Markup Type         | Markup Value | Description                  |
+| ----------------------------- | ------------------- | ------------ | ---------------------------- |
+| **3a: Zoom**            | Positive Percentage | `20%`      | "Small size with 20% markup" |
+| **3b: Pantless**        | Positive Fixed      | `$10.00`   | (leave blank)                |
+| **3c: Flibbertigibbet** | Negative Percentage | `-15%`     | "Large size with discount"   |
+| **3d: Widdershins**     | Negative Fixed      | `-$5.00`   | (leave blank)                |
+| **3e: Cattywampus**     | No Markup           | (blank)      | "Custom size, no markup"     |
 
 **Verification:**
 
-- All terms appear in term list
+- All attributes appear in the attribute list
+- All terms appear in the term list
+- Markups appear in the term list
+- Term list is sortable by all columns
 - Markup values saved correctly
 - Descriptions saved where provided
 
@@ -733,7 +736,7 @@ ORDER BY p.post_title, pm.meta_key;
 1. Navigate to Products → Attributes → Balderdash → Terms
 2. Edit term markups:
    - Zoom: Change from 20% to 25%
-   - Pantsless: Change from $10 to $15
+   - Pantless: Change from $10 to $15
    - Flibbertigibbet: Change from -15% to -10%
 
 **Verification:**

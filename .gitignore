@@ -4,14 +4,18 @@
 # ================================
 
 # ============ Project Specific ============
-# Claude Code working directory
+# Claude Code
 .claude/
+CLAUDE.md
 
 # Personal wiki/notes
 .wiki/
 
 # Windows shortcuts
 *.lnk
+
+# This file
+.gitignore
 
 # ============ IDE & Editor Files ============
 # VSCode
@@ -25,6 +29,9 @@ Thumbs.db:encryptable
 ehthumbs.db
 Desktop.ini
 $RECYCLE.BIN/
+
+# Windows reserved name artifacts (created by bash errors)
+nul
 
 # Linux
 *~

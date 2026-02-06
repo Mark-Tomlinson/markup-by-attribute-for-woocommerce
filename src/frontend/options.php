@@ -201,4 +201,3 @@ class Options {
 	//endregion
 
 }	// END class MT2MBA_MARKUP_FRONTEND
-?>

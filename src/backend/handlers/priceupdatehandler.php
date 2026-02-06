@@ -100,4 +100,3 @@ class PriceUpdateHandler extends PriceMarkupHandler {
 	}
 	//endregion
 }
-?>

@@ -79,4 +79,3 @@ abstract class PriceMarkupHandler {
 	abstract public function processProductMarkups($price_type, $data, $product_id, $variations);
 	//endregion
 }
-?>

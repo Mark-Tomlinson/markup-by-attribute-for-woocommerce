@@ -56,4 +56,3 @@ class MarkupDeleteHandler extends PriceMarkupHandler {
 	}
 	//endregion
 }
-?>

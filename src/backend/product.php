@@ -386,4 +386,3 @@ class Product {
 	//endregion
 
 }
-?>

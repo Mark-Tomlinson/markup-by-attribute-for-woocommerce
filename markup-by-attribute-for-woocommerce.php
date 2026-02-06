@@ -192,4 +192,3 @@ function mt2mba_main(): void {
 
 // Make sure this line is outside any function
 add_action('woocommerce_init', __NAMESPACE__ . '\mt2mba_main');
-?>

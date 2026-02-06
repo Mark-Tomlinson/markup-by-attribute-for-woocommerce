@@ -440,4 +440,3 @@ class General {
 	//endregion
 
 }	//	End class MT2MBA_UTILITY_GENERAL
-?>

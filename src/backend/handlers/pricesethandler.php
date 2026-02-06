@@ -541,4 +541,3 @@ class PriceSetHandler extends PriceMarkupHandler {
 	}
 	//endregion
 }
-?>

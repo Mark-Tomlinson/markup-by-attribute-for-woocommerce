@@ -486,4 +486,3 @@ class ProductList {
 	}
 	//endregion
 }
-?>

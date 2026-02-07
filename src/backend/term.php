@@ -219,7 +219,7 @@ class Term {
 	/**
 	 * Build form fields for attribute add panel
 	 */
-	function addAttributeFields() {
+	public function addAttributeFields() {
 		if (isset($_POST['add_new_attribute'])) {
 			$taxonomy_id = wc_attribute_taxonomy_id_by_name(sanitize_title($_POST['attribute_label']));
 
@@ -268,7 +268,7 @@ class Term {
 	/**
 	 * Build form fields for attribute edit panel
 	 */
-	function editAttributeFields() {
+	public function editAttributeFields() {
 		// Retrieve the existing rewrite name flag for this attribute (NULL results are valid)
 		// Sanitize the attribute ID from GET parameter once at the top
 		$attribute_id = isset($_GET['edit']) ? absint($_GET['edit']) : 0;
@@ -341,7 +341,7 @@ class Term {
 	/**
 	 * Build form fields for term add panel
 	 */
-	function addTermFields(string $taxonomy) {
+	public function addTermFields(string $taxonomy) {
 		// Build <DIV>
 		?>
 		<div class="form-field">
@@ -356,7 +356,7 @@ class Term {
 	/**
 	 * Build form fields for term edit panel
 	 */
-	function editTermFields(object $term) {
+	public function editTermFields(object $term) {
 		// Retrieve the existing markup for this term(NULL results are valid)
 		$term_markup = wc_format_localized_decimal(get_term_meta($term->term_id, "mt2mba_markup", TRUE));
 
@@ -377,7 +377,7 @@ class Term {
 	/**
 	 * Save the term markup metadata
 	 */
-	function handleTermMarkupSave(int $term_id) {
+	public function handleTermMarkupSave(int $term_id) {
 		// Sanity check
 		if (!isset($_POST['term_markup'])) return;
 
@@ -488,7 +488,7 @@ class Term {
 	/**
 	* Handle markup column sorting
 	*/
-	function handleMarkupColumnSort(object $term_query) {
+	public function handleMarkupColumnSort(object $term_query) {
 		// WP_Term_Query does not define a get() or a set() method,
 		// so the query_vars member must be manipulated directly
 		if (isset($_GET['orderby']) && 'markup' == sanitize_text_field(wp_unslash($_GET['orderby']))) {

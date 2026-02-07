@@ -90,7 +90,7 @@ class General {
 	 *
 	 * @since 2.0.0
 	 */
-	function mt2mba_db_upgrade() {
+	private function mt2mba_db_upgrade() {
 		global $wpdb;
 
 		// Get current version at start of function
@@ -182,7 +182,7 @@ class General {
 	 * @param float $markup Signed markup amount
 	 * @return string       Formatted markup for dropdown display (e.g., " (+$5.00)")
 	 */
-	function formatOptionMarkup($markup) {
+	public function formatOptionMarkup($markup) {
 		if ($markup <> "" && $markup <> 0) {
 			// Jump out if markup is not to be displayed.
 			if (MT2MBA_DROPDOWN_BEHAVIOR == 'hide') {
@@ -216,7 +216,7 @@ class General {
 	 * @param	string	$term_name	Attribute term that the markup applies to
 	 * @return	string				Formatted description
 	 */
-	function formatVariationMarkupDescription($markup, $attrb_name, $term_name) {
+	public function formatVariationMarkupDescription($markup, $attrb_name, $term_name) {
 		if ($markup <> "" && $markup <> 0) {
 			// Clean any existing markup from the term name before formatting
 			$term_name = $this->stripMarkupAnnotation($term_name);

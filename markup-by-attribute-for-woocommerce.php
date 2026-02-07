@@ -11,7 +11,7 @@ use mt2Tech\MarkupByAttribute\Utility as Utility;
  * This file is part of the Markup by Attribute for WooCommerce plugin by Mark Tomlinson
  *
  * @package   markup-by-attribute-for-woocommerce
- * @version   4.4.0
+ * @version   4.5.0
  * @author    Mark Tomlinson
  * @license   GPL-2.0+
  */
@@ -28,8 +28,8 @@ use mt2Tech\MarkupByAttribute\Utility as Utility;
  * License URI:             https://www.gnu.org/licenses/gpl-3.0.html
  * Text Domain:             markup-by-attribute-for-woocommerce
  * Domain Path:             /languages
- * Version:                 4.4.0
- * Stable tag:              4.4.0
+ * Version:                 4.5.0
+ * Stable tag:              4.5.0
  * Tested up to:            6.9
  * Requires at least:       5.7
  * PHP tested up to:        8.4.11

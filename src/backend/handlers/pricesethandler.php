@@ -139,14 +139,20 @@ class PriceSetHandler extends PriceMarkupHandler {
 				// Remove Sales Price metadata
 				delete_post_meta($product_id, "mt2mba_base_" . SALE_PRICE);
 
-				// Loop through variations to remove markup information
-				global $mt2mba_utility;
-				foreach ($variations as $variation_id) {
-					$variation = wc_get_product($variation_id);
-					if (!$variation) continue;		// Skip if product not found
+				// Bulk-fetch all variation descriptions in a single query
+				global $wpdb, $mt2mba_utility;
+				$variation_ids = array_map('intval', $variations);
+				$id_placeholders = implode(',', array_fill(0, count($variation_ids), '%d'));
+				$descriptions = $wpdb->get_results($wpdb->prepare(
+					"SELECT post_id, meta_value FROM {$wpdb->postmeta}
+					WHERE post_id IN ($id_placeholders) AND meta_key = '_variation_description'",
+					$variation_ids
+				));
 
-					$description = $variation->get_description();
-					$markup_pos = strpos($description, PRODUCT_MARKUP_DESC_BEG);
+				// Process descriptions in PHP — strip markup information
+				$updates = [];
+				foreach ($descriptions as $row) {
+					$markup_pos = strpos($row->meta_value, PRODUCT_MARKUP_DESC_BEG);
 
 					// If no markup information, skip variation
 					if ($markup_pos === false) {
@@ -155,21 +161,45 @@ class PriceSetHandler extends PriceMarkupHandler {
 
 					// If the description begins with markup information, delete the description
 					if ($markup_pos === 0) {
-						$new_description = '';
+						$updates[] = ['id' => (int) $row->post_id, 'description' => ''];
 					// Otherwise, strip the markup information from the description
 					} else {
-						$new_description = $mt2mba_utility->removeBracketedString(
-							PRODUCT_MARKUP_DESC_BEG,
-							PRODUCT_MARKUP_DESC_END,
-							$description
-						);
+						$updates[] = [
+							'id'          => (int) $row->post_id,
+							'description' => $mt2mba_utility->removeBracketedString(
+								PRODUCT_MARKUP_DESC_BEG,
+								PRODUCT_MARKUP_DESC_END,
+								$row->meta_value
+							),
+						];
 					}
+				}
 
-					// Update the variation with the new description
-					$variation->set_description($new_description);
-					$variation->save();
-
-				}	// END foreach ($variations as $variation_id)
+				// Bulk-write cleaned descriptions back in a single operation
+				if (!empty($updates)) {
+					$placeholders = [];
+					$values = [];
+					// Delete existing descriptions for variations that need updating
+					$update_ids = array_column($updates, 'id');
+					$del_placeholders = implode(',', array_fill(0, count($update_ids), '%d'));
+					$wpdb->query($wpdb->prepare(
+						"DELETE FROM {$wpdb->postmeta}
+						WHERE post_id IN ($del_placeholders) AND meta_key = '_variation_description'",
+						$update_ids
+					));
+					// Insert cleaned descriptions
+					foreach ($updates as $update) {
+						$placeholders[] = "(%d, %s, %s)";
+						$values[] = $update['id'];
+						$values[] = '_variation_description';
+						$values[] = $update['description'];
+					}
+					$wpdb->query($wpdb->prepare(
+						"INSERT INTO {$wpdb->postmeta} (post_id, meta_key, meta_value) VALUES "
+						. implode(', ', $placeholders),
+						$values
+					));
+				}
 			}
 			// Do not continue markup logic
 			return true;

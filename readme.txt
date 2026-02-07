@@ -9,8 +9,8 @@ Contributors:			MarkTomlinson
 Donate link:			https://www.paypal.me/MT2Dev/5
 License:				GPLv3
 License URI:			https://www.gnu.org/licenses/gpl-3.0.html
-Version:                4.4.0
-Stable tag:             4.4.0
+Version:                4.5.0
+Stable tag:             4.5.0
 Tested up to:           6.9
 Requires at least:      5.7
 PHP tested up to:       8.4.11
@@ -49,7 +49,7 @@ This plugin does one thing - it adds pricing control to WooCommerce's global pro
 * Add-on services: Pricing for monogramming, gift wrapping, etc.
 * Attribute-driven costs: Any situation where product options consistently affect pricing
 
-= New in Version 4.3 =
+= New in Version 4.5 =
 * New Base Price column for easier price management
 * Improved markup visualization in the product editor
 * Enhanced bulk update tools
@@ -201,9 +201,34 @@ If you use Markup-by-Attribute and want to see me continue support for it, I enc
 7. The settings page allows configuration of how the markup is displayed.
 
 == Upgrade Notice ==
-Version 4.4.0 - Major security improvements with enhanced input validation, XSS protection, and CSRF protection. Performance optimizations and code quality improvements. Compatible with WordPress 6.9.
+Version 4.5.0 - Security hardening, performance optimization, and code quality improvements. Sale base price field now always visible. Compatible with WordPress 6.9.
 
 == Changelog ==
+= 4.5.0 =
+*Release Date: February 2026*
+
+**Security Improvements (3 fixes)**
+* Replaced raw HTML AJAX response with JSON data for base price updates (XSS prevention)
+* Replaced per-row inline scripts with data attributes and delegated event handling
+* Added input sanitization to product list column sort parameter
+
+**Performance Improvements (1 fix)**
+* Replaced per-variation database queries with bulk operations when clearing markup descriptions
+
+**Code Quality Improvements (6 fixes)**
+* Added explicit visibility modifiers to all class methods
+* Added PHP 7.4-compatible type hints with documented union type limitations
+* Replaced legacy `<>` operators with standard `!=`
+* Standardized all method names to camelCase convention
+* Removed unused `use` statement
+* Fixed inconsistent version comparison to use `version_compare()`
+
+**Bug Fixes**
+* Sale base price field now always visible on the General tab
+
+**Maintenance**
+* Added PHP union type compatibility note for PHP 7.4 support
+
 = 4.4.0 =
 *Release Date: November 2025*
 

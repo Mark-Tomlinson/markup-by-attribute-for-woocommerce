@@ -261,20 +261,18 @@ class Product {
 				'custom_attributes'	=> ['readonly' => 'readonly']
 			]);
 
-			// Sale Price Field (if exists)
-			if ($base_sale_price !== '') {
-				woocommerce_wp_text_input([
-					'id'			=> 'base_sale_price',
-					'label'				=> __('Sale base price', 'markup-by-attribute-for-woocommerce') . $currency_symbol,
-					'description'		=> __('Sale base price for the variations before markup', 'markup-by-attribute-for-woocommerce'),
-					'value'			=> $base_sale_price,
-					'type'			=> 'text',
-					'desc_tip'		=> true,
-					'class'			=> 'wc_input_price',
-					'data_type'		=> 'price',
-					'custom_attributes'	=> ['readonly' => 'readonly']
-				]);
-			}
+			// Sale Price Field (always shown, even if empty)
+			woocommerce_wp_text_input([
+				'id'				=> 'base_sale_price',
+				'label'				=> __('Sale base price', 'markup-by-attribute-for-woocommerce') . $currency_symbol,
+				'description'		=> __('Sale base price for the variations before markup', 'markup-by-attribute-for-woocommerce'),
+				'value'				=> $base_sale_price,
+				'type'				=> 'text',
+				'desc_tip'			=> true,
+				'class'				=> 'wc_input_price',
+				'data_type'			=> 'price',
+				'custom_attributes'	=> ['readonly' => 'readonly']
+			]);
 
 			echo '<div id="base_price_info"><p class="form-field">' .
 				'<span class="base-price-info dashicons dashicons-info"></span>' .

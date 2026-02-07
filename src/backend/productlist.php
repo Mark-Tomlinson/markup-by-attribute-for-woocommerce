@@ -412,7 +412,7 @@ class ProductList {
 	/**
 	 * Handle AJAX request to refresh a single product row
 	 *
-	 * @since 4.0.0
+	 * @since	4.0.0
 	 */
 	public function refreshProductRow(): void {
 		check_ajax_referer('handleMarkupReapplication', 'security');
@@ -435,9 +435,9 @@ class ProductList {
 	/**
 	 * Check if current page is the WooCommerce product list
 	 *
-	 * @since 3.13.0
-	 * @param string $hook Current admin page hook
-	 * @return bool        True if on product list page
+	 * @since	3.13.0
+	 * @param	string	$hook	Current admin page hook
+	 * @return	bool        	True if on product list page
 	 */
 	private function isProductListPage(string $hook): bool {
 		return $hook === 'edit.php' &&
@@ -448,9 +448,9 @@ class ProductList {
 	/**
 	 * Check if an attribute taxonomy has any terms with markup
 	 *
-	 * @since 3.13.0
-	 * @param string $taxonomy Attribute taxonomy name
-	 * @return bool            True if markup exists
+	 * @since	3.13.0
+	 * @param	string	$taxonomy	Attribute taxonomy name
+	 * @return	bool				True if markup exists
 	 */
 	private function attributeHasMarkup(string $taxonomy): bool {
 		// Check cache first
@@ -458,21 +458,15 @@ class ProductList {
 			return self::$markup_cache[$taxonomy];
 		}
 
-		$terms = get_terms([
-			'taxonomy' => $taxonomy,
+		$terms_with_markup = get_terms([
+			'taxonomy'   => $taxonomy,
 			'hide_empty' => false,
+			'meta_query' => [['key' => 'mt2mba_markup', 'compare' => 'EXISTS']],
+			'number'     => 1,
 		]);
 
-		foreach ($terms as $term) {
-			$markup = get_term_meta($term->term_id, 'mt2mba_markup', true);
-			if (!empty($markup)) {		// Set flag and return true when the first markup is found
-				self::$markup_cache[$taxonomy] = true;
-				return true;
-			}
-		}
-
-		self::$markup_cache[$taxonomy] = false;
-		return false;
+		self::$markup_cache[$taxonomy] = !empty($terms_with_markup);
+		return self::$markup_cache[$taxonomy];
 	}
 	//endregion
 }

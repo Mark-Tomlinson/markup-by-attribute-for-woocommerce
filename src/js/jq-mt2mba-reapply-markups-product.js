@@ -39,8 +39,9 @@ jQuery(document).ready(function($) {
 				},
 				success: function(response) {
 					if (response.success) {
-						// Target the specific options group
-						$('.panel-wrap.product_data .options_group.show_if_variable').html(response.data.html);
+						// Update base price fields directly with returned values
+						$('#base_regular_price').val(response.data.base_regular_price);
+						$('#base_sale_price').val(response.data.base_sale_price);
 						// Clear the prices-changed flag since we've refreshed
 						sessionStorage.removeItem('mt2mba_prices_changed');
 					}

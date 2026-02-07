@@ -139,7 +139,7 @@ class General {
 		}
 
 		//	Delete discontinued setting, mt2mba_show_attrb_list
-		if ($current_db_version < 2.2) {
+		if (version_compare($current_db_version, '2.2', '<')) {
 			$wpdb->delete("{$wpdb->prefix}options", array('option_name'=>'mt2mba_show_attrb_list'));
 		}
 

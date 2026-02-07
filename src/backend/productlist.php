@@ -133,6 +133,7 @@ class ProductList {
 			array(
 				'security' => wp_create_nonce('handleMarkupReapplication'),
 				'i18n' => array(
+					'reapplyTitle' => __('Reapply markups using base price: %s', 'markup-by-attribute-for-woocommerce'),
 					'processing' => __('Please wait; processing product %1$s of %2$s...', 'markup-by-attribute-for-woocommerce'),
 					'processed' => _n(
 						'%s product processed successfully.',
@@ -309,21 +310,10 @@ class ProductList {
 		if ($this->variable_products[$product_id] && $has_markup) {
 			echo '<br/><a href="#" class="js-mt2mba-reapply-markup" ' .
 				'data-product-id="' . esc_attr($product_id) . '" ' .
+				'data-base-price="' . esc_attr(html_entity_decode(strip_tags(wc_price($base_price)))) . '" ' .
 				'title="' . esc_attr__('Reapply Markups', 'markup-by-attribute-for-woocommerce') . '">' .
 				'<span class="dashicons dashicons-update"></span>' .
 				__('Reprice', 'markup-by-attribute-for-woocommerce') . '</a>';
-			// Add hover text to reprice icon
-			echo "<script>
-				jQuery(document).ready(function($) {
-					$('.js-mt2mba-reapply-markup[data-product-id=\"{$product_id}\"]')
-						.attr('title', '" .
-						esc_js(sprintf(
-							__('Reapply markups using base price: %s', 'markup-by-attribute-for-woocommerce'),
-							html_entity_decode(strip_tags(wc_price($base_price)))
-						)) .
-						"');
-				});
-				</script>";
 		}
 	}
 	//endregion

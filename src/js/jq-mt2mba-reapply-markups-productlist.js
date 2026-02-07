@@ -7,6 +7,16 @@
  * @requires mt2mbaListLocal (localized script data)
  */
 jQuery(document).ready(function($) {
+	// Set hover titles from data attributes (single pass, no per-row inline scripts)
+	$('.js-mt2mba-reapply-markup').each(function() {
+		var basePrice = $(this).data('base-price');
+		if (basePrice) {
+			$(this).attr('title',
+				mt2mbaListLocal.i18n.reapplyTitle.replace('%s', basePrice)
+			);
+		}
+	});
+
 	// Process bulk reapply if needed
 	const urlParams = new URLSearchParams(window.location.search);
 	const bulkIds = urlParams.get('reapply_markups_ids');

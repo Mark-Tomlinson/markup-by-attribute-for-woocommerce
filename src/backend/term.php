@@ -491,7 +491,7 @@ class Term {
 	function handleMarkupColumnSort(object $term_query) {
 		// WP_Term_Query does not define a get() or a set() method,
 		// so the query_vars member must be manipulated directly
-		if (isset($_GET['orderby']) && 'markup' == $_GET['orderby']) {
+		if (isset($_GET['orderby']) && 'markup' == sanitize_text_field(wp_unslash($_GET['orderby']))) {
 			$meta_query = array(
 				'relation' => 'OR',
 				array('key' => 'mt2mba_markup', 'compare' => 'NOT EXISTS'),

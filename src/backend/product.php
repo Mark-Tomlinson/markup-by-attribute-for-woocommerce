@@ -191,20 +191,11 @@ class Product {
 			return;
 		}
 
-		// Set up the global $post object to provide proper context for hooks
-		global $post;
-		$post = get_post($product_id);
-		setup_postdata($post);
-
-		// Capture the output of all general panel hooks using output buffering
-		ob_start();
-		do_action('woocommerce_product_options_general_product_data');
-		$html = ob_get_clean();
-
-		// Clean up global state to prevent side effects
-		wp_reset_postdata();
-
-		wp_send_json_success(['html' => $html]);
+		// Return base price values for JS to update fields directly
+		wp_send_json_success([
+			'base_regular_price' => get_post_meta($product_id, 'mt2mba_base_regular_price', true),
+			'base_sale_price'    => get_post_meta($product_id, 'mt2mba_base_sale_price',    true),
+		]);
 	}
 	//endregion
 

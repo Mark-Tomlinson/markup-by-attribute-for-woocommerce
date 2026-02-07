@@ -231,7 +231,7 @@ class PriceSetHandler extends PriceMarkupHandler {
 						if (MT2MBA_DESC_BEHAVIOR !== "ignore") {
 							$markup_table[$taxonomy][$term->slug]['description'] =
 								$mt2mba_utility->formatVariationMarkupDescription(
-									$markup_value,
+									(string) $markup_value,
 									$attrb_label,
 									$term->name
 								);

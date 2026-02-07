@@ -1,7 +1,6 @@
 <?php
 namespace mt2Tech\MarkupByAttribute\Utility;
 use mt2Tech\MarkupByAttribute\Backend as Backend;
-use mt2Tech\MarkupByAttribute\Frontend as Frontend;
 
 /**
  * Core utility functions for Markup-by-Attribute plugin

@@ -72,11 +72,11 @@ class Pointers {
 	 * @since 1.0.0
 	 */
 	private function __construct() {
-		add_action('admin_enqueue_scripts', array($this, 'mt2mba_admin_pointer_load'), MT2MBA_ADMIN_POINTER_PRIORITY);
+		add_action('admin_enqueue_scripts', array($this, 'adminPointerLoad'), MT2MBA_ADMIN_POINTER_PRIORITY);
 		// Admin pointers for attribute term edit screen
-		add_filter('mt2mba_admin_pointers-edit-term', array($this, 'mt2mba_admin_pointers_edit_term'));
+		add_filter('mt2mba_admin_pointers-edit-term', array($this, 'adminPointersEditTerm'));
 		// Admin pointer for plugin page
-		add_filter('mt2mba_admin_pointers-plugins', array($this, 'mt2mba_admin_pointers_plugins'));
+		add_filter('mt2mba_admin_pointers-plugins', array($this, 'adminPointersPlugins'));
 	}
 	//endregion
 
@@ -90,7 +90,7 @@ class Pointers {
 	 * @since 1.0.0
 	 * @param string $hook_suffix Current admin page hook (unused)
 	 */
-	public function mt2mba_admin_pointer_load(string $hook_suffix): void {
+	public function adminPointerLoad(string $hook_suffix): void {
 		 // Don't run on WP < minimum version
 		if (get_bloginfo('version') < MT2MBA_MIN_WP_VERSION) return;
 
@@ -146,7 +146,7 @@ class Pointers {
 	 * @param array $pointers Existing pointers array
 	 * @return array          Enhanced pointers array with term-specific pointers
 	 */
-	public function mt2mba_admin_pointers_edit_term(array $pointers): array {
+	public function adminPointersEditTerm(array $pointers): array {
 		$pointer_content = sprintf (
 			'<h3><em>%s</em></h3><p>%s</p>',
 			MT2MBA_PLUGIN_NAME,
@@ -185,7 +185,7 @@ class Pointers {
 	 * @param array $pointers Existing pointers array
 	 * @return array          Enhanced pointers array with plugin page pointer
 	 */
-	public function mt2mba_admin_pointers_plugins(array $pointers): array {
+	public function adminPointersPlugins(array $pointers): array {
 		$pointer_content = sprintf (
 			'<h3>%s</h3><p>%s</p>',
 			MT2MBA_PLUGIN_NAME,

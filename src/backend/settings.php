@@ -109,9 +109,9 @@ class Settings extends WC_Settings_API {
 	 * @since 2.0.0
 	 */
 	private function __construct() {
-		add_filter('woocommerce_get_sections_products', array($this, 'add_section'));
-		add_filter('woocommerce_get_settings_products', array($this, 'get_settings'), 10, 2);
-		add_filter('sanitize_option_mt2mba_max_variations', array($this, 'validate_max_variations'), 10, 1);
+		add_filter('woocommerce_get_sections_products', array($this, 'addSection'));
+		add_filter('woocommerce_get_settings_products', array($this, 'getSettings'), 10, 2);
+		add_filter('sanitize_option_mt2mba_max_variations', array($this, 'validateMaxVariations'), 10, 1);
 	}
 	//endregion
 
@@ -123,7 +123,7 @@ class Settings extends WC_Settings_API {
 	 * @param array $sections Existing sections
 	 * @return array          Sections with markup-by-attribute section added
 	 */
-	public function add_section(array $sections): array {
+	public function addSection(array $sections): array {
 		$sections['mt2mba'] = __('Markup by Attribute', 'markup-by-attribute-for-woocommerce');
 		return $sections;
 	}
@@ -136,7 +136,7 @@ class Settings extends WC_Settings_API {
 	 * @param string $current_section  Current section name
 	 * @return array                   Complete settings configuration array
 	 */
-	public function get_settings(array $settings, string $current_section): array {
+	public function getSettings(array $settings, string $current_section): array {
 		if ('mt2mba' === $current_section) {
 			// Repeating strings
 			$immediately = __('This setting affects all products and takes effect immediately.', 'markup-by-attribute-for-woocommerce');
@@ -372,7 +372,7 @@ class Settings extends WC_Settings_API {
 	 * @param mixed $value The submitted value
 	 * @return int Validated value or old value if validation fails
 	 */
-	public function validate_max_variations($value): int {
+	public function validateMaxVariations($value): int {
 		// Convert to positive integer (handles NULL, empty string, '0000050', etc.)
 		$validated = absint($value);
 

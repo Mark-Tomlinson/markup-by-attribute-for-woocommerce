@@ -158,7 +158,7 @@ class PriceSetHandler extends PriceMarkupHandler {
 						$new_description = '';
 					// Otherwise, strip the markup information from the description
 					} else {
-						$new_description = $mt2mba_utility->remove_bracketed_string(
+						$new_description = $mt2mba_utility->removeBracketedString(
 							PRODUCT_MARKUP_DESC_BEG,
 							PRODUCT_MARKUP_DESC_END,
 							$description
@@ -326,7 +326,7 @@ class PriceSetHandler extends PriceMarkupHandler {
 			// Preserve existing non-markup description content unless overwriting
 			if (MT2MBA_DESC_BEHAVIOR !== "overwrite") {
 				$description = $variation->get_description();
-				$description = $mt2mba_utility->remove_bracketed_string(
+				$description = $mt2mba_utility->removeBracketedString(
 					PRODUCT_MARKUP_DESC_BEG,
 					PRODUCT_MARKUP_DESC_END,
 					$description

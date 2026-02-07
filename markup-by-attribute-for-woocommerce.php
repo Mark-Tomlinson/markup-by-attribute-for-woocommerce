@@ -166,18 +166,18 @@ function mt2mba_main(): void {
 		// Admin messages for notices
 		$admin_messages = [
 			'info' => [
-				// ["message_name1", "This is a dismissable info message."],
-				// ["message_name2", "This is another dismissable info message."]
+//				["message_name1", "This is a dismissable info message."],
+//				["message_name2", "This is another dismissable info message."]
 			],
 			'warning' => [
-				// ["message_name3", "This is a dismissable warning message."],
-				// ["message_name4", "This is another dismissable warning message."]
+//				["message_name3", "This is a dismissable warning message."],
+//				["message_name4", "This is another dismissable warning message."]
 			]
 		];
 
 		// Initialize backend components
 		$notices = Utility\Notices::get_instance();
-		$notices->send_notice_array($admin_messages);
+		$notices->sendNoticeArray($admin_messages);
 
 		Utility\Pointers::get_instance();
 		Backend\Term::get_instance();

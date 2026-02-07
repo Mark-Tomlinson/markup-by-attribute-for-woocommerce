@@ -65,9 +65,9 @@ class Notices {
 	 */
 	private function __construct() {
 		//	Enqueue notice dismissal JScript
-		add_action('admin_enqueue_scripts', array($this, 'action_admin_enqueue_scripts'));
+		add_action('admin_enqueue_scripts', array($this, 'enqueueNoticeScripts'));
 		//	Action to set the message dismissal option
-		add_action('admin_init', array($this, 'action_admin_init'));
+		add_action('admin_init', array($this, 'handleNoticeDismissal'));
 	}
 	//endregion
 
@@ -80,7 +80,7 @@ class Notices {
 	 *
 	 * @since 1.0.0
 	 */
-	public function action_admin_enqueue_scripts(): void {
+	public function enqueueNoticeScripts(): void {
 		wp_enqueue_script (
 			'jq-mt2mba-clear-notices',
 			MT2MBA_PLUGIN_URL . 'src/js/jq-mt2mba-clear-notices.js',
@@ -96,7 +96,7 @@ class Notices {
 	 *
 	 * @since 1.0.0
 	 */
-	public function action_admin_init(): void {
+	public function handleNoticeDismissal(): void {
 		if (isset($_GET['mt2mba_dismiss'])) {
 			// Verify nonce
 			if (!isset($_GET['_wpnonce']) ||
@@ -126,7 +126,7 @@ class Notices {
 	 *                             - type (string): 'error', 'warning', 'success', 'info'
 	 *                             - messages (array): Each containing [name, message]
 	 */
-	public function send_notice_array(array $admin_notices): void {
+	public function sendNoticeArray(array $admin_notices): void {
 		foreach ($admin_notices as $type => $notices) {
 			foreach ($notices as $notice_id => $notice) {
 				$this->notice($type, $notice[1], $notice[0]);

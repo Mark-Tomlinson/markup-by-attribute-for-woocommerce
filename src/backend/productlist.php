@@ -105,11 +105,11 @@ class ProductList {
 	 */
 	public function enqueueAssets(string $hook): void {
 		// Product List page?
-		if (!$this->is_product_list_page($hook)) return;
+		if (!$this->isProductListPage($hook)) return;
 
 		// Enqueue Assets
-		$this->enqueue_scripts($hook);
-		$this->enqueue_styles($hook);
+		$this->enqueueScripts($hook);
+		$this->enqueueStyles($hook);
 	}
 
 	/**
@@ -118,7 +118,7 @@ class ProductList {
 	 * @since 3.13.0
 	 * @param string $hook Current admin page hook
 	 */
-	public function enqueue_scripts(string $hook): void {
+	public function enqueueScripts(string $hook): void {
 		wp_enqueue_script(
 			'mt2mba-product-list-markup',
 			plugins_url('js/jq-mt2mba-reapply-markups-productlist.js', dirname(__FILE__)),
@@ -158,7 +158,7 @@ class ProductList {
 	 * @since 3.13.0
 	 * @param string $hook Current admin page hook
 	 */
-	public function enqueue_styles(string $hook): void {
+	public function enqueueStyles(string $hook): void {
 		wp_enqueue_style(
 			'mt2mba-admin-styles',
 			plugins_url('css/admin-style.css', dirname(__FILE__)),
@@ -288,7 +288,7 @@ class ProductList {
 				$attribute_name = wc_attribute_label($attribute->get_name());
 				$taxonomy = $attribute->get_name();
 
-				if ($this->attribute_has_markup($taxonomy)) {
+				if ($this->attributeHasMarkup($taxonomy)) {
 					$has_markup = true;
 				}
 			} else {
@@ -439,7 +439,7 @@ class ProductList {
 	 * @param string $hook Current admin page hook
 	 * @return bool        True if on product list page
 	 */
-	private function is_product_list_page(string $hook): bool {
+	private function isProductListPage(string $hook): bool {
 		return $hook === 'edit.php' &&
 				isset($_GET['post_type']) &&
 				$_GET['post_type'] === 'product';
@@ -452,7 +452,7 @@ class ProductList {
 	 * @param string $taxonomy Attribute taxonomy name
 	 * @return bool            True if markup exists
 	 */
-	private function attribute_has_markup(string $taxonomy): bool {
+	private function attributeHasMarkup(string $taxonomy): bool {
 		// Check cache first
 		if (isset(self::$markup_cache[$taxonomy])) {
 			return self::$markup_cache[$taxonomy];

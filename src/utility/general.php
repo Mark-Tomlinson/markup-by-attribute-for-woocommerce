@@ -63,7 +63,7 @@ class General {
 			update_option('mt2mba_db_version', MT2MBA_DB_VERSION, false);
 		} elseif (version_compare($current_version, MT2MBA_DB_VERSION, '<')) {
 			// Perform upgrade if required
-			$this->mt2mba_db_upgrade();
+			$this->dbUpgrade();
 		}
 
 		// Set global values used throughout the code
@@ -90,7 +90,7 @@ class General {
 	 *
 	 * @since 2.0.0
 	 */
-	private function mt2mba_db_upgrade() {
+	private function dbUpgrade() {
 		global $wpdb;
 
 		// Get current version at start of function
@@ -273,7 +273,7 @@ class General {
 	 * @param string $string    The string to be processed
 	 * @return string           The string minus the text to be removed and the beginning and ending markers
 	 */
-	public function remove_bracketed_string(string $beginning, string $ending, string $string): string {
+	public function removeBracketedString(string $beginning, string $ending, string $string): string {
 		$beginningPos = strpos($string, $beginning, 0);
 		$endingPos = strpos($string, $ending, $beginningPos);
 

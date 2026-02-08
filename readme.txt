@@ -50,10 +50,9 @@ This plugin does one thing - it adds pricing control to WooCommerce's global pro
 * Attribute-driven costs: Any situation where product options consistently affect pricing
 
 = New in Version 4.5 =
-* New Base Price column for easier price management
-* Improved markup visualization in the product editor
-* Enhanced bulk update tools
-* Better multilingual support with new translations
+* Hardened security across all input handling
+* Faster bulk pricing with optimized database operations
+* Improved code reliability with modern coding practices while maintaining PHP 7.4+ compatibility
 
 == Installation ==
 
@@ -212,8 +211,9 @@ Version 4.5.0 - Security hardening, performance optimization, and code quality i
 * Replaced per-row inline scripts with data attributes and delegated event handling
 * Added input sanitization to product list column sort parameter
 
-**Performance Improvements (1 fix)**
+**Performance Improvements (2 fixes)**
 * Replaced per-variation database queries with bulk operations when clearing markup descriptions
+* Replaced per-variation WooCommerce object loading with bulk meta queries for price calculations
 
 **Code Quality Improvements (6 fixes)**
 * Added explicit visibility modifiers to all class methods

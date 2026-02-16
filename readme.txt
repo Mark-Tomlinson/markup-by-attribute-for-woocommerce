@@ -11,13 +11,13 @@ License:				GPLv3
 License URI:			https://www.gnu.org/licenses/gpl-3.0.html
 Version:                4.5.0
 Stable tag:             4.5.0
-Tested up to:           6.9
+Tested up to:           6.9.1
 Requires at least:      5.7
 PHP tested up to:       8.4.11
 Requires PHP:           7.4.3
-WC tested up to:        10.3.5
+WC tested up to:        10.5.1
 WC requires at least:   5.0.0
-MySQL tested up to:     8.4.7
+MySQL tested up to:     8.4.8
 
 This plugin adds product variation markup by attribute to WooCommerce and adjusts product variation regular and sale prices accordingly.
 
@@ -628,40 +628,4 @@ FIX: Remove the error_log() statement accidentally left in.
 = 1.0 =
 
  * Initial version.
-
-== Upgrade Notice ==
-
-= 3.11 =
-
-Ensured compatibility with current versions of WordPress, WooCommerce, and PHP. Resolved a PHP 'depreciation' warning.
-
-Fixed a bug where Markup-by-Attribute would get confused about the decimal separator because the server and WooCommerce localization settings conflicted.
-
-= 3.9 =
-
-Added a new feature that allows Markup-by-Attribute to add the markup to the name of the option. This is useful when the dropdown box has been replaced by color swatches, checkboxes, or some other selector. As long as the name of the option is displayed (for instance, when the cursor hovers over it), then the markup will be seen by your customer.
-
-Fixed a bug where Markup-by-Attribute would overwrite the options' selector for some themes and other plugins. This occurs if the theme or plugin provided changed the function of the options' selector (for instance, to color swatches) and did not code it so that they take precedence.
-
-= 1.3.1 =
-
- * Includes clearer instructions and inline help.
- * Repairs how percentage markups are displayed.
-
-= 1.2.0 =
-
- * Now allows the use of percentage (5%) markups and markdowns, as well as fixed values ($5).
- * And it stores the actual markup value displayed in the attribute drop-down with the product. This allows changing of the markup in the attribute without affecting the markup displayed with the product.
-
-= 1.1.1 =
-
-Prevents null prices (due to an apparent bug in WooCommerce sale_price) from being adjusted with a markup.
-
-= 1.1 =
-
- * Markup is now stored in metadata, freeing up the Description field. Edits are added to the code, so the markup will always be stored in the correct format.
- * Code improvements to add robustness and supportability.
-
-= 1.0 =
-
-Initial version
+ 

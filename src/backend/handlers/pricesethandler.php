@@ -15,13 +15,6 @@ use mt2Tech\MarkupByAttribute\Utility as Utility;
  * @since     4.0.0
  */
 class PriceSetHandler extends PriceMarkupHandler {
-	//region PROPERTIES
-	/**
-	 * @var	array	Cache for term meta to reduce database queries
-	 */
-	protected $term_meta_cache;
-	//endregion
-
 	//region INITIALIZATION
 	/**
 	 * Initialize PriceSetHandler with product and markup information
@@ -46,7 +39,7 @@ class PriceSetHandler extends PriceMarkupHandler {
 	 * Process markup calculations and apply them to variations
 	 *
 	 * Core method that coordinates the entire markup calculation workflow:
-	 * 1. Validates the base price is not blank/zero (unless zero is allowed)
+	 * 1. Validates the base price is not blank (non-numeric prices stop processing)
 	 * 2. Retrieves product attributes and builds markup calculation table
 	 * 3. Processes each variation to calculate final prices with markups
 	 * 4. Bulk updates all variation prices and descriptions in the database
@@ -60,9 +53,10 @@ class PriceSetHandler extends PriceMarkupHandler {
 	public function processProductMarkups($bulk_action, $data, $product_id, $variations): void {
 		global $mt2mba_utility;
 
-		// Was the price removed from variations, or is the price zero and zero is allowed?
-		if ($this->isBlankOrZeroPrice($product_id, $variations)) {
-			return;		// Yes, no further processing necessary
+		// If the price was blanked out (non-numeric), clean up and stop
+		if (!is_numeric($this->base_price)) {
+			$this->removeVariationPrices($product_id, $variations);
+			return;
 		}
 
 		// Retrieve all attributes and their terms for the product
@@ -79,36 +73,8 @@ class PriceSetHandler extends PriceMarkupHandler {
 		$rounded_base = round($this->base_price, $this->price_decimals);
 		$base_price_description = $this->handleBasePriceUpdate($product_id, $rounded_base);
 
-		// Bulk-fetch variation attributes and descriptions (2 queries for all variations)
-		global $wpdb;
-		$variation_ids = array_map('intval', $variations);
-		$id_placeholders = implode(',', array_fill(0, count($variation_ids), '%d'));
-
-		// All attribute assignments (attribute_pa_color => 'red', etc.)
-		$attribute_rows = $wpdb->get_results($wpdb->prepare(
-			"SELECT post_id, meta_key, meta_value FROM {$wpdb->postmeta}
-			 WHERE post_id IN ($id_placeholders) AND meta_key LIKE 'attribute_pa_%'",
-			$variation_ids
-		));
-
-		// All variation descriptions
-		$description_rows = $wpdb->get_results($wpdb->prepare(
-			"SELECT post_id, meta_value FROM {$wpdb->postmeta}
-			 WHERE post_id IN ($id_placeholders) AND meta_key = '_variation_description'",
-			$variation_ids
-		));
-
-		// Organize into lookup arrays
-		$variation_attributes = [];
-		foreach ($attribute_rows as $row) {
-			// Strip 'attribute_' prefix to match markup_table keys (e.g., 'pa_color')
-			$taxonomy = substr($row->meta_key, 10);
-			$variation_attributes[$row->post_id][$taxonomy] = $row->meta_value;
-		}
-		$variation_descriptions = [];
-		foreach ($description_rows as $row) {
-			$variation_descriptions[$row->post_id] = $row->meta_value;
-		}
+		// Bulk-fetch variation attributes and descriptions
+		list($variation_attributes, $variation_descriptions) = $this->fetchVariationData($variations);
 
 		// Process each variation using pre-fetched data
 		$variation_updates = [];
@@ -131,119 +97,88 @@ class PriceSetHandler extends PriceMarkupHandler {
 
 	//region VALIDATION & SANITIZATION
 	/**
-	 * Check if price was blanked out or zero, and clean up metadata if so
+	 * Remove markup artifacts when the base price is cleared
 	 *
-	 * Handles special cases where the base price is empty, zero, or negative.
-	 * If the price is being cleared, this method removes all markup metadata
-	 * and variation descriptions to prevent orphaned data.
+	 * Cleans up base price metadata and strips markup descriptions from
+	 * variation descriptions. Called when the base price is blanked out
+	 * (non-numeric) so that no orphaned markup data remains.
 	 *
 	 * @since 4.0.0
 	 * @param int   $product_id The ID of the product
 	 * @param array $variations List of variation IDs
-	 * @return bool             True if price is blank/zero and processing should stop
 	 */
-	public function isBlankOrZeroPrice($product_id, $variations): bool {
-		// Condition #1: {base-price} is blank or =< 0
-		if (floatval($this->base_price) <= 0) {
+	public function removeVariationPrices($product_id, $variations): void {
+		// Remove base price metadata
+		delete_post_meta($product_id, "mt2mba_base_{$this->price_type}");
 
-			// If {base-price} is numeric (meaning 0 or negative),
-			if (is_numeric($this->base_price)) {
+		// If clearing the Regular Price, also clean up sale price metadata and descriptions
+		if ($this->price_type == REGULAR_PRICE) {
 
-				// if zero and ALLOW-ZERO is true,
-				if ($this->base_price == 0 && MT2MBA_ALLOW_ZERO === 'yes') {
-					// Set {price_type} base price metadata to 0
-					// update_post_meta() does not appear to change cached records. Deleting the
-					// record before rewriting it appears to be the only way to update the cache.
-					delete_post_meta($product_id, "mt2mba_base_{$this->price_type}");
-					update_post_meta($product_id, "mt2mba_base_{$this->price_type}", 0);
-					// Fall through to Regular Price check
+			// Remove Sales Price metadata
+			delete_post_meta($product_id, "mt2mba_base_" . SALE_PRICE);
 
-				// If negative or ALLOW-ZERO is false, continue processing the markup
+			// Bulk-fetch all variation descriptions in a single query
+			global $wpdb, $mt2mba_utility;
+			$variation_ids = array_map('intval', $variations);
+			$id_placeholders = implode(',', array_fill(0, count($variation_ids), '%d'));
+			$descriptions = $wpdb->get_results($wpdb->prepare(
+				"SELECT post_id, meta_value FROM {$wpdb->postmeta}
+				WHERE post_id IN ($id_placeholders) AND meta_key = '_variation_description'",
+				$variation_ids
+			));
+
+			// Process descriptions in PHP — strip markup information
+			$updates = [];
+			foreach ($descriptions as $row) {
+				$markup_pos = strpos($row->meta_value, PRODUCT_MARKUP_DESC_BEG);
+
+				// If no markup information, skip variation
+				if ($markup_pos === false) {
+					continue;
+				}
+
+				// If the description begins with markup information, delete the description
+				if ($markup_pos === 0) {
+					$updates[] = ['id' => (int) $row->post_id, 'description' => ''];
+				// Otherwise, strip the markup information from the description
 				} else {
-					// Else {base-price} is > 0 or Allow Zero is false, continue markup logic
-					return false;
+					$updates[] = [
+						'id'          => (int) $row->post_id,
+						'description' => $mt2mba_utility->removeBracketedString(
+							PRODUCT_MARKUP_DESC_BEG,
+							PRODUCT_MARKUP_DESC_END,
+							$row->meta_value
+						),
+					];
 				}
-
-			} else {	// Else ({base_price} is not numeric),
-				// Remove {price_type} base price metadata
-				delete_post_meta($product_id, "mt2mba_base_{$this->price_type}");
-				// Fall through to Regular Price check
 			}
 
-			// If {price_type} is Regular Price (regardless of blank or zero)
-			if ($this->price_type == REGULAR_PRICE) {
-
-				// Remove Sales Price metadata
-				delete_post_meta($product_id, "mt2mba_base_" . SALE_PRICE);
-
-				// Bulk-fetch all variation descriptions in a single query
-				global $wpdb, $mt2mba_utility;
-				$variation_ids = array_map('intval', $variations);
-				$id_placeholders = implode(',', array_fill(0, count($variation_ids), '%d'));
-				$descriptions = $wpdb->get_results($wpdb->prepare(
-					"SELECT post_id, meta_value FROM {$wpdb->postmeta}
-					WHERE post_id IN ($id_placeholders) AND meta_key = '_variation_description'",
-					$variation_ids
+			// Bulk-write cleaned descriptions back in a single operation
+			if (!empty($updates)) {
+				$placeholders = [];
+				$values = [];
+				// Delete existing descriptions for variations that need updating
+				$update_ids = array_column($updates, 'id');
+				$del_placeholders = implode(',', array_fill(0, count($update_ids), '%d'));
+				$wpdb->query($wpdb->prepare(
+					"DELETE FROM {$wpdb->postmeta}
+					WHERE post_id IN ($del_placeholders) AND meta_key = '_variation_description'",
+					$update_ids
 				));
-
-				// Process descriptions in PHP — strip markup information
-				$updates = [];
-				foreach ($descriptions as $row) {
-					$markup_pos = strpos($row->meta_value, PRODUCT_MARKUP_DESC_BEG);
-
-					// If no markup information, skip variation
-					if ($markup_pos === false) {
-						continue;
-					}
-
-					// If the description begins with markup information, delete the description
-					if ($markup_pos === 0) {
-						$updates[] = ['id' => (int) $row->post_id, 'description' => ''];
-					// Otherwise, strip the markup information from the description
-					} else {
-						$updates[] = [
-							'id'          => (int) $row->post_id,
-							'description' => $mt2mba_utility->removeBracketedString(
-								PRODUCT_MARKUP_DESC_BEG,
-								PRODUCT_MARKUP_DESC_END,
-								$row->meta_value
-							),
-						];
-					}
+				// Insert cleaned descriptions
+				foreach ($updates as $update) {
+					$placeholders[] = "(%d, %s, %s)";
+					$values[] = $update['id'];
+					$values[] = '_variation_description';
+					$values[] = $update['description'];
 				}
-
-				// Bulk-write cleaned descriptions back in a single operation
-				if (!empty($updates)) {
-					$placeholders = [];
-					$values = [];
-					// Delete existing descriptions for variations that need updating
-					$update_ids = array_column($updates, 'id');
-					$del_placeholders = implode(',', array_fill(0, count($update_ids), '%d'));
-					$wpdb->query($wpdb->prepare(
-						"DELETE FROM {$wpdb->postmeta}
-						WHERE post_id IN ($del_placeholders) AND meta_key = '_variation_description'",
-						$update_ids
-					));
-					// Insert cleaned descriptions
-					foreach ($updates as $update) {
-						$placeholders[] = "(%d, %s, %s)";
-						$values[] = $update['id'];
-						$values[] = '_variation_description';
-						$values[] = $update['description'];
-					}
-					$wpdb->query($wpdb->prepare(
-						"INSERT INTO {$wpdb->postmeta} (post_id, meta_key, meta_value) VALUES "
-						. implode(', ', $placeholders),
-						$values
-					));
-				}
+				$wpdb->query($wpdb->prepare(
+					"INSERT INTO {$wpdb->postmeta} (post_id, meta_key, meta_value) VALUES "
+					. implode(', ', $placeholders),
+					$values
+				));
 			}
-			// Do not continue markup logic
-			return true;
 		}
-
-		// Else {base-price} is > 0, continue markup logic
-		return false;
 	}
 	//endregion
 
@@ -355,6 +290,9 @@ class PriceSetHandler extends PriceMarkupHandler {
 			}
 		}
 
+		// Enforce price floor — markups can never produce a negative price
+		$variation_price = max(0, $variation_price);
+
 		$description = $this->buildVariationDescription($current_description, $base_price_description, $markup_description, $variation_price);
 
 		return [
@@ -415,6 +353,46 @@ class PriceSetHandler extends PriceMarkupHandler {
 	//endregion
 
 	//region DATABASE OPERATIONS
+	/**
+	 * Bulk-fetch variation attributes and descriptions for all variations.
+	 *
+	 * @param	array	$variations	List of variation IDs
+	 * @return	array				[attributes, descriptions] lookup arrays keyed by variation ID
+	 */
+	private function fetchVariationData($variations): array {
+		global $wpdb;
+		$variation_ids = array_map('intval', $variations);
+		$id_placeholders = implode(',', array_fill(0, count($variation_ids), '%d'));
+
+		// All attribute assignments (attribute_pa_color => 'red', etc.)
+		$attribute_rows = $wpdb->get_results($wpdb->prepare(
+			"SELECT post_id, meta_key, meta_value FROM {$wpdb->postmeta}
+			 WHERE post_id IN ($id_placeholders) AND meta_key LIKE 'attribute_pa_%'",
+			$variation_ids
+		));
+
+		// All variation descriptions
+		$description_rows = $wpdb->get_results($wpdb->prepare(
+			"SELECT post_id, meta_value FROM {$wpdb->postmeta}
+			 WHERE post_id IN ($id_placeholders) AND meta_key = '_variation_description'",
+			$variation_ids
+		));
+
+		// Organize into lookup arrays
+		$attributes = [];
+		foreach ($attribute_rows as $row) {
+			// Strip 'attribute_' prefix to match markup_table keys (e.g., 'pa_color')
+			$taxonomy = substr($row->meta_key, 10);
+			$attributes[$row->post_id][$taxonomy] = $row->meta_value;
+		}
+		$descriptions = [];
+		foreach ($description_rows as $row) {
+			$descriptions[$row->post_id] = $row->meta_value;
+		}
+
+		return [$attributes, $descriptions];
+	}
+
 	/**
 	 * Apply markup value updates to the product.
 	 *

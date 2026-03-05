@@ -176,7 +176,7 @@ function mt2mba_main(): void {
 		if (get_option('mt2mba_allow_zero') === 'yes') {
 			$admin_messages['warning'][] = [
 				'allow_zero_removed',
-				__('The <strong>Preserve Zero Prices</strong> setting has been removed. Markups now always apply to zero-priced variations. If you had free/giveaway products using global attributes that carry markups, those products may now acquire a price. To keep them free, replace their global attributes with product-level attributes (which carry no markups) and regenerate variations. <a id="mt2mba_instructions" href="https://github.com/Mark-Tomlinson/markup-by-attribute-for-woocommerce/wiki/3.0_Settings#preserve-zero-prices-removed-in-460" target="_blank">See the wiki for details.</a>', 'markup-by-attribute-for-woocommerce')
+				__('The <strong>Preserve Zero Prices</strong> setting has been removed. Markups now always apply to zero-priced variations. If you have free/giveaway products using global attributes that carry markups, reapplying markups could raise their price above zero. <a id="mt2mba_instructions" href="https://github.com/Mark-Tomlinson/markup-by-attribute-for-woocommerce/wiki/3.0_Settings#preserve-zero-prices-removed-in-460" target="_blank">See the wiki for details.</a>', 'markup-by-attribute-for-woocommerce')
 			];
 		}
 

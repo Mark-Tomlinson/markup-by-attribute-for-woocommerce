@@ -11,11 +11,11 @@ License:				GPLv3
 License URI:			https://www.gnu.org/licenses/gpl-3.0.html
 Version:                4.6.0
 Stable tag:             4.6.0
-Tested up to:           6.9.1
+Tested up to:           6.9.4
 Requires at least:      5.7
 PHP tested up to:       8.4.11
 Requires PHP:           7.4.3
-WC tested up to:        10.5.3
+WC tested up to:        10.6.0
 WC requires at least:   5.0.0
 MySQL tested up to:     8.4.8
 
@@ -217,7 +217,7 @@ Version 4.6.0 - Removed the "Preserve Zero Prices" setting. If you had this enab
 * Removed unused `$term_meta_cache` property
 
 **Maintenance**
-* Updated compatibility to confirm support for WooCommerce 10.5.3
+* Updated compatibility to confirm support for WordPress 6.9.4 and WooCommerce 10.6.0
 
 = 4.5.0 =
 *Release Date: February 2026*

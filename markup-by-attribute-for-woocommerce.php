@@ -114,7 +114,7 @@ function define_constants(): void {
 
 	// Plugin version and compatibility
 	define('MT2MBA_VERSION', '4.6.0');
-	define('MT2MBA_DB_VERSION', 2.2);
+	define('MT2MBA_SCHEMA_VERSION', '3.0');
 	define('MT2MBA_MIN_WP_VERSION', '3.3');
 	define('MT2MBA_ADMIN_POINTER_PRIORITY', 1000);
 
@@ -142,6 +142,72 @@ function define_constants(): void {
 }
 
 /**
+ * Run pending database schema upgrades
+ *
+ * Discovers and executes upgrade modules from src/utility/upgrades/ that haven't
+ * been applied yet. Each module is responsible for updating the installed schema
+ * version as its last act. A 1-hour cooldown prevents retries after failures.
+ *
+ * Admin-only — never called on customer-facing page loads.
+ *
+ * @since 4.6.0
+ */
+function mt2mba_run_upgrades(): void {
+	// Skip if a recent upgrade failed (1-hour cooldown)
+	if (get_transient('mt2mba_upgrade_cooldown')) {
+		return;
+	}
+
+	// Check if upgrades are needed
+	$installed_version = get_option('mt2mba_db_version', '0');
+	if (version_compare($installed_version, MT2MBA_SCHEMA_VERSION, '>=')) {
+		return;
+	}
+
+	// Discover upgrade files
+	$upgrade_dir = MT2MBA_PLUGIN_DIR . 'src/utility/upgrades/';
+	$files = glob($upgrade_dir . 'db_upgrade_*.php');
+	if (empty($files)) return;
+	sort($files);
+
+	// Load interface
+	require_once $upgrade_dir . 'upgradeinterface.php';
+
+	foreach ($files as $file) {
+		require_once $file;
+
+		// Derive fully-qualified class name from filename
+		// db_upgrade_2_0.php -> DbUpgrade_2_0
+		$basename = basename($file, '.php');
+		$class_short = implode('_', array_map('ucfirst', explode('_', $basename)));
+		$fqcn = 'mt2Tech\\MarkupByAttribute\\Utility\\Upgrades\\' . $class_short;
+
+		// Validate class
+		if (!class_exists($fqcn)) continue;
+		$implements = class_implements($fqcn);
+		if (!isset($implements['mt2Tech\\MarkupByAttribute\\Utility\\Upgrades\\UpgradeInterface'])) continue;
+
+		// Skip upgrades already applied
+		if (version_compare($fqcn::version(), $installed_version, '<=')) {
+			continue;
+		}
+
+		// Run upgrade
+		try {
+			(new $fqcn)->run();
+			// Re-read in case the upgrade stamped its version
+			$installed_version = get_option('mt2mba_db_version', '0');
+		} catch (\Exception $e) {
+			set_transient('mt2mba_upgrade_cooldown', true, HOUR_IN_SECONDS);
+			if (defined('WP_DEBUG') && WP_DEBUG) {
+				error_log('MT2MBA upgrade failed at version ' . $fqcn::version() . ': ' . $e->getMessage());
+			}
+			return;
+		}
+	}
+}
+
+/**
  * Initialize the Markup-by-Attribute plugin
  *
  * Main initialization function that sets up constants, loads translations,
@@ -166,6 +232,9 @@ function mt2mba_main(): void {
 
 	// Initialize context-specific components
 	if (is_admin()) {
+		// Run pending schema upgrades (admin-only, with failure cooldown)
+		mt2mba_run_upgrades();
+
 		// Admin messages for notices
 		$admin_messages = [
 			'info' => [],

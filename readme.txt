@@ -215,6 +215,8 @@ Version 4.6.0 - Removed the "Preserve Zero Prices" setting. If you had this enab
 * Extracted `fetchVariationData()` helper for cleaner variation data retrieval
 * Added price floor — variation prices can never go below zero
 * Removed unused `$term_meta_cache` property
+* Extracted database upgrade logic into versioned modules with admin-only execution and failure cooldown
+* Renamed `MT2MBA_DB_VERSION` constant to `MT2MBA_SCHEMA_VERSION` for clarity
 
 **Maintenance**
 * Updated compatibility to confirm support for WordPress 6.9.4 and WooCommerce 10.6.0

@@ -37,7 +37,7 @@ use mt2Tech\MarkupByAttribute\Utility as Utility;
  * NOTE: Union types (e.g., string|float) require PHP 8.0+. Some method parameters
  *       accept multiple types at runtime but are typed as string for 7.4 compatibility.
  *       See affected method docblocks for details.
- * WC tested up to:         10.6.0
+ * WC tested up to:         10.6.1
  * WC requires at least:    5.0.0
  * MySQL tested up to:      8.4.8
  */
@@ -114,8 +114,7 @@ function define_constants(): void {
 
 	// Plugin version and compatibility
 	define('MT2MBA_VERSION', '4.6.0');
-	define('MT2MBA_SCHEMA_VERSION', '3.0');
-	define('MT2MBA_MIN_WP_VERSION', '3.3');
+	define('MT2MBA_SCHEMA_VERSION', '4.6.0');	// Last plugin version that included a database schema change
 	define('MT2MBA_ADMIN_POINTER_PRIORITY', 1000);
 
 	// Configuration and precision settings
@@ -254,6 +253,7 @@ function mt2mba_main(): void {
 		$notices->sendNoticeArray($admin_messages);
 
 		Utility\Pointers::get_instance();
+		Backend\Attribute::get_instance();
 		Backend\Term::get_instance();
 		Backend\ProductList::get_instance();
 		new Backend\Product();  // Product class cannot be singleton due to hook requirements

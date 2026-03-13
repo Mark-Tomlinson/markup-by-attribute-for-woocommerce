@@ -91,9 +91,6 @@ class Pointers {
 	 * @param string $hook_suffix Current admin page hook (unused)
 	 */
 	public function adminPointerLoad(string $hook_suffix): void {
-		 // Don't run on WP < minimum version
-		if (get_bloginfo('version') < MT2MBA_MIN_WP_VERSION) return;
-
 		// Get pointers for this screen
 		$screen = get_current_screen();
 		$screen_id = strpos($screen->id, 'edit-pa_') === FALSE ? $screen->id : 'edit-term';

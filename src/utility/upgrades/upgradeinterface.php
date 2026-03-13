@@ -17,7 +17,7 @@ interface UpgradeInterface {
 	/**
 	 * The schema version this upgrade brings the database to
 	 *
-	 * @return string Version string (e.g., '2.0', '3.0')
+	 * @return string Version string matching plugin release (e.g., '2.0', '4.6.0')
 	 */
 	public static function version(): string;
 

@@ -15,7 +15,7 @@ Tested up to:           6.9.4
 Requires at least:      5.7
 PHP tested up to:       8.4.11
 Requires PHP:           7.4.3
-WC tested up to:        10.6.0
+WC tested up to:        10.6.1
 WC requires at least:   5.0.0
 MySQL tested up to:     8.4.8
 
@@ -214,12 +214,12 @@ Version 4.6.0 - Removed the "Preserve Zero Prices" setting. If you had this enab
 * Simplified `isBlankOrZeroPrice()` into focused `removeVariationPrices()` method
 * Extracted `fetchVariationData()` helper for cleaner variation data retrieval
 * Added price floor — variation prices can never go below zero
-* Removed unused `$term_meta_cache` property
+* Removed unused class properties
 * Extracted database upgrade logic into versioned modules with admin-only execution and failure cooldown
-* Renamed `MT2MBA_DB_VERSION` constant to `MT2MBA_SCHEMA_VERSION` for clarity
+* Split `Term` class — extracted attribute-level form handlers into new `Attribute` class
 
 **Maintenance**
-* Updated compatibility to confirm support for WordPress 6.9.4 and WooCommerce 10.6.0
+* Updated compatibility to confirm support for WordPress 6.9.4 and WooCommerce 10.6.1
 
 = 4.5.0 =
 *Release Date: February 2026*

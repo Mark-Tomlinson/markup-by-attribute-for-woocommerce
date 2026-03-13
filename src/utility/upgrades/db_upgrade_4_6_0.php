@@ -2,7 +2,7 @@
 namespace mt2Tech\MarkupByAttribute\Utility\Upgrades;
 
 /**
- * Database upgrade: schema version 3.0
+ * Database upgrade: schema version 4.6.0
  *
  * Cleans up the removed "Preserve Zero Prices" setting and its dismissal
  * tracking option. Waits until the admin notice has been dismissed before
@@ -17,13 +17,13 @@ namespace mt2Tech\MarkupByAttribute\Utility\Upgrades;
 // Exit if accessed directly
 if (!defined('ABSPATH')) exit();
 
-class Db_Upgrade_3_0 implements UpgradeInterface {
+class Db_Upgrade_4_6_0 implements UpgradeInterface {
 
 	/**
 	 * @inheritDoc
 	 */
 	public static function version(): string {
-		return '3.0';
+		return '4.6.0';
 	}
 
 	/**

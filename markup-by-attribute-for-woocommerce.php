@@ -11,7 +11,7 @@ use mt2Tech\MarkupByAttribute\Utility as Utility;
  * This file is part of the Markup by Attribute for WooCommerce plugin by Mark Tomlinson
  *
  * @package   markup-by-attribute-for-woocommerce
- * @version   4.5.0
+ * @version   4.6.0
  * @author    Mark Tomlinson
  * @license   GPL-2.0+
  */
@@ -28,16 +28,16 @@ use mt2Tech\MarkupByAttribute\Utility as Utility;
  * License URI:             https://www.gnu.org/licenses/gpl-3.0.html
  * Text Domain:             markup-by-attribute-for-woocommerce
  * Domain Path:             /languages
- * Version:                 4.5.0
- * Stable tag:              4.5.0
- * Tested up to:            6.9.1
+ * Version:                 4.6.0
+ * Stable tag:              4.6.0
+ * Tested up to:            6.9.4
  * Requires at least:       5.7
  * PHP tested up to:        8.4.11
  * Requires PHP:            7.4.3
  * NOTE: Union types (e.g., string|float) require PHP 8.0+. Some method parameters
  *       accept multiple types at runtime but are typed as string for 7.4 compatibility.
  *       See affected method docblocks for details.
- * WC tested up to:         10.5.1
+ * WC tested up to:         10.6.1
  * WC requires at least:    5.0.0
  * MySQL tested up to:      8.4.8
  */
@@ -113,9 +113,8 @@ function define_constants(): void {
 	define('MT2MBA_SITE_URL', get_bloginfo('wpurl'));
 
 	// Plugin version and compatibility
-	define('MT2MBA_VERSION', '4.4.0');
-	define('MT2MBA_DB_VERSION', 2.2);
-	define('MT2MBA_MIN_WP_VERSION', '3.3');
+	define('MT2MBA_VERSION', '4.6.0');
+	define('MT2MBA_SCHEMA_VERSION', '4.6.0');	// Last plugin version that included a database schema change
 	define('MT2MBA_ADMIN_POINTER_PRIORITY', 1000);
 
 	// Configuration and precision settings
@@ -139,6 +138,72 @@ function define_constants(): void {
 	// Price type constants (Used by WooCommerce, do not translate)
 	define('REGULAR_PRICE', 'regular_price');
 	define('SALE_PRICE', 'sale_price');
+}
+
+/**
+ * Run pending database schema upgrades
+ *
+ * Discovers and executes upgrade modules from src/utility/upgrades/ that haven't
+ * been applied yet. Each module is responsible for updating the installed schema
+ * version as its last act. A 1-hour cooldown prevents retries after failures.
+ *
+ * Admin-only — never called on customer-facing page loads.
+ *
+ * @since 4.6.0
+ */
+function mt2mba_run_upgrades(): void {
+	// Skip if a recent upgrade failed (1-hour cooldown)
+	if (get_transient('mt2mba_upgrade_cooldown')) {
+		return;
+	}
+
+	// Check if upgrades are needed
+	$installed_version = get_option('mt2mba_db_version', '0');
+	if (version_compare($installed_version, MT2MBA_SCHEMA_VERSION, '>=')) {
+		return;
+	}
+
+	// Discover upgrade files
+	$upgrade_dir = MT2MBA_PLUGIN_DIR . 'src/utility/upgrades/';
+	$files = glob($upgrade_dir . 'db_upgrade_*.php');
+	if (empty($files)) return;
+	sort($files);
+
+	// Load interface
+	require_once $upgrade_dir . 'upgradeinterface.php';
+
+	foreach ($files as $file) {
+		require_once $file;
+
+		// Derive fully-qualified class name from filename
+		// db_upgrade_2_0.php -> DbUpgrade_2_0
+		$basename = basename($file, '.php');
+		$class_short = implode('_', array_map('ucfirst', explode('_', $basename)));
+		$fqcn = 'mt2Tech\\MarkupByAttribute\\Utility\\Upgrades\\' . $class_short;
+
+		// Validate class
+		if (!class_exists($fqcn)) continue;
+		$implements = class_implements($fqcn);
+		if (!isset($implements['mt2Tech\\MarkupByAttribute\\Utility\\Upgrades\\UpgradeInterface'])) continue;
+
+		// Skip upgrades already applied
+		if (version_compare($fqcn::version(), $installed_version, '<=')) {
+			continue;
+		}
+
+		// Run upgrade
+		try {
+			(new $fqcn)->run();
+			// Re-read in case the upgrade stamped its version
+			$installed_version = get_option('mt2mba_db_version', '0');
+		} catch (\Exception $e) {
+			set_transient('mt2mba_upgrade_cooldown', true, HOUR_IN_SECONDS);
+			if (defined('WP_DEBUG') && WP_DEBUG) {
+				error_log('MT2MBA upgrade failed at version ' . $fqcn::version() . ': ' . $e->getMessage());
+			}
+			return;
+		}
+	}
 }
 
 /**
@@ -166,23 +231,29 @@ function mt2mba_main(): void {
 
 	// Initialize context-specific components
 	if (is_admin()) {
+		// Run pending schema upgrades (admin-only, with failure cooldown)
+		mt2mba_run_upgrades();
+
 		// Admin messages for notices
 		$admin_messages = [
-			'info' => [
-//				["message_name1", "This is a dismissable info message."],
-//				["message_name2", "This is another dismissable info message."]
-			],
-			'warning' => [
-//				["message_name3", "This is a dismissable warning message."],
-//				["message_name4", "This is another dismissable warning message."]
-			]
+			'info' => [],
+			'warning' => []
 		];
+
+		// Warn users who had the removed "Preserve Zero Prices" setting enabled
+		if (get_option('mt2mba_allow_zero') === 'yes') {
+			$admin_messages['warning'][] = [
+				'allow_zero_removed',
+				__('The <strong>Preserve Zero Prices</strong> setting has been removed. Markups now always apply to zero-priced variations. If you have free/giveaway products using global attributes that carry markups, reapplying markups could raise their price above zero. <a id="mt2mba_instructions" href="https://github.com/Mark-Tomlinson/markup-by-attribute-for-woocommerce/wiki/3.0_Settings#preserve-zero-prices-removed-in-460" target="_blank">See the wiki for details.</a>', 'markup-by-attribute-for-woocommerce')
+			];
+		}
 
 		// Initialize backend components
 		$notices = Utility\Notices::get_instance();
 		$notices->sendNoticeArray($admin_messages);
 
 		Utility\Pointers::get_instance();
+		Backend\Attribute::get_instance();
 		Backend\Term::get_instance();
 		Backend\ProductList::get_instance();
 		new Backend\Product();  // Product class cannot be singleton due to hook requirements

@@ -9,13 +9,13 @@ Contributors:			MarkTomlinson
 Donate link:			https://www.paypal.me/MT2Dev/5
 License:				GPLv3
 License URI:			https://www.gnu.org/licenses/gpl-3.0.html
-Version:                4.5.0
-Stable tag:             4.5.0
-Tested up to:           6.9.1
+Version:                4.6.0
+Stable tag:             4.6.0
+Tested up to:           6.9.4
 Requires at least:      5.7
 PHP tested up to:       8.4.11
 Requires PHP:           7.4.3
-WC tested up to:        10.5.1
+WC tested up to:        10.6.1
 WC requires at least:   5.0.0
 MySQL tested up to:     8.4.8
 
@@ -49,10 +49,10 @@ This plugin does one thing - it adds pricing control to WooCommerce's global pro
 * Add-on services: Pricing for monogramming, gift wrapping, etc.
 * Attribute-driven costs: Any situation where product options consistently affect pricing
 
-= New in Version 4.5 =
-* Hardened security across all input handling
-* Faster bulk pricing with optimized database operations
-* Improved code reliability with modern coding practices while maintaining PHP 7.4+ compatibility
+= New in Version 4.6 =
+* Removed the "Preserve Zero Prices" setting — markups now always apply to zero-priced variations
+* Simplified zero-price handling with automatic price floor (prices never go negative)
+* Improved code clarity with refactored price-handling methods
 
 == Installation ==
 
@@ -200,9 +200,27 @@ If you use Markup-by-Attribute and want to see me continue support for it, I enc
 7. The settings page allows configuration of how the markup is displayed.
 
 == Upgrade Notice ==
-Version 4.5.0 - Security hardening, performance optimization, and code quality improvements. Sale base price field now always visible. Compatible with WordPress 6.9.
+Version 4.6.0 - Removed the "Preserve Zero Prices" setting. If you had this enabled and have free products with global attribute markups, see the wiki for details.
 
 == Changelog ==
+= 4.6.0 =
+*Release Date: March 2026*
+
+**Setting Removed**
+* Removed the "Preserve Zero Prices" setting — markups now always apply to zero-priced variations
+* Added dismissible admin notice for users who had the setting enabled, with link to wiki remediation steps
+
+**Code Improvements**
+* Simplified `isBlankOrZeroPrice()` into focused `removeVariationPrices()` method
+* Extracted `fetchVariationData()` helper for cleaner variation data retrieval
+* Added price floor — variation prices can never go below zero
+* Removed unused class properties
+* Extracted database upgrade logic into versioned modules with admin-only execution and failure cooldown
+* Split `Term` class — extracted attribute-level form handlers into new `Attribute` class
+
+**Maintenance**
+* Updated compatibility to confirm support for WordPress 6.9.4 and WooCommerce 10.6.1
+
 = 4.5.0 =
 *Release Date: February 2026*
 

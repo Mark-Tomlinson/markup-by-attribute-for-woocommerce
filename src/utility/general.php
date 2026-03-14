@@ -53,16 +53,9 @@ class General {
 
 	// Private constructor
 	private function __construct() {
-		// Check database version
-		$current_version = get_site_option('mt2mba_db_version', false);
-
-		// Handle first-time installation
-		if ($current_version === false) {
-			// Set initial version and avoid triggering upgrade
-			update_option('mt2mba_db_version', MT2MBA_DB_VERSION, false);
-		} elseif (version_compare($current_version, MT2MBA_DB_VERSION, '<')) {
-			// Perform upgrade if required
-			$this->dbUpgrade();
+		// Stamp schema version on first install (upgrades handled in mt2mba_run_upgrades)
+		if (get_option('mt2mba_db_version', false) === false) {
+			update_option('mt2mba_db_version', MT2MBA_SCHEMA_VERSION, false);
 		}
 
 		// Set global values used throughout the code
@@ -74,76 +67,9 @@ class General {
 			define('MT2MBA_HIDE_BASE_PRICE', get_option('mt2mba_hide_base_price', $settings->hide_base_price));
 			define('MT2MBA_SALE_PRICE_MARKUP', get_option('mt2mba_sale_price_markup', $settings->sale_price_markup));
 			define('MT2MBA_ROUND_MARKUP', get_option('mt2mba_round_markup', $settings->round_markup));
-			define('MT2MBA_ALLOW_ZERO', get_option('mt2mba_allow_zero', $settings->allow_zero));
 			define('MT2MBA_MAX_VARIATIONS', get_option('mt2mba_max_variations', $settings->max_variations));
 			define('MT2MBA_CURRENCY_SYMBOL', html_entity_decode(get_woocommerce_currency_symbol(get_woocommerce_currency())));
 		}
-	}
-
-	/**
-	 * Database has been determined to be wrong version; upgrade
-	 *
-	 * Handles migration of markup data from older plugin versions to current schema.
-	 * This method preserves existing data while updating the storage format and
-	 * cleaning up deprecated settings.
-	 *
-	 * @since 2.0.0
-	 */
-	private function dbUpgrade() {
-		global $wpdb;
-
-		// Get current version at start of function
-		$current_db_version = get_site_option('mt2mba_db_version', '0');
-
-		// --------------------------------------------------------------
-		// Update database from version 1.x. Leave 1.x data for fallback.
-		// --------------------------------------------------------------
-	    if (version_compare($current_db_version, '2.0', '<')) {
-			// Add prefix to attribute markup meta data key
-			$results = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}termmeta WHERE meta_key LIKE 'markup'");
-			foreach ($results as $row) {
-				if (strpos($row->meta_key, 'mt2mba_') === FALSE) {
-					add_term_meta($row->term_id, "mt2mba_" . $row->meta_key, $row->meta_value, TRUE);
-				}
-			}
-
-			// Add prefix to product markup meta data
-			$results = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}postmeta WHERE `meta_key` LIKE '%_markup_amount'");
-			foreach ($results as $row) {
-				if (strpos($row->meta_key, 'mt2mba_') === FALSE) {
-					add_post_meta($row->post_id, "mt2mba_" . $row->meta_key, $row->meta_value, TRUE);
-				}
-			}
-
-			// Bracket description and save base regular price
-			$last_parent_id = '';
-			$results = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}postmeta WHERE `meta_value` LIKE '%" . MT2MBA_PRICE_META . "%'");
-			foreach ($results as $row) {
-				if ((strpos($row->meta_value, PRODUCT_MARKUP_DESC_BEG) === FALSE) && (strpos($row->meta_value, MT2MBA_PRICE_META) !== FALSE)) {
-					update_post_meta($row->post_id, $row->meta_key, PRODUCT_MARKUP_DESC_BEG . $row->meta_value . PRODUCT_MARKUP_DESC_END);
-				}
-				$v_product	= get_post($row->post_id, 'ARRAY_A');
-				if ($last_parent_id != $v_product['post_parent']) {
-					$beg			= strpos($row->meta_value, MT2MBA_PRICE_META) + strlen(MT2MBA_PRICE_META);
-					$end			= strpos($row->meta_value, PHP_EOL);
-					$base_price	 = preg_replace('/[^\p{L}\p{N}\s\.]/u', '', substr($row->meta_value, $beg, $end - $beg));
-					update_post_meta($v_product['post_parent'], 'mt2mba_base_regular_price', (float) $base_price);
-					$last_parent_id = $v_product['post_parent'];
-				}
-			}
-			// Clean database for conversion from version 2.3.
-			$wpdb->delete("{$wpdb->prefix}options", array('option_name'=>'mt2mba_decimal_points'));
-			$wpdb->delete("{$wpdb->prefix}options", array('option_name'=>'mt2mba_symbol_before'));
-			$wpdb->delete("{$wpdb->prefix}options", array('option_name'=>'mt2mba_symbol_after'));
-		}
-
-		//	Delete discontinued setting, mt2mba_show_attrb_list
-		if (version_compare($current_db_version, '2.2', '<')) {
-			$wpdb->delete("{$wpdb->prefix}options", array('option_name'=>'mt2mba_show_attrb_list'));
-		}
-
-		// Made it this far, update database version
-		update_option('mt2mba_db_version', MT2MBA_DB_VERSION, false);
 	}
 	//endregion
 

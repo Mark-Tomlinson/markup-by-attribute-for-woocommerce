@@ -9,13 +9,13 @@ Contributors:			MarkTomlinson
 Donate link:			https://www.paypal.me/MT2Dev/5
 License:				GPLv3
 License URI:			https://www.gnu.org/licenses/gpl-3.0.html
-Version:                4.6.0
-Stable tag:             4.6.0
-Tested up to:           6.9.4
+Version:                4.6.1
+Stable tag:             4.6.1
+Tested up to:           7.0
 Requires at least:      5.7
 PHP tested up to:       8.4.11
 Requires PHP:           7.4.3
-WC tested up to:        10.6.1
+WC tested up to:        10.6.2
 WC requires at least:   5.0.0
 MySQL tested up to:     8.4.8
 
@@ -200,9 +200,20 @@ If you use Markup-by-Attribute and want to see me continue support for it, I enc
 7. The settings page allows configuration of how the markup is displayed.
 
 == Upgrade Notice ==
-Version 4.6.0 - Removed the "Preserve Zero Prices" setting. If you had this enabled and have free products with global attribute markups, see the wiki for details.
+= 4.6.1 =
+Compatibility update for WordPress 7.0 and WooCommerce 10.6.2. No functional changes.
+
+= 4.6.0 =
+Removed the "Preserve Zero Prices" setting. If you had this enabled and have free products with global attribute markups, see the wiki for details.
 
 == Changelog ==
+= 4.6.1 =
+*Release Date: April 2026*
+
+**Maintenance**
+* Updated compatibility to confirm support for WordPress 7.0 and WooCommerce 10.6.2.
+* No functional code changes.
+
 = 4.6.0 =
 *Release Date: March 2026*
 

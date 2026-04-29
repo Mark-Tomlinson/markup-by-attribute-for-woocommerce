@@ -11,7 +11,7 @@ use mt2Tech\MarkupByAttribute\Utility as Utility;
  * This file is part of the Markup by Attribute for WooCommerce plugin by Mark Tomlinson
  *
  * @package   markup-by-attribute-for-woocommerce
- * @version   4.6.1
+ * @version   4.6.2
  * @author    Mark Tomlinson
  * @license   GPL-2.0+
  */
@@ -28,8 +28,8 @@ use mt2Tech\MarkupByAttribute\Utility as Utility;
  * License URI:             https://www.gnu.org/licenses/gpl-3.0.html
  * Text Domain:             markup-by-attribute-for-woocommerce
  * Domain Path:             /languages
- * Version:                 4.6.1
- * Stable tag:              4.6.1
+ * Version:                 4.6.2
+ * Stable tag:              4.6.2
  * Tested up to:            7.0
  * Requires at least:       5.7
  * PHP tested up to:        8.4.11
@@ -62,7 +62,8 @@ Autoloader::register();
 function add_links(array $links): array {
 	$mt2mba_links = [
 		'settings' => '<a id="mt2mba_settings" href="admin.php?page=wc-settings&tab=products&section=mt2mba">' . __('Settings', 'markup-by-attribute-for-woocommerce') . '</a>',
-		'instructions' => '<a id="mt2mba_instructions" href="https://wordpress.org/plugins/markup-by-attribute-for-woocommerce/#installation" target="_blank">' . __('Instructions', 'markup-by-attribute-for-woocommerce') . '</a>'
+		'instructions' => '<a id="mt2mba_instructions" href="https://wordpress.org/plugins/markup-by-attribute-for-woocommerce/#installation" target="_blank">' . __('Instructions', 'markup-by-attribute-for-woocommerce') . '</a>',
+		'donate' => '<a id="mt2mba_donate" href="https://github.com/Mark-Tomlinson/markup-by-attribute-for-woocommerce/wiki/4.0_Donate" target="_blank">' . __('Donate', 'markup-by-attribute-for-woocommerce') . '</a>'
 	];
 	return array_merge($mt2mba_links, $links);
 }
@@ -113,7 +114,7 @@ function define_constants(): void {
 	define('MT2MBA_SITE_URL', get_bloginfo('wpurl'));
 
 	// Plugin version and compatibility
-	define('MT2MBA_VERSION', '4.6.1');
+	define('MT2MBA_VERSION', '4.6.2');
 	define('MT2MBA_SCHEMA_VERSION', '4.6.0');	// Last plugin version that included a database schema change
 	define('MT2MBA_ADMIN_POINTER_PRIORITY', 1000);
 

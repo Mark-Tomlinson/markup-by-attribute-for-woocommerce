@@ -6,11 +6,11 @@ Plugin URI:				https://wordpress.org/plugins/markup-by-attribute-for-woocommerce
 Tags:					WooCommerce, Attribute, Price, Variation, Markup
 Author:					MarkTomlinson
 Contributors:			MarkTomlinson
-Donate link:			https://www.paypal.me/MT2Dev/5
+Donate link:			https://github.com/Mark-Tomlinson/markup-by-attribute-for-woocommerce/wiki/4.0_Donate
 License:				GPLv3
 License URI:			https://www.gnu.org/licenses/gpl-3.0.html
-Version:                4.6.1
-Stable tag:             4.6.1
+Version:                4.6.2
+Stable tag:             4.6.2
 Tested up to:           7.0
 Requires at least:      5.7
 PHP tested up to:       8.4.11
@@ -200,6 +200,9 @@ If you use Markup-by-Attribute and want to see me continue support for it, I enc
 7. The settings page allows configuration of how the markup is displayed.
 
 == Upgrade Notice ==
+= 4.6.2 =
+Cosmetic update. Adds a Donate link to the plugin action links and improves the Settings page layout. No functional changes.
+
 = 4.6.1 =
 Compatibility update for WordPress 7.0 and WooCommerce 10.6.2. No functional changes.
 
@@ -207,6 +210,14 @@ Compatibility update for WordPress 7.0 and WooCommerce 10.6.2. No functional cha
 Removed the "Preserve Zero Prices" setting. If you had this enabled and have free products with global attribute markups, see the wiki for details.
 
 == Changelog ==
+= 4.6.2 =
+*Release Date: April 2026*
+
+**Cosmetic**
+* Added Donate link to plugin action links on the Plugins page
+* Moved donation prompt to a dedicated section at the bottom of the Settings page
+* Fixed broken donation link on the Settings page
+
 = 4.6.1 =
 *Release Date: April 2026*
 

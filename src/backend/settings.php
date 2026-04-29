@@ -147,10 +147,6 @@ class Settings extends WC_Settings_API {
 					sprintf (
 						__('Additional help can be found in the <a href="%1$s" target="_blank">Markup by Attribute wiki</a> on the <code>Settings</code> page.', 'markup-by-attribute-for-woocommerce'),
 						'https://github.com/Mark-Tomlinson/markup-by-attribute-for-woocommerce/wiki'
-					) . '<br\>' .
-					sprintf (
-						__('If you find this plugin helpful, please consider <a href="%1$s" target="_blank">a small donation</a>.', 'markup-by-attribute-for-woocommerce'),
-						'https://github.com/Mark-Tomlinson/markup-by-attribute-for-woocommerce/wiki/Donate'
 					),
 				'id'	=> 'mt2mba'
 			);
@@ -306,6 +302,22 @@ class Settings extends WC_Settings_API {
 			$mt2mba_settings[] = array(
 				'type'		=> 'sectionend',
 				'id'		=> 'mt2mbaOtherSection'
+			);
+
+			// *** Donate section ***
+			$mt2mba_settings[] = array(
+				'name'	=> __('Support Markup by Attribute', 'markup-by-attribute-for-woocommerce'),
+				'type'	=> 'title',
+				'desc'	=> sprintf(
+					__('Markup by Attribute is a hobby project I\'ve maintained since 2018. If it\'s saved you time or money, and you\'d like to see it continue, <a href="%1$s" target="_blank">a small donation</a> means a lot. Thank you!', 'markup-by-attribute-for-woocommerce'),
+					'https://github.com/Mark-Tomlinson/markup-by-attribute-for-woocommerce/wiki/4.0_Donate'
+				),
+				'id'	=> 'mt2mbaDonateSection'
+			);
+
+			$mt2mba_settings[] = array(
+				'type'	=> 'sectionend',
+				'id'	=> 'mt2mbaDonateSection'
 			);
 
 			// Set autoload to 'no' because WC_Settings_API always resets it to 'on'

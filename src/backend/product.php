@@ -155,6 +155,11 @@ class Product {
 	public function getFormattedBasePrice(): void {
 		check_ajax_referer('handleMarkupReapplication', 'security');
 
+		if (!current_user_can('edit_products')) {
+			wp_send_json_error(['message' => __('Permission denied', 'markup-by-attribute-for-woocommerce')]);
+			return;
+		}
+
 		$product_id = isset($_POST['product_id']) ? absint($_POST['product_id']) : 0;
 		if (!$product_id) {
 			wp_send_json_error();
@@ -184,6 +189,11 @@ class Product {
 	 */
 	public function refreshProductGeneralPanel(): void {
 		check_ajax_referer('handleMarkupReapplication', 'security');
+
+		if (!current_user_can('edit_products')) {
+			wp_send_json_error(['message' => __('Permission denied', 'markup-by-attribute-for-woocommerce')]);
+			return;
+		}
 
 		$product_id = isset($_POST['product_id']) ? absint($_POST['product_id']) : 0;
 

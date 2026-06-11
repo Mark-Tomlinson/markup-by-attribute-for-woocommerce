@@ -417,8 +417,13 @@ class ProductList {
 	public function refreshProductRow(): void {
 		check_ajax_referer('handleMarkupReapplication', 'security');
 
-		$product_id = absint($_REQUEST['product_id']);
-		$product = wc_get_product($product_id);
+		if (!current_user_can('edit_products')) {
+			wp_send_json_error(['message' => __('Permission denied', 'markup-by-attribute-for-woocommerce')]);
+			return;
+		}
+
+		$product_id = isset($_REQUEST['product_id']) ? absint($_REQUEST['product_id']) : 0;
+		$product = $product_id ? wc_get_product($product_id) : false;
 
 		if (!$product) {
 			wp_send_json_error(['message' => __('Product not found', 'markup-by-attribute-for-woocommerce')]);

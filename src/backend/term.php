@@ -157,9 +157,9 @@ class Term {
 		?>
 		<div class="form-field">
 			<?php wp_nonce_field('mt2mba_add_term', 'mt2mba_term_nonce'); ?>
-			<label for="term_markup"><?php echo($this->markup_label); ?></label>
-			<input type="text" placeholder="<?php echo($this->placeholder); ?>" name="term_markup" id="term_add_markup" value="">
-			<p class="description"><?php echo($this->markup_description); ?></p>
+			<label for="term_markup"><?php echo esc_html($this->markup_label); ?></label>
+			<input type="text" placeholder="<?php echo esc_attr($this->placeholder); ?>" name="term_markup" id="term_add_markup" value="">
+			<p class="description"><?php echo esc_html($this->markup_description); ?></p>
 		</div>
 		<?php
 	}
@@ -174,10 +174,10 @@ class Term {
 		// Build row and fill field with current markup
 		?>
 		<tr class="form-field">
-			<th scope="row" valign="top"><label for="term_markup"><?php echo($this->markup_label); ?></label></th>
+			<th scope="row" valign="top"><label for="term_markup"><?php echo esc_html($this->markup_label); ?></label></th>
 			<td>
-				<input type="text" placeholder="<?php echo($this->placeholder); ?>" name="term_markup" id="term_edit_markup" value="<?php echo esc_attr($term_markup) ? esc_attr($term_markup) : ''; ?>">
-				<p class="description"><?php echo($this->markup_description); ?></p>
+				<input type="text" placeholder="<?php echo esc_attr($this->placeholder); ?>" name="term_markup" id="term_edit_markup" value="<?php echo esc_attr($term_markup) ? esc_attr($term_markup) : ''; ?>">
+				<p class="description"><?php echo esc_html($this->markup_description); ?></p>
 			</td>
 		</tr>
 		<?php

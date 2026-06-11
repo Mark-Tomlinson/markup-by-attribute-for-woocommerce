@@ -160,12 +160,12 @@ class Notices {
 				);
 				if (!get_option("mt2mba_dismissed_{$dismiss_option}")) {
 					?><div
-						class="notice mt2mba-notice notice-<?php echo $type;
+						class="notice mt2mba-notice notice-<?php echo esc_attr($type);
 						if ($dismiss_option) {
 							echo ' is-dismissible" data-dismiss-url="' . esc_url($dismiss_url);
 						} ?>">
-						<strong><em><?php echo(MT2MBA_PLUGIN_NAME . ' ' . $type); ?></em></strong>
-						<p><?php echo($message); ?></p>
+						<strong><em><?php echo esc_html(MT2MBA_PLUGIN_NAME . ' ' . $type); ?></em></strong>
+						<p><?php echo wp_kses_post($message); ?></p>
 					</div><?php
 				}	//	End if
 			}	//	End function

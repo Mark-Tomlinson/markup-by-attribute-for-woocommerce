@@ -159,18 +159,18 @@ class Attribute {
 		?>
 		<div class="form-field">
 			<label for="dont_overwrite_theme"><input type="checkbox" name="dont_overwrite_theme" id="dont_overwrite_theme" value="">
-			<?php echo($this->dont_overwrite_theme_label); ?></label>
-			<p class="description"><?php echo($this->dont_overwrite_theme_description); ?></p>
+			<?php echo esc_html($this->dont_overwrite_theme_label); ?></label>
+			<p class="description"><?php echo esc_html($this->dont_overwrite_theme_description); ?></p>
 		</div>
 		<div class="form-field">
 			<label for="term_name_rewrite"><input type="checkbox" name="term_name_rewrite" id="term_name_rewrite" value="">
-			<?php echo($this->rewrite_name_label); ?></label>
-			<p class="description"><?php echo($this->rewrite_name_description); ?></p>
+			<?php echo esc_html($this->rewrite_name_label); ?></label>
+			<p class="description"><?php echo esc_html($this->rewrite_name_description); ?></p>
 		</div>
 		<div class="form-field">
 			<label for="term_desc_rewrite"><input type="checkbox" name="term_desc_rewrite" id="term_desc_rewrite" value="">
-			<?php echo($this->rewrite_desc_label); ?></label>
-			<p class="description"><?php echo($this->rewrite_desc_description); ?></p>
+			<?php echo esc_html($this->rewrite_desc_label); ?></label>
+			<p class="description"><?php echo esc_html($this->rewrite_desc_description); ?></p>
 		</div>
 		<?php
 	}
@@ -224,24 +224,24 @@ class Attribute {
 		$checked_overwrite_flag = $dont_overwrite_theme_flag == 'yes' ? ' checked' : "";
 		?>
 		<tr class="form-field">
-			<th scope="row" valign="top"><label for="dont_overwrite_theme"><?php echo($this->dont_overwrite_theme_label); ?></label></th>
+			<th scope="row" valign="top"><label for="dont_overwrite_theme"><?php echo esc_html($this->dont_overwrite_theme_label); ?></label></th>
 			<td>
 				<input type="checkbox" name="dont_overwrite_theme" id="dont_overwrite_theme_edit"<?php echo $checked_overwrite_flag; ?>>
-				<p class="description"><?php echo($this->dont_overwrite_theme_description); ?></p>
+				<p class="description"><?php echo esc_html($this->dont_overwrite_theme_description); ?></p>
 			</td>
 		</tr>
 		<tr class="form-field">
-			<th scope="row" valign="top"><label for="term_name_rewrite"><?php echo($this->rewrite_name_label); ?></label></th>
+			<th scope="row" valign="top"><label for="term_name_rewrite"><?php echo esc_html($this->rewrite_name_label); ?></label></th>
 			<td>
 				<input type="checkbox" name="term_name_rewrite" id="term_name_edit_rewrite"<?php echo $checked_name_flag; ?>>
-				<p class="description"><?php echo($this->rewrite_name_description); ?></p>
+				<p class="description"><?php echo esc_html($this->rewrite_name_description); ?></p>
 			</td>
 		</tr>
 		<tr class="form-field">
-		<th scope="row" valign="top"><label for="term_desc_rewrite"><?php echo($this->rewrite_desc_label); ?></label></th>
+		<th scope="row" valign="top"><label for="term_desc_rewrite"><?php echo esc_html($this->rewrite_desc_label); ?></label></th>
 		<td>
 				<input type="checkbox" name="term_desc_rewrite" id="term_desc_edit_rewrite"<?php echo $checked_desc_flag; ?>>
-				<p class="description"><?php echo($this->rewrite_desc_description); ?></p>
+				<p class="description"><?php echo esc_html($this->rewrite_desc_description); ?></p>
 			</td>
 		</tr>
 		<?php

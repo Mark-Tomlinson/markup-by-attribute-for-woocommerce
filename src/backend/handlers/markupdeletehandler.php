@@ -50,8 +50,9 @@ class MarkupDeleteHandler extends PriceMarkupHandler {
 
 		// Delete all Markup-by-Attribute metadata for the product using prepared statement
 		$wpdb->query($wpdb->prepare(
-			"DELETE FROM {$wpdb->postmeta} WHERE post_id = %d AND meta_key LIKE 'mt2mba_%'",
-			$product_id
+			"DELETE FROM {$wpdb->postmeta} WHERE post_id = %d AND meta_key LIKE %s",
+			$product_id,
+			$wpdb->esc_like('mt2mba_') . '%'
 		));
 	}
 	//endregion

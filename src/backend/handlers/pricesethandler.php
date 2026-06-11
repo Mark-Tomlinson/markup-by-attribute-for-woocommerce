@@ -423,8 +423,9 @@ class PriceSetHandler extends PriceMarkupHandler {
 		$wpdb->query($wpdb->prepare(
 			"DELETE FROM {$wpdb->postmeta}
 			WHERE post_id = %d
-			AND meta_key LIKE 'mt2mba_%_markup_amount'",
-			$this->product_id
+			AND meta_key LIKE %s",
+			$this->product_id,
+			$wpdb->esc_like('mt2mba_') . '%' . $wpdb->esc_like('_markup_amount')
 		));
 
 		// Build complete query with proper placeholders

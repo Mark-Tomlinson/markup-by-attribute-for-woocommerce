@@ -127,7 +127,10 @@ class Attribute {
 	 * Build form fields for attribute add panel
 	 */
 	public function addAttributeFields() {
-		if (isset($_POST['add_new_attribute'])) {
+		// Defense-in-depth: WooCommerce already gates this page on 'manage_product_terms'
+		// and wp_die()s on a bad nonce before this render hook fires, but guard our own
+		// option writes too (WP.org review expects it, and protects against future flow changes).
+		if (isset($_POST['add_new_attribute']) && current_user_can('manage_product_terms')) {
 			$taxonomy_id = wc_attribute_taxonomy_id_by_name(sanitize_title($_POST['attribute_label']));
 
 			$options = [
@@ -184,7 +187,9 @@ class Attribute {
 			return;
 		}
 
-		if (isset($_POST['save_attribute'])) {
+		// Defense-in-depth: see note in addAttributeFields() — guard our writes even
+		// though WooCommerce already enforces capability + nonce upstream.
+		if (isset($_POST['save_attribute']) && current_user_can('manage_product_terms')) {
 			$options = [
 				REWRITE_TERM_NAME_PREFIX . $attribute_id => [
 					'value' => isset($_POST['term_name_rewrite']),

@@ -1,6 +1,7 @@
 <?php
 namespace mt2Tech\MarkupByAttribute\Backend\Handlers;
 use mt2Tech\MarkupByAttribute\Utility as Utility;
+use Throwable;
 
 /**
  * Handles setting product prices and applying markups
@@ -15,6 +16,21 @@ use mt2Tech\MarkupByAttribute\Utility as Utility;
  * @since     4.0.0
  */
 class PriceSetHandler extends PriceMarkupHandler {
+	//region PROPERTIES
+	/**
+	 * Whether this handler owns (starts/commits/rolls back) its own database transaction.
+	 *
+	 * MySQL does not support nested transactions — a START TRANSACTION while another
+	 * is open implicitly COMMITs the open one. When a caller wraps multiple handler
+	 * runs in its own transaction (e.g., Product::handleMarkupReapplication wrapping
+	 * the regular- and sale-price passes), it must pass false so this handler defers
+	 * transaction control to that outermost owner.
+	 *
+	 * @var bool
+	 */
+	protected $owns_transaction;
+	//endregion
+
 	//region INITIALIZATION
 	/**
 	 * Initialize PriceSetHandler with product and markup information
@@ -22,12 +38,14 @@ class PriceSetHandler extends PriceMarkupHandler {
 	 * Extracts the base price from the bulk action data and initializes the parent handler.
 	 *
 	 * @since 4.0.0
-	 * @param string $bulk_action The bulk action being performed
-	 * @param array  $data        The data for price setting (contains 'value' key)
-	 * @param int    $product_id  The ID of the product
-	 * @param array  $variations  List of variation IDs
+	 * @param string $bulk_action      The bulk action being performed
+	 * @param array  $data             The data for price setting (contains 'value' key)
+	 * @param int    $product_id       The ID of the product
+	 * @param array  $variations       List of variation IDs
+	 * @param bool   $owns_transaction False when the caller manages the transaction (see property docblock)
 	 */
-	public function __construct($bulk_action, $data, $product_id, $variations) {
+	public function __construct($bulk_action, $data, $product_id, $variations, $owns_transaction = true) {
+		$this->owns_transaction = (bool) $owns_transaction;
 		// Convert localized decimal input to standardized format using WooCommerce
 		$cleaned_value = wc_format_decimal($data["value"], false, true);
 		parent::__construct($bulk_action, $product_id, is_numeric($cleaned_value) ? (float) $cleaned_value : '');
@@ -485,8 +503,11 @@ class PriceSetHandler extends PriceMarkupHandler {
 			}
 		}
 
-		// Start transaction for data consistency
-		$wpdb->query('START TRANSACTION');
+		// Start transaction for data consistency — but only when no caller owns one
+		// already (a nested START TRANSACTION would implicitly COMMIT the outer one)
+		if ($this->owns_transaction) {
+			$wpdb->query('START TRANSACTION');
+		}
 
 		try {
 			// Delete existing price records first
@@ -526,10 +547,15 @@ class PriceSetHandler extends PriceMarkupHandler {
 				$wpdb->query($wpdb->prepare($sql, $description_values));
 			}
 
-			$wpdb->query('COMMIT');
+			if ($this->owns_transaction) {
+				$wpdb->query('COMMIT');
+			}
 
-		} catch (Exception $e) {
-			$wpdb->query('ROLLBACK');
+		} catch (Throwable $e) {
+			if ($this->owns_transaction) {
+				$wpdb->query('ROLLBACK');
+			}
+			// Re-throw so a transaction-owning caller can roll back and report
 			throw $e;
 		}
 	}

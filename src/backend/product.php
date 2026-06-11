@@ -2,6 +2,7 @@
 namespace mt2Tech\MarkupByAttribute\Backend;
 //use mt2Tech\MarkupByAttribute\Backend\Handlers;
 use mt2Tech\MarkupByAttribute\Utility as Utility;
+use Throwable;
 
 /**
  * Main class for handling product backend actions.
@@ -132,13 +133,13 @@ class Product {
 
 				wp_send_json_success(['completed' => true]);
 
-			} catch (Exception $e) {
+			} catch (Throwable $e) {
 				// Rollback transaction on any error to maintain data integrity
 				$wpdb->query('ROLLBACK');
 				throw $e;
 			}
 
-		} catch (Exception $e) {
+		} catch (Throwable $e) {
 			wp_send_json_error(['message' => $e->getMessage()]);
 		}
 	}
@@ -322,15 +323,17 @@ class Product {
 	 * @param	array	$variations	List of variation IDs
 	 */
 	private function processVariationsWithMarkup($product_id, $variations): void {
+		// Both passes run inside handleMarkupReapplication()'s transaction, so the
+		// handlers must not start their own (owns_transaction = false)
 		$base_regular_price = get_post_meta($product_id, 'mt2mba_base_regular_price', true);
 		$data = ['value' => $base_regular_price];
-		$handler = new Handlers\PriceSetHandler('variable_regular_price', $data, $product_id, $variations);
+		$handler = new Handlers\PriceSetHandler('variable_regular_price', $data, $product_id, $variations, false);
 		$handler->processProductMarkups('variable_regular_price', $data, $product_id, $variations);
 
 		$base_sale_price = get_post_meta($product_id, 'mt2mba_base_sale_price', true);
 		if (!empty($base_sale_price)) {
 			$data = ['value' => $base_sale_price];
-			$handler = new Handlers\PriceSetHandler('variable_sale_price', $data, $product_id, $variations);
+			$handler = new Handlers\PriceSetHandler('variable_sale_price', $data, $product_id, $variations, false);
 			$handler->processProductMarkups('variable_sale_price', $data, $product_id, $variations);
 		}
 	}

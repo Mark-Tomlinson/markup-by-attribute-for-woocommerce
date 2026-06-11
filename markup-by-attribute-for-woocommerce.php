@@ -4,6 +4,7 @@ namespace mt2Tech\MarkupByAttribute;
 use mt2Tech\MarkupByAttribute\Backend as Backend;
 use mt2Tech\MarkupByAttribute\Frontend as Frontend;
 use mt2Tech\MarkupByAttribute\Utility as Utility;
+use Throwable;
 
 /**
  * Markup by Attribute for WooCommerce
@@ -197,7 +198,7 @@ function mt2mba_run_upgrades(): void {
 			(new $fqcn)->run();
 			// Re-read in case the upgrade stamped its version
 			$installed_version = get_option('mt2mba_db_version', '0');
-		} catch (\Exception $e) {
+		} catch (Throwable $e) {
 			set_transient('mt2mba_upgrade_cooldown', true, HOUR_IN_SECONDS);
 			if (defined('WP_DEBUG') && WP_DEBUG) {
 				error_log('MT2MBA upgrade failed at version ' . $fqcn::version() . ': ' . $e->getMessage());

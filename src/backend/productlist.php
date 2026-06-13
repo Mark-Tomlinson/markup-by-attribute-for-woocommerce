@@ -199,25 +199,27 @@ class ProductList {
 	 * @param int    $product_id Product ID
 	 */
 	public function renderColumnContent(string $column, int $product_id): void {
+		// Bail immediately for columns that aren't ours — avoids hydrating the
+		// product object and reading meta for every WooCommerce/foreign column.
+		if ($column !== 'product_attributes' && $column !== 'mt2mba_base_price') {
+			return;
+		}
+
 		// Get product
 		$product = wc_get_product($product_id);
 		if (!$product) return;	// No product!
 
-		// Get appropriate base price
-		$base_price = '';
-		if ($product->is_on_sale()) {
-			$base_price = get_post_meta($product_id, 'mt2mba_base_sale_price', true);
-		} else {
-			$base_price = get_post_meta($product_id, 'mt2mba_base_regular_price', true);
-		}
-
 		// Cache whether this is a variable product on first check
 		if (!isset($this->variable_products[$product_id])) {
-			$this->variable_products[$product_id] = $product && $product->is_type('variable');
+			$this->variable_products[$product_id] = $product->is_type('variable');
 		}
 
 		switch ($column) {
 			case 'product_attributes':
+				// Base price is only needed for the Reprice link in this column
+				$base_price = $product->is_on_sale()
+					? get_post_meta($product_id, 'mt2mba_base_sale_price', true)
+					: get_post_meta($product_id, 'mt2mba_base_regular_price', true);
 				$this->renderAttributesColumn($product, $product_id, $base_price);
 				break;
 

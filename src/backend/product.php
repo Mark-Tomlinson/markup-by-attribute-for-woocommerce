@@ -241,6 +241,17 @@ class Product {
 
 		// Invoke the processProductMarkups() function from the class that was decided above
 		$handler->processProductMarkups((string) $bulk_action, (array) $data, (string) $product_id, (array) $variations);
+
+		// The handlers above write meta directly via $wpdb (DELETE/INSERT), which bypasses
+		// WordPress's object cache. WooCommerce syncs the parent after this hook, but never
+		// invalidates the individual variations — so on a persistent object cache (Redis/
+		// Memcached) stale variation prices/descriptions would keep serving. Flush the post
+		// + post_meta cache for the parent and every edited variation *before* WC's post-hook
+		// sync, so that sync recomputes from fresh data. 🌸
+		clean_post_cache($product_id);
+		foreach ($variations as $variation_id) {
+			clean_post_cache($variation_id);
+		}
 	}
 	//endregion
 

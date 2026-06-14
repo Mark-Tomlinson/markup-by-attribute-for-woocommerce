@@ -128,14 +128,18 @@ class Term {
 			return $columns;
 		}, 10);
 
-		// Add content to Markup column
-		add_action("manage_{$taxonomy}_custom_column", function ($string, $column_name, $term_id) {
+		// Add content to Markup column.
+		// NOTE: for *taxonomy term* columns this hook is a filter — core echoes the
+		// returned value — so we must append to and return the incoming $string rather
+		// than echoing. Returning null (or our own content alone) would wipe whatever a
+		// previous callback added, including other plugins' columns. 🌸
+		add_filter("manage_{$taxonomy}_custom_column", function ($string, $column_name, $term_id) {
 			if ($column_name == 'markup') {
 				global $mt2mba_utility;
 				$markup = get_term_meta($term_id, 'mt2mba_markup', true);
-				echo esc_html($mt2mba_utility->sanitizeMarkupForDisplay(wc_format_localized_decimal($markup)));
+				$string .= esc_html($mt2mba_utility->sanitizeMarkupForDisplay(wc_format_localized_decimal($markup)));
 			}
-			return;
+			return $string;
 		}, 10, 3);
 
 		// Make Markup column sortable

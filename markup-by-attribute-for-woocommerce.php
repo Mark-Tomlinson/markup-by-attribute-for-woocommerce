@@ -129,17 +129,17 @@ function define_constants(): void {
 	define('MT2MBA_PRICE_META', __('Product price', MT2MBA_TEXT_DOMAIN) . ' ');
 	define('MT2MBA_MARKUP_NAME_PATTERN_ADD', '(' . __('Add', MT2MBA_TEXT_DOMAIN) . ' %s)');
 	define('MT2MBA_MARKUP_NAME_PATTERN_SUBTRACT', '(' . __('Subtract', MT2MBA_TEXT_DOMAIN) . ' %s)');
-	define('PRODUCT_MARKUP_DESC_BEG', '<span id="mbainfo">');
-	define('PRODUCT_MARKUP_DESC_END', '</span>');
+	define('MT2MBA_PRODUCT_MARKUP_DESC_BEG', '<span id="mbainfo">');
+	define('MT2MBA_PRODUCT_MARKUP_DESC_END', '</span>');
 
 	// Option and meta key prefixes
-	define('REWRITE_TERM_NAME_PREFIX', 'mt2mba_rewrite_attrb_name_');
-	define('REWRITE_TERM_DESC_PREFIX', 'mt2mba_rewrite_attrb_desc_');
-	define('DONT_OVERWRITE_THEME_PREFIX', 'mt2mba_dont_overwrite_theme_');
+	define('MT2MBA_REWRITE_TERM_NAME_PREFIX', 'mt2mba_rewrite_attrb_name_');
+	define('MT2MBA_REWRITE_TERM_DESC_PREFIX', 'mt2mba_rewrite_attrb_desc_');
+	define('MT2MBA_DONT_OVERWRITE_THEME_PREFIX', 'mt2mba_dont_overwrite_theme_');
 
 	// Price type constants (Used by WooCommerce, do not translate)
-	define('REGULAR_PRICE', 'regular_price');
-	define('SALE_PRICE', 'sale_price');
+	define('MT2MBA_REGULAR_PRICE', 'regular_price');
+	define('MT2MBA_SALE_PRICE', 'sale_price');
 }
 
 /**

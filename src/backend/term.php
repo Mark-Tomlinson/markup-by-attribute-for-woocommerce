@@ -257,8 +257,8 @@ class Term {
 
 			// Check global attribute settings for term name/description rewriting
 			// These options control whether markup should be visible in dropdowns
-			$rewrite_name_flag	= get_option(REWRITE_TERM_NAME_PREFIX . wc_attribute_taxonomy_id_by_name($taxonomy_name));
-			$rewrite_desc_flag	= get_option(REWRITE_TERM_DESC_PREFIX . wc_attribute_taxonomy_id_by_name($taxonomy_name));
+			$rewrite_name_flag	= get_option(MT2MBA_REWRITE_TERM_NAME_PREFIX . wc_attribute_taxonomy_id_by_name($taxonomy_name));
+			$rewrite_desc_flag	= get_option(MT2MBA_REWRITE_TERM_DESC_PREFIX . wc_attribute_taxonomy_id_by_name($taxonomy_name));
 
 			// Check markup sign for proper formatting (discount vs. surcharge)
 			$is_negative = strpos($markup, '-') === 0;

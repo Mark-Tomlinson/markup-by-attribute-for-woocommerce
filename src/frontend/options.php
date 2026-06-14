@@ -103,10 +103,10 @@ class Options {
 		// Exit early based on plugin configuration and compatibility settings
 		if (
 			// Don't overwrite if admin configured this attribute to preserve theme styling
-			get_option(DONT_OVERWRITE_THEME_PREFIX . $attribute_id) == 'yes' ||
+			get_option(MT2MBA_DONT_OVERWRITE_THEME_PREFIX . $attribute_id) == 'yes' ||
 
 			// Prevent duplicate markup display if markup is already included in term names
-			get_option(REWRITE_TERM_NAME_PREFIX . $attribute_id) == 'yes'
+			get_option(MT2MBA_REWRITE_TERM_NAME_PREFIX . $attribute_id) == 'yes'
 		) {
 			return $html;
 		}

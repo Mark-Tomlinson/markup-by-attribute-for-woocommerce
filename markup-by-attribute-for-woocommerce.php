@@ -85,7 +85,7 @@ function enqueue_custom_admin_styles(string $hook): void {
 
 	if (($hook === 'post.php' || $hook === 'post-new.php') && $post_type === 'product') {
 		$css_url = plugin_dir_url(__FILE__) . 'src/css/admin-style.css';
-		wp_enqueue_style('custom-admin-style', $css_url);
+		wp_enqueue_style('mt2mba-admin-styles', $css_url, array(), MT2MBA_VERSION);
 	}
 }
 add_action('admin_enqueue_scripts', __NAMESPACE__ . '\enqueue_custom_admin_styles');

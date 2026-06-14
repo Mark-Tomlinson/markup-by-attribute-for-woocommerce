@@ -106,7 +106,7 @@ class Options {
 			get_option(DONT_OVERWRITE_THEME_PREFIX . $attribute_id) == 'yes' ||
 
 			// Prevent duplicate markup display if markup is already included in term names
-			get_option(REWRITE_TERM_NAME_PREFIX . wc_attribute_taxonomy_id_by_name($attribute)) == 'yes'
+			get_option(REWRITE_TERM_NAME_PREFIX . $attribute_id) == 'yes'
 		) {
 			return $html;
 		}

@@ -12,7 +12,7 @@ use Throwable;
  * This file is part of the Markup by Attribute for WooCommerce plugin by Mark Tomlinson
  *
  * @package   markup-by-attribute-for-woocommerce
- * @version   4.6.2
+ * @version   4.6.3
  * @author    Mark Tomlinson
  * @license   GPL-2.0+
  */
@@ -29,18 +29,18 @@ use Throwable;
  * License URI:             https://www.gnu.org/licenses/gpl-3.0.html
  * Text Domain:             markup-by-attribute-for-woocommerce
  * Domain Path:             /languages
- * Version:                 4.6.2
- * Stable tag:              4.6.2
+ * Version:                 4.6.3
+ * Stable tag:              4.6.3
  * Tested up to:            7.0
  * Requires at least:       5.7
- * PHP tested up to:        8.4.11
+ * PHP tested up to:        8.4.21
  * Requires PHP:            7.4.3
  * NOTE: Union types (e.g., string|float) require PHP 8.0+. Some method parameters
  *       accept multiple types at runtime but are typed as string for 7.4 compatibility.
  *       See affected method docblocks for details.
- * WC tested up to:         10.6.2
+ * WC tested up to:         10.8.1
  * WC requires at least:    5.0.0
- * MySQL tested up to:      8.4.8
+ * MariaDB tested up to:    11.8.6
  */
 
 // Sanity check. Exit if accessed directly.
@@ -115,7 +115,7 @@ function define_constants(): void {
 	define('MT2MBA_SITE_URL', get_bloginfo('wpurl'));
 
 	// Plugin version and compatibility
-	define('MT2MBA_VERSION', '4.6.2');
+	define('MT2MBA_VERSION', '4.6.3');
 	define('MT2MBA_SCHEMA_VERSION', '4.6.0');	// Last plugin version that included a database schema change
 	define('MT2MBA_ADMIN_POINTER_PRIORITY', 1000);
 

@@ -31,6 +31,9 @@ class Term {
 
 	/** @var string Placeholder text for markup input */
 	private $placeholder;
+
+	/** @var bool Re-entrancy guard: true only while wp_update_term() is running */
+	private static $is_rewriting_term = false;
 	//endregion
 
 	//region INSTANCE MANAGEMENT
@@ -226,10 +229,11 @@ class Term {
 			return;
 		}
 
-		// Prevent infinite recursion: wp_update_term() triggers this hook again
-		// Use a constant flag to detect if we're already processing this term
-		if (defined('MT2MBA_ATTRB_RECURSION')) return;
-		define('MT2MBA_ATTRB_RECURSION', TRUE);
+		// Prevent infinite recursion: wp_update_term() (below) re-fires this hook for the
+		// same term. A request-scoped static flag — raised only around that call — catches
+		// the re-entrant pass while still letting every distinct term in a batch get
+		// processed. (A permanent define() here skipped all terms after the first.) 🌸
+		if (self::$is_rewriting_term) return;
 
 		global $mt2mba_utility;
 
@@ -287,6 +291,9 @@ class Term {
 
 		// Rewrite term if name and/or description have changed
 		if ($term->name != $name || $term->description != $description) {
+			// Raise the guard only around this call (it re-fires edited_{taxonomy}); lower
+			// it immediately after so the next term in a batch processes normally.
+			self::$is_rewriting_term = true;
 			wp_update_term(
 				$term_id,
 				$taxonomy_name,
@@ -295,6 +302,7 @@ class Term {
 					'description' => sanitize_textarea_field(trim($description))
 				)
 			);
+			self::$is_rewriting_term = false;
 		}
 	}
 	//endregion

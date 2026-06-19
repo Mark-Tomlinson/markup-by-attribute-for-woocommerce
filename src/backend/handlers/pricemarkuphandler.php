@@ -45,14 +45,6 @@ abstract class PriceMarkupHandler {
 	 * @param float  $base_price  The base price of the product before markup
 	 */
 	public function __construct($bulk_action, $product_id, $base_price) {
-		// Create 'regular_price' string in one place
-		if (!defined('REGULAR_PRICE')) {
-			define('REGULAR_PRICE', 'regular_price');
-		}
-		if (!defined('SALE_PRICE')) {
-			define('SALE_PRICE', 'sale_price');
-		}
-
 		// Extract price_type from bulk_action (e.g., "variable_regular_price" -> "regular_price")
 		if ($bulk_action) {
 			$bulk_action_array = explode("_", $bulk_action);

@@ -56,8 +56,8 @@ class Db_Upgrade_2_0 implements UpgradeInterface {
 		$last_parent_id = '';
 		$results = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}postmeta WHERE `meta_value` LIKE '%" . MT2MBA_PRICE_META . "%'");
 		foreach ($results as $row) {
-			if ((strpos($row->meta_value, PRODUCT_MARKUP_DESC_BEG) === FALSE) && (strpos($row->meta_value, MT2MBA_PRICE_META) !== FALSE)) {
-				update_post_meta($row->post_id, $row->meta_key, PRODUCT_MARKUP_DESC_BEG . $row->meta_value . PRODUCT_MARKUP_DESC_END);
+			if ((strpos($row->meta_value, MT2MBA_PRODUCT_MARKUP_DESC_BEG) === FALSE) && (strpos($row->meta_value, MT2MBA_PRICE_META) !== FALSE)) {
+				update_post_meta($row->post_id, $row->meta_key, MT2MBA_PRODUCT_MARKUP_DESC_BEG . $row->meta_value . MT2MBA_PRODUCT_MARKUP_DESC_END);
 			}
 			$v_product = get_post($row->post_id, 'ARRAY_A');
 			if ($last_parent_id != $v_product['post_parent']) {

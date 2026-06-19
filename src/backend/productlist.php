@@ -199,25 +199,27 @@ class ProductList {
 	 * @param int    $product_id Product ID
 	 */
 	public function renderColumnContent(string $column, int $product_id): void {
+		// Bail immediately for columns that aren't ours — avoids hydrating the
+		// product object and reading meta for every WooCommerce/foreign column.
+		if ($column !== 'product_attributes' && $column !== 'mt2mba_base_price') {
+			return;
+		}
+
 		// Get product
 		$product = wc_get_product($product_id);
 		if (!$product) return;	// No product!
 
-		// Get appropriate base price
-		$base_price = '';
-		if ($product->is_on_sale()) {
-			$base_price = get_post_meta($product_id, 'mt2mba_base_sale_price', true);
-		} else {
-			$base_price = get_post_meta($product_id, 'mt2mba_base_regular_price', true);
-		}
-
 		// Cache whether this is a variable product on first check
 		if (!isset($this->variable_products[$product_id])) {
-			$this->variable_products[$product_id] = $product && $product->is_type('variable');
+			$this->variable_products[$product_id] = $product->is_type('variable');
 		}
 
 		switch ($column) {
 			case 'product_attributes':
+				// Base price is only needed for the Reprice link in this column
+				$base_price = $product->is_on_sale()
+					? get_post_meta($product_id, 'mt2mba_base_sale_price', true)
+					: get_post_meta($product_id, 'mt2mba_base_regular_price', true);
 				$this->renderAttributesColumn($product, $product_id, $base_price);
 				break;
 
@@ -326,33 +328,42 @@ class ProductList {
 	 * @param WP_Query $query WordPress query object
 	 */
 	public function filterProductsByAttribute(object $query): void {
-		global $typenow, $wp_query;
+		global $typenow;
 
-		if ($typenow == 'product' && is_admin()) {
-			$filter_attribute = isset($_GET['filter_product_attribute']) ? sanitize_text_field($_GET['filter_product_attribute']) : '';
+		// Only touch the main product-list query. pre_get_posts fires for many
+		// secondary queries (quick-edit AJAX, dashboard widgets, menu counts,
+		// Heartbeat), and our filter has no business modifying those.
+		if (!is_admin() || $typenow !== 'product' || !$query->is_main_query()) {
+			return;
+		}
 
-			if (!empty($filter_attribute)) {
-				$taxonomy = wc_attribute_taxonomy_name($filter_attribute);
+		$filter_attribute = isset($_GET['filter_product_attribute']) ? sanitize_text_field($_GET['filter_product_attribute']) : '';
 
-				if (taxonomy_exists($taxonomy)) {
-					// For taxonomy attributes
-					$query->set('tax_query', array(array(
-						'taxonomy' => $taxonomy,
-						'field' => 'slug',
-						'terms' => get_terms($taxonomy, array('fields' => 'slugs')),
-						'operator' => 'IN'
-					)));
-				} else {
-					// For custom product attributes
-					$meta_query = $query->get('meta_query', array());
-					$meta_query[] = array(
-						'key' => '_product_attributes',
-						'value' => '"' . $filter_attribute . '"',
-						'compare' => 'LIKE'
-					);
-					$query->set('meta_query', $meta_query);
-				}
-			}
+		if (empty($filter_attribute)) {
+			return;
+		}
+
+		// The Attributes-column links pass the full taxonomy name ('pa_color')
+		// for global attributes. Resolve as-is first; only fall back to the
+		// pa_-prefixing helper for a raw name ('color') so we never double-prefix.
+		$taxonomy = taxonomy_exists($filter_attribute) ? $filter_attribute : wc_attribute_taxonomy_name($filter_attribute);
+
+		if (taxonomy_exists($taxonomy)) {
+			// Global taxonomy attribute: "has any term in this attribute" is a
+			// single EXISTS clause — no need to enumerate every slug into IN(...).
+			$query->set('tax_query', array(array(
+				'taxonomy' => $taxonomy,
+				'operator' => 'EXISTS'
+			)));
+		} else {
+			// Custom (local) product attribute
+			$meta_query = $query->get('meta_query', array());
+			$meta_query[] = array(
+				'key' => '_product_attributes',
+				'value' => '"' . $filter_attribute . '"',
+				'compare' => 'LIKE'
+			);
+			$query->set('meta_query', $meta_query);
 		}
 	}
 	//endregion
@@ -417,8 +428,13 @@ class ProductList {
 	public function refreshProductRow(): void {
 		check_ajax_referer('handleMarkupReapplication', 'security');
 
-		$product_id = absint($_REQUEST['product_id']);
-		$product = wc_get_product($product_id);
+		if (!current_user_can('edit_products')) {
+			wp_send_json_error(['message' => __('Permission denied', 'markup-by-attribute-for-woocommerce')]);
+			return;
+		}
+
+		$product_id = isset($_REQUEST['product_id']) ? absint($_REQUEST['product_id']) : 0;
+		$product = $product_id ? wc_get_product($product_id) : false;
 
 		if (!$product) {
 			wp_send_json_error(['message' => __('Product not found', 'markup-by-attribute-for-woocommerce')]);

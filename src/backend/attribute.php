@@ -114,9 +114,9 @@ class Attribute {
 		add_action("woocommerce_before_attribute_delete", function () {
 			$delete_id = isset($_GET['delete']) ? absint($_GET['delete']) : 0;
 			if ($delete_id > 0) {
-				delete_option(REWRITE_TERM_NAME_PREFIX . $delete_id);
-				delete_option(REWRITE_TERM_DESC_PREFIX . $delete_id);
-				delete_option(DONT_OVERWRITE_THEME_PREFIX . $delete_id);
+				delete_option(MT2MBA_REWRITE_TERM_NAME_PREFIX . $delete_id);
+				delete_option(MT2MBA_REWRITE_TERM_DESC_PREFIX . $delete_id);
+				delete_option(MT2MBA_DONT_OVERWRITE_THEME_PREFIX . $delete_id);
 			}
 		}, 10, 2);
 	}
@@ -127,19 +127,22 @@ class Attribute {
 	 * Build form fields for attribute add panel
 	 */
 	public function addAttributeFields() {
-		if (isset($_POST['add_new_attribute'])) {
+		// Defense-in-depth: WooCommerce already gates this page on 'manage_product_terms'
+		// and wp_die()s on a bad nonce before this render hook fires, but guard our own
+		// option writes too (WP.org review expects it, and protects against future flow changes).
+		if (isset($_POST['add_new_attribute']) && current_user_can('manage_product_terms')) {
 			$taxonomy_id = wc_attribute_taxonomy_id_by_name(sanitize_title($_POST['attribute_label']));
 
 			$options = [
-				REWRITE_TERM_NAME_PREFIX . $taxonomy_id => [
+				MT2MBA_REWRITE_TERM_NAME_PREFIX . $taxonomy_id => [
 					'value' => isset($_POST['term_name_rewrite']),
 					'autoload' => true
 				],
-				REWRITE_TERM_DESC_PREFIX . $taxonomy_id => [
+				MT2MBA_REWRITE_TERM_DESC_PREFIX . $taxonomy_id => [
 					'value' => isset($_POST['term_desc_rewrite']),
 					'autoload' => false
 				],
-				DONT_OVERWRITE_THEME_PREFIX . $taxonomy_id => [
+				MT2MBA_DONT_OVERWRITE_THEME_PREFIX . $taxonomy_id => [
 					'value' => isset($_POST['dont_overwrite_theme']),
 					'autoload' => true
 				]
@@ -156,18 +159,18 @@ class Attribute {
 		?>
 		<div class="form-field">
 			<label for="dont_overwrite_theme"><input type="checkbox" name="dont_overwrite_theme" id="dont_overwrite_theme" value="">
-			<?php echo($this->dont_overwrite_theme_label); ?></label>
-			<p class="description"><?php echo($this->dont_overwrite_theme_description); ?></p>
+			<?php echo esc_html($this->dont_overwrite_theme_label); ?></label>
+			<p class="description"><?php echo esc_html($this->dont_overwrite_theme_description); ?></p>
 		</div>
 		<div class="form-field">
 			<label for="term_name_rewrite"><input type="checkbox" name="term_name_rewrite" id="term_name_rewrite" value="">
-			<?php echo($this->rewrite_name_label); ?></label>
-			<p class="description"><?php echo($this->rewrite_name_description); ?></p>
+			<?php echo esc_html($this->rewrite_name_label); ?></label>
+			<p class="description"><?php echo esc_html($this->rewrite_name_description); ?></p>
 		</div>
 		<div class="form-field">
 			<label for="term_desc_rewrite"><input type="checkbox" name="term_desc_rewrite" id="term_desc_rewrite" value="">
-			<?php echo($this->rewrite_desc_label); ?></label>
-			<p class="description"><?php echo($this->rewrite_desc_description); ?></p>
+			<?php echo esc_html($this->rewrite_desc_label); ?></label>
+			<p class="description"><?php echo esc_html($this->rewrite_desc_description); ?></p>
 		</div>
 		<?php
 	}
@@ -184,17 +187,19 @@ class Attribute {
 			return;
 		}
 
-		if (isset($_POST['save_attribute'])) {
+		// Defense-in-depth: see note in addAttributeFields() — guard our writes even
+		// though WooCommerce already enforces capability + nonce upstream.
+		if (isset($_POST['save_attribute']) && current_user_can('manage_product_terms')) {
 			$options = [
-				REWRITE_TERM_NAME_PREFIX . $attribute_id => [
+				MT2MBA_REWRITE_TERM_NAME_PREFIX . $attribute_id => [
 					'value' => isset($_POST['term_name_rewrite']),
 					'autoload' => true
 				],
-				REWRITE_TERM_DESC_PREFIX . $attribute_id => [
+				MT2MBA_REWRITE_TERM_DESC_PREFIX . $attribute_id => [
 					'value' => isset($_POST['term_desc_rewrite']),
 					'autoload' => false
 				],
-				DONT_OVERWRITE_THEME_PREFIX . $attribute_id => [
+				MT2MBA_DONT_OVERWRITE_THEME_PREFIX . $attribute_id => [
 					'value' => isset($_POST['dont_overwrite_theme']),
 					'autoload' => true
 				]
@@ -209,9 +214,9 @@ class Attribute {
 			}
 		}
 		// Set flags from Options database
-		$rewrite_name_flag			= get_option(REWRITE_TERM_NAME_PREFIX . $attribute_id, false);
-		$rewrite_desc_flag			= get_option(REWRITE_TERM_DESC_PREFIX . $attribute_id, false);
-		$dont_overwrite_theme_flag	= get_option(DONT_OVERWRITE_THEME_PREFIX . $attribute_id, false);
+		$rewrite_name_flag			= get_option(MT2MBA_REWRITE_TERM_NAME_PREFIX . $attribute_id, false);
+		$rewrite_desc_flag			= get_option(MT2MBA_REWRITE_TERM_DESC_PREFIX . $attribute_id, false);
+		$dont_overwrite_theme_flag	= get_option(MT2MBA_DONT_OVERWRITE_THEME_PREFIX . $attribute_id, false);
 
 		// Build row and fill field with current markup
 		$checked_name_flag = $rewrite_name_flag == 'yes' ? ' checked' : "";
@@ -219,24 +224,24 @@ class Attribute {
 		$checked_overwrite_flag = $dont_overwrite_theme_flag == 'yes' ? ' checked' : "";
 		?>
 		<tr class="form-field">
-			<th scope="row" valign="top"><label for="dont_overwrite_theme"><?php echo($this->dont_overwrite_theme_label); ?></label></th>
+			<th scope="row" valign="top"><label for="dont_overwrite_theme"><?php echo esc_html($this->dont_overwrite_theme_label); ?></label></th>
 			<td>
 				<input type="checkbox" name="dont_overwrite_theme" id="dont_overwrite_theme_edit"<?php echo $checked_overwrite_flag; ?>>
-				<p class="description"><?php echo($this->dont_overwrite_theme_description); ?></p>
+				<p class="description"><?php echo esc_html($this->dont_overwrite_theme_description); ?></p>
 			</td>
 		</tr>
 		<tr class="form-field">
-			<th scope="row" valign="top"><label for="term_name_rewrite"><?php echo($this->rewrite_name_label); ?></label></th>
+			<th scope="row" valign="top"><label for="term_name_rewrite"><?php echo esc_html($this->rewrite_name_label); ?></label></th>
 			<td>
 				<input type="checkbox" name="term_name_rewrite" id="term_name_edit_rewrite"<?php echo $checked_name_flag; ?>>
-				<p class="description"><?php echo($this->rewrite_name_description); ?></p>
+				<p class="description"><?php echo esc_html($this->rewrite_name_description); ?></p>
 			</td>
 		</tr>
 		<tr class="form-field">
-		<th scope="row" valign="top"><label for="term_desc_rewrite"><?php echo($this->rewrite_desc_label); ?></label></th>
+		<th scope="row" valign="top"><label for="term_desc_rewrite"><?php echo esc_html($this->rewrite_desc_label); ?></label></th>
 		<td>
 				<input type="checkbox" name="term_desc_rewrite" id="term_desc_edit_rewrite"<?php echo $checked_desc_flag; ?>>
-				<p class="description"><?php echo($this->rewrite_desc_description); ?></p>
+				<p class="description"><?php echo esc_html($this->rewrite_desc_description); ?></p>
 			</td>
 		</tr>
 		<?php

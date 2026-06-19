@@ -9,15 +9,15 @@ Contributors:			MarkTomlinson
 Donate link:			https://github.com/Mark-Tomlinson/markup-by-attribute-for-woocommerce/wiki/4.0_Donate
 License:				GPLv3
 License URI:			https://www.gnu.org/licenses/gpl-3.0.html
-Version:                4.6.2
-Stable tag:             4.6.2
+Version:                4.6.3
+Stable tag:             4.6.3
 Tested up to:           7.0
 Requires at least:      5.7
-PHP tested up to:       8.4.11
+PHP tested up to:       8.4.21
 Requires PHP:           7.4.3
-WC tested up to:        10.6.2
+WC tested up to:        10.8.1
 WC requires at least:   5.0.0
-MySQL tested up to:     8.4.8
+MariaDB tested up to:   11.8.6
 
 This plugin adds product variation markup by attribute to WooCommerce and adjusts product variation regular and sale prices accordingly.
 
@@ -200,6 +200,9 @@ If you use Markup-by-Attribute and want to see me continue support for it, I enc
 7. The settings page allows configuration of how the markup is displayed.
 
 == Upgrade Notice ==
+= 4.6.3 =
+Security and performance update: hardened AJAX permission checks, closed a translation-based XSS vector in wp-admin, made markup reapplication fully atomic, fixed several edge-case bugs, and improved admin and storefront performance. Recommended for all users.
+
 = 4.6.2 =
 Cosmetic update. Adds a Donate link to the plugin action links and improves the Settings page layout. No functional changes.
 
@@ -210,6 +213,31 @@ Compatibility update for WordPress 7.0 and WooCommerce 10.6.2. No functional cha
 Removed the "Preserve Zero Prices" setting. If you had this enabled and have free products with global attribute markups, see the wiki for details.
 
 == Changelog ==
+= 4.6.3 =
+*Release Date: June 2026*
+
+**Security**
+* Added capability checks (edit_products / manage_product_terms) to all AJAX handlers and attribute option writes, alongside existing nonce checks
+* Escaped all admin-facing output to close a stored-XSS vector via malicious or compromised translation files
+* Escaped literal underscores in meta-key LIKE queries so cleanup matches only intended keys
+* Prefixed all global PHP constants with MT2MBA_ to avoid collisions with other plugins
+
+**Bug Fixes**
+* Markup reapplication is now truly atomic — fixed nested-transaction handling so a mid-run failure rolls back every price change instead of leaving partial updates
+* Invalidate variation caches after bulk price edits so a stale cache can't revert changes when the product is saved
+* Stopped the Markup term column from wiping content other plugins add to the attribute term list
+* Fixed a possible regular-expression error when stripping markup annotations under certain translations
+* Fixed the term-save recursion guard so batch term updates process every term, not just the first
+
+**Performance**
+* Product list no longer loads product data for columns belonging to other plugins
+* Attribute filter uses an EXISTS clause and runs only on the main admin query
+* Removed a redundant taxonomy-ID lookup on the storefront product page
+
+**Maintenance**
+* Versioned and gated admin script/style enqueues (cache-busting, and loaded only where needed)
+* Confirmed compatibility with WooCommerce 10.8.1 and PHP 8.4
+
 = 4.6.2 =
 *Release Date: April 2026*
 

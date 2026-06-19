@@ -2,11 +2,13 @@
 namespace mt2Tech\MarkupByAttribute\Backend\Handlers;
 
 /**
- * Handles deletion of markup metadata
+ * Handles cleanup of markup metadata for the "Delete all variations" bulk action
  *
- * Used when removing variations to clean up associated markup data.
- * This handler ensures that orphaned metadata is properly removed from
- * the database when products or variations are deleted.
+ * Fires from the WooCommerce variations bulk-edit dropdown via the `delete_all`
+ * action (see Product::handleBulkPriceAction). When all of a product's variations
+ * are removed the parent product survives, but its per-term markup metadata is now
+ * orphaned, so this handler strips it. Note: this does NOT run on full product
+ * deletion — WordPress core removes the post's meta in that case.
  *
  * @package   mt2Tech\MarkupByAttribute\Backend\Handlers
  * @author    Mark Tomlinson
@@ -34,10 +36,12 @@ class MarkupDeleteHandler extends PriceMarkupHandler {
 
 	//region PUBLIC API
 	/**
-	 * Delete all markup metadata for a product
+	 * Delete all markup metadata from a product
 	 *
-	 * Removes all markup-by-attribute metadata from the database when products
-	 * or variations are deleted. This prevents orphaned data accumulation.
+	 * Invoked by the "Delete all variations" bulk action (`delete_all`). Removes the
+	 * parent product's mt2mba_* metadata, which becomes orphaned once its variations
+	 * are gone. This is not a post-deletion hook — deleting the product itself is
+	 * cleaned up by WordPress core.
 	 *
 	 * @since 4.0.0
 	 * @param string $unused1    Unused parameter (maintaining interface compatibility)
@@ -50,8 +54,9 @@ class MarkupDeleteHandler extends PriceMarkupHandler {
 
 		// Delete all Markup-by-Attribute metadata for the product using prepared statement
 		$wpdb->query($wpdb->prepare(
-			"DELETE FROM {$wpdb->postmeta} WHERE post_id = %d AND meta_key LIKE 'mt2mba_%'",
-			$product_id
+			"DELETE FROM {$wpdb->postmeta} WHERE post_id = %d AND meta_key LIKE %s",
+			$product_id,
+			$wpdb->esc_like('mt2mba_') . '%'
 		));
 	}
 	//endregion

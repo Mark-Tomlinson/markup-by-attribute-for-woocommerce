@@ -1,6 +1,7 @@
 <?php
 namespace mt2Tech\MarkupByAttribute\Backend\Handlers;
 use mt2Tech\MarkupByAttribute\Utility as Utility;
+use Throwable;
 
 /**
  * Handles setting product prices and applying markups
@@ -15,6 +16,21 @@ use mt2Tech\MarkupByAttribute\Utility as Utility;
  * @since     4.0.0
  */
 class PriceSetHandler extends PriceMarkupHandler {
+	//region PROPERTIES
+	/**
+	 * Whether this handler owns (starts/commits/rolls back) its own database transaction.
+	 *
+	 * MySQL does not support nested transactions — a START TRANSACTION while another
+	 * is open implicitly COMMITs the open one. When a caller wraps multiple handler
+	 * runs in its own transaction (e.g., Product::handleMarkupReapplication wrapping
+	 * the regular- and sale-price passes), it must pass false so this handler defers
+	 * transaction control to that outermost owner.
+	 *
+	 * @var bool
+	 */
+	protected $owns_transaction;
+	//endregion
+
 	//region INITIALIZATION
 	/**
 	 * Initialize PriceSetHandler with product and markup information
@@ -22,12 +38,14 @@ class PriceSetHandler extends PriceMarkupHandler {
 	 * Extracts the base price from the bulk action data and initializes the parent handler.
 	 *
 	 * @since 4.0.0
-	 * @param string $bulk_action The bulk action being performed
-	 * @param array  $data        The data for price setting (contains 'value' key)
-	 * @param int    $product_id  The ID of the product
-	 * @param array  $variations  List of variation IDs
+	 * @param string $bulk_action      The bulk action being performed
+	 * @param array  $data             The data for price setting (contains 'value' key)
+	 * @param int    $product_id       The ID of the product
+	 * @param array  $variations       List of variation IDs
+	 * @param bool   $owns_transaction False when the caller manages the transaction (see property docblock)
 	 */
-	public function __construct($bulk_action, $data, $product_id, $variations) {
+	public function __construct($bulk_action, $data, $product_id, $variations, $owns_transaction = true) {
+		$this->owns_transaction = (bool) $owns_transaction;
 		// Convert localized decimal input to standardized format using WooCommerce
 		$cleaned_value = wc_format_decimal($data["value"], false, true);
 		parent::__construct($bulk_action, $product_id, is_numeric($cleaned_value) ? (float) $cleaned_value : '');
@@ -66,7 +84,7 @@ class PriceSetHandler extends PriceMarkupHandler {
 		$markup_table = $this->buildMarkupTable($attribute_data, $product_id);
 
 		// Bulk save product markup values
-		if ($this->price_type === REGULAR_PRICE) {
+		if ($this->price_type === MT2MBA_REGULAR_PRICE) {
 			$this->bulkSaveProductMarkupValues($markup_table);
 		}
 
@@ -112,10 +130,10 @@ class PriceSetHandler extends PriceMarkupHandler {
 		delete_post_meta($product_id, "mt2mba_base_{$this->price_type}");
 
 		// If clearing the Regular Price, also clean up sale price metadata and descriptions
-		if ($this->price_type == REGULAR_PRICE) {
+		if ($this->price_type == MT2MBA_REGULAR_PRICE) {
 
 			// Remove Sales Price metadata
-			delete_post_meta($product_id, "mt2mba_base_" . SALE_PRICE);
+			delete_post_meta($product_id, "mt2mba_base_" . MT2MBA_SALE_PRICE);
 
 			// Bulk-fetch all variation descriptions in a single query
 			global $wpdb, $mt2mba_utility;
@@ -130,7 +148,7 @@ class PriceSetHandler extends PriceMarkupHandler {
 			// Process descriptions in PHP — strip markup information
 			$updates = [];
 			foreach ($descriptions as $row) {
-				$markup_pos = strpos($row->meta_value, PRODUCT_MARKUP_DESC_BEG);
+				$markup_pos = strpos($row->meta_value, MT2MBA_PRODUCT_MARKUP_DESC_BEG);
 
 				// If no markup information, skip variation
 				if ($markup_pos === false) {
@@ -145,8 +163,8 @@ class PriceSetHandler extends PriceMarkupHandler {
 					$updates[] = [
 						'id'          => (int) $row->post_id,
 						'description' => $mt2mba_utility->removeBracketedString(
-							PRODUCT_MARKUP_DESC_BEG,
-							PRODUCT_MARKUP_DESC_END,
+							MT2MBA_PRODUCT_MARKUP_DESC_BEG,
+							MT2MBA_PRODUCT_MARKUP_DESC_END,
 							$row->meta_value
 						),
 					];
@@ -206,10 +224,10 @@ class PriceSetHandler extends PriceMarkupHandler {
 
 				if (!empty($markup)) {
 					// Determine price to calculate markup against based on settings
-					if ($this->price_type === REGULAR_PRICE || MT2MBA_SALE_PRICE_MARKUP === 'yes') {
+					if ($this->price_type === MT2MBA_REGULAR_PRICE || MT2MBA_SALE_PRICE_MARKUP === 'yes') {
 						$price = $this->base_price;
 					} else {
-						$price = get_metadata("post", $product_id, "mt2mba_base_" . REGULAR_PRICE, true);
+						$price = get_metadata("post", $product_id, "mt2mba_base_" . MT2MBA_REGULAR_PRICE, true);
 					}
 
 					// Calculate markup value: percentage markups are calculated against the price,
@@ -258,7 +276,7 @@ class PriceSetHandler extends PriceMarkupHandler {
 		// record before rewriting it appears to be the only way to update the cache.
 		delete_post_meta($product_id, "mt2mba_base_{$this->price_type}");
 		update_post_meta($product_id, "mt2mba_base_{$this->price_type}", $rounded_base);
-		if ($this->price_type === REGULAR_PRICE) {
+		if ($this->price_type === MT2MBA_REGULAR_PRICE) {
 			set_transient('mt2mba_current_base_' . $product_id, $rounded_base, HOUR_IN_SECONDS);
 		}
 		return MT2MBA_HIDE_BASE_PRICE === 'no' ?
@@ -318,15 +336,15 @@ class PriceSetHandler extends PriceMarkupHandler {
 	protected function buildVariationDescription($current_description, $base_price_description, $markup_description, $variation_price): string {
 		global $mt2mba_utility;
 
-		if ($this->price_type === REGULAR_PRICE) {
+		if ($this->price_type === MT2MBA_REGULAR_PRICE) {
 			// Build new description for regular prices and reapply markup operations
 			$description = "";
 
 			// Preserve existing non-markup description content unless overwriting
 			if (MT2MBA_DESC_BEHAVIOR !== "overwrite") {
 				$description = $mt2mba_utility->removeBracketedString(
-					PRODUCT_MARKUP_DESC_BEG,
-					PRODUCT_MARKUP_DESC_END,
+					MT2MBA_PRODUCT_MARKUP_DESC_BEG,
+					MT2MBA_PRODUCT_MARKUP_DESC_END,
 					$current_description
 				);
 			}
@@ -338,10 +356,10 @@ class PriceSetHandler extends PriceMarkupHandler {
 
 			// Add markup information if we have markups and behavior allows it
 			if ($markup_description && $variation_price != null && MT2MBA_DESC_BEHAVIOR !== "ignore") {
-				$description .= PRODUCT_MARKUP_DESC_BEG .
+				$description .= MT2MBA_PRODUCT_MARKUP_DESC_BEG .
 							$base_price_description .
 							$markup_description .
-							PRODUCT_MARKUP_DESC_END;
+							MT2MBA_PRODUCT_MARKUP_DESC_END;
 			}
 
 			return trim($description);
@@ -405,8 +423,9 @@ class PriceSetHandler extends PriceMarkupHandler {
 		$wpdb->query($wpdb->prepare(
 			"DELETE FROM {$wpdb->postmeta}
 			WHERE post_id = %d
-			AND meta_key LIKE 'mt2mba_%_markup_amount'",
-			$this->product_id
+			AND meta_key LIKE %s",
+			$this->product_id,
+			$wpdb->esc_like('mt2mba_') . '%' . $wpdb->esc_like('_markup_amount')
 		));
 
 		// Build complete query with proper placeholders
@@ -485,8 +504,11 @@ class PriceSetHandler extends PriceMarkupHandler {
 			}
 		}
 
-		// Start transaction for data consistency
-		$wpdb->query('START TRANSACTION');
+		// Start transaction for data consistency — but only when no caller owns one
+		// already (a nested START TRANSACTION would implicitly COMMIT the outer one)
+		if ($this->owns_transaction) {
+			$wpdb->query('START TRANSACTION');
+		}
 
 		try {
 			// Delete existing price records first
@@ -526,10 +548,15 @@ class PriceSetHandler extends PriceMarkupHandler {
 				$wpdb->query($wpdb->prepare($sql, $description_values));
 			}
 
-			$wpdb->query('COMMIT');
+			if ($this->owns_transaction) {
+				$wpdb->query('COMMIT');
+			}
 
-		} catch (Exception $e) {
-			$wpdb->query('ROLLBACK');
+		} catch (Throwable $e) {
+			if ($this->owns_transaction) {
+				$wpdb->query('ROLLBACK');
+			}
+			// Re-throw so a transaction-owning caller can roll back and report
 			throw $e;
 		}
 	}
@@ -544,12 +571,12 @@ class PriceSetHandler extends PriceMarkupHandler {
 	 * @return	string				Formatted regular price for description
 	 */
 	private function getRegularPriceForDescription($product_id) {
-		if ($this->price_type === REGULAR_PRICE) {
+		if ($this->price_type === MT2MBA_REGULAR_PRICE) {
 			// We're setting regular price, use the current value being set
 			return $this->base_price_formatted;
 		} else {
 			// We're setting sale price, get stored regular price
-			$regular_price = get_metadata("post", $product_id, "mt2mba_base_" . REGULAR_PRICE, true);
+			$regular_price = get_metadata("post", $product_id, "mt2mba_base_" . MT2MBA_REGULAR_PRICE, true);
 			return is_numeric($regular_price) ? strip_tags(wc_price(abs($regular_price))) : '';
 		}
 	}

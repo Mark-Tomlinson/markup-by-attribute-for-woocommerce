@@ -31,6 +31,9 @@ class Term {
 
 	/** @var string Placeholder text for markup input */
 	private $placeholder;
+
+	/** @var bool Re-entrancy guard: true only while wp_update_term() is running */
+	private static $is_rewriting_term = false;
 	//endregion
 
 	//region INSTANCE MANAGEMENT
@@ -128,14 +131,18 @@ class Term {
 			return $columns;
 		}, 10);
 
-		// Add content to Markup column
-		add_action("manage_{$taxonomy}_custom_column", function ($string, $column_name, $term_id) {
+		// Add content to Markup column.
+		// NOTE: for *taxonomy term* columns this hook is a filter — core echoes the
+		// returned value — so we must append to and return the incoming $string rather
+		// than echoing. Returning null (or our own content alone) would wipe whatever a
+		// previous callback added, including other plugins' columns. 🌸
+		add_filter("manage_{$taxonomy}_custom_column", function ($string, $column_name, $term_id) {
 			if ($column_name == 'markup') {
 				global $mt2mba_utility;
 				$markup = get_term_meta($term_id, 'mt2mba_markup', true);
-				echo esc_html($mt2mba_utility->sanitizeMarkupForDisplay(wc_format_localized_decimal($markup)));
+				$string .= esc_html($mt2mba_utility->sanitizeMarkupForDisplay(wc_format_localized_decimal($markup)));
 			}
-			return;
+			return $string;
 		}, 10, 3);
 
 		// Make Markup column sortable
@@ -157,9 +164,9 @@ class Term {
 		?>
 		<div class="form-field">
 			<?php wp_nonce_field('mt2mba_add_term', 'mt2mba_term_nonce'); ?>
-			<label for="term_markup"><?php echo($this->markup_label); ?></label>
-			<input type="text" placeholder="<?php echo($this->placeholder); ?>" name="term_markup" id="term_add_markup" value="">
-			<p class="description"><?php echo($this->markup_description); ?></p>
+			<label for="term_markup"><?php echo esc_html($this->markup_label); ?></label>
+			<input type="text" placeholder="<?php echo esc_attr($this->placeholder); ?>" name="term_markup" id="term_add_markup" value="">
+			<p class="description"><?php echo esc_html($this->markup_description); ?></p>
 		</div>
 		<?php
 	}
@@ -174,10 +181,10 @@ class Term {
 		// Build row and fill field with current markup
 		?>
 		<tr class="form-field">
-			<th scope="row" valign="top"><label for="term_markup"><?php echo($this->markup_label); ?></label></th>
+			<th scope="row" valign="top"><label for="term_markup"><?php echo esc_html($this->markup_label); ?></label></th>
 			<td>
-				<input type="text" placeholder="<?php echo($this->placeholder); ?>" name="term_markup" id="term_edit_markup" value="<?php echo esc_attr($term_markup) ? esc_attr($term_markup) : ''; ?>">
-				<p class="description"><?php echo($this->markup_description); ?></p>
+				<input type="text" placeholder="<?php echo esc_attr($this->placeholder); ?>" name="term_markup" id="term_edit_markup" value="<?php echo esc_attr($term_markup) ? esc_attr($term_markup) : ''; ?>">
+				<p class="description"><?php echo esc_html($this->markup_description); ?></p>
 			</td>
 		</tr>
 		<?php
@@ -222,10 +229,11 @@ class Term {
 			return;
 		}
 
-		// Prevent infinite recursion: wp_update_term() triggers this hook again
-		// Use a constant flag to detect if we're already processing this term
-		if (defined('MT2MBA_ATTRB_RECURSION')) return;
-		define('MT2MBA_ATTRB_RECURSION', TRUE);
+		// Prevent infinite recursion: wp_update_term() (below) re-fires this hook for the
+		// same term. A request-scoped static flag — raised only around that call — catches
+		// the re-entrant pass while still letting every distinct term in a batch get
+		// processed. (A permanent define() here skipped all terms after the first.) 🌸
+		if (self::$is_rewriting_term) return;
 
 		global $mt2mba_utility;
 
@@ -253,8 +261,8 @@ class Term {
 
 			// Check global attribute settings for term name/description rewriting
 			// These options control whether markup should be visible in dropdowns
-			$rewrite_name_flag	= get_option(REWRITE_TERM_NAME_PREFIX . wc_attribute_taxonomy_id_by_name($taxonomy_name));
-			$rewrite_desc_flag	= get_option(REWRITE_TERM_DESC_PREFIX . wc_attribute_taxonomy_id_by_name($taxonomy_name));
+			$rewrite_name_flag	= get_option(MT2MBA_REWRITE_TERM_NAME_PREFIX . wc_attribute_taxonomy_id_by_name($taxonomy_name));
+			$rewrite_desc_flag	= get_option(MT2MBA_REWRITE_TERM_DESC_PREFIX . wc_attribute_taxonomy_id_by_name($taxonomy_name));
 
 			// Check markup sign for proper formatting (discount vs. surcharge)
 			$is_negative = strpos($markup, '-') === 0;
@@ -283,6 +291,9 @@ class Term {
 
 		// Rewrite term if name and/or description have changed
 		if ($term->name != $name || $term->description != $description) {
+			// Raise the guard only around this call (it re-fires edited_{taxonomy}); lower
+			// it immediately after so the next term in a batch processes normally.
+			self::$is_rewriting_term = true;
 			wp_update_term(
 				$term_id,
 				$taxonomy_name,
@@ -291,6 +302,7 @@ class Term {
 					'description' => sanitize_textarea_field(trim($description))
 				)
 			);
+			self::$is_rewriting_term = false;
 		}
 	}
 	//endregion

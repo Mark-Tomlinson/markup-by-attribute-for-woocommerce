@@ -4,6 +4,7 @@ namespace mt2Tech\MarkupByAttribute;
 use mt2Tech\MarkupByAttribute\Backend as Backend;
 use mt2Tech\MarkupByAttribute\Frontend as Frontend;
 use mt2Tech\MarkupByAttribute\Utility as Utility;
+use Throwable;
 
 /**
  * Markup by Attribute for WooCommerce
@@ -11,7 +12,7 @@ use mt2Tech\MarkupByAttribute\Utility as Utility;
  * This file is part of the Markup by Attribute for WooCommerce plugin by Mark Tomlinson
  *
  * @package   markup-by-attribute-for-woocommerce
- * @version   4.6.2
+ * @version   4.6.3
  * @author    Mark Tomlinson
  * @license   GPL-2.0+
  */
@@ -28,18 +29,18 @@ use mt2Tech\MarkupByAttribute\Utility as Utility;
  * License URI:             https://www.gnu.org/licenses/gpl-3.0.html
  * Text Domain:             markup-by-attribute-for-woocommerce
  * Domain Path:             /languages
- * Version:                 4.6.2
- * Stable tag:              4.6.2
+ * Version:                 4.6.3
+ * Stable tag:              4.6.3
  * Tested up to:            7.0
  * Requires at least:       5.7
- * PHP tested up to:        8.4.11
+ * PHP tested up to:        8.4.21
  * Requires PHP:            7.4.3
  * NOTE: Union types (e.g., string|float) require PHP 8.0+. Some method parameters
  *       accept multiple types at runtime but are typed as string for 7.4 compatibility.
  *       See affected method docblocks for details.
- * WC tested up to:         10.6.2
+ * WC tested up to:         10.8.1
  * WC requires at least:    5.0.0
- * MySQL tested up to:      8.4.8
+ * MariaDB tested up to:    11.8.6
  */
 
 // Sanity check. Exit if accessed directly.
@@ -84,7 +85,7 @@ function enqueue_custom_admin_styles(string $hook): void {
 
 	if (($hook === 'post.php' || $hook === 'post-new.php') && $post_type === 'product') {
 		$css_url = plugin_dir_url(__FILE__) . 'src/css/admin-style.css';
-		wp_enqueue_style('custom-admin-style', $css_url);
+		wp_enqueue_style('mt2mba-admin-styles', $css_url, array(), MT2MBA_VERSION);
 	}
 }
 add_action('admin_enqueue_scripts', __NAMESPACE__ . '\enqueue_custom_admin_styles');
@@ -114,7 +115,7 @@ function define_constants(): void {
 	define('MT2MBA_SITE_URL', get_bloginfo('wpurl'));
 
 	// Plugin version and compatibility
-	define('MT2MBA_VERSION', '4.6.2');
+	define('MT2MBA_VERSION', '4.6.3');
 	define('MT2MBA_SCHEMA_VERSION', '4.6.0');	// Last plugin version that included a database schema change
 	define('MT2MBA_ADMIN_POINTER_PRIORITY', 1000);
 
@@ -128,17 +129,17 @@ function define_constants(): void {
 	define('MT2MBA_PRICE_META', __('Product price', MT2MBA_TEXT_DOMAIN) . ' ');
 	define('MT2MBA_MARKUP_NAME_PATTERN_ADD', '(' . __('Add', MT2MBA_TEXT_DOMAIN) . ' %s)');
 	define('MT2MBA_MARKUP_NAME_PATTERN_SUBTRACT', '(' . __('Subtract', MT2MBA_TEXT_DOMAIN) . ' %s)');
-	define('PRODUCT_MARKUP_DESC_BEG', '<span id="mbainfo">');
-	define('PRODUCT_MARKUP_DESC_END', '</span>');
+	define('MT2MBA_PRODUCT_MARKUP_DESC_BEG', '<span id="mbainfo">');
+	define('MT2MBA_PRODUCT_MARKUP_DESC_END', '</span>');
 
 	// Option and meta key prefixes
-	define('REWRITE_TERM_NAME_PREFIX', 'mt2mba_rewrite_attrb_name_');
-	define('REWRITE_TERM_DESC_PREFIX', 'mt2mba_rewrite_attrb_desc_');
-	define('DONT_OVERWRITE_THEME_PREFIX', 'mt2mba_dont_overwrite_theme_');
+	define('MT2MBA_REWRITE_TERM_NAME_PREFIX', 'mt2mba_rewrite_attrb_name_');
+	define('MT2MBA_REWRITE_TERM_DESC_PREFIX', 'mt2mba_rewrite_attrb_desc_');
+	define('MT2MBA_DONT_OVERWRITE_THEME_PREFIX', 'mt2mba_dont_overwrite_theme_');
 
 	// Price type constants (Used by WooCommerce, do not translate)
-	define('REGULAR_PRICE', 'regular_price');
-	define('SALE_PRICE', 'sale_price');
+	define('MT2MBA_REGULAR_PRICE', 'regular_price');
+	define('MT2MBA_SALE_PRICE', 'sale_price');
 }
 
 /**
@@ -197,7 +198,7 @@ function mt2mba_run_upgrades(): void {
 			(new $fqcn)->run();
 			// Re-read in case the upgrade stamped its version
 			$installed_version = get_option('mt2mba_db_version', '0');
-		} catch (\Exception $e) {
+		} catch (Throwable $e) {
 			set_transient('mt2mba_upgrade_cooldown', true, HOUR_IN_SECONDS);
 			if (defined('WP_DEBUG') && WP_DEBUG) {
 				error_log('MT2MBA upgrade failed at version ' . $fqcn::version() . ': ' . $e->getMessage());

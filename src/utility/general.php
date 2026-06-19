@@ -225,8 +225,8 @@ class General {
 		$number_pattern = '[0-9.,\s%\p{Sc}A-Z]*';
 
 		// Convert Add and Subtract constants to regex with international number pattern
-		$add_pattern = '/(?:^|\s)' . str_replace('%s', $number_pattern, preg_quote(MT2MBA_MARKUP_NAME_PATTERN_ADD)) . '/u';
-		$subtract_pattern = '/(^|\s)' . str_replace('%s', $number_pattern, preg_quote(MT2MBA_MARKUP_NAME_PATTERN_SUBTRACT)) . '/u';
+		$add_pattern = '/(?:^|\s)' . str_replace('%s', $number_pattern, preg_quote(MT2MBA_MARKUP_NAME_PATTERN_ADD, '/')) . '/u';
+		$subtract_pattern = '/(^|\s)' . str_replace('%s', $number_pattern, preg_quote(MT2MBA_MARKUP_NAME_PATTERN_SUBTRACT, '/')) . '/u';
 
 		// Decoded HTML encoding
 		$text = html_entity_decode($text);

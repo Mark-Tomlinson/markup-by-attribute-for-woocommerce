@@ -26,6 +26,18 @@ class Notices {
 	 * @since 1.0.0
 	 */
 	private static ?self $instance = null;
+
+	/**
+	 * Whether at least one undismissed notice will render this request.
+	 *
+	 * Set by notice() when a notice is queued for display, and read by
+	 * enqueueNoticeScripts() to avoid loading the dismissal JS on every
+	 * admin page when there is nothing to dismiss.
+	 *
+	 * @var bool
+	 * @since 4.6.3
+	 */
+	private bool $has_active_notices = false;
 	//endregion
 
 	//region INSTANCE MANAGEMENT
@@ -81,10 +93,17 @@ class Notices {
 	 * @since 1.0.0
 	 */
 	public function enqueueNoticeScripts(): void {
+		// Only load the dismissal script when an undismissed notice is actually
+		// present — no need to ship it on every admin page.
+		if (!$this->has_active_notices) {
+			return;
+		}
 		wp_enqueue_script (
 			'jq-mt2mba-clear-notices',
 			MT2MBA_PLUGIN_URL . 'src/js/jq-mt2mba-clear-notices.js',
-			array('jquery')
+			array('jquery'),
+			MT2MBA_VERSION,
+			true
 		);
 	}
 
@@ -148,6 +167,13 @@ class Notices {
 	 * @param string $dismiss_option Unique identifier for dismissal tracking
 	 */
 	private function notice(string $type, string $message, string $dismiss_option): void {
+		// Nothing to show if the user already dismissed this notice; skip queuing
+		// it so enqueueNoticeScripts() can tell whether the dismissal JS is needed.
+		if (get_option("mt2mba_dismissed_{$dismiss_option}")) {
+			return;
+		}
+		$this->has_active_notices = true;
+
 		add_action (
 			'admin_notices',
 			function() use ($type, $message, $dismiss_option) {
@@ -160,12 +186,12 @@ class Notices {
 				);
 				if (!get_option("mt2mba_dismissed_{$dismiss_option}")) {
 					?><div
-						class="notice mt2mba-notice notice-<?php echo $type;
+						class="notice mt2mba-notice notice-<?php echo esc_attr($type);
 						if ($dismiss_option) {
 							echo ' is-dismissible" data-dismiss-url="' . esc_url($dismiss_url);
 						} ?>">
-						<strong><em><?php echo(MT2MBA_PLUGIN_NAME . ' ' . $type); ?></em></strong>
-						<p><?php echo($message); ?></p>
+						<strong><em><?php echo esc_html(MT2MBA_PLUGIN_NAME . ' ' . $type); ?></em></strong>
+						<p><?php echo wp_kses_post($message); ?></p>
 					</div><?php
 				}	//	End if
 			}	//	End function

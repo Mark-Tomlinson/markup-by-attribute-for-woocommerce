@@ -2,6 +2,7 @@
 namespace mt2Tech\MarkupByAttribute\Backend;
 //use mt2Tech\MarkupByAttribute\Backend\Handlers;
 use mt2Tech\MarkupByAttribute\Utility as Utility;
+use Throwable;
 
 /**
  * Main class for handling product backend actions.
@@ -132,13 +133,13 @@ class Product {
 
 				wp_send_json_success(['completed' => true]);
 
-			} catch (Exception $e) {
+			} catch (Throwable $e) {
 				// Rollback transaction on any error to maintain data integrity
 				$wpdb->query('ROLLBACK');
 				throw $e;
 			}
 
-		} catch (Exception $e) {
+		} catch (Throwable $e) {
 			wp_send_json_error(['message' => $e->getMessage()]);
 		}
 	}
@@ -153,6 +154,11 @@ class Product {
 	 */
 	public function getFormattedBasePrice(): void {
 		check_ajax_referer('handleMarkupReapplication', 'security');
+
+		if (!current_user_can('edit_products')) {
+			wp_send_json_error(['message' => __('Permission denied', 'markup-by-attribute-for-woocommerce')]);
+			return;
+		}
 
 		$product_id = isset($_POST['product_id']) ? absint($_POST['product_id']) : 0;
 		if (!$product_id) {
@@ -183,6 +189,11 @@ class Product {
 	 */
 	public function refreshProductGeneralPanel(): void {
 		check_ajax_referer('handleMarkupReapplication', 'security');
+
+		if (!current_user_can('edit_products')) {
+			wp_send_json_error(['message' => __('Permission denied', 'markup-by-attribute-for-woocommerce')]);
+			return;
+		}
 
 		$product_id = isset($_POST['product_id']) ? absint($_POST['product_id']) : 0;
 
@@ -230,6 +241,17 @@ class Product {
 
 		// Invoke the processProductMarkups() function from the class that was decided above
 		$handler->processProductMarkups((string) $bulk_action, (array) $data, (string) $product_id, (array) $variations);
+
+		// The handlers above write meta directly via $wpdb (DELETE/INSERT), which bypasses
+		// WordPress's object cache. WooCommerce syncs the parent after this hook, but never
+		// invalidates the individual variations — so on a persistent object cache (Redis/
+		// Memcached) stale variation prices/descriptions would keep serving. Flush the post
+		// + post_meta cache for the parent and every edited variation *before* WC's post-hook
+		// sync, so that sync recomputes from fresh data. 🌸
+		clean_post_cache($product_id);
+		foreach ($variations as $variation_id) {
+			clean_post_cache($variation_id);
+		}
 	}
 	//endregion
 
@@ -322,15 +344,17 @@ class Product {
 	 * @param	array	$variations	List of variation IDs
 	 */
 	private function processVariationsWithMarkup($product_id, $variations): void {
+		// Both passes run inside handleMarkupReapplication()'s transaction, so the
+		// handlers must not start their own (owns_transaction = false)
 		$base_regular_price = get_post_meta($product_id, 'mt2mba_base_regular_price', true);
 		$data = ['value' => $base_regular_price];
-		$handler = new Handlers\PriceSetHandler('variable_regular_price', $data, $product_id, $variations);
+		$handler = new Handlers\PriceSetHandler('variable_regular_price', $data, $product_id, $variations, false);
 		$handler->processProductMarkups('variable_regular_price', $data, $product_id, $variations);
 
 		$base_sale_price = get_post_meta($product_id, 'mt2mba_base_sale_price', true);
 		if (!empty($base_sale_price)) {
 			$data = ['value' => $base_sale_price];
-			$handler = new Handlers\PriceSetHandler('variable_sale_price', $data, $product_id, $variations);
+			$handler = new Handlers\PriceSetHandler('variable_sale_price', $data, $product_id, $variations, false);
 			$handler->processProductMarkups('variable_sale_price', $data, $product_id, $variations);
 		}
 	}

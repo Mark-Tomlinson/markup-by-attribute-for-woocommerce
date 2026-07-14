@@ -12,6 +12,18 @@
 }
 
 /* =============================================================================
+   Term Markup Field Validation
+   ========================================================================== */
+
+/* Invalid markup entry — same look core gives a missing term Name. Own class
+   because core's rule needs form-required on the row, and that class makes WP
+   reject a blank markup, which is valid (it clears the markup). */
+.form-field.mt2mba-invalid input {
+	border-color: #d63638 !important;
+	box-shadow: 0 0 2px rgba(214, 54, 56, 0.8);
+}
+
+/* =============================================================================
    Product List Table
    ========================================================================== */
 

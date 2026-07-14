@@ -169,16 +169,17 @@ function mt2mba_run_upgrades(): void {
 	$upgrade_dir = MT2MBA_PLUGIN_DIR . 'src/utility/upgrades/';
 	$files = glob($upgrade_dir . 'db_upgrade_*.php');
 	if (empty($files)) return;
-	sort($files);
 
 	// Load interface
 	require_once $upgrade_dir . 'upgradeinterface.php';
 
+	// Load and validate upgrade classes
+	$classes = [];
 	foreach ($files as $file) {
 		require_once $file;
 
 		// Derive fully-qualified class name from filename
-		// db_upgrade_2_0.php -> DbUpgrade_2_0
+		// db_upgrade_2_0.php -> Db_Upgrade_2_0
 		$basename = basename($file, '.php');
 		$class_short = implode('_', array_map('ucfirst', explode('_', $basename)));
 		$fqcn = 'mt2Tech\\MarkupByAttribute\\Utility\\Upgrades\\' . $class_short;
@@ -188,6 +189,14 @@ function mt2mba_run_upgrades(): void {
 		$implements = class_implements($fqcn);
 		if (!isset($implements['mt2Tech\\MarkupByAttribute\\Utility\\Upgrades\\UpgradeInterface'])) continue;
 
+		$classes[] = $fqcn;
+	}
+
+	// Order by each module's declared version — filename sort is lexicographic
+	// and would run db_upgrade_10_0.php before db_upgrade_2_0.php
+	usort($classes, fn($a, $b) => version_compare($a::version(), $b::version()));
+
+	foreach ($classes as $fqcn) {
 		// Skip upgrades already applied
 		if (version_compare($fqcn::version(), $installed_version, '<=')) {
 			continue;

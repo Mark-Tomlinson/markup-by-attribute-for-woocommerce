@@ -75,6 +75,10 @@ class Term {
 	private function __construct() {
 		$this->initializeLabels();
 		$this->registerTaxonomyHooks();
+
+		// Client-side markup validation on the term add/edit forms (WP-native
+		// form-invalid styling; blocks the submit so garbage never reaches PHP)
+		add_action('admin_enqueue_scripts', array($this, 'enqueueMarkupValidation'));
 	}
 
 	/**
@@ -204,8 +208,12 @@ class Term {
 			return;
 		}
 
-		// WordPress nonce verification for CSRF protection
+		// Guard against a deleted term (race between hook fire and handler run)
+		// or a plugin conflict — get_term() can return null or WP_Error
 		$term = get_term($term_id);
+		if (!$term instanceof \WP_Term) return;
+
+		// WordPress nonce verification for CSRF protection
 		$taxonomy_name = sanitize_key($term->taxonomy);
 
 		// Determine operation type and validate appropriate nonce
@@ -277,17 +285,12 @@ class Term {
 			if ($rewrite_desc_flag == 'yes') {
 				$description = $mt2mba_utility->addMarkupToTermDescription($description, $markup, $is_negative);
 			}
-		} elseif ($validated_markup === false) {
-			// Invalid markup - add admin notice
-			add_action('admin_notices', function() use ($raw_markup) {
-				echo '<div class="notice notice-error is-dismissible"><p>' .
-					sprintf(
-						__('Invalid markup value "%s". Please use format like "5.00", "-2.50", "10%" or "-5%".', 'markup-by-attribute-for-woocommerce'),
-						esc_html($raw_markup)
-					) .
-					'</p></div>';
-			});
 		}
+		// Invalid markup is silently discarded here. The user-facing rejection
+		// happens client-side: jq-mt2mba-validate-markup.js blocks the submit
+		// with WP's form-invalid styling. (A server-side admin_notices message
+		// is structurally unreachable on both save paths — the add form posts
+		// via admin-ajax.php and the edit form redirects after saving.)
 
 		// Rewrite term if name and/or description have changed
 		if ($term->name != $name || $term->description != $description) {
@@ -304,6 +307,38 @@ class Term {
 			);
 			self::$is_rewriting_term = false;
 		}
+	}
+	//endregion
+
+	/**
+	 * Enqueue markup-field validation on term add/edit screens
+	 *
+	 * @param string $hook Current admin page hook suffix
+	 */
+	public function enqueueMarkupValidation(string $hook): void {
+		// Only the term list/add screen (edit-tags.php) and term edit screen (term.php)
+		if ($hook !== 'edit-tags.php' && $hook !== 'term.php') return;
+
+		// Only product-attribute taxonomies carry the markup field
+		$taxonomy = sanitize_key($_GET['taxonomy'] ?? '');
+		if (strpos($taxonomy, 'pa_') !== 0) return;
+
+		wp_enqueue_script(
+			'mt2mba-validate-markup',
+			MT2MBA_PLUGIN_URL . 'src/js/jq-mt2mba-validate-markup.js',
+			array('jquery'),
+			MT2MBA_VERSION,
+			true
+		);
+
+		// Carries the .mt2mba-invalid red-border rule (see admin-style.css for
+		// why core's form-required mechanism isn't used)
+		wp_enqueue_style(
+			'mt2mba-admin-styles',
+			MT2MBA_PLUGIN_URL . 'src/css/admin-style.css',
+			array(),
+			MT2MBA_VERSION
+		);
 	}
 	//endregion
 

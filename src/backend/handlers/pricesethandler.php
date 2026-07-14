@@ -135,6 +135,12 @@ class PriceSetHandler extends PriceMarkupHandler {
 			// Remove Sales Price metadata
 			delete_post_meta($product_id, "mt2mba_base_" . MT2MBA_SALE_PRICE);
 
+			// No variations means no descriptions to clean — and an empty ID list
+			// would build malformed "IN ()" SQL below
+			if (empty($variations)) {
+				return;
+			}
+
 			// Bulk-fetch all variation descriptions in a single query
 			global $wpdb, $mt2mba_utility;
 			$variation_ids = array_map('intval', $variations);
@@ -380,6 +386,12 @@ class PriceSetHandler extends PriceMarkupHandler {
 	private function fetchVariationData($variations): array {
 		global $wpdb;
 		$variation_ids = array_map('intval', $variations);
+
+		// An empty ID list would build malformed "IN ()" SQL
+		if (empty($variation_ids)) {
+			return [[], []];
+		}
+
 		$id_placeholders = implode(',', array_fill(0, count($variation_ids), '%d'));
 
 		// All attribute assignments (attribute_pa_color => 'red', etc.)

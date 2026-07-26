@@ -1,0 +1,56 @@
+{
+  "_comment": "Shared input table for Utility\\General::normalizeMarkupNotation() (PHP) and normalizeMarkupNotation() in src/js/jq-mt2mba-validate-markup.js. Both must produce 'normalized' for every 'input' under that case's 'separator', and must agree on 'valid'. 'stored' is what validateMarkupValue() returns (PHP only). Edit this table, not the implementations, when adding a notation.",
+
+  "_separator_note": "'separator' is the store's configured decimal separator (WooCommerce: wc_get_price_decimal_separator(), localized to the JS as window.mt2mbaMarkup.decimalSeparator). Whichever character is NOT the separator is treated as a thousands separator and dropped. The same input legitimately means different things in a comma store and a dot store — that is why this cannot be guessed, and why an earlier version of this code wrongly rejected '1.235,12' outright.",
+
+  "cases": [
+    {"input": "5",        "separator": ".", "normalized": "5",       "valid": true,  "stored": "5",      "note": "plain fixed amount"},
+    {"input": "-5",       "separator": ".", "normalized": "-5",      "valid": true,  "stored": "-5",     "note": "negative"},
+    {"input": "+5",       "separator": ".", "normalized": "5",       "valid": true,  "stored": "5",      "note": "positive is implied"},
+    {"input": "5.00",     "separator": ".", "normalized": "5.00",    "valid": true,  "stored": "5",      "note": "dot decimal in a dot store"},
+    {"input": ".5",       "separator": ".", "normalized": ".5",      "valid": true,  "stored": "0.5",    "note": "leading decimal point"},
+
+    {"input": "5%",       "separator": ".", "normalized": "5%",      "valid": true,  "stored": "5%",     "note": "plain percentage"},
+    {"input": "5 %",      "separator": ".", "normalized": "5%",      "valid": true,  "stored": "5%",     "note": "space before percent — WooCommerce allows it"},
+    {"input": "-17 %",    "separator": ".", "normalized": "-17%",    "valid": true,  "stored": "-17%",   "note": "signed, spaced"},
+    {"input": "10  %",    "separator": ".", "normalized": "10%",     "valid": true,  "stored": "10%",    "note": "multiple spaces"},
+    {"input": " 10% ",    "separator": ".", "normalized": "10%",     "valid": true,  "stored": "10%",    "note": "outer padding"},
+
+    {"input": "%50",      "separator": ".", "normalized": "50%",     "valid": true,  "stored": "50%",    "note": "leading percent — Turkish convention"},
+    {"input": "-%50",     "separator": ".", "normalized": "-50%",    "valid": true,  "stored": "-50%",   "note": "leading percent with sign ahead"},
+    {"input": "%-50",     "separator": ".", "normalized": "-50%",    "valid": true,  "stored": "-50%",   "note": "leading percent with sign behind"},
+    {"input": "% 50",     "separator": ".", "normalized": "50%",     "valid": true,  "stored": "50%",    "note": "leading percent, spaced"},
+
+    {"input": "50٪", "separator": ".", "normalized": "50%",     "valid": true,  "stored": "50%",    "note": "U+066A Arabic percent"},
+    {"input": "50％", "separator": ".", "normalized": "50%",     "valid": true,  "stored": "50%",    "note": "U+FF05 fullwidth percent"},
+    {"input": "50﹪", "separator": ".", "normalized": "50%",     "valid": true,  "stored": "50%",    "note": "U+FE6A small percent"},
+    {"input": "٪50", "separator": ".", "normalized": "50%",     "valid": true,  "stored": "50%",    "note": "leading Arabic percent"},
+
+    {"input": "1 235.12",  "separator": ".", "normalized": "1235.12", "valid": true, "stored": "1235.12", "note": "space as thousands separator"},
+    {"input": "1 235.12", "separator": ".", "normalized": "1235.12", "valid": true, "stored": "1235.12", "note": "NBSP thousands separator"},
+    {"input": "1 235.12", "separator": ".", "normalized": "1235.12", "valid": true, "stored": "1235.12", "note": "narrow NBSP thousands separator"},
+    {"input": "1,235.12",  "separator": ".", "normalized": "1235.12", "valid": true, "stored": "1235.12", "note": "comma thousands in a dot store (US/UK)"},
+
+    {"input": "1235,12",   "separator": ",", "normalized": "1235,12", "valid": true, "stored": "1235.12", "note": "comma decimal in a comma store"},
+    {"input": "1 235,12",  "separator": ",", "normalized": "1235,12", "valid": true, "stored": "1235.12", "note": "space thousands, comma decimal (French) — floatval() used to read this as 1"},
+    {"input": "1.235,12",  "separator": ",", "normalized": "1235,12", "valid": true, "stored": "1235.12", "note": "dot thousands, comma decimal (German, Spanish) — the case that was wrongly rejected"},
+    {"input": "5,00",      "separator": ",", "normalized": "5,00",    "valid": true, "stored": "5",       "note": "comma decimal, trailing zeros trimmed"},
+    {"input": "-2,5 %",    "separator": ",", "normalized": "-2,5%",   "valid": true, "stored": "-2.5%",   "note": "negative comma-decimal percentage, spaced"},
+    {"input": "%50",       "separator": ",", "normalized": "50%",     "valid": true, "stored": "50%",     "note": "Turkish leading percent is separator independent"},
+    {"input": ",5",        "separator": ",", "normalized": ",5",      "valid": true, "stored": "0.5",     "note": "leading comma decimal"},
+
+    {"input": "2-",       "separator": ".", "normalized": "2-",      "valid": false, "note": "trailing sign is rejected; WooCommerce silently reads it as +2"},
+    {"input": "2 -",      "separator": ".", "normalized": "2-",      "valid": false, "note": "trailing sign, spaced"},
+    {"input": "%50%",     "separator": ".", "normalized": "%50%",    "valid": false, "note": "percent at both ends is malformed"},
+    {"input": "5%0",      "separator": ".", "normalized": "5%0",     "valid": false, "note": "interior percent is malformed"},
+    {"input": "abc",      "separator": ".", "normalized": "abc",     "valid": false, "note": "not a number"},
+    {"input": "5abc",     "separator": ".", "normalized": "5abc",    "valid": false, "note": "trailing garbage — wc_format_decimal() would have silently parsed this as 5"},
+    {"input": "--5",      "separator": ".", "normalized": "--5",     "valid": false, "note": "double sign"},
+    {"input": "1.2.3",    "separator": ",", "normalized": "123",     "valid": true,  "stored": "123",    "note": "repeated thousands separators are legal grouping"},
+    {"input": "1.2,3,4",  "separator": ",", "normalized": "12,3,4",  "valid": false, "note": "repeated DECIMAL separators are not"},
+    {"input": "1,235.12",  "separator": ",", "normalized": "1,235.12", "valid": false, "note": "grouping mark AFTER the decimal point is malformed in a comma store, not foreign notation"},
+    {"input": "1.235,12",  "separator": ".", "normalized": "1.235,12", "valid": false, "note": "same rule mirrored in a dot store"},
+    {"input": "1.234.567,89", "separator": ",", "normalized": "1234567,89", "valid": true, "stored": "1234567.89", "note": "multiple grouping marks ahead of the decimal point are fine"},
+    {"input": "",         "separator": ".", "normalized": "",        "valid": true,  "stored": "",       "note": "empty clears the markup"}
+  ]
+}

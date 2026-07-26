@@ -32,6 +32,8 @@ $GLOBALS['mt2mba_test'] = [
 	'post_meta'    => [],   // recorded delete_post_meta calls
 	'term_updates' => [],   // recorded wp_update_term calls
 	'upgrade_log'  => [],   // execution order of fixture upgrade modules
+	'meta_reads'   => [],   // recorded get_metadata calls
+	'cache_flushes'=> [],   // recorded clean_post_cache calls
 ];
 $GLOBALS['mt2mba_stub'] = [
 	'can'          => true,   // current_user_can()
@@ -160,6 +162,18 @@ function delete_post_meta($post_id, $key) {
 	$GLOBALS['mt2mba_test']['post_meta'][] = ['delete', $post_id, $key];
 	return true;
 }
+function get_metadata($meta_type, $object_id, $key = '', $single = false) {
+	$GLOBALS['mt2mba_test']['meta_reads'][] = [$meta_type, $object_id, $key];
+	return $GLOBALS['mt2mba_stub']['meta'][$key] ?? '';
+}
+function update_post_meta($post_id, $key, $value) {
+	$GLOBALS['mt2mba_test']['post_meta'][] = ['update', $post_id, $key, $value];
+	return true;
+}
+
+function clean_post_cache($post_id) {
+	$GLOBALS['mt2mba_test']['cache_flushes'][] = $post_id;
+}
 
 function is_admin() { return true; }
 function wp_doing_ajax() { return $GLOBALS['mt2mba_stub']['doing_ajax'] ?? (defined('DOING_AJAX') && DOING_AJAX); }
@@ -171,6 +185,7 @@ function plugin_dir_url($file) { return 'http://test/'; }
 function get_bloginfo($show = '') { return 'http://test'; }
 function wp_enqueue_script(...$args) {}
 function wp_enqueue_style(...$args) {}
+function wp_localize_script($handle, $name, $data) { $GLOBALS["mt2mba_test"]["localized"][$name] = $data; return true; }
 function add_query_arg($args, $url = '') { return $url . '?' . http_build_query($args); }
 function admin_url($path = '') { return 'http://test/wp-admin/' . $path; }
 function error_log_stub($msg) {}
@@ -197,8 +212,25 @@ function wc_attribute_taxonomy_id_by_name($name) {
 	return $GLOBALS['mt2mba_stub']['taxonomy_ids'][$name] ?? 0;
 }
 function wc_get_attribute_taxonomies() { return []; }
+function wc_get_price_decimal_separator() {
+	return $GLOBALS['mt2mba_stub']['decimal_separator'] ?? '.';
+}
+
+// Models WooCommerce's own parser: the store's decimal separator becomes '.',
+// then everything that is not a digit, dot or minus is dropped — which is how
+// thousands separators disappear. A naive is_numeric() check here made every
+// comma-decimal locale look invalid and hid real i18n behavior.
 function wc_format_decimal($number, $dp = false, $trim_zeros = false) {
-	return is_numeric($number) ? $number : '';
+	if (!is_float($number)) {
+		$number = str_replace(wc_get_price_decimal_separator(), '.', (string) $number);
+		$number = preg_replace('/[^0-9\.\-]/', '', $number);
+	}
+	if ($number === '' || $number === null) return '';
+	if ($dp !== false) $number = number_format((float) $number, (int) $dp, '.', '');
+	if ($trim_zeros && strpos($number, '.') !== false) {
+		$number = rtrim(rtrim($number, '0'), '.');
+	}
+	return $number;
 }
 function wc_price($price, $args = []) { return '$' . number_format((float) $price, 2); }
 function wc_get_price_decimals() { return 2; }

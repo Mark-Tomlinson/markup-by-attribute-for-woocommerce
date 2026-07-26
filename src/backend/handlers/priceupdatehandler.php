@@ -76,18 +76,41 @@ class PriceUpdateHandler extends PriceMarkupHandler {
 	 * Calculate new base price based on update type.
 	 * Handles both percentage and fixed amount updates.
 	 *
+	 * The value arrives raw from WooCommerce's bulk-edit prompt, so it is
+	 * normalized here rather than validated: WooCommerce has already applied its
+	 * own price change by the time this hook runs, and refusing to reapply markups
+	 * would leave the product half-updated. Best effort keeps prices consistent —
+	 * worst case we land on the same reading WooCommerce used. wc_format_decimal()
+	 * is WooCommerce's own parser, so the store's separators are honored exactly
+	 * as WooCommerce honored them.
+	 *
 	 * @param	string	$bulk_action	The bulk action being performed
 	 * @param	string	$markup			The update amount or percentage
 	 * @param	float	$base_price		Current base price
 	 * @return	float					New calculated base price
 	 */
 	private function calculateNewBasePrice($bulk_action, $markup, $base_price): float {
+		// Rewrite locale notation ("%50", "5 %", "1 000,50") into canonical form.
+		// Without this, floatval("%50") is 0 and the price silently never changes.
+		$normalized = Utility\General::normalizeMarkupNotation((string) $markup);
+		if ($normalized !== (string) $markup && defined('WP_DEBUG') && WP_DEBUG) {
+			error_log("MT2MBA: normalized bulk-edit value '{$markup}' to '{$normalized}'");
+		}
+
+		// Strip the percent sign, then move the decimal point to '.' so floatval()
+		// reads it. No wc_format_decimal() — normalizeMarkupNotation() has already
+		// dealt with the store's thousands separator.
+		$is_percentage = Utility\General::isPercentage($normalized);
+		$numeric = $is_percentage ? substr($normalized, 0, -1) : $normalized;
+		$amount = (float) Utility\General::toInternalDecimal($numeric);
+
 		// Determine sign: decrease actions negate the markup value
 		// e.g., "decrease by 10%" becomes -10, "increase by 5" stays +5
-		$signed_data = strpos($bulk_action, "decrease") ? 0 - floatval($markup) : floatval($markup);
+		$is_decrease = strpos($bulk_action, "decrease") !== false;
+		$signed_data = $is_decrease ? 0 - $amount : $amount;
 
 		// Apply markup calculation based on type
-		if (strpos($markup, "%")) {
+		if ($is_percentage) {
 			// Percentage markup: calculate percentage of base price and add/subtract
 			// Formula: new_price = base_price + (base_price * percentage / 100)
 			// e.g., $100 + 10% = $100 + ($100 * 10 / 100) = $110

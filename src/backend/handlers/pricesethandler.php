@@ -235,7 +235,7 @@ class PriceSetHandler extends PriceMarkupHandler {
 
 					// Calculate markup value: percentage markups are calculated against the price,
 					// fixed markups are used as-is
-					if (strpos($markup, "%")) {
+					if (Utility\General::isPercentage($markup)) {
 						$markup_value = ($price * floatval($markup)) / 100;
 					} else {
 						$markup_value = floatval($markup);

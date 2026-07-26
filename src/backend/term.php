@@ -253,13 +253,16 @@ class Term {
 		// Get and validate the markup input
 		$raw_markup = sanitize_text_field($_POST['term_markup']);
 
-		// Validate markup using centralized validation
-		$validated_markup = Utility\General::validateMarkupValue($raw_markup);
+		// Validate and sanitize in ONE pass. This deliberately does not validate
+		// first and then hand the result to sanitizeMarkupForStorage(): validation
+		// returns internal notation ('.'-decimal), so a second pass would read that
+		// '.' as a thousands separator in a comma-decimal store and turn 1235,12
+		// into 123512. Validation happens once, here, at the boundary.
+		$markup = Utility\General::sanitizeMarkupForStorage($raw_markup);
 
-		// Only proceed if markup validation passed and isn't empty
-		if ($validated_markup !== false && $validated_markup !== '') {
-			// Final sanitization pass before database storage
-			$markup = Utility\General::sanitizeMarkupForStorage($validated_markup);
+		// Empty means either a cleared field or input we rejected; both mean
+		// "store nothing"
+		if ($markup !== '') {
 
 			// Save markup to term metadata table
 			update_term_meta($term_id, 'mt2mba_markup', $markup);
@@ -326,6 +329,15 @@ class Term {
 			array('jquery'),
 			MT2MBA_VERSION,
 			true
+		);
+
+		// The validator normalizes notation exactly as the server does, and that
+		// needs the store's decimal separator: "1.235,12" is correct in a comma
+		// store and meaningless in a dot store
+		wp_localize_script(
+			'mt2mba-validate-markup',
+			'mt2mbaMarkup',
+			array('decimalSeparator' => wc_get_price_decimal_separator())
 		);
 
 		// Carries the .mt2mba-invalid red-border rule (see admin-style.css for

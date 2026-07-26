@@ -226,7 +226,7 @@ class Product {
 			// Set either the regular price or the sale price
 			$handler = new Handlers\PriceSetHandler($bulk_action, $data, $product_id, $variations);
 
-		} elseif (strpos($bulk_action, "_price_increase") || strpos($bulk_action, "_price_decrease")) {
+		} elseif (strpos($bulk_action, "_price_increase") !== false || strpos($bulk_action, "_price_decrease") !== false) {
 			// Increase or decrease the regular price or the sale price
 			$handler = new Handlers\PriceUpdateHandler($bulk_action, $data, $product_id, $variations);
 

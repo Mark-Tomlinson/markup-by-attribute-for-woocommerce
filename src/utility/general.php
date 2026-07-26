@@ -33,10 +33,10 @@ class General {
 		// Extract amount from string and set to absolute
 		$amount = abs(floatval($text));
 
-		if (strpos($text, "%")) {		// Text is a percentage?
+		if (self::isPercentage($text)) {
 			// Amount, trimmed and percent symbol added
 			return trim($amount . '%');
-		} else {						// Text is an amount
+		} else {
 			// Amount formatted as local currency, no HTML tags, HTML decoded, and trimmed
 			return trim(html_entity_decode(strip_tags(wc_price($amount))));
 		}
@@ -63,7 +63,7 @@ class General {
 			$sign = (float) $markup < 0 ? "-" : "+";
 			// There are instances where the markup for the product is not in the database.
 			// Where this is the case and the markup is a percentage, show only the percentage.
-			if (strpos($markup, '%')) {
+			if (self::isPercentage($markup)) {
 				// Return formatted with percentage
 				$markup = trim(html_entity_decode($markup));
 			} elseif (MT2MBA_DROPDOWN_BEHAVIOR == 'add') {
@@ -226,10 +226,149 @@ class General {
 
 	//region VALIDATION & SANITIZATION
 	/**
+	 * Rewrite a markup value into canonical notation
+	 *
+	 * Locale-canonical form is [-]digits[<sep>digits][%]: no whitespace, no
+	 * thousands separators, sign leading only, percent sign U+0025 trailing only,
+	 * and the decimal separator left in the STORE'S notation. Examples for a store
+	 * whose decimal separator is a comma:
+	 *
+	 *   "5 %"       -> "5%"       space before the percent sign (WooCommerce allows it)
+	 *   "%50"       -> "50%"      leading percent sign (Turkish convention)
+	 *   "-%50"      -> "-50%"     ...with a sign
+	 *   "50٪"       -> "50%"      U+066A Arabic percent
+	 *   "50％"      -> "50%"      U+FF05 fullwidth percent
+	 *   "1235,12"   -> "1235,12"  comma decimal, already canonical
+	 *   "1 235,12"  -> "1235,12"  space as thousands separator (French)
+	 *   "1.235,12"  -> "1235,12"  dot as thousands separator (German, Spanish)
+	 *   "+5"        -> "5"        positive is implied
+	 *
+	 * Separator handling needs the store's configured decimal separator, because
+	 * "1.235,12" and "1,235.12" are each correct in some locale and meaningless in
+	 * the other. Whichever character is NOT the decimal separator is treated as a
+	 * thousands separator and dropped.
+	 *
+	 * IMPORTANT — the decimal separator is deliberately NOT converted to '.' here.
+	 * This method has to be idempotent, because the browser normalizes the field
+	 * before submitting and the server normalizes again on arrival. Converting
+	 * "1235,12" to "1235.12" here would make that second pass read the '.' as a
+	 * thousands separator and strip it, storing 123512. Use toInternalDecimal()
+	 * once, at the point of storage or calculation, instead.
+	 *
+	 * This is a rewriter, not a validator: anything it cannot make sense of comes
+	 * back unchanged for validateMarkupValue() to reject. A trailing sign ("2-")
+	 * is deliberately left alone so it fails validation — WooCommerce silently
+	 * ignores it and treats "2-" as +2, which is worth an error rather than a guess.
+	 *
+	 * @since 4.7.0
+	 * @param string      $raw               Markup value as entered
+	 * @param string|null $decimal_separator Store's decimal separator; defaults to
+	 *                                       WooCommerce's configured one
+	 * @return string                        Canonical notation, or $raw unchanged
+	 *                                       if unrecognizable
+	 */
+	public static function normalizeMarkupNotation(string $raw, ?string $decimal_separator = null): string {
+		if ($decimal_separator === null) {
+			$decimal_separator = function_exists('wc_get_price_decimal_separator')
+				? wc_get_price_decimal_separator()
+				: '.';
+		}
+
+		// Unify percent sign variants on U+0025
+		$markup = str_replace(["\u{066A}", "\u{FF05}", "\u{FE6A}"], '%', $raw);
+
+		// Strip every kind of space, including NBSP and the narrow/figure spaces
+		// used as thousands separators
+		$markup = preg_replace('/[\s\x{00A0}\x{202F}\x{2007}]+/u', '', $markup);
+		if ($markup === null || $markup === '') return $raw;
+
+		// Lift a leading percent sign, with or without a sign ahead of it
+		$leading_percent = false;
+		if (preg_match('/^([+-]?)%(.*)$/', $markup, $matches)) {
+			$leading_percent = true;
+			$markup = $matches[1] . $matches[2];
+		}
+
+		// ...and a trailing one
+		$trailing_percent = false;
+		if (substr($markup, -1) === '%') {
+			$trailing_percent = true;
+			$markup = substr($markup, 0, -1);
+		}
+
+		// A percent sign at both ends is malformed; hand it back for rejection
+		if ($leading_percent && $trailing_percent) return $raw;
+
+		// Positive is implied
+		if (substr($markup, 0, 1) === '+') $markup = substr($markup, 1);
+
+		$thousands_separator = ($decimal_separator === ',') ? '.' : ',';
+
+		// A grouping mark can only appear ahead of the decimal point. In a
+		// comma-decimal store "1,235.12" puts it after, which is malformed rather
+		// than merely foreign — hand it back for rejection instead of stripping it
+		// into 1.23512. Group SIZES are not policed: 3-digit grouping is not
+		// universal (Indian notation groups 2-2-3).
+		$decimal_at = strpos($markup, $decimal_separator);
+		$last_group_at = strrpos($markup, $thousands_separator);
+		if ($decimal_at !== false && $last_group_at !== false && $last_group_at > $decimal_at) {
+			return $raw;
+		}
+
+		// Drop thousands separators. The decimal separator is deliberately left in
+		// the store's notation — see the note on idempotency above.
+		$markup = str_replace($thousands_separator, '', $markup);
+
+		return $markup . (($leading_percent || $trailing_percent) ? '%' : '');
+	}
+
+	/**
+	 * Convert a locale-canonical number to the internal '.'-decimal form
+	 *
+	 * Call once, at the point of storage or calculation, on a value that has
+	 * already been through normalizeMarkupNotation().
+	 *
+	 * @since 4.7.0
+	 * @param string      $number            Locale-canonical number, no thousands separators
+	 * @param string|null $decimal_separator Store's decimal separator; defaults to
+	 *                                       WooCommerce's configured one
+	 * @return string                        The same number with a '.' decimal point
+	 */
+	public static function toInternalDecimal(string $number, ?string $decimal_separator = null): string {
+		if ($decimal_separator === null) {
+			$decimal_separator = function_exists('wc_get_price_decimal_separator')
+				? wc_get_price_decimal_separator()
+				: '.';
+		}
+		return str_replace($decimal_separator, '.', $number);
+	}
+
+	/**
+	 * Is this markup a percentage rather than a fixed amount?
+	 *
+	 * The single definition of the percentage/fixed split. Callers used to test
+	 * this with the truthiness of strpos($markup, '%'), which is only correct by
+	 * accident of data shape — a '%' at position 0 reads as false.
+	 *
+	 * @since 4.7.0
+	 * @param string $markup Markup value
+	 * @return bool          True when the markup is a percentage
+	 */
+	public static function isPercentage(string $markup): bool {
+		return substr(trim($markup), -1) === '%';
+	}
+
+	/**
 	 * Validate and sanitize markup value input
 	 *
-	 * @param	string	$markup		Raw markup input
-	 * @return	string|false		Validated markup or false if invalid
+	 * Takes a value in the STORE'S notation and returns it in INTERNAL notation
+	 * ('.'-decimal). Those are different alphabets, so this is not idempotent and
+	 * must be called exactly once, at the point input enters the system. Feeding
+	 * its own output back in re-reads the internal '.' as a thousands separator in
+	 * a comma-decimal store — that is how "1235,12" once became 123512.
+	 *
+	 * @param	string	$markup		Raw markup input, in the store's notation
+	 * @return	string|false		Validated markup in internal notation, or false
 	 */
 	public static function validateMarkupValue(string $markup) {
 		// Handle empty values - treat zero as empty markup (no price change)
@@ -240,32 +379,32 @@ class General {
 		// Sanitize input - remove any HTML tags and trim whitespace
 		$markup = sanitize_text_field(trim($markup));
 
-		// Remove any non-standard whitespace characters
-		$markup = preg_replace('/\s+/', '', $markup);
+		// Rewrite locale notation into canonical form: strips whitespace and
+		// thousands separators, unifies percent sign variants, moves a leading
+		// percent sign to the back, and puts the decimal point on '.'
+		$markup = self::normalizeMarkupNotation($markup);
 
-		// Determine markup type: percentage (ends with %) or fixed amount
-		$is_percentage = (substr($markup, -1) === '%');
-
-		if ($is_percentage) {
-			// Strip the % symbol to validate just the numeric portion
-			$numeric_part = substr($markup, 0, -1);
-		} else {
-			// Fixed amount - validate the entire string as numeric
-			$numeric_part = $markup;
-		}
-
-		// Convert localized decimal input to standardized format using WooCommerce
-		$numeric_part = wc_format_decimal($numeric_part, false, true);
-
-		// Validate numeric format using regex pattern
-		// Pattern breakdown: ^[+-]?(?:\d+(?:\.\d+)?|\d*\.\d+)$
-		// ^[+-]? = optional plus or minus at start
-		// (?:...|...) = non-capturing group with two alternatives:
-		//   \d+(?:\.\d+)? = one or more digits, optionally followed by decimal and one or more digits
-		//   \d*\.\d+ = zero or more digits, required decimal point, one or more digits (for .5, .25, etc.)
-		if (!preg_match('/^[+-]?(?:\d+(?:\.\d+)?|\d*\.\d+)$/', $numeric_part)) {
+		// Reject anything not canonically shaped. This has to happen before any
+		// numeric parsing: wc_format_decimal() strips characters it does not
+		// recognize rather than failing on them, so without this check "5abc"
+		// parses as 5 and "5%0" as 50 — both silently wrong prices.
+		//
+		// Thousands separators are gone by this point, so at most one separator can
+		// remain and either character is acceptable — whichever one it is, it is
+		// the decimal point. Deliberately identical to MARKUP_PATTERN in
+		// src/js/jq-mt2mba-validate-markup.js; change both together.
+		if (!preg_match('/^-?(\d+([.,]\d+)?|[.,]\d+)%?$/', $markup)) {
 			return false;
 		}
+
+		// Determine markup type: percentage (ends with %) or fixed amount
+		$is_percentage = self::isPercentage($markup);
+
+		// Strip the % symbol, then move the decimal point to '.' for storage. No
+		// call to wc_format_decimal() — it strips unrecognized characters rather
+		// than rejecting them, which is how "5abc" used to store as 5.
+		$numeric_part = $is_percentage ? substr($markup, 0, -1) : $markup;
+		$numeric_part = self::toInternalDecimal($numeric_part);
 
 		// Convert to float for range validation and formatting
 		$numeric_value = floatval($numeric_part);

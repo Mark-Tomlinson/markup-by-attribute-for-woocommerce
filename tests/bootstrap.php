@@ -41,8 +41,16 @@ $GLOBALS['mt2mba_stub'] = [
 	'wpdb_results' => [],
 ];
 
-//region Constants normally defined in define_constants()
 if (!defined('ABSPATH'))                          define('ABSPATH', '/');
+if (!defined('MINUTE_IN_SECONDS'))                define('MINUTE_IN_SECONDS', 60);
+if (!defined('HOUR_IN_SECONDS'))                  define('HOUR_IN_SECONDS', 3600);
+
+//region Constants normally defined in define_constants()
+// A test that loads the real plugin file and calls define_constants() itself sets
+// $GLOBALS['mt2mba_skip_plugin_constants'] = true before requiring this bootstrap;
+// define() on an already-defined constant would warn, and the error handler above
+// turns warnings into thrown exceptions.
+if (empty($GLOBALS['mt2mba_skip_plugin_constants'])) {
 if (!defined('MT2MBA_VERSION'))                   define('MT2MBA_VERSION', 'test');
 if (!defined('MT2MBA_PLUGIN_URL'))                define('MT2MBA_PLUGIN_URL', 'http://test/');
 if (!defined('MT2MBA_PLUGIN_NAME'))               define('MT2MBA_PLUGIN_NAME', 'Markup by Attribute');
@@ -53,8 +61,22 @@ if (!defined('MT2MBA_REGULAR_PRICE'))             define('MT2MBA_REGULAR_PRICE',
 if (!defined('MT2MBA_SALE_PRICE'))                define('MT2MBA_SALE_PRICE', 'sale_price');
 if (!defined('MT2MBA_PRODUCT_MARKUP_DESC_BEG'))   define('MT2MBA_PRODUCT_MARKUP_DESC_BEG', '<span id="mbainfo">');
 if (!defined('MT2MBA_PRODUCT_MARKUP_DESC_END'))   define('MT2MBA_PRODUCT_MARKUP_DESC_END', '</span>');
-if (!defined('MINUTE_IN_SECONDS'))                define('MINUTE_IN_SECONDS', 60);
-if (!defined('HOUR_IN_SECONDS'))                  define('HOUR_IN_SECONDS', 3600);
+if (!defined('MT2MBA_INTERNAL_PRECISION'))        define('MT2MBA_INTERNAL_PRECISION', 6);
+if (!defined('MT2MBA_DEFAULT_MAX_VARIATIONS'))    define('MT2MBA_DEFAULT_MAX_VARIATIONS', 50);
+if (!defined('MT2MBA_MARKUP_NAME_PATTERN_ADD'))       define('MT2MBA_MARKUP_NAME_PATTERN_ADD', '(Add %s)');
+if (!defined('MT2MBA_MARKUP_NAME_PATTERN_SUBTRACT'))  define('MT2MBA_MARKUP_NAME_PATTERN_SUBTRACT', '(Subtract %s)');
+
+// Settings-derived constants — defaults matching the Settings class, so tests
+// can load the real Utility\General instead of stubbing it
+if (!defined('MT2MBA_DESC_BEHAVIOR'))             define('MT2MBA_DESC_BEHAVIOR', 'append');
+if (!defined('MT2MBA_DROPDOWN_BEHAVIOR'))         define('MT2MBA_DROPDOWN_BEHAVIOR', 'add');
+if (!defined('MT2MBA_INCLUDE_ATTRB_NAME'))        define('MT2MBA_INCLUDE_ATTRB_NAME', 'no');
+if (!defined('MT2MBA_HIDE_BASE_PRICE'))           define('MT2MBA_HIDE_BASE_PRICE', 'no');
+if (!defined('MT2MBA_SALE_PRICE_MARKUP'))         define('MT2MBA_SALE_PRICE_MARKUP', 'yes');
+if (!defined('MT2MBA_ROUND_MARKUP'))              define('MT2MBA_ROUND_MARKUP', 'no');
+if (!defined('MT2MBA_MAX_VARIATIONS'))            define('MT2MBA_MAX_VARIATIONS', 50);
+if (!defined('MT2MBA_CURRENCY_SYMBOL'))           define('MT2MBA_CURRENCY_SYMBOL', '$');
+}
 //endregion
 
 //region WordPress core stubs
@@ -181,6 +203,11 @@ function wc_format_decimal($number, $dp = false, $trim_zeros = false) {
 function wc_price($price, $args = []) { return '$' . number_format((float) $price, 2); }
 function wc_get_price_decimals() { return 2; }
 function wc_format_localized_decimal($value) { return $value; }
+function get_woocommerce_currency() { return $GLOBALS['mt2mba_stub']['currency'] ?? 'USD'; }
+function get_woocommerce_currency_symbol($currency = '') { return $GLOBALS['mt2mba_stub']['currency_symbol'] ?? '&#36;'; }
+
+// Settings extends this but calls none of its methods
+class WC_Settings_API {}
 //endregion
 
 //region Fake wpdb — records every SQL statement for assertions

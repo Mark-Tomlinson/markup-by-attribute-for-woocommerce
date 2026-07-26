@@ -69,8 +69,6 @@ class PriceSetHandler extends PriceMarkupHandler {
 	 * @param array  $variations  List of variation IDs
 	 */
 	public function processProductMarkups($bulk_action, $data, $product_id, $variations): void {
-		global $mt2mba_utility;
-
 		// If the price was blanked out (non-numeric), clean up and stop
 		if (!is_numeric($this->base_price)) {
 			$this->removeVariationPrices($product_id, $variations);
@@ -142,7 +140,7 @@ class PriceSetHandler extends PriceMarkupHandler {
 			}
 
 			// Bulk-fetch all variation descriptions in a single query
-			global $wpdb, $mt2mba_utility;
+			global $wpdb;
 			$variation_ids = array_map('intval', $variations);
 			$id_placeholders = implode(',', array_fill(0, count($variation_ids), '%d'));
 			$descriptions = $wpdb->get_results($wpdb->prepare(
@@ -168,7 +166,7 @@ class PriceSetHandler extends PriceMarkupHandler {
 				} else {
 					$updates[] = [
 						'id'          => (int) $row->post_id,
-						'description' => $mt2mba_utility->removeBracketedString(
+						'description' => Utility\General::removeBracketedString(
 							MT2MBA_PRODUCT_MARKUP_DESC_BEG,
 							MT2MBA_PRODUCT_MARKUP_DESC_END,
 							$row->meta_value
@@ -220,7 +218,6 @@ class PriceSetHandler extends PriceMarkupHandler {
 	 * @return array                Markup table indexed by [taxonomy][term_slug] with markup/description data
 	 */
 	protected function buildMarkupTable($attribute_data, $product_id): array {
-		global $mt2mba_utility;
 		$markup_table = [];
 
 		foreach ($attribute_data as $taxonomy => $data) {
@@ -256,7 +253,7 @@ class PriceSetHandler extends PriceMarkupHandler {
 						// Add description if not ignored (for both regular and sale prices)
 						if (MT2MBA_DESC_BEHAVIOR !== "ignore") {
 							$markup_table[$taxonomy][$term->slug]['description'] =
-								$mt2mba_utility->formatVariationMarkupDescription(
+								Utility\General::formatVariationMarkupDescription(
 									(string) $markup_value,
 									$attrb_label,
 									$term->name
@@ -340,15 +337,13 @@ class PriceSetHandler extends PriceMarkupHandler {
 	 * @return	string							Complete variation description
 	 */
 	protected function buildVariationDescription($current_description, $base_price_description, $markup_description, $variation_price): string {
-		global $mt2mba_utility;
-
 		if ($this->price_type === MT2MBA_REGULAR_PRICE) {
 			// Build new description for regular prices and reapply markup operations
 			$description = "";
 
 			// Preserve existing non-markup description content unless overwriting
 			if (MT2MBA_DESC_BEHAVIOR !== "overwrite") {
-				$description = $mt2mba_utility->removeBracketedString(
+				$description = Utility\General::removeBracketedString(
 					MT2MBA_PRODUCT_MARKUP_DESC_BEG,
 					MT2MBA_PRODUCT_MARKUP_DESC_END,
 					$current_description

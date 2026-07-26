@@ -16,17 +16,11 @@
  * expect red field border and no save).
  */
 require __DIR__ . '/bootstrap.php';
+require __DIR__ . '/../src/utility/general.php';
 require __DIR__ . '/../src/backend/term.php';
 
 use mt2Tech\MarkupByAttribute\Backend\Term;
 
-$GLOBALS['mt2mba_utility'] = new class {
-	public function stripMarkupAnnotation($str) { return $str; }
-	public function validateMarkupValue($value) { return false; }	// everything is invalid
-	public function sanitizeMarkupForStorage($value) { return $value; }
-	public function addMarkupToName($name, $markup, $neg) { return $name; }
-	public function addMarkupToTermDescription($desc, $markup, $neg) { return $desc; }
-};
 $GLOBALS['mt2mba_stub']['get_term'] = function ($term_id) {
 	$term = new WP_Term();
 	$term->term_id = $term_id;

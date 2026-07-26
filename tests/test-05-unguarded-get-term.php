@@ -5,17 +5,11 @@
  * dereferencing $term->taxonomy on a non-WP_Term.
  */
 require __DIR__ . '/bootstrap.php';
+require __DIR__ . '/../src/utility/general.php';
 require __DIR__ . '/../src/backend/term.php';
 
 use mt2Tech\MarkupByAttribute\Backend\Term;
 
-$GLOBALS['mt2mba_utility'] = new class {
-	public function stripMarkupAnnotation($str) { return $str; }
-	public function validateMarkupValue($value) { return $value; }
-	public function sanitizeMarkupForStorage($value) { return $value; }
-	public function addMarkupToName($name, $markup, $neg) { return $name; }
-	public function addMarkupToTermDescription($desc, $markup, $neg) { return $desc; }
-};
 
 $term_component = Term::get_instance();
 $_POST = ['term_markup' => '5.00', '_wpnonce' => 'testnonce'];

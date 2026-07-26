@@ -140,6 +140,33 @@ function define_constants(): void {
 	// Price type constants (Used by WooCommerce, do not translate)
 	define('MT2MBA_REGULAR_PRICE', 'regular_price');
 	define('MT2MBA_SALE_PRICE', 'sale_price');
+
+	// Settings-derived constants; defaults come from the Settings class.
+	// Requires WooCommerce to be loaded — safe here, mt2mba_main() runs on woocommerce_init.
+	$settings = Backend\Settings::get_instance();
+	define('MT2MBA_DESC_BEHAVIOR', get_option('mt2mba_desc_behavior', $settings->desc_behavior));
+	define('MT2MBA_DROPDOWN_BEHAVIOR', get_option('mt2mba_dropdown_behavior', $settings->dropdown_behavior));
+	define('MT2MBA_INCLUDE_ATTRB_NAME', get_option('mt2mba_include_attrb_name', $settings->include_attrb_name));
+	define('MT2MBA_HIDE_BASE_PRICE', get_option('mt2mba_hide_base_price', $settings->hide_base_price));
+	define('MT2MBA_SALE_PRICE_MARKUP', get_option('mt2mba_sale_price_markup', $settings->sale_price_markup));
+	define('MT2MBA_ROUND_MARKUP', get_option('mt2mba_round_markup', $settings->round_markup));
+	define('MT2MBA_MAX_VARIATIONS', get_option('mt2mba_max_variations', $settings->max_variations));
+	define('MT2MBA_CURRENCY_SYMBOL', html_entity_decode(get_woocommerce_currency_symbol(get_woocommerce_currency())));
+}
+
+/**
+ * Stamp the schema version on first install
+ *
+ * Marks a fresh install as current so mt2mba_run_upgrades() correctly skips
+ * upgrade modules that predate it. Must run after define_constants() and
+ * before mt2mba_run_upgrades().
+ *
+ * @since 4.7.0
+ */
+function mt2mba_stamp_schema_version(): void {
+	if (get_option('mt2mba_db_version', false) === false) {
+		update_option('mt2mba_db_version', MT2MBA_SCHEMA_VERSION, false);
+	}
 }
 
 /**
@@ -236,9 +263,8 @@ function mt2mba_main(): void {
 		dirname(plugin_basename(__FILE__)) . '/languages'
 	);
 
-	// Instantiate utility class (global for backward compatibility)
-	global $mt2mba_utility;
-	$mt2mba_utility = Utility\General::get_instance();
+	// Mark fresh installs as schema-current before the upgrade runner looks
+	mt2mba_stamp_schema_version();
 
 	// Initialize context-specific components
 	if (is_admin()) {

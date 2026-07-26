@@ -1,5 +1,6 @@
 <?php
 namespace mt2Tech\MarkupByAttribute\Frontend;
+use mt2Tech\MarkupByAttribute\Utility as Utility;
 
 /**
  * Frontend dropdown options handler for WooCommerce variation attributes
@@ -122,9 +123,6 @@ class Options {
 			$strip_markups = true;
 		}
 
-		// Set globals
-		global $mt2mba_utility;
-
 		// Extract remaining content from $args
 		$product				= $args['product'];
 		$name					= $args['name'] ? $args['name'] : 'attribute_' . sanitize_title($attribute);
@@ -161,17 +159,17 @@ class Options {
 					if (in_array($term->slug, $options)) {
 						if ($strip_markups) {
 							// Remove markup annotations for zero-priced products
-							$term_name = $mt2mba_utility->stripMarkupAnnotation($term->name);
+							$term_name = Utility\General::stripMarkupAnnotation($term->name);
 							$markup = '';
 						} else {
 							// Get and format markup for display in dropdown
-							$term_name = $mt2mba_utility->sanitizeMarkupForDisplay($term->name);
+							$term_name = Utility\General::sanitizeMarkupForDisplay($term->name);
 							$raw_markup = get_metadata('post', $product->get_id(), 'mt2mba_' . $term->term_id . '_markup_amount', TRUE);
 
 							// Sanitize and format markup for display
 							if ($raw_markup) {
-								$sanitized_markup = $mt2mba_utility->sanitizeMarkupForDisplay($raw_markup);
-								$markup = $mt2mba_utility->formatOptionMarkup($sanitized_markup);
+								$sanitized_markup = Utility\General::sanitizeMarkupForDisplay($raw_markup);
+								$markup = Utility\General::formatOptionMarkup($sanitized_markup);
 							} else {
 								$markup = '';
 							}

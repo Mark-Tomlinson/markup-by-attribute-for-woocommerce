@@ -8,15 +8,13 @@
  * for a variation-less product, but no IN-clause query may be issued.
  */
 require __DIR__ . '/bootstrap.php';
+require __DIR__ . '/../src/utility/general.php';
 require __DIR__ . '/../src/backend/handlers/pricemarkuphandler.php';
 require __DIR__ . '/../src/backend/handlers/pricesethandler.php';
 
 use mt2Tech\MarkupByAttribute\Backend\Handlers\PriceSetHandler;
 
 $GLOBALS['wpdb'] = new MT2MBA_Fake_WPDB();
-$GLOBALS['mt2mba_utility'] = new class {
-	public function removeBracketedString($beg, $end, $str) { return $str; }
-};
 
 // Blanked-out regular price on a product with zero variations
 $handler = new PriceSetHandler('variable_regular_price', ['value' => ''], 99, [], true);

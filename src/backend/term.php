@@ -142,9 +142,8 @@ class Term {
 		// previous callback added, including other plugins' columns. 🌸
 		add_filter("manage_{$taxonomy}_custom_column", function ($string, $column_name, $term_id) {
 			if ($column_name == 'markup') {
-				global $mt2mba_utility;
 				$markup = get_term_meta($term_id, 'mt2mba_markup', true);
-				$string .= esc_html($mt2mba_utility->sanitizeMarkupForDisplay(wc_format_localized_decimal($markup)));
+				$string .= esc_html(Utility\General::sanitizeMarkupForDisplay(wc_format_localized_decimal($markup)));
 			}
 			return $string;
 		}, 10, 3);
@@ -243,12 +242,10 @@ class Term {
 		// processed. (A permanent define() here skipped all terms after the first.) 🌸
 		if (self::$is_rewriting_term) return;
 
-		global $mt2mba_utility;
-
 		// Clean slate: remove any existing markup annotations from term data
 		// This ensures we don't duplicate markup text when reapplying
-		$name = $mt2mba_utility->stripMarkupAnnotation($term->name);
-		$description = $mt2mba_utility->stripMarkupAnnotation($term->description);
+		$name = Utility\General::stripMarkupAnnotation($term->name);
+		$description = Utility\General::stripMarkupAnnotation($term->description);
 
 		// Clear existing markup metadata first (will be re-added if validation passes)
 		delete_term_meta($term_id, 'mt2mba_markup');
@@ -257,12 +254,12 @@ class Term {
 		$raw_markup = sanitize_text_field($_POST['term_markup']);
 
 		// Validate markup using centralized validation
-		$validated_markup = $mt2mba_utility->validateMarkupValue($raw_markup);
+		$validated_markup = Utility\General::validateMarkupValue($raw_markup);
 
 		// Only proceed if markup validation passed and isn't empty
 		if ($validated_markup !== false && $validated_markup !== '') {
 			// Final sanitization pass before database storage
-			$markup = $mt2mba_utility->sanitizeMarkupForStorage($validated_markup);
+			$markup = Utility\General::sanitizeMarkupForStorage($validated_markup);
 
 			// Save markup to term metadata table
 			update_term_meta($term_id, 'mt2mba_markup', $markup);
@@ -278,12 +275,12 @@ class Term {
 			// Conditionally modify term name based on attribute settings
 			// e.g., "Blue" becomes "Blue (+$5.00)" if name rewriting is enabled
 			if ($rewrite_name_flag == 'yes') {
-				$name = $mt2mba_utility->addMarkupToName($name, $markup, $is_negative);
+				$name = Utility\General::addMarkupToName($name, $markup, $is_negative);
 			}
 
 			// Conditionally modify term description for markup visibility
 			if ($rewrite_desc_flag == 'yes') {
-				$description = $mt2mba_utility->addMarkupToTermDescription($description, $markup, $is_negative);
+				$description = Utility\General::addMarkupToTermDescription($description, $markup, $is_negative);
 			}
 		}
 		// Invalid markup is silently discarded here. The user-facing rejection

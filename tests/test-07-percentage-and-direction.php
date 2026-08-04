@@ -25,6 +25,7 @@
  */
 require __DIR__ . '/bootstrap.php';
 require __DIR__ . '/../src/utility/general.php';
+require __DIR__ . '/../src/backend/handlers/bulkmetaio.php';
 require __DIR__ . '/../src/backend/handlers/pricemarkuphandler.php';
 require __DIR__ . '/../src/backend/handlers/pricesethandler.php';
 require __DIR__ . '/../src/backend/handlers/priceupdatehandler.php';

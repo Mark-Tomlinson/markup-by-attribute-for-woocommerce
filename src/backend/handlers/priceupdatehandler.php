@@ -15,6 +15,17 @@ use mt2Tech\MarkupByAttribute\Utility as Utility;
  * @since     4.0.0
  */
 class PriceUpdateHandler extends PriceMarkupHandler {
+	//region PROPERTIES
+	/**
+	 * The raw bulk-edit data, kept because calculateNewBasePrice() needs the
+	 * value exactly as WooCommerce received it — it runs its own locale-aware
+	 * normalization, which wc_format_decimal() would have already flattened.
+	 *
+	 * @var array
+	 */
+	private $data;
+	//endregion
+
 	//region INITIALIZATION
 	/**
 	 * Initialize PriceUpdateHandler with update information
@@ -22,15 +33,23 @@ class PriceUpdateHandler extends PriceMarkupHandler {
 	 * Extracts the price change amount from the bulk action data.
 	 *
 	 * @since 4.0.0
-	 * @param string $bulk_action The bulk action being performed
-	 * @param array  $data        The update data (contains 'value' key with change amount)
-	 * @param int    $product_id  The ID of the product
-	 * @param array  $variations  List of variation IDs
+	 * @param string $bulk_action      The bulk action being performed
+	 * @param array  $data             The update data (contains 'value' key with change amount)
+	 * @param int    $product_id       The ID of the product
+	 * @param array  $variations       List of variation IDs
+	 * @param bool   $owns_transaction False when the caller manages the transaction
 	 */
-	public function __construct($bulk_action, $data, $product_id, $variations) {
+	public function __construct($bulk_action, $data, $product_id, $variations, $owns_transaction = true) {
+		$this->data = $data;
 		// Convert localized decimal input to standardized format using WooCommerce
 		$cleaned_value = wc_format_decimal($data["value"], false, true);
-		parent::__construct($bulk_action, $product_id, is_numeric($cleaned_value) ? (float) $cleaned_value : 0);
+		parent::__construct(
+			$bulk_action,
+			$product_id,
+			$variations,
+			is_numeric($cleaned_value) ? (float) $cleaned_value : 0,
+			$owns_transaction
+		);
 	}
 	//endregion
 
@@ -43,14 +62,10 @@ class PriceUpdateHandler extends PriceMarkupHandler {
 	 * have markup-by-attribute metadata (base price stored).
 	 *
 	 * @since 4.0.0
-	 * @param string $bulk_action The bulk action being performed
-	 * @param array  $data        The update data
-	 * @param int    $product_id  The ID of the product
-	 * @param array  $variations  List of variation IDs
 	 */
-	public function processProductMarkups ($bulk_action, $data, $product_id, $variations): void {
+	public function processProductMarkups(): void {
 		// If base price metadata is present, that means the product contains variables with attribute pricing.
-		$base_price = get_metadata("post", $product_id, "mt2mba_base_{$this->price_type}", true);
+		$base_price = get_metadata("post", $this->product_id, "mt2mba_base_{$this->price_type}", true);
 		if ($base_price) {
 			// reapply a new base price according to the bulk action.
 			// Bulk action could be any of
@@ -59,14 +74,22 @@ class PriceUpdateHandler extends PriceMarkupHandler {
 			//	* variable_sale_price_increase
 			//	* variable_sale_price_decrease
 			$new_data = [];
-			$new_data["value"] = $this->calculateNewBasePrice($bulk_action, $data["value"], $base_price);
+			$new_data["value"] = $this->calculateNewBasePrice($this->bulk_action, $this->data["value"], $base_price);
 			// And then loop back through changing the bulk action type to one of the two 'set price' options.
 			// This will reset the prices on all variations to the new base regular/sale price plus the
 			// attribute markup.
 			//	* variable_regular_price
 			//	* variable_sale_price
-			$handler = new PriceSetHandler("variable_{$this->price_type}", $new_data, $product_id, $variations);
-			$handler->processProductMarkups ($bulk_action, $data, $product_id, $variations);
+			// Transaction ownership is forwarded: if a caller wrapped us in its own
+			// transaction, the handler we delegate to must not start a nested one.
+			$handler = new PriceSetHandler(
+				"variable_{$this->price_type}",
+				$new_data,
+				$this->product_id,
+				$this->variations,
+				$this->owns_transaction
+			);
+			$handler->processProductMarkups();
 		}
 	}
 	//endregion

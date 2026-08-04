@@ -232,15 +232,15 @@ class Product {
 
 		} elseif ($bulk_action == "delete_all") {
 			// Delete all markup metadata for product
-			$handler = new Handlers\MarkupDeleteHandler("", [], $product_id, []);
+			$handler = new Handlers\MarkupDeleteHandler($product_id);
 
 		} else {
 			// If none of the above, leave and don't execute $handler
 			return;
 		}
 
-		// Invoke the processProductMarkups() function from the class that was decided above
-		$handler->processProductMarkups((string) $bulk_action, (array) $data, (string) $product_id, (array) $variations);
+		// Each handler received everything it needs above; the run takes no arguments
+		$handler->processProductMarkups();
 
 		// The handlers above write meta directly via $wpdb (DELETE/INSERT), which bypasses
 		// WordPress's object cache. WooCommerce syncs the parent after this hook, but never
@@ -349,13 +349,13 @@ class Product {
 		$base_regular_price = get_post_meta($product_id, 'mt2mba_base_regular_price', true);
 		$data = ['value' => $base_regular_price];
 		$handler = new Handlers\PriceSetHandler('variable_regular_price', $data, $product_id, $variations, false);
-		$handler->processProductMarkups('variable_regular_price', $data, $product_id, $variations);
+		$handler->processProductMarkups();
 
 		$base_sale_price = get_post_meta($product_id, 'mt2mba_base_sale_price', true);
 		if (!empty($base_sale_price)) {
 			$data = ['value' => $base_sale_price];
 			$handler = new Handlers\PriceSetHandler('variable_sale_price', $data, $product_id, $variations, false);
-			$handler->processProductMarkups('variable_sale_price', $data, $product_id, $variations);
+			$handler->processProductMarkups();
 		}
 	}
 

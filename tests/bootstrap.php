@@ -40,7 +40,14 @@ $GLOBALS['mt2mba_stub'] = [
 	'nonce_ok'     => true,   // wp_verify_nonce()
 	'taxonomy_ids' => [],     // wc_attribute_taxonomy_id_by_name() map
 	'get_term'     => null,   // callable($term_id)
+	// Rows returned by $wpdb->get_results(). Either a plain row list (every query
+	// gets it) or a callable($sql) — see t_wpdb_map() for the usual case where two
+	// SELECTs in one code path must return different rows.
 	'wpdb_results' => [],
+	'products'     => [],     // product_id => MT2MBA_Fake_Product
+	'terms'        => [],     // taxonomy => [MT2MBA_Fake_Term, ...]
+	'attrb_labels' => [],     // taxonomy => display label
+	'term_meta_in' => [],     // term_id => [meta_key => value]  (get_term_meta reads)
 ];
 
 if (!defined('ABSPATH'))                          define('ABSPATH', '/');
@@ -63,6 +70,7 @@ if (!defined('MT2MBA_REGULAR_PRICE'))             define('MT2MBA_REGULAR_PRICE',
 if (!defined('MT2MBA_SALE_PRICE'))                define('MT2MBA_SALE_PRICE', 'sale_price');
 if (!defined('MT2MBA_PRODUCT_MARKUP_DESC_BEG'))   define('MT2MBA_PRODUCT_MARKUP_DESC_BEG', '<span id="mbainfo">');
 if (!defined('MT2MBA_PRODUCT_MARKUP_DESC_END'))   define('MT2MBA_PRODUCT_MARKUP_DESC_END', '</span>');
+if (!defined('MT2MBA_PRICE_META'))                define('MT2MBA_PRICE_META', 'Product price ');
 if (!defined('MT2MBA_INTERNAL_PRECISION'))        define('MT2MBA_INTERNAL_PRECISION', 6);
 if (!defined('MT2MBA_DEFAULT_MAX_VARIATIONS'))    define('MT2MBA_DEFAULT_MAX_VARIATIONS', 50);
 if (!defined('MT2MBA_MARKUP_NAME_PATTERN_ADD'))       define('MT2MBA_MARKUP_NAME_PATTERN_ADD', '(Add %s)');
@@ -87,6 +95,7 @@ function esc_html($text) { return htmlspecialchars((string) $text, ENT_QUOTES); 
 function esc_attr($text) { return htmlspecialchars((string) $text, ENT_QUOTES); }
 function esc_url($url) { return $url; }
 function wp_kses_post($text) { return $text; }
+function wp_kses($text, $allowed_html = [], $allowed_protocols = []) { return $text; }
 function wp_unslash($value) { return $value; }
 function absint($n) { return abs((int) $n); }
 
@@ -145,7 +154,13 @@ function get_term($term_id) {
 	$fn = $GLOBALS['mt2mba_stub']['get_term'];
 	return $fn ? $fn($term_id) : null;
 }
-function get_term_meta($term_id, $key = '', $single = false) { return ''; }
+function get_term_meta($term_id, $key = '', $single = false) {
+	return $GLOBALS['mt2mba_stub']['term_meta_in'][$term_id][$key] ?? '';
+}
+function get_terms($args = []) {
+	$taxonomy = is_array($args) ? ($args['taxonomy'] ?? '') : $args;
+	return $GLOBALS['mt2mba_stub']['terms'][$taxonomy] ?? [];
+}
 function update_term_meta($term_id, $key, $value) {
 	$GLOBALS['mt2mba_test']['term_meta'][] = ['update', $term_id, $key, $value];
 	return true;
@@ -240,6 +255,34 @@ function get_woocommerce_currency_symbol($currency = '') { return $GLOBALS['mt2m
 
 // Settings extends this but calls none of its methods
 class WC_Settings_API {}
+
+/**
+ * Minimal stand-ins for the WooCommerce product/attribute objects that
+ * PriceSetHandler::getAttributeData() walks. Only the two methods it calls.
+ */
+class MT2MBA_Fake_Attribute {
+	private $name;
+	private $is_taxonomy;
+	public function __construct($name, $is_taxonomy = true) {
+		$this->name = $name;
+		$this->is_taxonomy = $is_taxonomy;
+	}
+	public function is_taxonomy() { return $this->is_taxonomy; }
+	public function get_name() { return $this->name; }
+}
+class MT2MBA_Fake_Product {
+	private $attributes;
+	public function __construct(array $attributes) { $this->attributes = $attributes; }
+	public function get_attributes() { return $this->attributes; }
+}
+
+function wc_get_product($product_id) {
+	return $GLOBALS['mt2mba_stub']['products'][$product_id] ?? null;
+}
+function wc_attribute_label($taxonomy) {
+	return $GLOBALS['mt2mba_stub']['attrb_labels'][$taxonomy]
+		?? ucfirst(str_replace('pa_', '', $taxonomy));
+}
 //endregion
 
 //region Fake wpdb — records every SQL statement for assertions
@@ -259,14 +302,72 @@ class MT2MBA_Fake_WPDB {
 			return $m[0] === '%d' ? (string) (int) $val : "'" . addslashes((string) $val) . "'";
 		}, $query);
 	}
+	public function esc_like($text) {
+		return addcslashes((string) $text, '_%\\');
+	}
 	public function get_results($query) {
 		$this->queries[] = $query;
-		return $GLOBALS['mt2mba_stub']['wpdb_results'];
+		// A callable lets one code path's several SELECTs return different rows;
+		// a plain array keeps the simple "same rows for everything" case terse.
+		$results = $GLOBALS['mt2mba_stub']['wpdb_results'];
+		return is_callable($results) ? $results($query) : $results;
 	}
 	public function query($query) {
 		$this->queries[] = $query;
 		return 0;
 	}
+}
+//endregion
+
+//region Fixture helpers
+/**
+ * Build a wpdb_results callable from [sql_substring => rows]. First match wins,
+ * so order the map most-specific-first; anything unmatched returns no rows.
+ */
+function t_wpdb_map(array $map): callable {
+	return function ($sql) use ($map) {
+		foreach ($map as $needle => $rows) {
+			if (strpos($sql, $needle) !== false) return $rows;
+		}
+		return [];
+	};
+}
+
+/** A postmeta row as $wpdb->get_results() hands it back (stdClass, string values). */
+function t_meta_row($post_id, $meta_key, $meta_value) {
+	return (object) [
+		'post_id'    => (string) $post_id,
+		'meta_key'   => $meta_key,
+		'meta_value' => (string) $meta_value,
+	];
+}
+
+/** A term as get_terms() hands it back, with its mt2mba_markup registered. */
+function t_term($term_id, $slug, $name, $markup = '') {
+	$term = new WP_Term();
+	$term->term_id = $term_id;
+	$term->slug    = $slug;
+	$term->name    = $name;
+	if ($markup !== '') {
+		$GLOBALS['mt2mba_stub']['term_meta_in'][$term_id]['mt2mba_markup'] = $markup;
+	}
+	return $term;
+}
+
+/**
+ * Register a variable product: $taxonomies is [taxonomy => [WP_Term, ...]].
+ * Wires up wc_get_product(), get_terms() and wc_attribute_label() together.
+ */
+function t_product($product_id, array $taxonomies, array $labels = []) {
+	$attributes = [];
+	foreach ($taxonomies as $taxonomy => $terms) {
+		$attributes[$taxonomy] = new MT2MBA_Fake_Attribute($taxonomy);
+		$GLOBALS['mt2mba_stub']['terms'][$taxonomy] = $terms;
+		if (isset($labels[$taxonomy])) {
+			$GLOBALS['mt2mba_stub']['attrb_labels'][$taxonomy] = $labels[$taxonomy];
+		}
+	}
+	$GLOBALS['mt2mba_stub']['products'][$product_id] = new MT2MBA_Fake_Product($attributes);
 }
 //endregion
 

@@ -1,0 +1,10 @@
+# Line endings: LF everywhere, in the repository and in every working copy.
+#
+# This repo is edited on Windows but served from a Samba share to two Linux
+# WordPress hosts and shipped to wp.org, so a per-machine core.autocrlf setting
+# was giving three different answers. Pinning eol=lf here overrides autocrlf for
+# this repo: every checkout, on every platform, gets identical bytes.
+* text=auto eol=lf
+
+# Compiled translation catalogs — never touch these
+*.mo binary

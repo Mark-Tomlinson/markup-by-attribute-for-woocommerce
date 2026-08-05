@@ -184,16 +184,17 @@ class Notices {
 					),
 					admin_url()
 				);
-				if (!get_option("mt2mba_dismissed_{$dismiss_option}")) {
-					?><div
-						class="notice mt2mba-notice notice-<?php echo esc_attr($type);
-						if ($dismiss_option) {
-							echo ' is-dismissible" data-dismiss-url="' . esc_url($dismiss_url);
-						} ?>">
-						<strong><em><?php echo esc_html(MT2MBA_PLUGIN_NAME . ' ' . $type); ?></em></strong>
-						<p><?php echo wp_kses_post($message); ?></p>
-					</div><?php
-				}	//	End if
+				// No second dismissal check here: notice() already returned early
+				// for a dismissed notice, and handleNoticeDismissal() calls
+				// wp_die(), so no request both dismisses a notice and renders one.
+				?><div
+					class="notice mt2mba-notice notice-<?php echo esc_attr($type);
+					if ($dismiss_option) {
+						echo ' is-dismissible" data-dismiss-url="' . esc_url($dismiss_url);
+					} ?>">
+					<strong><em><?php echo esc_html(MT2MBA_PLUGIN_NAME . ' ' . $type); ?></em></strong>
+					<p><?php echo wp_kses_post($message); ?></p>
+				</div><?php
 			}	//	End function
 		);
 	}

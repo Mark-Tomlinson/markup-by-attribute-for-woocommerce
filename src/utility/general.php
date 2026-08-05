@@ -436,16 +436,9 @@ class General {
 		return sanitize_text_field($validated);
 	}
 
-	/**
-	 * Sanitize markup value for safe output display
-	 *
-	 * @param	string	$markup		Markup value to sanitize
-	 * @return	string				Sanitized markup value for display
-	 */
-	public static function sanitizeMarkupForDisplay(string $markup): string {
-		// Sanitize for HTML output
-		return esc_html(sanitize_text_field($markup));
-	}
+	// sanitizeMarkupForDisplay() lived here. It was esc_html(sanitize_text_field())
+	// — an output escaper with a sanitizer's name — and all three callers escaped
+	// its result again. Escaping now happens once, at each point of output.
 	//endregion
 
 }	//	End class MT2MBA_UTILITY_GENERAL

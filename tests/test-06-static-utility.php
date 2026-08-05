@@ -131,7 +131,8 @@ t_assert(General::validateMarkupValue('5%%') === false, 'validateMarkupValue rej
 
 t_assert(General::sanitizeMarkupForStorage('5.00') === '5', 'sanitizeMarkupForStorage validates then sanitizes');
 t_assert(General::sanitizeMarkupForStorage('abc') === '', 'sanitizeMarkupForStorage discards invalid input');
-t_assert(General::sanitizeMarkupForDisplay('<b>5</b>') === '5', 'sanitizeMarkupForDisplay strips tags');
+// sanitizeMarkupForDisplay() was removed in item 10 — it escaped rather than
+// sanitized, and every caller escaped again. See test-13.
 //endregion
 
 t_done();

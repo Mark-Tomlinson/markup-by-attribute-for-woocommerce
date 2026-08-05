@@ -143,7 +143,7 @@ class Term {
 		add_filter("manage_{$taxonomy}_custom_column", function ($string, $column_name, $term_id) {
 			if ($column_name == 'markup') {
 				$markup = get_term_meta($term_id, 'mt2mba_markup', true);
-				$string .= esc_html(Utility\General::sanitizeMarkupForDisplay(wc_format_localized_decimal($markup)));
+				$string .= esc_html(wc_format_localized_decimal($markup));
 			}
 			return $string;
 		}, 10, 3);
@@ -186,7 +186,7 @@ class Term {
 		<tr class="form-field">
 			<th scope="row" valign="top"><label for="term_markup"><?php echo esc_html($this->markup_label); ?></label></th>
 			<td>
-				<input type="text" placeholder="<?php echo esc_attr($this->placeholder); ?>" name="term_markup" id="term_edit_markup" value="<?php echo esc_attr($term_markup) ? esc_attr($term_markup) : ''; ?>">
+				<input type="text" placeholder="<?php echo esc_attr($this->placeholder); ?>" name="term_markup" id="term_edit_markup" value="<?php echo esc_attr($term_markup); ?>">
 				<p class="description"><?php echo esc_html($this->markup_description); ?></p>
 			</td>
 		</tr>

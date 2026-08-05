@@ -111,8 +111,6 @@ function define_constants(): void {
 	// WordPress-dependent paths and URLs
 	define('MT2MBA_PLUGIN_DIR', plugin_dir_path(__FILE__));
 	define('MT2MBA_PLUGIN_URL', plugin_dir_url(__FILE__));
-	define('MT2MBA_PLUGIN_BASENAME', plugin_basename(__FILE__));
-	define('MT2MBA_SITE_URL', get_bloginfo('wpurl'));
 
 	// Plugin version and compatibility
 	define('MT2MBA_VERSION', '4.6.3');

@@ -1,6 +1,5 @@
 <?php
 namespace mt2Tech\MarkupByAttribute\Backend\Handlers;
-use mt2Tech\MarkupByAttribute\Utility as Utility;
 
 /**
  * Abstract base class for markup-by-attribute product variation handling

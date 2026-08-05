@@ -157,21 +157,18 @@ class Options {
 				foreach ($terms as $term) {
 					// Only include terms that are actually used in this product's variations
 					if (in_array($term->slug, $options)) {
+						// Term names pass through raw, exactly as WooCommerce core does —
+						// the woocommerce_variation_option_name filter runs at output
+						// below, so the escaping has to happen after it, not here.
+						$markup = '';
 						if ($strip_markups) {
 							// Remove markup annotations for zero-priced products
 							$term_name = Utility\General::stripMarkupAnnotation($term->name);
-							$markup = '';
 						} else {
-							// Get and format markup for display in dropdown
-							$term_name = Utility\General::sanitizeMarkupForDisplay($term->name);
+							$term_name = $term->name;
 							$raw_markup = get_metadata('post', $product->get_id(), 'mt2mba_' . $term->term_id . '_markup_amount', TRUE);
-
-							// Sanitize and format markup for display
 							if ($raw_markup) {
-								$sanitized_markup = Utility\General::sanitizeMarkupForDisplay($raw_markup);
-								$markup = Utility\General::formatOptionMarkup($sanitized_markup);
-							} else {
-								$markup = '';
+								$markup = Utility\General::formatOptionMarkup($raw_markup);
 							}
 						}
 

@@ -91,8 +91,13 @@ if (!defined('MT2MBA_CURRENCY_SYMBOL'))           define('MT2MBA_CURRENCY_SYMBOL
 
 //region WordPress core stubs
 function __($text, $domain = null) { return $text; }
-function esc_html($text) { return htmlspecialchars((string) $text, ENT_QUOTES); }
-function esc_attr($text) { return htmlspecialchars((string) $text, ENT_QUOTES); }
+// WordPress escapes with double_encode = FALSE, so an already-encoded entity
+// passes through untouched ('&amp;' stays '&amp;', it does not become
+// '&amp;amp;'). A stub that double-encodes would invent double-escaping bugs
+// that cannot happen in production — and hide the fact that a genuinely
+// double-escaped pipeline looks correct in the browser.
+function esc_html($text) { return htmlspecialchars((string) $text, ENT_QUOTES, 'UTF-8', false); }
+function esc_attr($text) { return htmlspecialchars((string) $text, ENT_QUOTES, 'UTF-8', false); }
 function esc_url($url) { return $url; }
 function wp_kses_post($text) { return $text; }
 function wp_kses($text, $allowed_html = [], $allowed_protocols = []) { return $text; }
@@ -226,7 +231,10 @@ class WP_Meta_Query {
 function wc_attribute_taxonomy_id_by_name($name) {
 	return $GLOBALS['mt2mba_stub']['taxonomy_ids'][$name] ?? 0;
 }
-function wc_get_attribute_taxonomies() { return []; }
+function wc_get_attribute_taxonomies() {
+	// Objects with ->attribute_name; Term prefixes each with 'pa_'
+	return $GLOBALS['mt2mba_stub']['attribute_taxonomies'] ?? [];
+}
 function wc_get_price_decimal_separator() {
 	return $GLOBALS['mt2mba_stub']['decimal_separator'] ?? '.';
 }

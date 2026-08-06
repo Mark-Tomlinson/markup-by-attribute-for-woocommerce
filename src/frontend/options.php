@@ -11,7 +11,7 @@ use mt2Tech\MarkupByAttribute\Utility as Utility;
  *
  * @package   mt2Tech\MarkupByAttribute\Frontend
  * @author    Mark Tomlinson
- * @license   GPL-2.0+
+ * @license   GPL-3.0-or-later
  * @since     1.0.0
  */
 

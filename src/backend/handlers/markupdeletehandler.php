@@ -12,7 +12,7 @@ namespace mt2Tech\MarkupByAttribute\Backend\Handlers;
  *
  * @package   mt2Tech\MarkupByAttribute\Backend\Handlers
  * @author    Mark Tomlinson
- * @license   GPL-2.0+
+ * @license   GPL-3.0-or-later
  * @since     4.0.0
  */
 class MarkupDeleteHandler extends PriceMarkupHandler {

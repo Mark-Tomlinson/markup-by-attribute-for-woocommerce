@@ -10,7 +10,7 @@ use WC_Settings_API;
  *
  * @package   mt2Tech\MarkupByAttribute\Backend
  * @author    Mark Tomlinson
- * @license   GPL-2.0+
+ * @license   GPL-3.0-or-later
  * @since     2.0.0
  */
 

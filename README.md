@@ -64,7 +64,7 @@ Current translations: German, French, Italian, Polish, Swedish, Spanish
 
 ## License
 
-GPL v3 - see [LICENSE](https://www.gnu.org/licenses/gpl-3.0.html)
+GPL v3 or later - see [LICENSE](https://www.gnu.org/licenses/gpl-3.0.html)
 
 ## Donate
 

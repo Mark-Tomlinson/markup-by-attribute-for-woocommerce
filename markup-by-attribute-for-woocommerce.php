@@ -14,7 +14,12 @@ use Throwable;
  * @package   markup-by-attribute-for-woocommerce
  * @version   4.6.3
  * @author    Mark Tomlinson
- * @license   GPL-2.0+
+ * @license   GPL-3.0-or-later
+ *
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version. See the LICENSE file, or https://www.gnu.org/licenses/gpl-3.0.html
  */
 
 /**
@@ -25,7 +30,7 @@ use Throwable;
  * Author:                  MarkTomlinson
  * Contributors:            MarkTomlinson
  * Donate link:             https://www.paypal.me/MT2Dev/5
- * License:                 GPLv3
+ * License:                 GPLv3 or later
  * License URI:             https://www.gnu.org/licenses/gpl-3.0.html
  * Text Domain:             markup-by-attribute-for-woocommerce
  * Domain Path:             /languages

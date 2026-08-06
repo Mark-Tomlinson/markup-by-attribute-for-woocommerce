@@ -10,7 +10,7 @@ namespace mt2Tech\MarkupByAttribute\Utility\Upgrades;
  *
  * @package   mt2Tech\MarkupByAttribute\Utility\Upgrades
  * @author    Mark Tomlinson
- * @license   GPL-2.0+
+ * @license   GPL-3.0-or-later
  * @since     4.6.0
  */
 interface UpgradeInterface {

@@ -12,7 +12,7 @@ use WP_Meta_Query;
  *
  * @package   mt2Tech\MarkupByAttribute\Backend
  * @author    Mark Tomlinson
- * @license   GPL-2.0+
+ * @license   GPL-3.0-or-later
  * @since     1.0.0
  */
 class Term {
@@ -356,6 +356,12 @@ class Term {
 	* Handle markup column sorting
 	*/
 	public function handleMarkupColumnSort(object $term_query) {
+		// pre_get_terms fires on frontend term queries too, so a frontend request
+		// carrying ?orderby=markup would otherwise get its query vars rewritten.
+		// This class only registers in admin; the guard makes that a property of
+		// the code rather than of the caller.
+		if (!is_admin()) return;
+
 		// WP_Term_Query does not define a get() or a set() method,
 		// so the query_vars member must be manipulated directly
 		if (isset($_GET['orderby']) && 'markup' == sanitize_text_field(wp_unslash($_GET['orderby']))) {

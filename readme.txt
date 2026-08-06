@@ -7,7 +7,7 @@ Tags:					WooCommerce, Attribute, Price, Variation, Markup
 Author:					MarkTomlinson
 Contributors:			MarkTomlinson
 Donate link:			https://github.com/Mark-Tomlinson/markup-by-attribute-for-woocommerce/wiki/4.0_Donate
-License:				GPLv3
+License:				GPLv3 or later
 License URI:			https://www.gnu.org/licenses/gpl-3.0.html
 Version:                4.6.3
 Stable tag:             4.6.3

@@ -195,7 +195,7 @@ function clean_post_cache($post_id) {
 	$GLOBALS['mt2mba_test']['cache_flushes'][] = $post_id;
 }
 
-function is_admin() { return true; }
+function is_admin() { return $GLOBALS['mt2mba_stub']['is_admin'] ?? true; }
 function wp_doing_ajax() { return $GLOBALS['mt2mba_stub']['doing_ajax'] ?? (defined('DOING_AJAX') && DOING_AJAX); }
 function wp_die($message = '') { throw new RuntimeException('wp_die: ' . $message); }
 function load_plugin_textdomain($domain, $deprecated = false, $path = false) { return true; }

@@ -295,6 +295,7 @@ function wc_attribute_label($taxonomy) {
 
 //region Fake wpdb — records every SQL statement for assertions
 class MT2MBA_Fake_WPDB {
+	public $prefix = 'wp_';
 	public $postmeta = 'wp_postmeta';
 	public $options = 'wp_options';
 	public $queries = [];

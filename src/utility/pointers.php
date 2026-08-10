@@ -126,7 +126,9 @@ class Pointers {
 		wp_enqueue_script (
 			'mt2mba-pointer',
 			MT2MBA_PLUGIN_URL . 'src/js/jq-mt2mba-pointers.js',
-			array('wp-pointer')
+			array('wp-pointer'),
+			MT2MBA_VERSION,
+			true
 		);
 
 		// Add pointer options to script.

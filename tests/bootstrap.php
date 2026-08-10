@@ -32,6 +32,7 @@ $GLOBALS['mt2mba_test'] = [
 	'post_meta'    => [],   // recorded delete_post_meta calls
 	'term_updates' => [],   // recorded wp_update_term calls
 	'nonce_checks' => [],   // recorded wp_verify_nonce calls as [nonce, action]
+	'enqueued'     => [],   // recorded wp_enqueue_script/style calls, handle => args
 	'upgrade_log'  => [],   // execution order of fixture upgrade modules
 	'meta_reads'   => [],   // recorded get_metadata calls
 	'cache_flushes'=> [],   // recorded clean_post_cache calls
@@ -74,6 +75,7 @@ if (!defined('MT2MBA_PRODUCT_MARKUP_DESC_END'))   define('MT2MBA_PRODUCT_MARKUP_
 if (!defined('MT2MBA_PRICE_META'))                define('MT2MBA_PRICE_META', 'Product price ');
 if (!defined('MT2MBA_INTERNAL_PRECISION'))        define('MT2MBA_INTERNAL_PRECISION', 6);
 if (!defined('MT2MBA_DEFAULT_MAX_VARIATIONS'))    define('MT2MBA_DEFAULT_MAX_VARIATIONS', 50);
+if (!defined('MT2MBA_ADMIN_POINTER_PRIORITY'))    define('MT2MBA_ADMIN_POINTER_PRIORITY', 1000);
 if (!defined('MT2MBA_MARKUP_NAME_PATTERN_ADD'))       define('MT2MBA_MARKUP_NAME_PATTERN_ADD', '(Add %s)');
 if (!defined('MT2MBA_MARKUP_NAME_PATTERN_SUBTRACT'))  define('MT2MBA_MARKUP_NAME_PATTERN_SUBTRACT', '(Subtract %s)');
 
@@ -125,6 +127,12 @@ function do_action($hook, ...$args) {
 		call_user_func_array($callback, $args);
 	}
 }
+function apply_filters($hook, $value, ...$args) {
+	foreach ($GLOBALS['mt2mba_test']['actions'][$hook] ?? [] as $callback) {
+		$value = call_user_func_array($callback, array_merge([$value], $args));
+	}
+	return $value;
+}
 
 function get_option($key, $default = false) {
 	return $GLOBALS['mt2mba_test']['options'][$key] ?? $default;
@@ -162,6 +170,12 @@ function wp_verify_nonce($nonce, $action) {
 function wp_create_nonce($action = '') { return 'testnonce'; }
 function wp_nonce_field($action = '', $name = '_wpnonce') { echo ''; }
 function get_current_user_id() { return 7; }
+function get_user_meta($user_id, $key = '', $single = false) {
+	return $GLOBALS['mt2mba_stub']['user_meta'][$key] ?? '';
+}
+function get_current_screen() {
+	return (object) ['id' => $GLOBALS['mt2mba_stub']['screen_id'] ?? ''];
+}
 
 function get_term($term_id) {
 	$fn = $GLOBALS['mt2mba_stub']['get_term'];
@@ -211,8 +225,14 @@ function plugin_basename($file) { return basename($file); }
 function plugin_dir_path($file) { return rtrim(dirname($file), '/\\') . '/'; }
 function plugin_dir_url($file) { return 'http://test/'; }
 function get_bloginfo($show = '') { return 'http://test'; }
-function wp_enqueue_script(...$args) {}
-function wp_enqueue_style(...$args) {}
+// Recorded by handle so a test can assert the version and in-footer arguments,
+// which are invisible in a browser until a stale cached script bites someone
+function wp_enqueue_script($handle, $src = '', $deps = [], $ver = false, $in_footer = false) {
+	$GLOBALS['mt2mba_test']['enqueued']['script'][$handle] = compact('src', 'deps', 'ver', 'in_footer');
+}
+function wp_enqueue_style($handle, $src = '', $deps = [], $ver = false, $media = 'all') {
+	$GLOBALS['mt2mba_test']['enqueued']['style'][$handle] = compact('src', 'deps', 'ver', 'media');
+}
 function wp_localize_script($handle, $name, $data) { $GLOBALS["mt2mba_test"]["localized"][$name] = $data; return true; }
 function add_query_arg($args, $url = '') { return $url . '?' . http_build_query($args); }
 function admin_url($path = '') { return 'http://test/wp-admin/' . $path; }

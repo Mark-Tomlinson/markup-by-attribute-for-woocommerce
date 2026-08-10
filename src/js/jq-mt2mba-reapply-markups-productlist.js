@@ -21,6 +21,15 @@ jQuery(document).ready(function($) {
 	const urlParams = new URLSearchParams(window.location.search);
 	const bulkIds = urlParams.get('reapply_markups_ids');
 	if (bulkIds) {
+		// Drop the parameter before processing starts. It rides on WooCommerce's own
+		// redirect, so only this one key is removed and the rest of the query string
+		// (post_type, paged, filters) survives. Without this, a refresh -- or the back
+		// button, or a bookmarked URL -- silently repeats the entire bulk reprice.
+		urlParams.delete('reapply_markups_ids');
+		const query = urlParams.toString();
+		history.replaceState(null, '',
+			window.location.pathname + (query ? '?' + query : '') + window.location.hash);
+
 		const productIds = bulkIds.split(',');
 		processBulkReapply(productIds);
 	}
@@ -141,6 +150,14 @@ jQuery(document).ready(function($) {
 										$priceCell.html(rowResponse.data.price);
 									}
 								}
+							},
+							// The markup itself was already applied and saved before this
+							// request went out, so the row has to be handed back whether or
+							// not the fresh HTML arrives. When this lived in success() a
+							// failed refresh left the icon stuck on the checkmark with
+							// .processing still set, and that row could not be reapplied
+							// again without a page reload.
+							complete: function() {
 								setTimeout(function() {
 									$icon.removeClass('dashicons-yes').addClass('dashicons-update');
 									$link.removeClass('processing');
@@ -150,32 +167,30 @@ jQuery(document).ready(function($) {
 					}
 					if (callbacks.success) callbacks.success();
 				} else {
-					if ($link) {
-						$link.css('opacity', '1').css('color', 'red');
-						const $icon = $link.find('.dashicons');
-						$icon.removeClass('dashicons-update-spin').addClass('dashicons-warning');
-
-						setTimeout(function() {
-							$icon.removeClass('dashicons-warning').addClass('dashicons-update');
-							$link.removeClass('processing').css('color', '');
-						}, 3000);
-					}
+					showReapplyFailure($link);
 					if (callbacks.error) callbacks.error();
 				}
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
-				if ($link) {
-					$link.css('opacity', '1').css('color', 'red');
-					const $icon = $link.find('.dashicons');
-					$icon.removeClass('dashicons-update-spin').addClass('dashicons-warning');
-
-					setTimeout(function() {
-						$icon.removeClass('dashicons-warning').addClass('dashicons-update');
-						$link.removeClass('processing').css('color', '');
-					}, 3000);
-				}
+				showReapplyFailure($link);
 				if (callbacks.error) callbacks.error();
 			}
 		});
+	}
+
+	// Flag a failed reapply on the row icon, then hand the row back after a beat.
+	// Both failure paths -- the server reporting failure and the request itself
+	// erroring -- look identical to the user, so they share this.
+	function showReapplyFailure($link) {
+		if (!$link) return;
+
+		$link.css('opacity', '1').css('color', 'red');
+		const $icon = $link.find('.dashicons');
+		$icon.removeClass('dashicons-update-spin').addClass('dashicons-warning');
+
+		setTimeout(function() {
+			$icon.removeClass('dashicons-warning').addClass('dashicons-update');
+			$link.removeClass('processing').css('color', '');
+		}, 3000);
 	}
 });

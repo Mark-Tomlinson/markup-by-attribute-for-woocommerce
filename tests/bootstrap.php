@@ -31,13 +31,14 @@ $GLOBALS['mt2mba_test'] = [
 	'term_meta'    => [],   // recorded update/delete_term_meta calls
 	'post_meta'    => [],   // recorded delete_post_meta calls
 	'term_updates' => [],   // recorded wp_update_term calls
+	'nonce_checks' => [],   // recorded wp_verify_nonce calls as [nonce, action]
 	'upgrade_log'  => [],   // execution order of fixture upgrade modules
 	'meta_reads'   => [],   // recorded get_metadata calls
 	'cache_flushes'=> [],   // recorded clean_post_cache calls
 ];
 $GLOBALS['mt2mba_stub'] = [
 	'can'          => true,   // current_user_can()
-	'nonce_ok'     => true,   // wp_verify_nonce()
+	'nonce_ok'     => true,   // wp_verify_nonce(): bool, or callable($nonce, $action)
 	'taxonomy_ids' => [],     // wc_attribute_taxonomy_id_by_name() map
 	'get_term'     => null,   // callable($term_id)
 	// Rows returned by $wpdb->get_results(). Either a plain row list (every query
@@ -150,7 +151,14 @@ function delete_transient($key) {
 }
 
 function current_user_can($cap) { return $GLOBALS['mt2mba_stub']['can']; }
-function wp_verify_nonce($nonce, $action) { return $GLOBALS['mt2mba_stub']['nonce_ok']; }
+function wp_verify_nonce($nonce, $action) {
+	$GLOBALS['mt2mba_test']['nonce_checks'][] = [$nonce, $action];
+	// A callable can accept one action's nonce and reject another's. The plain
+	// boolean cannot tell the two apart, so it would pass a handler that
+	// verified the WRONG nonce for the operation it was performing.
+	$ok = $GLOBALS['mt2mba_stub']['nonce_ok'];
+	return is_callable($ok) ? $ok($nonce, $action) : $ok;
+}
 function wp_create_nonce($action = '') { return 'testnonce'; }
 function wp_nonce_field($action = '', $name = '_wpnonce') { echo ''; }
 function get_current_user_id() { return 7; }

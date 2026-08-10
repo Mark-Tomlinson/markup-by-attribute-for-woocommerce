@@ -199,114 +199,126 @@ class Term {
 	 * Save the term markup metadata
 	 */
 	public function handleTermMarkupSave(int $term_id) {
+		// Prevent infinite recursion: wp_update_term() (below) re-fires this hook for the
+		// same term. A request-scoped static flag — raised only around that call — catches
+		// the re-entrant pass while still letting every distinct term in a batch get
+		// processed. (A permanent define() here skipped all terms after the first.) 🌸
+		// Checked first because everything below it is a read the re-entrant pass has
+		// no reason to perform.
+		if (self::$is_rewriting_term) return;
+
 		// Sanity check
 		if (!isset($_POST['term_markup'])) return;
 
 		// Check if user has permission to edit terms
-		if (!current_user_can('manage_product_terms')) {
-			return;
-		}
+		if (!current_user_can('manage_product_terms')) return;
 
 		// Guard against a deleted term (race between hook fire and handler run)
 		// or a plugin conflict — get_term() can return null or WP_Error
 		$term = get_term($term_id);
 		if (!$term instanceof \WP_Term) return;
 
-		// WordPress nonce verification for CSRF protection
-		$taxonomy_name = sanitize_key($term->taxonomy);
+		if (!$this->verifyTermSaveNonce($term_id)) return;
 
-		// Determine operation type and validate appropriate nonce
-		$is_edit = isset($_POST['_wpnonce']);
-		$is_add = isset($_POST['mt2mba_term_nonce']);
-
-		if ($is_edit) {
-			// Edit operation - validate WordPress's standard edit nonce
-			if (!wp_verify_nonce($_POST['_wpnonce'], 'update-tag_' . $term_id)) {
-				// Invalid nonce for edit operation - reject
-				return;
-			}
-		} elseif ($is_add) {
-			// Add operation - validate our custom add nonce
-			if (!wp_verify_nonce($_POST['mt2mba_term_nonce'], 'mt2mba_add_term')) {
-				// Invalid nonce for add operation - reject
-				return;
-			}
-		} else {
-			// No valid nonce present - reject to prevent CSRF
-			return;
-		}
-
-		// Prevent infinite recursion: wp_update_term() (below) re-fires this hook for the
-		// same term. A request-scoped static flag — raised only around that call — catches
-		// the re-entrant pass while still letting every distinct term in a batch get
-		// processed. (A permanent define() here skipped all terms after the first.) 🌸
-		if (self::$is_rewriting_term) return;
-
-		// Clean slate: remove any existing markup annotations from term data
-		// This ensures we don't duplicate markup text when reapplying
-		$name = Utility\General::stripMarkupAnnotation($term->name);
-		$description = Utility\General::stripMarkupAnnotation($term->description);
-
-		// Clear existing markup metadata first (will be re-added if validation passes)
+		// Clear existing markup metadata first (re-added below if validation passes)
 		delete_term_meta($term_id, 'mt2mba_markup');
-
-		// Get and validate the markup input
-		$raw_markup = sanitize_text_field($_POST['term_markup']);
 
 		// Validate and sanitize in ONE pass. This deliberately does not validate
 		// first and then hand the result to sanitizeMarkupForStorage(): validation
 		// returns internal notation ('.'-decimal), so a second pass would read that
 		// '.' as a thousands separator in a comma-decimal store and turn 1235,12
 		// into 123512. Validation happens once, here, at the boundary.
-		$markup = Utility\General::sanitizeMarkupForStorage($raw_markup);
+		$markup = Utility\General::sanitizeMarkupForStorage(sanitize_text_field($_POST['term_markup']));
 
 		// Empty means either a cleared field or input we rejected; both mean
-		// "store nothing"
+		// "store nothing". Invalid markup is discarded silently — the user-facing
+		// rejection happens client-side in jq-mt2mba-validate-markup.js, because a
+		// server-side admin_notices message is structurally unreachable on both save
+		// paths (the add form posts via admin-ajax.php, the edit form redirects).
+		if ($markup !== '') update_term_meta($term_id, 'mt2mba_markup', $markup);
+
+		$this->maybeRewriteTermNameAndDesc($term, $markup);
+	}
+
+	/**
+	 * Verify the nonce belonging to whichever save path this is
+	 *
+	 * @param  int  $term_id Term being saved; the edit nonce action is per-term
+	 * @return bool          True when the request carries a valid nonce
+	 */
+	private function verifyTermSaveNonce(int $term_id): bool {
+		// Edit operation — WordPress's own field, present on the edit form. Checked
+		// first, so if both fields somehow arrive its verdict is the one that counts.
+		if (isset($_POST['_wpnonce'])) {
+			return (bool) wp_verify_nonce($_POST['_wpnonce'], 'update-tag_' . $term_id);
+		}
+
+		// Add operation — our field, rendered by addTermFields()
+		if (isset($_POST['mt2mba_term_nonce'])) {
+			return (bool) wp_verify_nonce($_POST['mt2mba_term_nonce'], 'mt2mba_add_term');
+		}
+
+		// Neither nonce present; reject rather than write unverified
+		return false;
+	}
+
+	/**
+	 * Re-annotate the term name and description, and save if either changed
+	 *
+	 * Runs on every save, including one that cleared the markup: the old annotation
+	 * is stripped before anything is added back, so removing a markup also removes
+	 * its annotation.
+	 *
+	 * @param \WP_Term $term   The term as it currently stands in the database
+	 * @param string   $markup Validated markup, or '' when there is none
+	 */
+	private function maybeRewriteTermNameAndDesc(\WP_Term $term, string $markup): void {
+		$taxonomy_name = sanitize_key($term->taxonomy);
+
+		// Clean slate: remove any existing markup annotations from term data
+		// This ensures we don't duplicate markup text when reapplying
+		$new_name = Utility\General::stripMarkupAnnotation($term->name);
+		$new_description = Utility\General::stripMarkupAnnotation($term->description);
+
 		if ($markup !== '') {
-
-			// Save markup to term metadata table
-			update_term_meta($term_id, 'mt2mba_markup', $markup);
-
 			// Check global attribute settings for term name/description rewriting
 			// These options control whether markup should be visible in dropdowns
-			$rewrite_name_flag	= get_option(MT2MBA_REWRITE_TERM_NAME_PREFIX . wc_attribute_taxonomy_id_by_name($taxonomy_name));
-			$rewrite_desc_flag	= get_option(MT2MBA_REWRITE_TERM_DESC_PREFIX . wc_attribute_taxonomy_id_by_name($taxonomy_name));
+			$taxonomy_id = wc_attribute_taxonomy_id_by_name($taxonomy_name);
+			$rewrite_name_flag = get_option(MT2MBA_REWRITE_TERM_NAME_PREFIX . $taxonomy_id);
+			$rewrite_desc_flag = get_option(MT2MBA_REWRITE_TERM_DESC_PREFIX . $taxonomy_id);
 
 			// Check markup sign for proper formatting (discount vs. surcharge)
 			$is_negative = strpos($markup, '-') === 0;
 
 			// Conditionally modify term name based on attribute settings
-			// e.g., "Blue" becomes "Blue (+$5.00)" if name rewriting is enabled
+			// e.g., "Blue" becomes "Blue (Add $5.00)" if name rewriting is enabled
 			if ($rewrite_name_flag == 'yes') {
-				$name = Utility\General::addMarkupToName($name, $markup, $is_negative);
+				$new_name = Utility\General::addMarkupToName($new_name, $markup, $is_negative);
 			}
 
 			// Conditionally modify term description for markup visibility
 			if ($rewrite_desc_flag == 'yes') {
-				$description = Utility\General::addMarkupToTermDescription($description, $markup, $is_negative);
+				$new_description = Utility\General::addMarkupToTermDescription($new_description, $markup, $is_negative);
 			}
 		}
-		// Invalid markup is silently discarded here. The user-facing rejection
-		// happens client-side: jq-mt2mba-validate-markup.js blocks the submit
-		// with WP's form-invalid styling. (A server-side admin_notices message
-		// is structurally unreachable on both save paths — the add form posts
-		// via admin-ajax.php and the edit form redirects after saving.)
 
-		// Rewrite term if name and/or description have changed
-		if ($term->name != $name || $term->description != $description) {
-			// Raise the guard only around this call (it re-fires edited_{taxonomy}); lower
-			// it immediately after so the next term in a batch processes normally.
-			self::$is_rewriting_term = true;
-			wp_update_term(
-				$term_id,
-				$taxonomy_name,
-				array(
-					'name' => sanitize_text_field(trim($name)),
-					'description' => sanitize_textarea_field(trim($description))
-				)
-			);
-			self::$is_rewriting_term = false;
-		}
+		// Skip the write when the annotation left the term exactly as it was: no
+		// pointless DB update, and no edited_{taxonomy} re-fire for every other
+		// plugin listening. Loose comparison deliberately, matching what this replaced.
+		if (($term->name == $new_name) && ($term->description == $new_description)) return;
+
+		// Raise the guard only around this call (it re-fires edited_{taxonomy}); lower
+		// it immediately after so the next term in a batch processes normally.
+		self::$is_rewriting_term = true;
+		wp_update_term(
+			$term->term_id,
+			$taxonomy_name,
+			array(
+				'name' => sanitize_text_field(trim($new_name)),
+				'description' => sanitize_textarea_field(trim($new_description))
+			)
+		);
+		self::$is_rewriting_term = false;
 	}
 	//endregion
 

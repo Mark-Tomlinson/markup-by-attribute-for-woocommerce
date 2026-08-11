@@ -186,7 +186,19 @@ function get_term_meta($term_id, $key = '', $single = false) {
 }
 function get_terms($args = []) {
 	$taxonomy = is_array($args) ? ($args['taxonomy'] ?? '') : $args;
-	return $GLOBALS['mt2mba_stub']['terms'][$taxonomy] ?? [];
+	$terms = $GLOBALS['mt2mba_stub']['terms'][$taxonomy] ?? [];
+
+	// WordPress treats an EMPTY 'include' as no restriction at all, not as "no
+	// terms". Modeled faithfully because that is the trap: code that passes an
+	// empty array of selected terms silently gets the whole taxonomy back.
+	if (is_array($args) && !empty($args['include'])) {
+		$include = array_map('intval', (array) $args['include']);
+		$terms = array_values(array_filter($terms, function ($term) use ($include) {
+			return in_array((int) $term->term_id, $include, true);
+		}));
+	}
+
+	return $terms;
 }
 function update_term_meta($term_id, $key, $value) {
 	$GLOBALS['mt2mba_test']['term_meta'][] = ['update', $term_id, $key, $value];
@@ -299,12 +311,19 @@ class WC_Settings_API {}
 class MT2MBA_Fake_Attribute {
 	private $name;
 	private $is_taxonomy;
-	public function __construct($name, $is_taxonomy = true) {
+	private $options;
+	private $is_variation;
+	public function __construct($name, $is_taxonomy = true, $options = [], $is_variation = true) {
 		$this->name = $name;
 		$this->is_taxonomy = $is_taxonomy;
+		$this->options = $options;
+		$this->is_variation = $is_variation;
 	}
 	public function is_taxonomy() { return $this->is_taxonomy; }
 	public function get_name() { return $this->name; }
+	/** Term IDs this product actually selected — NOT every term in the taxonomy. */
+	public function get_options() { return $this->options; }
+	public function get_variation() { return $this->is_variation; }
 }
 class MT2MBA_Fake_Product {
 	private $attributes;
@@ -394,11 +413,19 @@ function t_term($term_id, $slug, $name, $markup = '') {
 /**
  * Register a variable product: $taxonomies is [taxonomy => [WP_Term, ...]].
  * Wires up wc_get_product(), get_terms() and wc_attribute_label() together.
+ *
+ * $selected is [taxonomy => [term_id, ...]] for the terms the product actually
+ * picked; omit a taxonomy and the product selects all of them, which is what
+ * every fixture written before terms and selections could differ means. Pass an
+ * empty array to model an attribute with nothing selected.
  */
-function t_product($product_id, array $taxonomies, array $labels = []) {
+function t_product($product_id, array $taxonomies, array $labels = [], array $selected = []) {
 	$attributes = [];
 	foreach ($taxonomies as $taxonomy => $terms) {
-		$attributes[$taxonomy] = new MT2MBA_Fake_Attribute($taxonomy);
+		$options = array_key_exists($taxonomy, $selected)
+			? $selected[$taxonomy]
+			: array_map(function ($term) { return (int) $term->term_id; }, $terms);
+		$attributes[$taxonomy] = new MT2MBA_Fake_Attribute($taxonomy, true, $options);
 		$GLOBALS['mt2mba_stub']['terms'][$taxonomy] = $terms;
 		if (isset($labels[$taxonomy])) {
 			$GLOBALS['mt2mba_stub']['attrb_labels'][$taxonomy] = $labels[$taxonomy];

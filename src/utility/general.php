@@ -43,40 +43,69 @@ class General {
 	}
 
 	/**
+	 * Format a markup value as the annotation that decorates a term name or a
+	 * drop-down option
+	 *
+	 * The form follows the markup TYPE, not where it is displayed:
+	 *
+	 *   percentage -> (Add 5%) / (Subtract 5%)   — a bare "-5%" reads ambiguously
+	 *   currency   -> (+$5.00) / (-$5.00)        — the symbol already says what it is
+	 *
+	 * Deliberately knows nothing about the drop-down settings. Those belong to
+	 * formatOptionMarkup(); the term-name path must not inherit them, or 'hide'
+	 * would stop baking annotations into names that "Add Markup to Name?"
+	 * governs, and the strip-symbol mode would wrongly remove the currency sign.
+	 *
+	 * @since 4.7.0
+	 * @param string $markup Signed markup amount (string|float at runtime, cast to string)
+	 * @return string        Annotation with its parentheses, or '' for no markup
+	 */
+	public static function formatMarkupAnnotation(string $markup): string {
+		// Cast before comparing against zero. PHP 7 reads a non-numeric string's
+		// leading digits in that comparison and PHP 8 does not; min-PHP is 7.4.
+		if ($markup === '' || (float) $markup == 0) return '';
+
+		$is_negative = (float) $markup < 0;
+
+		if (self::isPercentage($markup)) {
+			$pattern = $is_negative ? MT2MBA_MARKUP_NAME_PATTERN_SUBTRACT : MT2MBA_MARKUP_NAME_PATTERN_ADD;
+			return sprintf($pattern, self::cleanUpPrice($markup));
+		}
+
+		return '(' . ($is_negative ? '-' : '+') . self::cleanUpPrice($markup) . ')';
+	}
+
+	/**
 	 * Format the markup that appears in the options drop-down box
 	 *
-	 * Creates formatted markup text for display in WooCommerce variation dropdowns.
-	 * Handles plugin settings for showing/hiding markup, currency symbols, and formatting.
+	 * A thin wrapper over formatMarkupAnnotation() that adds the two behaviors
+	 * belonging to the drop-down alone: suppressing it entirely, and showing the
+	 * amount without a currency symbol.
 	 *
 	 * @since 2.0.0
 	 * @param string $markup Signed markup amount (string|float at runtime, cast to string)
 	 * @return string        Formatted markup for dropdown display (e.g., " (+$5.00)")
 	 */
 	public static function formatOptionMarkup(string $markup): string {
-		if ($markup != "" && $markup != 0) {
-			// Jump out if markup is not to be displayed.
-			if (MT2MBA_DROPDOWN_BEHAVIOR == 'hide') {
-				return '';
-			}
+		// Jump out if markup is not to be displayed.
+		if (MT2MBA_DROPDOWN_BEHAVIOR == 'hide') return '';
 
-			// Set sign
-			$sign = (float) $markup < 0 ? "-" : "+";
-			// There are instances where the markup for the product is not in the database.
-			// Where this is the case and the markup is a percentage, show only the percentage.
-			if (self::isPercentage($markup)) {
-				// Return formatted with percentage
-				$markup = trim(html_entity_decode($markup));
-			} elseif (MT2MBA_DROPDOWN_BEHAVIOR == 'add') {
-				// Return formatted with symbol
-				$markup = html_entity_decode($sign . self::cleanUpPrice($markup));
-			} else {
-				// Return formatted without symbol
-				$markup = html_entity_decode($sign . trim(str_replace(MT2MBA_CURRENCY_SYMBOL, "", self::cleanUpPrice($markup))));
-			}
-			return " (" . $markup . ")";
+		$annotation = self::formatMarkupAnnotation($markup);
+		if ($annotation === '') return '';
+
+		if (MT2MBA_DROPDOWN_BEHAVIOR != 'add') {
+			// Drop the currency symbol, then close the gap it leaves behind. A
+			// suffix-symbol locale ("1.234,50 kr") has a space in front of the
+			// symbol that has to go with it. Only the sign form is touched —
+			// the word form has no symbol to strip.
+			$annotation = preg_replace(
+				'/\(\s*([-+])\s*(.*?)\s*\)/u',
+				'($1$2)',
+				str_replace(MT2MBA_CURRENCY_SYMBOL, '', $annotation)
+			);
 		}
-		// No markup; return empty string
-		return '';
+
+		return ' ' . $annotation;
 	}
 
 	/**
@@ -157,9 +186,14 @@ class General {
 	/**
 	 * Strip markup annotation from term name
 	 *
-	 * Removes markup annotations (like "(Add $5.00)" or "(Subtract 10%)") from term names.
-	 * Uses internationalized patterns to handle different languages and currency formats.
-	 * This is used to clean term names before applying new markup annotations.
+	 * Removes markup annotations — the word form "(Add $5.00)" / "(Subtract 10%)" and
+	 * the sign form "(+$5.00)" / "(-$5.00)" — from term names. Uses internationalized
+	 * patterns to handle different languages and currency formats. This is used to
+	 * clean term names before applying new markup annotations.
+	 *
+	 * Both forms are recognized because both exist in the wild: 4.7.0 moved currency
+	 * markups to the sign form without an upgrade routine, so a name baked by an
+	 * earlier version keeps the word form until its term is next saved.
 	 *
 	 * @since 3.9.0
 	 * @param string $text The text to process
@@ -173,12 +207,20 @@ class General {
 		$add_pattern = '/(?:^|\s)' . str_replace('%s', $number_pattern, preg_quote(MT2MBA_MARKUP_NAME_PATTERN_ADD, '/')) . '/u';
 		$subtract_pattern = '/(^|\s)' . str_replace('%s', $number_pattern, preg_quote(MT2MBA_MARKUP_NAME_PATTERN_SUBTRACT, '/')) . '/u';
 
+		// Sign form, anchored to the end of the string — the only place
+		// addMarkupToName() ever puts it. Unanchored, this would eat any
+		// parenthetical that opens with a sign, such as "Widget (-5) Blue". At
+		// least one digit is required so "(+extras)" survives. The cost of the
+		// anchor is a name genuinely ending in a bare signed number.
+		$sign_pattern = '/\s*\([-+][0-9.,\s\p{Sc}\p{L}]*[0-9][0-9.,\s\p{Sc}\p{L}]*\)$/u';
+
 		// Decoded HTML encoding
 		$text = html_entity_decode($text);
 
 		// Remove markup annotations
 		$text = preg_replace($add_pattern, '', $text);
 		$text = preg_replace($subtract_pattern, '', $text);
+		$text = preg_replace($sign_pattern, '', $text);
 
 		return trim($text);
 	}
@@ -186,21 +228,18 @@ class General {
 	/**
 	 * Add markup annotation to term name
 	 *
-	 * Appends formatted markup notation to term names (e.g., "Blue (Add $5.00)").
+	 * Appends formatted markup notation to term names (e.g., "Blue (+$5.00)").
 	 * Used when the plugin is configured to show markup in attribute option names.
 	 *
 	 * @since 3.9.0
-	 * @param string $text        Base text
-	 * @param string $markup      Markup value (with % or currency)
-	 * @param bool   $is_negative Whether this is a negative markup
-	 * @return string             Text with markup annotation added
+	 * @param string $text   Base text
+	 * @param string $markup Signed markup value (with % or currency)
+	 * @return string        Text with markup annotation added
 	 */
-	public static function addMarkupToName(string $text, string $markup, bool $is_negative = false): string {
-		// Format the markup value using cleanUpPrice()
-		$formatted_markup = self::cleanUpPrice($markup);
+	public static function addMarkupToName(string $text, string $markup): string {
+		$annotation = self::formatMarkupAnnotation($markup);
 
-		$pattern = $is_negative ? MT2MBA_MARKUP_NAME_PATTERN_SUBTRACT : MT2MBA_MARKUP_NAME_PATTERN_ADD;
-		return $text . " " . sprintf($pattern, $formatted_markup);
+		return $annotation === '' ? $text : $text . ' ' . $annotation;
 	}
 
 	/**

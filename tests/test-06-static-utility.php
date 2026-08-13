@@ -95,7 +95,9 @@ t_assert(General::cleanUpPrice('10%') === '10%', 'cleanUpPrice passes a percenta
 
 t_assert(General::formatOptionMarkup('5') === ' (+$5.00)', 'formatOptionMarkup signs a positive amount');
 t_assert(General::formatOptionMarkup('-5') === ' (-$5.00)', 'formatOptionMarkup signs a negative amount');
-t_assert(General::formatOptionMarkup('10%') === ' (10%)', 'formatOptionMarkup passes a percentage through');
+// Word form since 4.7.0 — see test-22. Not reachable in production: the meta
+// the dropdown reads is always a resolved currency amount.
+t_assert(General::formatOptionMarkup('10%') === ' (Add 10%)', 'formatOptionMarkup words a percentage');
 t_assert(General::formatOptionMarkup('') === '', 'formatOptionMarkup returns empty for no markup');
 t_assert(General::formatOptionMarkup('0') === '', 'formatOptionMarkup returns empty for a zero markup');
 
@@ -116,8 +118,9 @@ t_assert(General::stripMarkupAnnotation('Blue (Subtract 10%)') === 'Blue',
 t_assert(General::stripMarkupAnnotation('Blue') === 'Blue',
 	'stripMarkupAnnotation leaves a clean name alone');
 
-t_assert(General::addMarkupToName('Blue', '5') === 'Blue (Add $5.00)', 'addMarkupToName appends Add');
-t_assert(General::addMarkupToName('Blue', '-5', true) === 'Blue (Subtract $5.00)', 'addMarkupToName appends Subtract');
+// Sign form for currency since 4.7.0, and the $is_negative parameter is gone — see test-22
+t_assert(General::addMarkupToName('Blue', '5') === 'Blue (+$5.00)', 'addMarkupToName signs a positive amount');
+t_assert(General::addMarkupToName('Blue', '-5') === 'Blue (-$5.00)', 'addMarkupToName signs a negative amount');
 t_assert(General::addMarkupToTermDescription('Nice color', '5') === "Nice color\n(Add \$5.00)",
 	'addMarkupToTermDescription appends on a new line');
 

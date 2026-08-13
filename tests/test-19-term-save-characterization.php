@@ -134,7 +134,7 @@ $add = t19_save($term_component, [
 	'nonce'     => $accept_add,
 	'name_flag' => 'yes',
 ]);
-$add_expected = $saved_meta . ' | wp_update_term(123,"pa_cows",name="Holstein (Add $5.00)",desc="A cow.")';
+$add_expected = $saved_meta . ' | wp_update_term(123,"pa_cows",name="Holstein (+$5.00)",desc="A cow.")';
 t_assert($add === $add_expected,
 	$add === $add_expected ? 'add path saves and annotates' : "add path saves and annotates — got: $add");
 t_assert($GLOBALS['mt2mba_test']['nonce_checks'] === [['goodadd', 'mt2mba_add_term']],
@@ -145,15 +145,18 @@ t_assert($GLOBALS['mt2mba_test']['nonce_checks'] === [['goodadd', 'mt2mba_add_te
 $cases = [
 	'name on, desc off' => [
 		['name_flag' => 'yes'],
-		$saved_meta . ' | wp_update_term(123,"pa_cows",name="Holstein (Add $5.00)",desc="A cow.")',
+		$saved_meta . ' | wp_update_term(123,"pa_cows",name="Holstein (+$5.00)",desc="A cow.")',
 	],
 	'name off, desc on' => [
 		['desc_flag' => 'yes'],
 		$saved_meta . ' | wp_update_term(123,"pa_cows",name="Holstein",desc="A cow.\n(Add $5.00)")',
 	],
+	// The two fields deliberately disagree since 4.7.0: a currency markup takes the
+	// sign form in the NAME and keeps the word form in the DESCRIPTION (Mark's call,
+	// 2026-08-13). Pinned so the split reads as a decision, not a missed conversion.
 	'name on, desc on' => [
 		['name_flag' => 'yes', 'desc_flag' => 'yes'],
-		$saved_meta . ' | wp_update_term(123,"pa_cows",name="Holstein (Add $5.00)",desc="A cow.\n(Add $5.00)")',
+		$saved_meta . ' | wp_update_term(123,"pa_cows",name="Holstein (+$5.00)",desc="A cow.\n(Add $5.00)")',
 	],
 	'both off — meta only, term untouched' => [
 		[],
@@ -188,7 +191,7 @@ $cases = [
 			'term' => ['taxonomy' => 'PA_Cows'],
 			'name_flag' => 'yes',
 		],
-		$saved_meta . ' | wp_update_term(123,"pa_cows",name="Holstein (Add $5.00)",desc="A cow.")',
+		$saved_meta . ' | wp_update_term(123,"pa_cows",name="Holstein (+$5.00)",desc="A cow.")',
 	],
 	'padded term name is trimmed even with both flags off' => [
 		['term' => ['name' => '  Holstein  ']],

@@ -287,18 +287,21 @@ class Term {
 			$rewrite_name_flag = get_option(MT2MBA_REWRITE_TERM_NAME_PREFIX . $taxonomy_id);
 			$rewrite_desc_flag = get_option(MT2MBA_REWRITE_TERM_DESC_PREFIX . $taxonomy_id);
 
-			// Check markup sign for proper formatting (discount vs. surcharge)
-			$is_negative = strpos($markup, '-') === 0;
-
 			// Conditionally modify term name based on attribute settings
-			// e.g., "Blue" becomes "Blue (Add $5.00)" if name rewriting is enabled
+			// e.g., "Blue" becomes "Blue (+$5.00)" if name rewriting is enabled.
+			// The sign is already in $markup, so nothing has to be told about it.
 			if ($rewrite_name_flag == 'yes') {
-				$new_name = Utility\General::addMarkupToName($new_name, $markup, $is_negative);
+				$new_name = Utility\General::addMarkupToName($new_name, $markup);
 			}
 
-			// Conditionally modify term description for markup visibility
+			// Conditionally modify term description for markup visibility. The
+			// description deliberately keeps the word form for both markup types.
 			if ($rewrite_desc_flag == 'yes') {
-				$new_description = Utility\General::addMarkupToTermDescription($new_description, $markup, $is_negative);
+				$new_description = Utility\General::addMarkupToTermDescription(
+					$new_description,
+					$markup,
+					strpos($markup, '-') === 0
+				);
 			}
 		}
 

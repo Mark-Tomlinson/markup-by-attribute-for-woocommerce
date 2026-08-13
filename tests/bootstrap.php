@@ -295,7 +295,14 @@ function wc_format_decimal($number, $dp = false, $trim_zeros = false) {
 	}
 	return $number;
 }
-function wc_price($price, $args = []) { return '$' . number_format((float) $price, 2); }
+// Overridable so a test can model a suffix-symbol locale ("5,00 kr"). The
+// dropdown's strip-currency-symbol mode behaves differently there — the space
+// in front of the symbol has to go with it — and a fixed '$'-prefix stub
+// cannot reach that path at all.
+function wc_price($price, $args = []) {
+	$format = $GLOBALS['mt2mba_stub']['price_format'] ?? null;
+	return $format ? $format((float) $price) : '$' . number_format((float) $price, 2);
+}
 function wc_get_price_decimals() { return 2; }
 function wc_format_localized_decimal($value) { return $value; }
 function get_woocommerce_currency() { return $GLOBALS['mt2mba_stub']['currency'] ?? 'USD'; }

@@ -8,18 +8,45 @@
  * @requires mt2mbaLocal (localized script data)
  */
 jQuery(document).ready(function($) {
-	// Find 'Pricing' group in bulk actions (second group)
-	var $select = $('#variable_product_options select.variation_actions');
-	var $pricingGroup = $select.find('optgroup').eq(1);
+	/**
+	 * Add our action to the variations [Bulk actions] menu.
+	 *
+	 * Must be re-runnable: [Save attributes] does
+	 * $('#variable_product_options').load(page + ' #variable_product_options_inner')
+	 * (WooCommerce meta-boxes-product.js), which replaces the whole panel — select
+	 * included — with server HTML that knows nothing about this option. Injecting
+	 * only on document.ready meant the action vanished until the next full page
+	 * load. Same behavior all the way back to WC 5.0.0.
+	 */
+	function addReapplyMarkupOption() {
+		var $select = $('#variable_product_options select.variation_actions');
 
-	if ($pricingGroup.length) {
-		$pricingGroup.prepend(
-			$('<option>', {
-				value: 'reapply_markup',
-				text: mt2mbaLocal.i18n.reapplyMarkupss
-			})
-		);
+		// The reload events can fire more than once for one rebuild
+		if ($select.find('option[value="reapply_markup"]').length) return;
+
+		// Anchor on the action WooCommerce files under 'Pricing' rather than on the
+		// group's position: this menu has gained groups more than once (WC 11 added
+		// 'Cost of goods'), and the old optgroup.eq(1) was right only by luck.
+		var $pricingGroup = $select.find('option[value="variable_regular_price"]').parent('optgroup');
+
+		if ($pricingGroup.length) {
+			$pricingGroup.prepend(
+				$('<option>', {
+					value: 'reapply_markup',
+					text: mt2mbaLocal.i18n.reapplyMarkupss
+				})
+			);
+		}
 	}
+
+	addReapplyMarkupOption();
+
+	// 'reload' fires on #variable_product_options right after the panel is replaced;
+	// 'woocommerce_variations_loaded' fires on #woocommerce-product-data once the rows
+	// finish loading. Both bubble to body. Listening for both covers the case where a
+	// product has no variations to load and the later event never arrives.
+	$(document.body).on('woocommerce_variations_loaded woocommerce_variations_saved', addReapplyMarkupOption);
+	$(document.body).on('reload', '#variable_product_options', addReapplyMarkupOption);
 
 	// Add listener for clicking the General tab
 	$('.product_data_tabs .general_tab a').on('click', function() {

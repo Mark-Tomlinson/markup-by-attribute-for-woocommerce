@@ -66,7 +66,25 @@ t_assert(strpos($php, "'variable_regular_price'") !== false || strpos($php, '"va
 // $('<option>', {text: undefined}) renders a blank menu entry rather than throwing.
 // Note 'reapplyMarkupss' really does carry two s's on BOTH sides — a matched pair
 // since v4.3.3 (dccd939). Ugly, harmless, and this test is what keeps it matched.
-preg_match_all('/\'(\w+)\'\s*=>\s*__\(/', $php, $php_matches);
+// Scope to the i18n block by paren-matching. Scraping the whole file also catches
+// 'message' => __('Permission denied') and friends in the AJAX handlers below, which
+// are wp_send_json payload keys, not localized script strings.
+$i18n_start = strpos($php, "'i18n' => array(");
+t_assert($i18n_start !== false, 'the i18n block is where the scrape expects it');
+
+$open  = strpos($php, '(', $i18n_start + strlen("'i18n' => array"));
+$depth = 0;
+$end   = $open;
+for ($i = $open; $i < strlen($php); $i++) {
+	if ($php[$i] === '(') $depth++;
+	elseif ($php[$i] === ')') {
+		$depth--;
+		if ($depth === 0) { $end = $i; break; }
+	}
+}
+$i18n_block = substr($php, $open, $end - $open + 1);
+
+preg_match_all('/\'(\w+)\'\s*=>\s*__\(/', $i18n_block, $php_matches);
 $defined = array_unique($php_matches[1]);
 
 preg_match_all('/mt2mbaLocal\.i18n\.(\w+)/', $js, $js_matches);
@@ -86,14 +104,14 @@ foreach ($used as $key) {
 		"product.php localizes $key inside the i18n block, not elsewhere");
 }
 
-// KNOWN, recorded rather than asserted-in-place: 'failedRecalculating' is defined at
-// product.php:87 and read by no JS at all. It is shipped to ten locales and can never
-// be displayed, because the AJAX calls it was written for have no error: handler (see
-// item 25). Deliberately NOT pinned here — pinning it would make removing the dead
-// string fail this test for the wrong reason.
+// No i18n key defined for this script may go unread. 'failedRecalculating' was the
+// reason this started as a recorded observation rather than an assertion: it shipped
+// to ten locales unreachable, because the AJAX calls it was written for had no error:
+// handler. Item 25 wired it up (tests/test-25), so the loose version of this check has
+// been tightened into the real invariant.
 $dead = array_values(array_diff($defined, $used));
-t_assert(in_array('failedRecalculating', $dead, true) || in_array('failedRecalculating', $used, true),
-	'failedRecalculating is accounted for — currently unused (item 25), wire it up or drop it');
+t_assert($dead === [],
+	'every localized string is actually reachable from the JS (dead: ' . implode(', ', $dead) . ')');
 //endregion
 
 t_done();

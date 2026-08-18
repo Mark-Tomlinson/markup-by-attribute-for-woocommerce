@@ -84,7 +84,11 @@ class Product {
 					'i18n' => array(
 						'reapplyMarkupss' => __('Reapply markups to prices', 'markup-by-attribute-for-woocommerce'),
 						'confirmReapply' => __('Reprice variations at %s, plus or minus the markups?', 'markup-by-attribute-for-woocommerce'),
-						'failedRecalculating' => __('Failed to reapply markups. Please try again.', 'markup-by-attribute-for-woocommerce')
+						'failedRecalculating' => __('Failed to reapply markups. Please try again.', 'markup-by-attribute-for-woocommerce'),
+						// Distinct from the above on purpose: this one is shown only after the
+						// reprice has already committed, so it must not tell the shop owner
+						// their prices are unchanged when they are not.
+						'failedRefreshing' => __('Markups were reapplied, but the variations list could not be refreshed. Reload the page to see the new prices.', 'markup-by-attribute-for-woocommerce')
 					)
 				)
 			);

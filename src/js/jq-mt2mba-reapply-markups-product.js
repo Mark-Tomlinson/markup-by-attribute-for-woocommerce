@@ -141,13 +141,33 @@ jQuery(document).ready(function($) {
 												$wrapper.trigger('woocommerce_variations_loaded');
 												// Tell WooCommerce to update all related panels
 												$('body').trigger('woocommerce_variations_saved');
+											},
+											// Reached only after the reprice has committed. This must NOT claim the
+											// reprice failed -- the prices really did change; only the panel showing
+											// them is stale. Re-running from here would be harmless (the handler
+											// recomputes from mt2mba_base_regular_price rather than compounding), but
+											// saying "failed to reapply" would invite exactly that.
+											error: function() {
+												showReapplyFailure(mt2mbaLocal.i18n.failedRefreshing);
 											}
 										});
+									} else {
+										// wp_send_json_error() from the handler's Throwable catch, or a
+										// refused nonce. Nothing was repriced.
+										showReapplyFailure(mt2mbaLocal.i18n.failedRecalculating);
 									}
+								},
+								error: function() {
+									showReapplyFailure(mt2mbaLocal.i18n.failedRecalculating);
 								}
 							});
 						}
+					} else {
+						showReapplyFailure(mt2mbaLocal.i18n.failedRecalculating);
 					}
+				},
+				error: function() {
+					showReapplyFailure(mt2mbaLocal.i18n.failedRecalculating);
 				}
 			});
 
@@ -155,4 +175,22 @@ jQuery(document).ready(function($) {
 			$select.val('bulk_actions');
 		}
 	});
+
+	// Surface a failed reapply as a standard WP admin notice inside the variations
+	// panel. Both failure paths -- the request erroring and the server reporting
+	// failure -- are silent otherwise, and the panel has no notice area of its own.
+	// Placing it in #variable_product_options also makes it self-clearing:
+	// [Save attributes] replaces that whole panel (see addReapplyMarkupOption).
+	function showReapplyFailure(message) {
+		var $panel = $('#variable_product_options');
+		if (!$panel.length) return;
+
+		// One notice, however many times they retry.
+		$panel.find('.mt2mba-reapply-error').remove();
+
+		$panel.prepend(
+			$('<div>', { 'class': 'notice notice-error mt2mba-reapply-error' })
+				.append($('<p>').text(message))
+		);
+	}
 });

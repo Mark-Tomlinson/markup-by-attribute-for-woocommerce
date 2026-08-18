@@ -9,13 +9,13 @@ Contributors:			MarkTomlinson
 Donate link:			https://github.com/Mark-Tomlinson/markup-by-attribute-for-woocommerce/wiki/4.0_Donate
 License:				GPLv3 or later
 License URI:			https://www.gnu.org/licenses/gpl-3.0.html
-Version:                4.6.3
-Stable tag:             4.6.3
-Tested up to:           7.0
+Version:                4.7.0
+Stable tag:             4.7.0
+Tested up to:           7.1
 Requires at least:      5.7
-PHP tested up to:       8.4.21
+PHP tested up to:       8.4.23
 Requires PHP:           7.4.3
-WC tested up to:        10.8.1
+WC tested up to:        11.0.1
 WC requires at least:   5.0.0
 MariaDB tested up to:   11.8.6
 
@@ -200,6 +200,9 @@ If you use Markup-by-Attribute and want to see me continue support for it, I enc
 7. The settings page allows configuration of how the markup is displayed.
 
 == Upgrade Notice ==
+= 4.7.0 =
+Compatibility update for WordPress 7.1. Markup annotations are now consistent everywhere they appear, and several long-standing bugs are fixed — including "Reapply markups to prices" disappearing from the variations Bulk actions menu after [Save attributes]. Recommended for all users.
+
 = 4.6.3 =
 Security and performance update: hardened AJAX permission checks, closed a translation-based XSS vector in wp-admin, made markup reapplication fully atomic, fixed several edge-case bugs, and improved admin and storefront performance. Recommended for all users.
 
@@ -213,6 +216,31 @@ Compatibility update for WordPress 7.0 and WooCommerce 10.6.2. No functional cha
 Removed the "Preserve Zero Prices" setting. If you had this enabled and have free products with global attribute markups, see the wiki for details.
 
 == Changelog ==
+= 4.7.0 =
+*Release Date: August 2026*
+
+**Changed**
+* Markup annotations now follow the markup *type* wherever they appear. Percentages read as words — (Add 5%) and (Subtract 5%) — and currency amounts read as signed values — (+$5.00) and (-$5.00). Previously the options drop-down and the attribute term name could describe the same markup two different ways on a single product.
+
+**Bug Fixes**
+* "Reapply markups to prices" no longer vanishes from the variations [Bulk actions] menu after clicking [Save attributes]. WooCommerce rebuilds that whole panel, which discarded the menu entry until the page was reloaded. This bug was present in every prior release
+* A failed markup reapplication on the product edit page now reports the failure instead of silently doing nothing. The error message existed and had been translated for years, but nothing could ever display it
+* Markup meta is now written only for the attribute terms a product actually uses, instead of for every term in the attribute. Existing excess entries clear themselves on the next reprice — no action needed
+* Bulk reapply from the product list no longer re-runs when the page is refreshed, bookmarked, or revisited with the back button
+* A failed row refresh on the product list no longer leaves the reapply icon stuck, requiring a page reload before that row could be repriced again
+* Attribute options no longer save under the wrong taxonomy when an attribute's slug differs from its label
+* Products with no variations no longer produce a malformed database query during markup processing
+* The invalid-markup error notice now appears when *adding* a term, not only when editing one
+* The database upgrade runner now orders by version number rather than filename, which would have misordered at double-digit versions
+* Deleting a term while its markup was being saved no longer triggers a PHP error
+
+**Maintenance**
+* Confirmed compatibility with WordPress 7.1, WooCommerce 11.0.1, and PHP 8.4
+* Substantial internal cleanup: retired a global, unified the price-handler API, extracted shared bulk meta read/write, and split the term-save handler into single-purpose methods. No change in behavior — pinned by the test suite
+* License is now consistently GPL-3.0-or-later across the plugin header, class docblocks, and readme
+* Markup column sorting is now applied only on the attribute term admin screen
+* Normalized all line endings to LF
+
 = 4.6.3 =
 *Release Date: June 2026*
 

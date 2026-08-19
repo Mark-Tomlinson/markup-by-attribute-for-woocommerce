@@ -8,18 +8,45 @@
  * @requires mt2mbaLocal (localized script data)
  */
 jQuery(document).ready(function($) {
-	// Find 'Pricing' group in bulk actions (second group)
-	var $select = $('#variable_product_options select.variation_actions');
-	var $pricingGroup = $select.find('optgroup').eq(1);
+	/**
+	 * Add our action to the variations [Bulk actions] menu.
+	 *
+	 * Must be re-runnable: [Save attributes] does
+	 * $('#variable_product_options').load(page + ' #variable_product_options_inner')
+	 * (WooCommerce meta-boxes-product.js), which replaces the whole panel — select
+	 * included — with server HTML that knows nothing about this option. Injecting
+	 * only on document.ready meant the action vanished until the next full page
+	 * load. Same behavior all the way back to WC 5.0.0.
+	 */
+	function addReapplyMarkupOption() {
+		var $select = $('#variable_product_options select.variation_actions');
 
-	if ($pricingGroup.length) {
-		$pricingGroup.prepend(
-			$('<option>', {
-				value: 'reapply_markup',
-				text: mt2mbaLocal.i18n.reapplyMarkupss
-			})
-		);
+		// The reload events can fire more than once for one rebuild
+		if ($select.find('option[value="reapply_markup"]').length) return;
+
+		// Anchor on the action WooCommerce files under 'Pricing' rather than on the
+		// group's position: this menu has gained groups more than once (WC 11 added
+		// 'Cost of goods'), and the old optgroup.eq(1) was right only by luck.
+		var $pricingGroup = $select.find('option[value="variable_regular_price"]').parent('optgroup');
+
+		if ($pricingGroup.length) {
+			$pricingGroup.prepend(
+				$('<option>', {
+					value: 'reapply_markup',
+					text: mt2mbaLocal.i18n.reapplyMarkupss
+				})
+			);
+		}
 	}
+
+	addReapplyMarkupOption();
+
+	// 'reload' fires on #variable_product_options right after the panel is replaced;
+	// 'woocommerce_variations_loaded' fires on #woocommerce-product-data once the rows
+	// finish loading. Both bubble to body. Listening for both covers the case where a
+	// product has no variations to load and the later event never arrives.
+	$(document.body).on('woocommerce_variations_loaded woocommerce_variations_saved', addReapplyMarkupOption);
+	$(document.body).on('reload', '#variable_product_options', addReapplyMarkupOption);
 
 	// Add listener for clicking the General tab
 	$('.product_data_tabs .general_tab a').on('click', function() {
@@ -114,13 +141,33 @@ jQuery(document).ready(function($) {
 												$wrapper.trigger('woocommerce_variations_loaded');
 												// Tell WooCommerce to update all related panels
 												$('body').trigger('woocommerce_variations_saved');
+											},
+											// Reached only after the reprice has committed. This must NOT claim the
+											// reprice failed -- the prices really did change; only the panel showing
+											// them is stale. Re-running from here would be harmless (the handler
+											// recomputes from mt2mba_base_regular_price rather than compounding), but
+											// saying "failed to reapply" would invite exactly that.
+											error: function() {
+												showReapplyFailure(mt2mbaLocal.i18n.failedRefreshing);
 											}
 										});
+									} else {
+										// wp_send_json_error() from the handler's Throwable catch, or a
+										// refused nonce. Nothing was repriced.
+										showReapplyFailure(mt2mbaLocal.i18n.failedRecalculating);
 									}
+								},
+								error: function() {
+									showReapplyFailure(mt2mbaLocal.i18n.failedRecalculating);
 								}
 							});
 						}
+					} else {
+						showReapplyFailure(mt2mbaLocal.i18n.failedRecalculating);
 					}
+				},
+				error: function() {
+					showReapplyFailure(mt2mbaLocal.i18n.failedRecalculating);
 				}
 			});
 
@@ -128,4 +175,22 @@ jQuery(document).ready(function($) {
 			$select.val('bulk_actions');
 		}
 	});
+
+	// Surface a failed reapply as a standard WP admin notice inside the variations
+	// panel. Both failure paths -- the request erroring and the server reporting
+	// failure -- are silent otherwise, and the panel has no notice area of its own.
+	// Placing it in #variable_product_options also makes it self-clearing:
+	// [Save attributes] replaces that whole panel (see addReapplyMarkupOption).
+	function showReapplyFailure(message) {
+		var $panel = $('#variable_product_options');
+		if (!$panel.length) return;
+
+		// One notice, however many times they retry.
+		$panel.find('.mt2mba-reapply-error').remove();
+
+		$panel.prepend(
+			$('<div>', { 'class': 'notice notice-error mt2mba-reapply-error' })
+				.append($('<p>').text(message))
+		);
+	}
 });

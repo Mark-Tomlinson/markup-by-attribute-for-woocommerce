@@ -1,7 +1,6 @@
 <?php
 namespace mt2Tech\MarkupByAttribute\Backend;
 //use mt2Tech\MarkupByAttribute\Backend\Handlers;
-use mt2Tech\MarkupByAttribute\Utility as Utility;
 use Throwable;
 
 /**
@@ -85,7 +84,11 @@ class Product {
 					'i18n' => array(
 						'reapplyMarkupss' => __('Reapply markups to prices', 'markup-by-attribute-for-woocommerce'),
 						'confirmReapply' => __('Reprice variations at %s, plus or minus the markups?', 'markup-by-attribute-for-woocommerce'),
-						'failedRecalculating' => __('Failed to reapply markups. Please try again.', 'markup-by-attribute-for-woocommerce')
+						'failedRecalculating' => __('Failed to reapply markups. Please try again.', 'markup-by-attribute-for-woocommerce'),
+						// Distinct from the above on purpose: this one is shown only after the
+						// reprice has already committed, so it must not tell the shop owner
+						// their prices are unchanged when they are not.
+						'failedRefreshing' => __('Markups were reapplied, but the variations list could not be refreshed. Reload the page to see the new prices.', 'markup-by-attribute-for-woocommerce')
 					)
 				)
 			);
@@ -226,21 +229,21 @@ class Product {
 			// Set either the regular price or the sale price
 			$handler = new Handlers\PriceSetHandler($bulk_action, $data, $product_id, $variations);
 
-		} elseif (strpos($bulk_action, "_price_increase") || strpos($bulk_action, "_price_decrease")) {
+		} elseif (strpos($bulk_action, "_price_increase") !== false || strpos($bulk_action, "_price_decrease") !== false) {
 			// Increase or decrease the regular price or the sale price
 			$handler = new Handlers\PriceUpdateHandler($bulk_action, $data, $product_id, $variations);
 
 		} elseif ($bulk_action == "delete_all") {
 			// Delete all markup metadata for product
-			$handler = new Handlers\MarkupDeleteHandler("", [], $product_id, []);
+			$handler = new Handlers\MarkupDeleteHandler($product_id);
 
 		} else {
 			// If none of the above, leave and don't execute $handler
 			return;
 		}
 
-		// Invoke the processProductMarkups() function from the class that was decided above
-		$handler->processProductMarkups((string) $bulk_action, (array) $data, (string) $product_id, (array) $variations);
+		// Each handler received everything it needs above; the run takes no arguments
+		$handler->processProductMarkups();
 
 		// The handlers above write meta directly via $wpdb (DELETE/INSERT), which bypasses
 		// WordPress's object cache. WooCommerce syncs the parent after this hook, but never
@@ -349,13 +352,13 @@ class Product {
 		$base_regular_price = get_post_meta($product_id, 'mt2mba_base_regular_price', true);
 		$data = ['value' => $base_regular_price];
 		$handler = new Handlers\PriceSetHandler('variable_regular_price', $data, $product_id, $variations, false);
-		$handler->processProductMarkups('variable_regular_price', $data, $product_id, $variations);
+		$handler->processProductMarkups();
 
 		$base_sale_price = get_post_meta($product_id, 'mt2mba_base_sale_price', true);
 		if (!empty($base_sale_price)) {
 			$data = ['value' => $base_sale_price];
 			$handler = new Handlers\PriceSetHandler('variable_sale_price', $data, $product_id, $variations, false);
-			$handler->processProductMarkups('variable_sale_price', $data, $product_id, $variations);
+			$handler->processProductMarkups();
 		}
 	}
 

@@ -12,7 +12,7 @@ use WP_Meta_Query;
  *
  * @package   mt2Tech\MarkupByAttribute\Backend
  * @author    Mark Tomlinson
- * @license   GPL-2.0+
+ * @license   GPL-3.0-or-later
  * @since     1.0.0
  */
 class Term {
@@ -75,6 +75,10 @@ class Term {
 	private function __construct() {
 		$this->initializeLabels();
 		$this->registerTaxonomyHooks();
+
+		// Client-side markup validation on the term add/edit forms (WP-native
+		// form-invalid styling; blocks the submit so garbage never reaches PHP)
+		add_action('admin_enqueue_scripts', array($this, 'enqueueMarkupValidation'));
 	}
 
 	/**
@@ -138,9 +142,8 @@ class Term {
 		// previous callback added, including other plugins' columns. 🌸
 		add_filter("manage_{$taxonomy}_custom_column", function ($string, $column_name, $term_id) {
 			if ($column_name == 'markup') {
-				global $mt2mba_utility;
 				$markup = get_term_meta($term_id, 'mt2mba_markup', true);
-				$string .= esc_html($mt2mba_utility->sanitizeMarkupForDisplay(wc_format_localized_decimal($markup)));
+				$string .= esc_html(wc_format_localized_decimal($markup));
 			}
 			return $string;
 		}, 10, 3);
@@ -183,7 +186,7 @@ class Term {
 		<tr class="form-field">
 			<th scope="row" valign="top"><label for="term_markup"><?php echo esc_html($this->markup_label); ?></label></th>
 			<td>
-				<input type="text" placeholder="<?php echo esc_attr($this->placeholder); ?>" name="term_markup" id="term_edit_markup" value="<?php echo esc_attr($term_markup) ? esc_attr($term_markup) : ''; ?>">
+				<input type="text" placeholder="<?php echo esc_attr($this->placeholder); ?>" name="term_markup" id="term_edit_markup" value="<?php echo esc_attr($term_markup); ?>">
 				<p class="description"><?php echo esc_html($this->markup_description); ?></p>
 			</td>
 		</tr>
@@ -196,114 +199,170 @@ class Term {
 	 * Save the term markup metadata
 	 */
 	public function handleTermMarkupSave(int $term_id) {
-		// Sanity check
-		if (!isset($_POST['term_markup'])) return;
-
-		// Check if user has permission to edit terms
-		if (!current_user_can('manage_product_terms')) {
-			return;
-		}
-
-		// WordPress nonce verification for CSRF protection
-		$term = get_term($term_id);
-		$taxonomy_name = sanitize_key($term->taxonomy);
-
-		// Determine operation type and validate appropriate nonce
-		$is_edit = isset($_POST['_wpnonce']);
-		$is_add = isset($_POST['mt2mba_term_nonce']);
-
-		if ($is_edit) {
-			// Edit operation - validate WordPress's standard edit nonce
-			if (!wp_verify_nonce($_POST['_wpnonce'], 'update-tag_' . $term_id)) {
-				// Invalid nonce for edit operation - reject
-				return;
-			}
-		} elseif ($is_add) {
-			// Add operation - validate our custom add nonce
-			if (!wp_verify_nonce($_POST['mt2mba_term_nonce'], 'mt2mba_add_term')) {
-				// Invalid nonce for add operation - reject
-				return;
-			}
-		} else {
-			// No valid nonce present - reject to prevent CSRF
-			return;
-		}
-
 		// Prevent infinite recursion: wp_update_term() (below) re-fires this hook for the
 		// same term. A request-scoped static flag — raised only around that call — catches
 		// the re-entrant pass while still letting every distinct term in a batch get
 		// processed. (A permanent define() here skipped all terms after the first.) 🌸
+		// Checked first because everything below it is a read the re-entrant pass has
+		// no reason to perform.
 		if (self::$is_rewriting_term) return;
 
-		global $mt2mba_utility;
+		// Sanity check
+		if (!isset($_POST['term_markup'])) return;
+
+		// Check if user has permission to edit terms
+		if (!current_user_can('manage_product_terms')) return;
+
+		// Guard against a deleted term (race between hook fire and handler run)
+		// or a plugin conflict — get_term() can return null or WP_Error
+		$term = get_term($term_id);
+		if (!$term instanceof \WP_Term) return;
+
+		if (!$this->verifyTermSaveNonce($term_id)) return;
+
+		// Clear existing markup metadata first (re-added below if validation passes)
+		delete_term_meta($term_id, 'mt2mba_markup');
+
+		// Validate and sanitize in ONE pass. This deliberately does not validate
+		// first and then hand the result to sanitizeMarkupForStorage(): validation
+		// returns internal notation ('.'-decimal), so a second pass would read that
+		// '.' as a thousands separator in a comma-decimal store and turn 1235,12
+		// into 123512. Validation happens once, here, at the boundary.
+		$markup = Utility\General::sanitizeMarkupForStorage(sanitize_text_field($_POST['term_markup']));
+
+		// Empty means either a cleared field or input we rejected; both mean
+		// "store nothing". Invalid markup is discarded silently — the user-facing
+		// rejection happens client-side in jq-mt2mba-validate-markup.js, because a
+		// server-side admin_notices message is structurally unreachable on both save
+		// paths (the add form posts via admin-ajax.php, the edit form redirects).
+		if ($markup !== '') update_term_meta($term_id, 'mt2mba_markup', $markup);
+
+		$this->maybeRewriteTermNameAndDesc($term, $markup);
+	}
+
+	/**
+	 * Verify the nonce belonging to whichever save path this is
+	 *
+	 * @param  int  $term_id Term being saved; the edit nonce action is per-term
+	 * @return bool          True when the request carries a valid nonce
+	 */
+	private function verifyTermSaveNonce(int $term_id): bool {
+		// Edit operation — WordPress's own field, present on the edit form. Checked
+		// first, so if both fields somehow arrive its verdict is the one that counts.
+		if (isset($_POST['_wpnonce'])) {
+			return (bool) wp_verify_nonce($_POST['_wpnonce'], 'update-tag_' . $term_id);
+		}
+
+		// Add operation — our field, rendered by addTermFields()
+		if (isset($_POST['mt2mba_term_nonce'])) {
+			return (bool) wp_verify_nonce($_POST['mt2mba_term_nonce'], 'mt2mba_add_term');
+		}
+
+		// Neither nonce present; reject rather than write unverified
+		return false;
+	}
+
+	/**
+	 * Re-annotate the term name and description, and save if either changed
+	 *
+	 * Runs on every save, including one that cleared the markup: the old annotation
+	 * is stripped before anything is added back, so removing a markup also removes
+	 * its annotation.
+	 *
+	 * @param \WP_Term $term   The term as it currently stands in the database
+	 * @param string   $markup Validated markup, or '' when there is none
+	 */
+	private function maybeRewriteTermNameAndDesc(\WP_Term $term, string $markup): void {
+		$taxonomy_name = sanitize_key($term->taxonomy);
 
 		// Clean slate: remove any existing markup annotations from term data
 		// This ensures we don't duplicate markup text when reapplying
-		$name = $mt2mba_utility->stripMarkupAnnotation($term->name);
-		$description = $mt2mba_utility->stripMarkupAnnotation($term->description);
+		$new_name = Utility\General::stripMarkupAnnotation($term->name);
+		$new_description = Utility\General::stripMarkupAnnotation($term->description);
 
-		// Clear existing markup metadata first (will be re-added if validation passes)
-		delete_term_meta($term_id, 'mt2mba_markup');
-
-		// Get and validate the markup input
-		$raw_markup = sanitize_text_field($_POST['term_markup']);
-
-		// Validate markup using centralized validation
-		$validated_markup = $mt2mba_utility->validateMarkupValue($raw_markup);
-
-		// Only proceed if markup validation passed and isn't empty
-		if ($validated_markup !== false && $validated_markup !== '') {
-			// Final sanitization pass before database storage
-			$markup = $mt2mba_utility->sanitizeMarkupForStorage($validated_markup);
-
-			// Save markup to term metadata table
-			update_term_meta($term_id, 'mt2mba_markup', $markup);
-
+		if ($markup !== '') {
 			// Check global attribute settings for term name/description rewriting
 			// These options control whether markup should be visible in dropdowns
-			$rewrite_name_flag	= get_option(MT2MBA_REWRITE_TERM_NAME_PREFIX . wc_attribute_taxonomy_id_by_name($taxonomy_name));
-			$rewrite_desc_flag	= get_option(MT2MBA_REWRITE_TERM_DESC_PREFIX . wc_attribute_taxonomy_id_by_name($taxonomy_name));
-
-			// Check markup sign for proper formatting (discount vs. surcharge)
-			$is_negative = strpos($markup, '-') === 0;
+			$taxonomy_id = wc_attribute_taxonomy_id_by_name($taxonomy_name);
+			$rewrite_name_flag = get_option(MT2MBA_REWRITE_TERM_NAME_PREFIX . $taxonomy_id);
+			$rewrite_desc_flag = get_option(MT2MBA_REWRITE_TERM_DESC_PREFIX . $taxonomy_id);
 
 			// Conditionally modify term name based on attribute settings
-			// e.g., "Blue" becomes "Blue (+$5.00)" if name rewriting is enabled
+			// e.g., "Blue" becomes "Blue (+$5.00)" if name rewriting is enabled.
+			// The sign is already in $markup, so nothing has to be told about it.
 			if ($rewrite_name_flag == 'yes') {
-				$name = $mt2mba_utility->addMarkupToName($name, $markup, $is_negative);
+				$new_name = Utility\General::addMarkupToName($new_name, $markup);
 			}
 
-			// Conditionally modify term description for markup visibility
+			// Conditionally modify term description for markup visibility. The
+			// description deliberately keeps the word form for both markup types.
 			if ($rewrite_desc_flag == 'yes') {
-				$description = $mt2mba_utility->addMarkupToTermDescription($description, $markup, $is_negative);
+				$new_description = Utility\General::addMarkupToTermDescription(
+					$new_description,
+					$markup,
+					strpos($markup, '-') === 0
+				);
 			}
-		} elseif ($validated_markup === false) {
-			// Invalid markup - add admin notice
-			add_action('admin_notices', function() use ($raw_markup) {
-				echo '<div class="notice notice-error is-dismissible"><p>' .
-					sprintf(
-						__('Invalid markup value "%s". Please use format like "5.00", "-2.50", "10%" or "-5%".', 'markup-by-attribute-for-woocommerce'),
-						esc_html($raw_markup)
-					) .
-					'</p></div>';
-			});
 		}
 
-		// Rewrite term if name and/or description have changed
-		if ($term->name != $name || $term->description != $description) {
-			// Raise the guard only around this call (it re-fires edited_{taxonomy}); lower
-			// it immediately after so the next term in a batch processes normally.
-			self::$is_rewriting_term = true;
-			wp_update_term(
-				$term_id,
-				$taxonomy_name,
-				array(
-					'name' => sanitize_text_field(trim($name)),
-					'description' => sanitize_textarea_field(trim($description))
-				)
-			);
-			self::$is_rewriting_term = false;
-		}
+		// Skip the write when the annotation left the term exactly as it was: no
+		// pointless DB update, and no edited_{taxonomy} re-fire for every other
+		// plugin listening. Loose comparison deliberately, matching what this replaced.
+		if (($term->name == $new_name) && ($term->description == $new_description)) return;
+
+		// Raise the guard only around this call (it re-fires edited_{taxonomy}); lower
+		// it immediately after so the next term in a batch processes normally.
+		self::$is_rewriting_term = true;
+		wp_update_term(
+			$term->term_id,
+			$taxonomy_name,
+			array(
+				'name' => sanitize_text_field(trim($new_name)),
+				'description' => sanitize_textarea_field(trim($new_description))
+			)
+		);
+		self::$is_rewriting_term = false;
+	}
+	//endregion
+
+	/**
+	 * Enqueue markup-field validation on term add/edit screens
+	 *
+	 * @param string $hook Current admin page hook suffix
+	 */
+	public function enqueueMarkupValidation(string $hook): void {
+		// Only the term list/add screen (edit-tags.php) and term edit screen (term.php)
+		if ($hook !== 'edit-tags.php' && $hook !== 'term.php') return;
+
+		// Only product-attribute taxonomies carry the markup field
+		$taxonomy = sanitize_key($_GET['taxonomy'] ?? '');
+		if (strpos($taxonomy, 'pa_') !== 0) return;
+
+		wp_enqueue_script(
+			'mt2mba-validate-markup',
+			MT2MBA_PLUGIN_URL . 'src/js/jq-mt2mba-validate-markup.js',
+			array('jquery'),
+			MT2MBA_VERSION,
+			true
+		);
+
+		// The validator normalizes notation exactly as the server does, and that
+		// needs the store's decimal separator: "1.235,12" is correct in a comma
+		// store and meaningless in a dot store
+		wp_localize_script(
+			'mt2mba-validate-markup',
+			'mt2mbaMarkup',
+			array('decimalSeparator' => wc_get_price_decimal_separator())
+		);
+
+		// Carries the .mt2mba-invalid red-border rule (see admin-style.css for
+		// why core's form-required mechanism isn't used)
+		wp_enqueue_style(
+			'mt2mba-admin-styles',
+			MT2MBA_PLUGIN_URL . 'src/css/admin-style.css',
+			array(),
+			MT2MBA_VERSION
+		);
 	}
 	//endregion
 
@@ -312,6 +371,12 @@ class Term {
 	* Handle markup column sorting
 	*/
 	public function handleMarkupColumnSort(object $term_query) {
+		// pre_get_terms fires on frontend term queries too, so a frontend request
+		// carrying ?orderby=markup would otherwise get its query vars rewritten.
+		// This class only registers in admin; the guard makes that a property of
+		// the code rather than of the caller.
+		if (!is_admin()) return;
+
 		// WP_Term_Query does not define a get() or a set() method,
 		// so the query_vars member must be manipulated directly
 		if (isset($_GET['orderby']) && 'markup' == sanitize_text_field(wp_unslash($_GET['orderby']))) {

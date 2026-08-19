@@ -1,0 +1,7 @@
+# Revisions to skip when running git blame — bulk cosmetic changes only.
+#
+# GitHub honors this file automatically. Locally, enable it once with:
+#   git config blame.ignoreRevsFile .git-blame-ignore-revs
+
+# Normalize all line endings to LF via .gitattributes (2026-08-04)
+723a463667521479e119e41a68346e08c8adbdd9

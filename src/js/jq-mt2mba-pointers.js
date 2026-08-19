@@ -12,8 +12,8 @@ jQuery(document).ready(function($) {
 	});
 
 	function mt2mba_open_pointer(i) {
-		pointer = mt2mbaPointer.pointers[i];
-		options = $.extend(pointer.options, {
+		const pointer = mt2mbaPointer.pointers[i];
+		const options = $.extend(pointer.options, {
 			close: function() {
 				$.post(ajaxurl, {
 					pointer: pointer.pointer_id,

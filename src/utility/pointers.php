@@ -10,7 +10,7 @@ namespace mt2Tech\MarkupByAttribute\Utility;
  *
  * @package   mt2Tech\MarkupByAttribute\Utility
  * @author    Mark Tomlinson
- * @license   GPL-2.0+
+ * @license   GPL-3.0-or-later
  * @since     1.0.0
  */
 
@@ -126,7 +126,9 @@ class Pointers {
 		wp_enqueue_script (
 			'mt2mba-pointer',
 			MT2MBA_PLUGIN_URL . 'src/js/jq-mt2mba-pointers.js',
-			array('wp-pointer')
+			array('wp-pointer'),
+			MT2MBA_VERSION,
+			true
 		);
 
 		// Add pointer options to script.

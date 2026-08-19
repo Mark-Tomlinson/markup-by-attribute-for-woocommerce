@@ -1,5 +1,6 @@
 <?php
 namespace mt2Tech\MarkupByAttribute\Frontend;
+use mt2Tech\MarkupByAttribute\Utility as Utility;
 
 /**
  * Frontend dropdown options handler for WooCommerce variation attributes
@@ -10,7 +11,7 @@ namespace mt2Tech\MarkupByAttribute\Frontend;
  *
  * @package   mt2Tech\MarkupByAttribute\Frontend
  * @author    Mark Tomlinson
- * @license   GPL-2.0+
+ * @license   GPL-3.0-or-later
  * @since     1.0.0
  */
 
@@ -122,9 +123,6 @@ class Options {
 			$strip_markups = true;
 		}
 
-		// Set globals
-		global $mt2mba_utility;
-
 		// Extract remaining content from $args
 		$product				= $args['product'];
 		$name					= $args['name'] ? $args['name'] : 'attribute_' . sanitize_title($attribute);
@@ -159,21 +157,18 @@ class Options {
 				foreach ($terms as $term) {
 					// Only include terms that are actually used in this product's variations
 					if (in_array($term->slug, $options)) {
+						// Term names pass through raw, exactly as WooCommerce core does —
+						// the woocommerce_variation_option_name filter runs at output
+						// below, so the escaping has to happen after it, not here.
+						$markup = '';
 						if ($strip_markups) {
 							// Remove markup annotations for zero-priced products
-							$term_name = $mt2mba_utility->stripMarkupAnnotation($term->name);
-							$markup = '';
+							$term_name = Utility\General::stripMarkupAnnotation($term->name);
 						} else {
-							// Get and format markup for display in dropdown
-							$term_name = $mt2mba_utility->sanitizeMarkupForDisplay($term->name);
+							$term_name = $term->name;
 							$raw_markup = get_metadata('post', $product->get_id(), 'mt2mba_' . $term->term_id . '_markup_amount', TRUE);
-
-							// Sanitize and format markup for display
 							if ($raw_markup) {
-								$sanitized_markup = $mt2mba_utility->sanitizeMarkupForDisplay($raw_markup);
-								$markup = $mt2mba_utility->formatOptionMarkup($sanitized_markup);
-							} else {
-								$markup = '';
+								$markup = Utility\General::formatOptionMarkup($raw_markup);
 							}
 						}
 

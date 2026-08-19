@@ -12,9 +12,14 @@ use Throwable;
  * This file is part of the Markup by Attribute for WooCommerce plugin by Mark Tomlinson
  *
  * @package   markup-by-attribute-for-woocommerce
- * @version   4.6.3
+ * @version   4.7.0
  * @author    Mark Tomlinson
- * @license   GPL-2.0+
+ * @license   GPL-3.0-or-later
+ *
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version. See the LICENSE file, or https://www.gnu.org/licenses/gpl-3.0.html
  */
 
 /**
@@ -25,20 +30,20 @@ use Throwable;
  * Author:                  MarkTomlinson
  * Contributors:            MarkTomlinson
  * Donate link:             https://www.paypal.me/MT2Dev/5
- * License:                 GPLv3
+ * License:                 GPLv3 or later
  * License URI:             https://www.gnu.org/licenses/gpl-3.0.html
  * Text Domain:             markup-by-attribute-for-woocommerce
  * Domain Path:             /languages
- * Version:                 4.6.3
- * Stable tag:              4.6.3
- * Tested up to:            7.0
+ * Version:                 4.7.0
+ * Stable tag:              4.7.0
+ * Tested up to:            7.1
  * Requires at least:       5.7
- * PHP tested up to:        8.4.21
+ * PHP tested up to:        8.4.23
  * Requires PHP:            7.4.3
  * NOTE: Union types (e.g., string|float) require PHP 8.0+. Some method parameters
  *       accept multiple types at runtime but are typed as string for 7.4 compatibility.
  *       See affected method docblocks for details.
- * WC tested up to:         10.8.1
+ * WC tested up to:         11.0.1
  * WC requires at least:    5.0.0
  * MariaDB tested up to:    11.8.6
  */
@@ -111,11 +116,9 @@ function define_constants(): void {
 	// WordPress-dependent paths and URLs
 	define('MT2MBA_PLUGIN_DIR', plugin_dir_path(__FILE__));
 	define('MT2MBA_PLUGIN_URL', plugin_dir_url(__FILE__));
-	define('MT2MBA_PLUGIN_BASENAME', plugin_basename(__FILE__));
-	define('MT2MBA_SITE_URL', get_bloginfo('wpurl'));
 
 	// Plugin version and compatibility
-	define('MT2MBA_VERSION', '4.6.3');
+	define('MT2MBA_VERSION', '4.7.0');
 	define('MT2MBA_SCHEMA_VERSION', '4.6.0');	// Last plugin version that included a database schema change
 	define('MT2MBA_ADMIN_POINTER_PRIORITY', 1000);
 
@@ -140,6 +143,33 @@ function define_constants(): void {
 	// Price type constants (Used by WooCommerce, do not translate)
 	define('MT2MBA_REGULAR_PRICE', 'regular_price');
 	define('MT2MBA_SALE_PRICE', 'sale_price');
+
+	// Settings-derived constants; defaults come from the Settings class.
+	// Requires WooCommerce to be loaded — safe here, mt2mba_main() runs on woocommerce_init.
+	$settings = Backend\Settings::get_instance();
+	define('MT2MBA_DESC_BEHAVIOR', get_option('mt2mba_desc_behavior', $settings->desc_behavior));
+	define('MT2MBA_DROPDOWN_BEHAVIOR', get_option('mt2mba_dropdown_behavior', $settings->dropdown_behavior));
+	define('MT2MBA_INCLUDE_ATTRB_NAME', get_option('mt2mba_include_attrb_name', $settings->include_attrb_name));
+	define('MT2MBA_HIDE_BASE_PRICE', get_option('mt2mba_hide_base_price', $settings->hide_base_price));
+	define('MT2MBA_SALE_PRICE_MARKUP', get_option('mt2mba_sale_price_markup', $settings->sale_price_markup));
+	define('MT2MBA_ROUND_MARKUP', get_option('mt2mba_round_markup', $settings->round_markup));
+	define('MT2MBA_MAX_VARIATIONS', get_option('mt2mba_max_variations', $settings->max_variations));
+	define('MT2MBA_CURRENCY_SYMBOL', html_entity_decode(get_woocommerce_currency_symbol(get_woocommerce_currency())));
+}
+
+/**
+ * Stamp the schema version on first install
+ *
+ * Marks a fresh install as current so mt2mba_run_upgrades() correctly skips
+ * upgrade modules that predate it. Must run after define_constants() and
+ * before mt2mba_run_upgrades().
+ *
+ * @since 4.7.0
+ */
+function mt2mba_stamp_schema_version(): void {
+	if (get_option('mt2mba_db_version', false) === false) {
+		update_option('mt2mba_db_version', MT2MBA_SCHEMA_VERSION, false);
+	}
 }
 
 /**
@@ -169,16 +199,17 @@ function mt2mba_run_upgrades(): void {
 	$upgrade_dir = MT2MBA_PLUGIN_DIR . 'src/utility/upgrades/';
 	$files = glob($upgrade_dir . 'db_upgrade_*.php');
 	if (empty($files)) return;
-	sort($files);
 
 	// Load interface
 	require_once $upgrade_dir . 'upgradeinterface.php';
 
+	// Load and validate upgrade classes
+	$classes = [];
 	foreach ($files as $file) {
 		require_once $file;
 
 		// Derive fully-qualified class name from filename
-		// db_upgrade_2_0.php -> DbUpgrade_2_0
+		// db_upgrade_2_0.php -> Db_Upgrade_2_0
 		$basename = basename($file, '.php');
 		$class_short = implode('_', array_map('ucfirst', explode('_', $basename)));
 		$fqcn = 'mt2Tech\\MarkupByAttribute\\Utility\\Upgrades\\' . $class_short;
@@ -188,6 +219,14 @@ function mt2mba_run_upgrades(): void {
 		$implements = class_implements($fqcn);
 		if (!isset($implements['mt2Tech\\MarkupByAttribute\\Utility\\Upgrades\\UpgradeInterface'])) continue;
 
+		$classes[] = $fqcn;
+	}
+
+	// Order by each module's declared version — filename sort is lexicographic
+	// and would run db_upgrade_10_0.php before db_upgrade_2_0.php
+	usort($classes, fn($a, $b) => version_compare($a::version(), $b::version()));
+
+	foreach ($classes as $fqcn) {
 		// Skip upgrades already applied
 		if (version_compare($fqcn::version(), $installed_version, '<=')) {
 			continue;
@@ -227,9 +266,8 @@ function mt2mba_main(): void {
 		dirname(plugin_basename(__FILE__)) . '/languages'
 	);
 
-	// Instantiate utility class (global for backward compatibility)
-	global $mt2mba_utility;
-	$mt2mba_utility = Utility\General::get_instance();
+	// Mark fresh installs as schema-current before the upgrade runner looks
+	mt2mba_stamp_schema_version();
 
 	// Initialize context-specific components
 	if (is_admin()) {

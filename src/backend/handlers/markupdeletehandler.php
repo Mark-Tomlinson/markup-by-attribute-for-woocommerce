@@ -12,7 +12,7 @@ namespace mt2Tech\MarkupByAttribute\Backend\Handlers;
  *
  * @package   mt2Tech\MarkupByAttribute\Backend\Handlers
  * @author    Mark Tomlinson
- * @license   GPL-2.0+
+ * @license   GPL-3.0-or-later
  * @since     4.0.0
  */
 class MarkupDeleteHandler extends PriceMarkupHandler {
@@ -20,17 +20,16 @@ class MarkupDeleteHandler extends PriceMarkupHandler {
 	/**
 	 * Initialize MarkupDeleteHandler
 	 *
-	 * Overrides parent constructor to prevent initialization since delete operations
-	 * don't need price calculation setup.
+	 * Deliberately does not call parent::__construct(): deletion needs no price
+	 * type, base price or currency formatting, only the product to sweep.
 	 *
 	 * @since 4.0.0
-	 * @param string $unused1    Unused parameter (maintaining interface compatibility)
-	 * @param string $unused2    Unused parameter (maintaining interface compatibility)
-	 * @param int    $product_id The ID of the product
-	 * @param array  $unused4    Unused parameter (maintaining interface compatibility)
+	 * @param int $product_id The ID of the product
 	 */
-	public function __construct($unused1, $unused2, $product_id, $unused4) {
-		// Necessary __construct() to prevent parent::__construct() from firing
+	public function __construct($product_id) {
+		$this->product_id = $product_id;
+		// This action fires once the variations are already gone
+		$this->variations = [];
 	}
 	//endregion
 
@@ -44,20 +43,10 @@ class MarkupDeleteHandler extends PriceMarkupHandler {
 	 * cleaned up by WordPress core.
 	 *
 	 * @since 4.0.0
-	 * @param string $unused1    Unused parameter (maintaining interface compatibility)
-	 * @param string $unused2    Unused parameter (maintaining interface compatibility)
-	 * @param int    $product_id The ID of the product
-	 * @param array  $unused4    Unused parameter (maintaining interface compatibility)
 	 */
-	public function processProductMarkups($unused1, $unused2, $product_id, $unused4): void {
-		global $wpdb;
-
-		// Delete all Markup-by-Attribute metadata for the product using prepared statement
-		$wpdb->query($wpdb->prepare(
-			"DELETE FROM {$wpdb->postmeta} WHERE post_id = %d AND meta_key LIKE %s",
-			$product_id,
-			$wpdb->esc_like('mt2mba_') . '%'
-		));
+	public function processProductMarkups(): void {
+		// Delete all Markup-by-Attribute metadata for the product
+		BulkMetaIO::deleteMetaLike($this->product_id, BulkMetaIO::likePattern('mt2mba_'));
 	}
 	//endregion
 }

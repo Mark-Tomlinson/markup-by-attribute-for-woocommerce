@@ -1,17 +1,16 @@
 <?php
 namespace mt2Tech\MarkupByAttribute\Utility;
-use mt2Tech\MarkupByAttribute\Backend as Backend;
 
 /**
- * Core utility functions for Markup-by-Attribute plugin
+ * Stateless string helpers for Markup-by-Attribute
  *
- * Provides essential utility functions including database upgrades, price formatting,
- * markup validation and sanitization, text processing, and internationalization support.
- * This class serves as the foundation for all plugin operations.
+ * Price formatting, markup validation and sanitization, and the markup annotation
+ * that decorates term names and variation descriptions. All methods are static —
+ * plugin bootstrap (constants, schema stamping) lives in the main plugin file.
  *
  * @package   mt2Tech\MarkupByAttribute\Utility
  * @author    Mark Tomlinson
- * @license   GPL-2.0+
+ * @license   GPL-3.0-or-later
  * @since     1.0.0
  */
 
@@ -19,60 +18,6 @@ use mt2Tech\MarkupByAttribute\Backend as Backend;
 if (!defined('ABSPATH')) exit();
 
 class General {
-	//region PROPERTIES
-	/**
-	 * Singleton instance
-	 *
-	 * @var self|null
-	 */
-	private static ?self $instance = null;
-	//endregion
-
-	//region INSTANCE MANAGEMENT
-	/**
-	 * Get singleton instance
-	 *
-	 * @return self Single instance of this class
-	 */
-	public static function get_instance(): self {
-		if (self::$instance === null) {
-			self::$instance = new self();
-		}
-		return self::$instance;
-	}
-
-	/**
-	 * Prevent object cloning
-	 */
-	public function __clone() {}
-
-	/**
-	 * Prevent object unserialization
-	 */
-	public function __wakeup(): void {}
-
-	// Private constructor
-	private function __construct() {
-		// Stamp schema version on first install (upgrades handled in mt2mba_run_upgrades)
-		if (get_option('mt2mba_db_version', false) === false) {
-			update_option('mt2mba_db_version', MT2MBA_SCHEMA_VERSION, false);
-		}
-
-		// Set global values used throughout the code
-		if (!defined('MT2MBA_CURRENCY_SYMBOL')) {
-			$settings = Backend\Settings::get_instance();
-			define('MT2MBA_DESC_BEHAVIOR', get_option('mt2mba_desc_behavior', $settings->desc_behavior));
-			define('MT2MBA_DROPDOWN_BEHAVIOR', get_option('mt2mba_dropdown_behavior', $settings->dropdown_behavior));
-			define('MT2MBA_INCLUDE_ATTRB_NAME', get_option('mt2mba_include_attrb_name', $settings->include_attrb_name));
-			define('MT2MBA_HIDE_BASE_PRICE', get_option('mt2mba_hide_base_price', $settings->hide_base_price));
-			define('MT2MBA_SALE_PRICE_MARKUP', get_option('mt2mba_sale_price_markup', $settings->sale_price_markup));
-			define('MT2MBA_ROUND_MARKUP', get_option('mt2mba_round_markup', $settings->round_markup));
-			define('MT2MBA_MAX_VARIATIONS', get_option('mt2mba_max_variations', $settings->max_variations));
-			define('MT2MBA_CURRENCY_SYMBOL', html_entity_decode(get_woocommerce_currency_symbol(get_woocommerce_currency())));
-		}
-	}
-	//endregion
-
 	//region FORMATTING METHODS
 	/**
 	 * Clean up the price or markup and reformat according to currency options
@@ -84,54 +29,83 @@ class General {
 	 * @param string $text A number that will be reformatted into the local currency
 	 * @return string      Properly formatted price with currency indicator
 	 */
-	public function cleanUpPrice(string $text): string {
+	public static function cleanUpPrice(string $text): string {
 		// Extract amount from string and set to absolute
 		$amount = abs(floatval($text));
 
-		if (strpos($text, "%")) {		// Text is a percentage?
+		if (self::isPercentage($text)) {
 			// Amount, trimmed and percent symbol added
 			return trim($amount . '%');
-		} else {						// Text is an amount
+		} else {
 			// Amount formatted as local currency, no HTML tags, HTML decoded, and trimmed
 			return trim(html_entity_decode(strip_tags(wc_price($amount))));
 		}
 	}
 
 	/**
+	 * Format a markup value as the annotation that decorates a term name or a
+	 * drop-down option
+	 *
+	 * The form follows the markup TYPE, not where it is displayed:
+	 *
+	 *   percentage -> (Add 5%) / (Subtract 5%)   — a bare "-5%" reads ambiguously
+	 *   currency   -> (+$5.00) / (-$5.00)        — the symbol already says what it is
+	 *
+	 * Deliberately knows nothing about the drop-down settings. Those belong to
+	 * formatOptionMarkup(); the term-name path must not inherit them, or 'hide'
+	 * would stop baking annotations into names that "Add Markup to Name?"
+	 * governs, and the strip-symbol mode would wrongly remove the currency sign.
+	 *
+	 * @since 4.7.0
+	 * @param string $markup Signed markup amount (string|float at runtime, cast to string)
+	 * @return string        Annotation with its parentheses, or '' for no markup
+	 */
+	public static function formatMarkupAnnotation(string $markup): string {
+		// Cast before comparing against zero. PHP 7 reads a non-numeric string's
+		// leading digits in that comparison and PHP 8 does not; min-PHP is 7.4.
+		if ($markup === '' || (float) $markup == 0) return '';
+
+		$is_negative = (float) $markup < 0;
+
+		if (self::isPercentage($markup)) {
+			$pattern = $is_negative ? MT2MBA_MARKUP_NAME_PATTERN_SUBTRACT : MT2MBA_MARKUP_NAME_PATTERN_ADD;
+			return sprintf($pattern, self::cleanUpPrice($markup));
+		}
+
+		return '(' . ($is_negative ? '-' : '+') . self::cleanUpPrice($markup) . ')';
+	}
+
+	/**
 	 * Format the markup that appears in the options drop-down box
 	 *
-	 * Creates formatted markup text for display in WooCommerce variation dropdowns.
-	 * Handles plugin settings for showing/hiding markup, currency symbols, and formatting.
+	 * A thin wrapper over formatMarkupAnnotation() that adds the two behaviors
+	 * belonging to the drop-down alone: suppressing it entirely, and showing the
+	 * amount without a currency symbol.
 	 *
 	 * @since 2.0.0
 	 * @param string $markup Signed markup amount (string|float at runtime, cast to string)
 	 * @return string        Formatted markup for dropdown display (e.g., " (+$5.00)")
 	 */
-	public function formatOptionMarkup(string $markup): string {
-		if ($markup != "" && $markup != 0) {
-			// Jump out if markup is not to be displayed.
-			if (MT2MBA_DROPDOWN_BEHAVIOR == 'hide') {
-				return '';
-			}
+	public static function formatOptionMarkup(string $markup): string {
+		// Jump out if markup is not to be displayed.
+		if (MT2MBA_DROPDOWN_BEHAVIOR == 'hide') return '';
 
-			// Set sign
-			$sign = (float) $markup < 0 ? "-" : "+";
-			// There are instances where the markup for the product is not in the database.
-			// Where this is the case and the markup is a percentage, show only the percentage.
-			if (strpos($markup, '%')) {
-				// Return formatted with percentage
-				$markup = trim(html_entity_decode($markup));
-			} elseif (MT2MBA_DROPDOWN_BEHAVIOR == 'add') {
-				// Return formatted with symbol
-				$markup = html_entity_decode($sign . $this->cleanUpPrice($markup));
-			} else {
-				// Return formatted without symbol
-				$markup = html_entity_decode($sign . trim(str_replace(MT2MBA_CURRENCY_SYMBOL, "", $this->cleanUpPrice($markup))));
-			}
-			return " (" . $markup . ")";
+		$annotation = self::formatMarkupAnnotation($markup);
+		if ($annotation === '') return '';
+
+		if (MT2MBA_DROPDOWN_BEHAVIOR != 'add') {
+			// Drop the currency symbol, then close the gap it leaves behind. A
+			// suffix-symbol locale ("1.234,50 kr") has a space in front of the
+			// symbol that has to go with it. Only the sign form is touched —
+			// the word form has no symbol to strip.
+			$annotation = preg_replace(
+				'/\(\s*([-+])\s*(.*?)\s*\)/u',
+				'($1$2)',
+				str_replace(MT2MBA_CURRENCY_SYMBOL, '', $annotation)
+			);
 		}
-		// No markup; return empty string
-		return '';
+
+		return ' ' . $annotation;
 	}
 
 	/**
@@ -141,10 +115,10 @@ class General {
 	 * @param	string	$term_name	Attribute term that the markup applies to
 	 * @return	string				Formatted description
 	 */
-	public function formatVariationMarkupDescription(string $markup, string $attrb_name, string $term_name): string {
+	public static function formatVariationMarkupDescription(string $markup, string $attrb_name, string $term_name): string {
 		if ($markup != "" && $markup != 0) {
 			// Clean any existing markup from the term name before formatting
-			$term_name = $this->stripMarkupAnnotation($term_name);
+			$term_name = self::stripMarkupAnnotation($term_name);
 
 			// Sanitize inputs for safe display (but preserve text content)
 			$term_name = sanitize_text_field($term_name);
@@ -160,7 +134,7 @@ class General {
 				return html_entity_decode(
 					sprintf(
 						$desc_format,
-						esc_html($this->cleanUpPrice($markup)),
+						esc_html(self::cleanUpPrice($markup)),
 						esc_html($attrb_name),
 						esc_html($term_name)
 					)
@@ -173,7 +147,7 @@ class General {
 				return html_entity_decode(
 					sprintf(
 						$desc_format,
-						esc_html($this->cleanUpPrice($markup)),
+						esc_html(self::cleanUpPrice($markup)),
 						esc_html($term_name)
 					)
 				);
@@ -198,7 +172,7 @@ class General {
 	 * @param string $string    The string to be processed
 	 * @return string           The string minus the text to be removed and the beginning and ending markers
 	 */
-	public function removeBracketedString(string $beginning, string $ending, string $string): string {
+	public static function removeBracketedString(string $beginning, string $ending, string $string): string {
 		$beginningPos = strpos($string, $beginning, 0);
 		$endingPos = strpos($string, $ending, $beginningPos);
 
@@ -212,15 +186,20 @@ class General {
 	/**
 	 * Strip markup annotation from term name
 	 *
-	 * Removes markup annotations (like "(Add $5.00)" or "(Subtract 10%)") from term names.
-	 * Uses internationalized patterns to handle different languages and currency formats.
-	 * This is used to clean term names before applying new markup annotations.
+	 * Removes markup annotations — the word form "(Add $5.00)" / "(Subtract 10%)" and
+	 * the sign form "(+$5.00)" / "(-$5.00)" — from term names. Uses internationalized
+	 * patterns to handle different languages and currency formats. This is used to
+	 * clean term names before applying new markup annotations.
+	 *
+	 * Both forms are recognized because both exist in the wild: 4.7.0 moved currency
+	 * markups to the sign form without an upgrade routine, so a name baked by an
+	 * earlier version keeps the word form until its term is next saved.
 	 *
 	 * @since 3.9.0
 	 * @param string $text The text to process
 	 * @return string      Text with markup annotation removed
 	 */
-	public function stripMarkupAnnotation(string $text): string {
+	public static function stripMarkupAnnotation(string $text): string {
 		// Pattern for numbers that handles international formats
 		$number_pattern = '[0-9.,\s%\p{Sc}A-Z]*';
 
@@ -228,12 +207,20 @@ class General {
 		$add_pattern = '/(?:^|\s)' . str_replace('%s', $number_pattern, preg_quote(MT2MBA_MARKUP_NAME_PATTERN_ADD, '/')) . '/u';
 		$subtract_pattern = '/(^|\s)' . str_replace('%s', $number_pattern, preg_quote(MT2MBA_MARKUP_NAME_PATTERN_SUBTRACT, '/')) . '/u';
 
+		// Sign form, anchored to the end of the string — the only place
+		// addMarkupToName() ever puts it. Unanchored, this would eat any
+		// parenthetical that opens with a sign, such as "Widget (-5) Blue". At
+		// least one digit is required so "(+extras)" survives. The cost of the
+		// anchor is a name genuinely ending in a bare signed number.
+		$sign_pattern = '/\s*\([-+][0-9.,\s\p{Sc}\p{L}]*[0-9][0-9.,\s\p{Sc}\p{L}]*\)$/u';
+
 		// Decoded HTML encoding
 		$text = html_entity_decode($text);
 
 		// Remove markup annotations
 		$text = preg_replace($add_pattern, '', $text);
 		$text = preg_replace($subtract_pattern, '', $text);
+		$text = preg_replace($sign_pattern, '', $text);
 
 		return trim($text);
 	}
@@ -241,21 +228,18 @@ class General {
 	/**
 	 * Add markup annotation to term name
 	 *
-	 * Appends formatted markup notation to term names (e.g., "Blue (Add $5.00)").
+	 * Appends formatted markup notation to term names (e.g., "Blue (+$5.00)").
 	 * Used when the plugin is configured to show markup in attribute option names.
 	 *
 	 * @since 3.9.0
-	 * @param string $text        Base text
-	 * @param string $markup      Markup value (with % or currency)
-	 * @param bool   $is_negative Whether this is a negative markup
-	 * @return string             Text with markup annotation added
+	 * @param string $text   Base text
+	 * @param string $markup Signed markup value (with % or currency)
+	 * @return string        Text with markup annotation added
 	 */
-	public function addMarkupToName(string $text, string $markup, bool $is_negative = false): string {
-		// Format the markup value using cleanUpPrice()
-		$formatted_markup = $this->cleanUpPrice($markup);
+	public static function addMarkupToName(string $text, string $markup): string {
+		$annotation = self::formatMarkupAnnotation($markup);
 
-		$pattern = $is_negative ? MT2MBA_MARKUP_NAME_PATTERN_SUBTRACT : MT2MBA_MARKUP_NAME_PATTERN_ADD;
-		return $text . " " . sprintf($pattern, $formatted_markup);
+		return $annotation === '' ? $text : $text . ' ' . $annotation;
 	}
 
 	/**
@@ -270,9 +254,9 @@ class General {
 	 * @param bool   $is_negative Whether this is a negative markup
 	 * @return string             Description with markup annotation added
 	 */
-	public function addMarkupToTermDescription(string $description, string $markup, bool $is_negative = false): string {
+	public static function addMarkupToTermDescription(string $description, string $markup, bool $is_negative = false): string {
 		// Format the markup value using cleanUpPrice()
-		$formatted_markup = $this->cleanUpPrice($markup);
+		$formatted_markup = self::cleanUpPrice($markup);
 
 		$pattern = $is_negative ? MT2MBA_MARKUP_NAME_PATTERN_SUBTRACT : MT2MBA_MARKUP_NAME_PATTERN_ADD;
 		return trim($description . "\n" . trim(sprintf($pattern, $formatted_markup)));
@@ -281,12 +265,151 @@ class General {
 
 	//region VALIDATION & SANITIZATION
 	/**
+	 * Rewrite a markup value into canonical notation
+	 *
+	 * Locale-canonical form is [-]digits[<sep>digits][%]: no whitespace, no
+	 * thousands separators, sign leading only, percent sign U+0025 trailing only,
+	 * and the decimal separator left in the STORE'S notation. Examples for a store
+	 * whose decimal separator is a comma:
+	 *
+	 *   "5 %"       -> "5%"       space before the percent sign (WooCommerce allows it)
+	 *   "%50"       -> "50%"      leading percent sign (Turkish convention)
+	 *   "-%50"      -> "-50%"     ...with a sign
+	 *   "50٪"       -> "50%"      U+066A Arabic percent
+	 *   "50％"      -> "50%"      U+FF05 fullwidth percent
+	 *   "1235,12"   -> "1235,12"  comma decimal, already canonical
+	 *   "1 235,12"  -> "1235,12"  space as thousands separator (French)
+	 *   "1.235,12"  -> "1235,12"  dot as thousands separator (German, Spanish)
+	 *   "+5"        -> "5"        positive is implied
+	 *
+	 * Separator handling needs the store's configured decimal separator, because
+	 * "1.235,12" and "1,235.12" are each correct in some locale and meaningless in
+	 * the other. Whichever character is NOT the decimal separator is treated as a
+	 * thousands separator and dropped.
+	 *
+	 * IMPORTANT — the decimal separator is deliberately NOT converted to '.' here.
+	 * This method has to be idempotent, because the browser normalizes the field
+	 * before submitting and the server normalizes again on arrival. Converting
+	 * "1235,12" to "1235.12" here would make that second pass read the '.' as a
+	 * thousands separator and strip it, storing 123512. Use toInternalDecimal()
+	 * once, at the point of storage or calculation, instead.
+	 *
+	 * This is a rewriter, not a validator: anything it cannot make sense of comes
+	 * back unchanged for validateMarkupValue() to reject. A trailing sign ("2-")
+	 * is deliberately left alone so it fails validation — WooCommerce silently
+	 * ignores it and treats "2-" as +2, which is worth an error rather than a guess.
+	 *
+	 * @since 4.7.0
+	 * @param string      $raw               Markup value as entered
+	 * @param string|null $decimal_separator Store's decimal separator; defaults to
+	 *                                       WooCommerce's configured one
+	 * @return string                        Canonical notation, or $raw unchanged
+	 *                                       if unrecognizable
+	 */
+	public static function normalizeMarkupNotation(string $raw, ?string $decimal_separator = null): string {
+		if ($decimal_separator === null) {
+			$decimal_separator = function_exists('wc_get_price_decimal_separator')
+				? wc_get_price_decimal_separator()
+				: '.';
+		}
+
+		// Unify percent sign variants on U+0025
+		$markup = str_replace(["\u{066A}", "\u{FF05}", "\u{FE6A}"], '%', $raw);
+
+		// Strip every kind of space, including NBSP and the narrow/figure spaces
+		// used as thousands separators
+		$markup = preg_replace('/[\s\x{00A0}\x{202F}\x{2007}]+/u', '', $markup);
+		if ($markup === null || $markup === '') return $raw;
+
+		// Lift a leading percent sign, with or without a sign ahead of it
+		$leading_percent = false;
+		if (preg_match('/^([+-]?)%(.*)$/', $markup, $matches)) {
+			$leading_percent = true;
+			$markup = $matches[1] . $matches[2];
+		}
+
+		// ...and a trailing one
+		$trailing_percent = false;
+		if (substr($markup, -1) === '%') {
+			$trailing_percent = true;
+			$markup = substr($markup, 0, -1);
+		}
+
+		// A percent sign at both ends is malformed; hand it back for rejection
+		if ($leading_percent && $trailing_percent) return $raw;
+
+		// Positive is implied
+		if (substr($markup, 0, 1) === '+') $markup = substr($markup, 1);
+
+		$thousands_separator = ($decimal_separator === ',') ? '.' : ',';
+
+		// A grouping mark can only appear ahead of the decimal point. In a
+		// comma-decimal store "1,235.12" puts it after, which is malformed rather
+		// than merely foreign — hand it back for rejection instead of stripping it
+		// into 1.23512. Group SIZES are not policed: 3-digit grouping is not
+		// universal (Indian notation groups 2-2-3).
+		$decimal_at = strpos($markup, $decimal_separator);
+		$last_group_at = strrpos($markup, $thousands_separator);
+		if ($decimal_at !== false && $last_group_at !== false && $last_group_at > $decimal_at) {
+			return $raw;
+		}
+
+		// Drop thousands separators. The decimal separator is deliberately left in
+		// the store's notation — see the note on idempotency above.
+		$markup = str_replace($thousands_separator, '', $markup);
+
+		return $markup . (($leading_percent || $trailing_percent) ? '%' : '');
+	}
+
+	/**
+	 * Convert a locale-canonical number to the internal '.'-decimal form
+	 *
+	 * Call once, at the point of storage or calculation, on a value that has
+	 * already been through normalizeMarkupNotation().
+	 *
+	 * @since 4.7.0
+	 * @param string      $number            Locale-canonical number, no thousands separators
+	 * @param string|null $decimal_separator Store's decimal separator; defaults to
+	 *                                       WooCommerce's configured one
+	 * @return string                        The same number with a '.' decimal point
+	 */
+	public static function toInternalDecimal(string $number, ?string $decimal_separator = null): string {
+		if ($decimal_separator === null) {
+			$decimal_separator = function_exists('wc_get_price_decimal_separator')
+				? wc_get_price_decimal_separator()
+				: '.';
+		}
+		return str_replace($decimal_separator, '.', $number);
+	}
+
+	/**
+	 * Is this markup a percentage rather than a fixed amount?
+	 *
+	 * The single definition of the percentage/fixed split. Callers used to test
+	 * this with the truthiness of strpos($markup, '%'), which is only correct by
+	 * accident of data shape — a '%' at position 0 reads as false.
+	 *
+	 * @since 4.7.0
+	 * @param string $markup Markup value
+	 * @return bool          True when the markup is a percentage
+	 */
+	public static function isPercentage(string $markup): bool {
+		return substr(trim($markup), -1) === '%';
+	}
+
+	/**
 	 * Validate and sanitize markup value input
 	 *
-	 * @param	string	$markup		Raw markup input
-	 * @return	string|false		Validated markup or false if invalid
+	 * Takes a value in the STORE'S notation and returns it in INTERNAL notation
+	 * ('.'-decimal). Those are different alphabets, so this is not idempotent and
+	 * must be called exactly once, at the point input enters the system. Feeding
+	 * its own output back in re-reads the internal '.' as a thousands separator in
+	 * a comma-decimal store — that is how "1235,12" once became 123512.
+	 *
+	 * @param	string	$markup		Raw markup input, in the store's notation
+	 * @return	string|false		Validated markup in internal notation, or false
 	 */
-	public function validateMarkupValue(string $markup) {
+	public static function validateMarkupValue(string $markup) {
 		// Handle empty values - treat zero as empty markup (no price change)
 		if (empty($markup) || $markup === '0' || $markup === 0) {
 			return '';
@@ -295,32 +418,32 @@ class General {
 		// Sanitize input - remove any HTML tags and trim whitespace
 		$markup = sanitize_text_field(trim($markup));
 
-		// Remove any non-standard whitespace characters
-		$markup = preg_replace('/\s+/', '', $markup);
+		// Rewrite locale notation into canonical form: strips whitespace and
+		// thousands separators, unifies percent sign variants, moves a leading
+		// percent sign to the back, and puts the decimal point on '.'
+		$markup = self::normalizeMarkupNotation($markup);
 
-		// Determine markup type: percentage (ends with %) or fixed amount
-		$is_percentage = (substr($markup, -1) === '%');
-
-		if ($is_percentage) {
-			// Strip the % symbol to validate just the numeric portion
-			$numeric_part = substr($markup, 0, -1);
-		} else {
-			// Fixed amount - validate the entire string as numeric
-			$numeric_part = $markup;
-		}
-
-		// Convert localized decimal input to standardized format using WooCommerce
-		$numeric_part = wc_format_decimal($numeric_part, false, true);
-
-		// Validate numeric format using regex pattern
-		// Pattern breakdown: ^[+-]?(?:\d+(?:\.\d+)?|\d*\.\d+)$
-		// ^[+-]? = optional plus or minus at start
-		// (?:...|...) = non-capturing group with two alternatives:
-		//   \d+(?:\.\d+)? = one or more digits, optionally followed by decimal and one or more digits
-		//   \d*\.\d+ = zero or more digits, required decimal point, one or more digits (for .5, .25, etc.)
-		if (!preg_match('/^[+-]?(?:\d+(?:\.\d+)?|\d*\.\d+)$/', $numeric_part)) {
+		// Reject anything not canonically shaped. This has to happen before any
+		// numeric parsing: wc_format_decimal() strips characters it does not
+		// recognize rather than failing on them, so without this check "5abc"
+		// parses as 5 and "5%0" as 50 — both silently wrong prices.
+		//
+		// Thousands separators are gone by this point, so at most one separator can
+		// remain and either character is acceptable — whichever one it is, it is
+		// the decimal point. Deliberately identical to MARKUP_PATTERN in
+		// src/js/jq-mt2mba-validate-markup.js; change both together.
+		if (!preg_match('/^-?(\d+([.,]\d+)?|[.,]\d+)%?$/', $markup)) {
 			return false;
 		}
+
+		// Determine markup type: percentage (ends with %) or fixed amount
+		$is_percentage = self::isPercentage($markup);
+
+		// Strip the % symbol, then move the decimal point to '.' for storage. No
+		// call to wc_format_decimal() — it strips unrecognized characters rather
+		// than rejecting them, which is how "5abc" used to store as 5.
+		$numeric_part = $is_percentage ? substr($markup, 0, -1) : $markup;
+		$numeric_part = self::toInternalDecimal($numeric_part);
 
 		// Convert to float for range validation and formatting
 		$numeric_value = floatval($numeric_part);
@@ -341,9 +464,9 @@ class General {
 	 * @param	string	$markup		Markup value to sanitize
 	 * @return	string				Sanitized markup value
 	 */
-	public function sanitizeMarkupForStorage(string $markup): string {
+	public static function sanitizeMarkupForStorage(string $markup): string {
 		// First validate the markup
-		$validated = $this->validateMarkupValue($markup);
+		$validated = self::validateMarkupValue($markup);
 		if ($validated === false) {
 			return '';
 		}
@@ -352,16 +475,9 @@ class General {
 		return sanitize_text_field($validated);
 	}
 
-	/**
-	 * Sanitize markup value for safe output display
-	 *
-	 * @param	string	$markup		Markup value to sanitize
-	 * @return	string				Sanitized markup value for display
-	 */
-	public function sanitizeMarkupForDisplay(string $markup): string {
-		// Sanitize for HTML output
-		return esc_html(sanitize_text_field($markup));
-	}
+	// sanitizeMarkupForDisplay() lived here. It was esc_html(sanitize_text_field())
+	// — an output escaper with a sanitizer's name — and all three callers escaped
+	// its result again. Escaping now happens once, at each point of output.
 	//endregion
 
 }	//	End class MT2MBA_UTILITY_GENERAL

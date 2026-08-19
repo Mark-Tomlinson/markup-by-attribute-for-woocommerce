@@ -10,7 +10,7 @@ use WC_Settings_API;
  *
  * @package   mt2Tech\MarkupByAttribute\Backend
  * @author    Mark Tomlinson
- * @license   GPL-2.0+
+ * @license   GPL-3.0-or-later
  * @since     2.0.0
  */
 
@@ -67,6 +67,23 @@ class Settings extends WC_Settings_API {
 	 * @var int
 	 */
 	public int $max_variations = MT2MBA_DEFAULT_MAX_VARIATIONS;
+
+	/**
+	 * Options this plugin owns, in settings-page order
+	 *
+	 * Spelled out rather than harvested from the settings array at runtime so the
+	 * autoload fixup does not depend on having just built that array.
+	 * @var string[]
+	 */
+	private const OPTION_NAMES = [
+		'mt2mba_dropdown_behavior',
+		'mt2mba_desc_behavior',
+		'mt2mba_include_attrb_name',
+		'mt2mba_hide_base_price',
+		'mt2mba_sale_price_markup',
+		'mt2mba_round_markup',
+		'mt2mba_max_variations',
+	];
 	//endregion
 
 	//region INSTANCE MANAGEMENT
@@ -106,6 +123,9 @@ class Settings extends WC_Settings_API {
 		add_filter('woocommerce_get_sections_products', array($this, 'addSection'));
 		add_filter('woocommerce_get_settings_products', array($this, 'getSettings'), 10, 2);
 		add_filter('sanitize_option_mt2mba_max_variations', array($this, 'validateMaxVariations'), 10, 1);
+		// WooCommerce composes this as woocommerce_update_options_{tab}_{section}
+		// and fires it after save_fields() has written the options
+		add_action('woocommerce_update_options_products_mt2mba', array($this, 'setOptionsNotAutoloaded'));
 	}
 	//endregion
 
@@ -320,32 +340,40 @@ class Settings extends WC_Settings_API {
 				'id'	=> 'mt2mbaDonateSection'
 			);
 
-			// Set autoload to 'no' because WC_Settings_API always resets it to 'on'
-			if (isset($_POST['save'])) {
-				$setting_ids = array_column(
-					array_filter($mt2mba_settings, function($item) {
-						return isset($item['id']) && strpos($item['id'], 'mt2mba_') === 0;
-					}),
-					'id'
-				);
-
-				global $wpdb;
-				/**
-				 * Autoload value 'no' is used instead of 'off' to maintain backward compatability
-				 * For now, anyway
-				 */
-				foreach ($setting_ids as $id) {
-					$wpdb->query($wpdb->prepare("
-						UPDATE {$wpdb->prefix}options
-						SET autoload = 'no'
-						WHERE option_name = %s
-					", $id));
-				}
-			}
-
 			return $mt2mba_settings;
 		} else {
 			return $settings;
+		}
+	}
+
+	/**
+	 * Stop this plugin's settings from being autoloaded on every page request
+	 *
+	 * WooCommerce writes these options with update_option(), which leaves a new
+	 * row at WordPress's autoload default of 'yes' — so they would be loaded into
+	 * memory on every request, front end included, to serve an admin settings page.
+	 * Confirmed still true on WPDev 2026-08-06.
+	 *
+	 * Runs on woocommerce_update_options_products_mt2mba, which fires after WC has
+	 * saved the section. Previously this ran inside the get-settings filter off a
+	 * $_POST['save'] sniff, which meant it fired *before* the write and so missed
+	 * rows that did not exist yet — a first save left them autoloaded until the
+	 * second. WC has already checked the nonce and capability by the time this runs.
+	 *
+	 * @since 4.7.0
+	 */
+	public function setOptionsNotAutoloaded(): void {
+		global $wpdb;
+
+		// 'no' rather than 'off': WP 6.6 introduced the on/off/auto-* vocabulary,
+		// but min-WP here is 5.7 and 6.6+ still reads 'no' as not-autoloaded.
+		// wp_set_option_autoload_values() would be the modern call — it needs 6.4.
+		foreach (self::OPTION_NAMES as $option_name) {
+			$wpdb->query($wpdb->prepare("
+				UPDATE {$wpdb->options}
+				SET autoload = 'no'
+				WHERE option_name = %s
+			", $option_name));
 		}
 	}
 	//endregion

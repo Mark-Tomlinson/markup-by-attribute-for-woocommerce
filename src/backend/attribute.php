@@ -9,7 +9,7 @@ namespace mt2Tech\MarkupByAttribute\Backend;
  *
  * @package   mt2Tech\MarkupByAttribute\Backend
  * @author    Mark Tomlinson
- * @license   GPL-2.0+
+ * @license   GPL-3.0-or-later
  * @since     4.6.0
  */
 class Attribute {
@@ -110,6 +110,17 @@ class Attribute {
 		add_action("woocommerce_after_add_attribute_fields", array($this, 'addAttributeFields'), 10, 2);
 		add_action("woocommerce_after_edit_attribute_fields", array($this, 'editAttributeFields'), 10, 2);
 
+		// Persist per-attribute options after WooCommerce saves the attribute.
+		// These hooks hand us the authoritative attribute ID — never derive it from
+		// the label: with a custom slug, wc_attribute_taxonomy_id_by_name(sanitize_title($label))
+		// returns 0 and the options are silently orphaned as mt2mba_..._0.
+		add_action('woocommerce_attribute_added', function ($attribute_id, $data) {
+			$this->saveAttributeOptions((int) $attribute_id, false);
+		}, 10, 2);
+		add_action('woocommerce_attribute_updated', function ($attribute_id, $data, $old_slug) {
+			$this->saveAttributeOptions((int) $attribute_id, true);
+		}, 10, 3);
+
 		// Delete options when attribute is deleted
 		add_action("woocommerce_before_attribute_delete", function () {
 			$delete_id = isset($_GET['delete']) ? absint($_GET['delete']) : 0;
@@ -124,37 +135,50 @@ class Attribute {
 
 	//region ATTRIBUTE FORM HANDLERS
 	/**
+	 * Save the three per-attribute options from the submitted form
+	 *
+	 * Runs on woocommerce_attribute_added/_updated, after WooCommerce has
+	 * verified nonce + capability and saved the attribute.
+	 *
+	 * @param int  $attribute_id     Attribute (taxonomy) ID provided by WooCommerce
+	 * @param bool $delete_unchecked Remove options for unchecked boxes (edit form only;
+	 *                               the add form has nothing stored to remove)
+	 */
+	private function saveAttributeOptions(int $attribute_id, bool $delete_unchecked): void {
+		// Defense-in-depth: WooCommerce enforces capability + nonce before these hooks
+		// fire, but guard our own writes too (WP.org review expects it).
+		if ($attribute_id <= 0 || !current_user_can('manage_product_terms')) {
+			return;
+		}
+
+		$options = [
+			MT2MBA_REWRITE_TERM_NAME_PREFIX . $attribute_id => [
+				'value' => isset($_POST['term_name_rewrite']),
+				'autoload' => true
+			],
+			MT2MBA_REWRITE_TERM_DESC_PREFIX . $attribute_id => [
+				'value' => isset($_POST['term_desc_rewrite']),
+				'autoload' => false
+			],
+			MT2MBA_DONT_OVERWRITE_THEME_PREFIX . $attribute_id => [
+				'value' => isset($_POST['dont_overwrite_theme']),
+				'autoload' => true
+			]
+		];
+
+		foreach ($options as $option_name => $settings) {
+			if ($settings['value']) {
+				update_option($option_name, 'yes', $settings['autoload']);
+			} elseif ($delete_unchecked) {
+				delete_option($option_name);
+			}
+		}
+	}
+
+	/**
 	 * Build form fields for attribute add panel
 	 */
 	public function addAttributeFields() {
-		// Defense-in-depth: WooCommerce already gates this page on 'manage_product_terms'
-		// and wp_die()s on a bad nonce before this render hook fires, but guard our own
-		// option writes too (WP.org review expects it, and protects against future flow changes).
-		if (isset($_POST['add_new_attribute']) && current_user_can('manage_product_terms')) {
-			$taxonomy_id = wc_attribute_taxonomy_id_by_name(sanitize_title($_POST['attribute_label']));
-
-			$options = [
-				MT2MBA_REWRITE_TERM_NAME_PREFIX . $taxonomy_id => [
-					'value' => isset($_POST['term_name_rewrite']),
-					'autoload' => true
-				],
-				MT2MBA_REWRITE_TERM_DESC_PREFIX . $taxonomy_id => [
-					'value' => isset($_POST['term_desc_rewrite']),
-					'autoload' => false
-				],
-				MT2MBA_DONT_OVERWRITE_THEME_PREFIX . $taxonomy_id => [
-					'value' => isset($_POST['dont_overwrite_theme']),
-					'autoload' => true
-				]
-			];
-
-			foreach ($options as $option_name => $settings) {
-				if ($settings['value']) {
-					update_option($option_name, 'yes', $settings['autoload']);
-				}
-			}
-		}
-
 		// Build <DIV>
 		?>
 		<div class="form-field">
@@ -187,32 +211,6 @@ class Attribute {
 			return;
 		}
 
-		// Defense-in-depth: see note in addAttributeFields() — guard our writes even
-		// though WooCommerce already enforces capability + nonce upstream.
-		if (isset($_POST['save_attribute']) && current_user_can('manage_product_terms')) {
-			$options = [
-				MT2MBA_REWRITE_TERM_NAME_PREFIX . $attribute_id => [
-					'value' => isset($_POST['term_name_rewrite']),
-					'autoload' => true
-				],
-				MT2MBA_REWRITE_TERM_DESC_PREFIX . $attribute_id => [
-					'value' => isset($_POST['term_desc_rewrite']),
-					'autoload' => false
-				],
-				MT2MBA_DONT_OVERWRITE_THEME_PREFIX . $attribute_id => [
-					'value' => isset($_POST['dont_overwrite_theme']),
-					'autoload' => true
-				]
-			];
-
-			foreach ($options as $option_name => $settings) {
-				if ($settings['value']) {
-					update_option($option_name, 'yes', $settings['autoload']);
-				} else {
-					delete_option($option_name);
-				}
-			}
-		}
 		// Set flags from Options database
 		$rewrite_name_flag			= get_option(MT2MBA_REWRITE_TERM_NAME_PREFIX . $attribute_id, false);
 		$rewrite_desc_flag			= get_option(MT2MBA_REWRITE_TERM_DESC_PREFIX . $attribute_id, false);

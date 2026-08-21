@@ -5,3 +5,6 @@
 
 # Normalize all line endings to LF via .gitattributes (2026-08-04)
 723a463667521479e119e41a68346e08c8adbdd9
+
+# Item 18 syntax sweep: array() -> [], lowercase true/false/null, quote style (2026-08-21)
+e2c76db89937386601a3f39837b89e347399d36e

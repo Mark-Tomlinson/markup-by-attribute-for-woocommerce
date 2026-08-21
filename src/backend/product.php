@@ -17,15 +17,15 @@ class Product {
 	 */
 	public function __construct() {
 		// Override WooCommerce's default maximum variation threshold with custom setting
-		if (!defined("WC_MAX_LINKED_VARIATIONS")) {
-			define("WC_MAX_LINKED_VARIATIONS", MT2MBA_MAX_VARIATIONS);
+		if (!defined('WC_MAX_LINKED_VARIATIONS')) {
+			define('WC_MAX_LINKED_VARIATIONS', MT2MBA_MAX_VARIATIONS);
 		}
 
 		// Add JavaScript for markup reapplication functionality on product edit pages
 		add_action('admin_enqueue_scripts', [$this, 'enqueueMarkupScripts']);
 
 		// Hook into WooCommerce's bulk variation editing to apply markups during price changes
-		add_action("woocommerce_bulk_edit_variations", [$this, "handleBulkPriceAction"], 10, 4);
+		add_action('woocommerce_bulk_edit_variations', [$this, 'handleBulkPriceAction'], 10, 4);
 
 		// Add base price fields to product general options panel
 		add_action('woocommerce_product_options_general_product_data', [$this, 'addBasePriceFields']);
@@ -77,11 +77,11 @@ class Product {
 			wp_localize_script(
 				'mt2mba-reapply-markup',
 				'mt2mbaLocal',
-				array(
+				[
 					'ajaxUrl' => admin_url('admin-ajax.php'),
 					'security' => wp_create_nonce('handleMarkupReapplication'),
 					'variationsNonce' => wp_create_nonce('load-variations'),
-					'i18n' => array(
+					'i18n' => [
 						'reapplyMarkupss' => __('Reapply markups to prices', 'markup-by-attribute-for-woocommerce'),
 						'confirmReapply' => __('Reprice variations at %s, plus or minus the markups?', 'markup-by-attribute-for-woocommerce'),
 						'failedRecalculating' => __('Failed to reapply markups. Please try again.', 'markup-by-attribute-for-woocommerce'),
@@ -89,8 +89,8 @@ class Product {
 						// reprice has already committed, so it must not tell the shop owner
 						// their prices are unchanged when they are not.
 						'failedRefreshing' => __('Markups were reapplied, but the variations list could not be refreshed. Reload the page to see the new prices.', 'markup-by-attribute-for-woocommerce')
-					)
-				)
+					]
+				]
 			);
 		}
 	}
@@ -225,15 +225,15 @@ class Product {
 	 */
 	public function handleBulkPriceAction($bulk_action, $data, $product_id, $variations): void {
 		// Determine which class should extend PriceMarkupHandler based on the bulk_action
-		if ($bulk_action == "variable_regular_price" || $bulk_action == "variable_sale_price") {
+		if ($bulk_action == 'variable_regular_price' || $bulk_action == 'variable_sale_price') {
 			// Set either the regular price or the sale price
 			$handler = new Handlers\PriceSetHandler($bulk_action, $data, $product_id, $variations);
 
-		} elseif (strpos($bulk_action, "_price_increase") !== false || strpos($bulk_action, "_price_decrease") !== false) {
+		} elseif (strpos($bulk_action, '_price_increase') !== false || strpos($bulk_action, '_price_decrease') !== false) {
 			// Increase or decrease the regular price or the sale price
 			$handler = new Handlers\PriceUpdateHandler($bulk_action, $data, $product_id, $variations);
 
-		} elseif ($bulk_action == "delete_all") {
+		} elseif ($bulk_action == 'delete_all') {
 			// Delete all markup metadata for product
 			$handler = new Handlers\MarkupDeleteHandler($product_id);
 
@@ -269,7 +269,7 @@ class Product {
 		if ($post) {
 			$base_regular_price = get_post_meta($post->ID, 'mt2mba_base_regular_price', true);
 			$base_sale_price = get_post_meta($post->ID, 'mt2mba_base_sale_price', true);
-			$currency_symbol = " (" . get_woocommerce_currency_symbol() . ")";
+			$currency_symbol = ' (' . get_woocommerce_currency_symbol() . ')';
 
 			echo '<div class="options_group show_if_variable">';
 

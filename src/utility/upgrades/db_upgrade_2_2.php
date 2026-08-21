@@ -31,7 +31,7 @@ class Db_Upgrade_2_2 implements UpgradeInterface {
 		global $wpdb;
 
 		// Delete discontinued setting
-		$wpdb->delete("{$wpdb->prefix}options", array('option_name' => 'mt2mba_show_attrb_list'));
+		$wpdb->delete("{$wpdb->prefix}options", ['option_name' => 'mt2mba_show_attrb_list']);
 
 		// Stamp version as last act of successful upgrade
 		update_option('mt2mba_db_version', self::version(), false);

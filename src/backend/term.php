@@ -78,7 +78,7 @@ class Term {
 
 		// Client-side markup validation on the term add/edit forms (WP-native
 		// form-invalid styling; blocks the submit so garbage never reaches PHP)
-		add_action('admin_enqueue_scripts', array($this, 'enqueueMarkupValidation'));
+		add_action('admin_enqueue_scripts', [$this, 'enqueueMarkupValidation']);
 	}
 
 	/**
@@ -91,7 +91,7 @@ class Term {
 	private function initializeLabels(): void {
 		$this->markup_label = __('Markup (or markdown)', 'markup-by-attribute-for-woocommerce');
 		$this->markup_description = __('Markup or markdown associated with this option. Signed, floating point numeric allowed.', 'markup-by-attribute-for-woocommerce');
-		$this->placeholder = "[+|-]" . wc_format_localized_decimal('0.00') ." or [+|-]" . wc_format_localized_decimal('00.0%');
+		$this->placeholder = '[+|-]' . wc_format_localized_decimal('0.00') .' or [+|-]' . wc_format_localized_decimal('00.0%');
 	}
 
 	/**
@@ -116,13 +116,13 @@ class Term {
 	private function registerTermHooks(string $taxonomy): void {
 		// WordPress dynamically creates hooks for each taxonomy
 		// Add our markup fields to the term add/edit forms
-		add_action("{$taxonomy}_add_form_fields", array($this, 'addTermFields'), 10, 2);
-		add_action("{$taxonomy}_edit_form_fields", array($this, 'editTermFields'), 10, 2);
+		add_action("{$taxonomy}_add_form_fields", [$this, 'addTermFields'], 10, 2);
+		add_action("{$taxonomy}_edit_form_fields", [$this, 'editTermFields'], 10, 2);
 
 		// Process markup data when terms are saved
 		// 'created_' fires when new terms are added, 'edited_' when existing terms are updated
-		add_action("created_{$taxonomy}", array($this, 'handleTermMarkupSave'), 10, 2);
-		add_action("edited_{$taxonomy}", array($this, 'handleTermMarkupSave'), 10, 2);
+		add_action("created_{$taxonomy}", [$this, 'handleTermMarkupSave'], 10, 2);
+		add_action("edited_{$taxonomy}", [$this, 'handleTermMarkupSave'], 10, 2);
 	}
 
 	/**
@@ -154,7 +154,7 @@ class Term {
 			return $columns;
 		}, 10);
 
-		add_filter('pre_get_terms', array($this, 'handleMarkupColumnSort'), 10);
+		add_filter('pre_get_terms', [$this, 'handleMarkupColumnSort'], 10);
 	}
 	//endregion
 
@@ -179,7 +179,7 @@ class Term {
 	 */
 	public function editTermFields(object $term) {
 		// Retrieve the existing markup for this term(NULL results are valid)
-		$term_markup = wc_format_localized_decimal(get_term_meta($term->term_id, "mt2mba_markup", TRUE));
+		$term_markup = wc_format_localized_decimal(get_term_meta($term->term_id, 'mt2mba_markup', true));
 
 		// Build row and fill field with current markup
 		?>
@@ -316,10 +316,10 @@ class Term {
 		wp_update_term(
 			$term->term_id,
 			$taxonomy_name,
-			array(
+			[
 				'name' => sanitize_text_field(trim($new_name)),
 				'description' => sanitize_textarea_field(trim($new_description))
-			)
+			]
 		);
 		self::$is_rewriting_term = false;
 	}
@@ -341,7 +341,7 @@ class Term {
 		wp_enqueue_script(
 			'mt2mba-validate-markup',
 			MT2MBA_PLUGIN_URL . 'src/js/jq-mt2mba-validate-markup.js',
-			array('jquery'),
+			['jquery'],
 			MT2MBA_VERSION,
 			true
 		);
@@ -352,7 +352,7 @@ class Term {
 		wp_localize_script(
 			'mt2mba-validate-markup',
 			'mt2mbaMarkup',
-			array('decimalSeparator' => wc_get_price_decimal_separator())
+			['decimalSeparator' => wc_get_price_decimal_separator()]
 		);
 
 		// Carries the .mt2mba-invalid red-border rule (see admin-style.css for
@@ -360,7 +360,7 @@ class Term {
 		wp_enqueue_style(
 			'mt2mba-admin-styles',
 			MT2MBA_PLUGIN_URL . 'src/css/admin-style.css',
-			array(),
+			[],
 			MT2MBA_VERSION
 		);
 	}
@@ -380,11 +380,11 @@ class Term {
 		// WP_Term_Query does not define a get() or a set() method,
 		// so the query_vars member must be manipulated directly
 		if (isset($_GET['orderby']) && 'markup' == sanitize_text_field(wp_unslash($_GET['orderby']))) {
-			$meta_query = array(
+			$meta_query = [
 				'relation' => 'OR',
-				array('key' => 'mt2mba_markup', 'compare' => 'NOT EXISTS'),
-				array('key' => 'mt2mba_markup')
-			);
+				['key' => 'mt2mba_markup', 'compare' => 'NOT EXISTS'],
+				['key' => 'mt2mba_markup']
+			];
 			$term_query->meta_query = new WP_Meta_Query($meta_query);
 			$term_query->query_vars['orderby'] = 'mt2mba_markup';
 		}

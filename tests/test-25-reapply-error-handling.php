@@ -91,8 +91,8 @@ t_assert(strpos($js, 'mt2mbaLocal.i18n.failedRecalculating') !== false,
 t_assert(strpos($php, "'failedRefreshing'") !== false,
 	'product.php defines the separate post-commit message');
 
-$localized_block = strstr($php, "'i18n' => array(");
-t_assert($localized_block !== false && strpos($localized_block, "'failedRefreshing'") !== false,
+$localized_block = t_array_block($php, 'i18n');
+t_assert($localized_block !== null && strpos($localized_block, "'failedRefreshing'") !== false,
 	'failedRefreshing is localized inside the i18n block');
 
 t_assert(strpos($js, 'mt2mbaLocal.i18n.failedRefreshing') !== false,

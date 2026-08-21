@@ -31,7 +31,7 @@ class PriceSetHandler extends PriceMarkupHandler {
 	 */
 	public function __construct($bulk_action, $data, $product_id, $variations, $owns_transaction = true) {
 		// Convert localized decimal input to standardized format using WooCommerce
-		$cleaned_value = wc_format_decimal($data["value"], false, true);
+		$cleaned_value = wc_format_decimal($data['value'], false, true);
 		parent::__construct(
 			$bulk_action,
 			$product_id,
@@ -115,7 +115,7 @@ class PriceSetHandler extends PriceMarkupHandler {
 		if ($this->price_type == MT2MBA_REGULAR_PRICE) {
 
 			// Remove Sales Price metadata
-			delete_post_meta($this->product_id, "mt2mba_base_" . MT2MBA_SALE_PRICE);
+			delete_post_meta($this->product_id, 'mt2mba_base_' . MT2MBA_SALE_PRICE);
 
 			// Bulk-fetch all variation descriptions in a single query. A
 			// variation-less product reads back nothing and writes nothing.
@@ -173,7 +173,7 @@ class PriceSetHandler extends PriceMarkupHandler {
 					if ($this->price_type === MT2MBA_REGULAR_PRICE || MT2MBA_SALE_PRICE_MARKUP === 'yes') {
 						$price = $this->base_price;
 					} else {
-						$price = get_metadata("post", $this->product_id, "mt2mba_base_" . MT2MBA_REGULAR_PRICE, true);
+						$price = get_metadata('post', $this->product_id, 'mt2mba_base_' . MT2MBA_REGULAR_PRICE, true);
 					}
 
 					// Calculate markup value: percentage markups are calculated against the price,
@@ -185,7 +185,7 @@ class PriceSetHandler extends PriceMarkupHandler {
 					}
 
 					// Round markup value based on plugin settings
-					$markup_value = MT2MBA_ROUND_MARKUP == "yes" ? round($markup_value, 0) : round($markup_value, $this->price_decimals);
+					$markup_value = MT2MBA_ROUND_MARKUP == 'yes' ? round($markup_value, 0) : round($markup_value, $this->price_decimals);
 
 					if ($markup_value != 0) {
 						$markup_table[$taxonomy][$term->slug] = [
@@ -194,7 +194,7 @@ class PriceSetHandler extends PriceMarkupHandler {
 						];
 
 						// Add description if not ignored (for both regular and sale prices)
-						if (MT2MBA_DESC_BEHAVIOR !== "ignore") {
+						if (MT2MBA_DESC_BEHAVIOR !== 'ignore') {
 							$markup_table[$taxonomy][$term->slug]['description'] =
 								Utility\General::formatVariationMarkupDescription(
 									(string) $markup_value,
@@ -245,10 +245,10 @@ class PriceSetHandler extends PriceMarkupHandler {
 
 		foreach ($attributes as $attribute_id => $term_id) {
 			if (isset($markup_table[$attribute_id][$term_id])) {
-				$markup = (float) $markup_table[$attribute_id][$term_id]["markup"];
+				$markup = (float) $markup_table[$attribute_id][$term_id]['markup'];
 				$variation_price += $markup;
-				if (isset($markup_table[$attribute_id][$term_id]["description"])) {
-					$markup_description .= $markup_table[$attribute_id][$term_id]["description"] . PHP_EOL;
+				if (isset($markup_table[$attribute_id][$term_id]['description'])) {
+					$markup_description .= $markup_table[$attribute_id][$term_id]['description'] . PHP_EOL;
 				}
 			}
 		}
@@ -281,10 +281,10 @@ class PriceSetHandler extends PriceMarkupHandler {
 	protected function buildVariationDescription($current_description, $base_price_description, $markup_description, $variation_price): string {
 		if ($this->price_type === MT2MBA_REGULAR_PRICE) {
 			// Build new description for regular prices and reapply markup operations
-			$description = "";
+			$description = '';
 
 			// Preserve existing non-markup description content unless overwriting
-			if (MT2MBA_DESC_BEHAVIOR !== "overwrite") {
+			if (MT2MBA_DESC_BEHAVIOR !== 'overwrite') {
 				$description = Utility\General::removeBracketedString(
 					MT2MBA_PRODUCT_MARKUP_DESC_BEG,
 					MT2MBA_PRODUCT_MARKUP_DESC_END,
@@ -298,7 +298,7 @@ class PriceSetHandler extends PriceMarkupHandler {
 			}
 
 			// Add markup information if we have markups and behavior allows it
-			if ($markup_description && $variation_price != null && MT2MBA_DESC_BEHAVIOR !== "ignore") {
+			if ($markup_description && $variation_price != null && MT2MBA_DESC_BEHAVIOR !== 'ignore') {
 				$description .= MT2MBA_PRODUCT_MARKUP_DESC_BEG .
 							$base_price_description .
 							$markup_description .
@@ -440,7 +440,7 @@ class PriceSetHandler extends PriceMarkupHandler {
 			return $this->base_price_formatted;
 		} else {
 			// We're setting sale price, get stored regular price
-			$regular_price = get_metadata("post", $this->product_id, "mt2mba_base_" . MT2MBA_REGULAR_PRICE, true);
+			$regular_price = get_metadata('post', $this->product_id, 'mt2mba_base_' . MT2MBA_REGULAR_PRICE, true);
 			return is_numeric($regular_price) ? strip_tags(wc_price(abs($regular_price))) : '';
 		}
 	}
@@ -475,9 +475,9 @@ class PriceSetHandler extends PriceMarkupHandler {
 				$attribute_data[$taxonomy] = [
 					'label' => wc_attribute_label($taxonomy),
 					'terms' => get_terms([
-						"taxonomy" => $taxonomy,
-						"include" => $selected_term_ids,
-						"hide_empty" => false
+						'taxonomy' => $taxonomy,
+						'include' => $selected_term_ids,
+						'hide_empty' => false
 					])
 				];
 			}

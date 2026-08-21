@@ -77,9 +77,9 @@ class Notices {
 	 */
 	private function __construct() {
 		//	Enqueue notice dismissal JScript
-		add_action('admin_enqueue_scripts', array($this, 'enqueueNoticeScripts'));
+		add_action('admin_enqueue_scripts', [$this, 'enqueueNoticeScripts']);
 		//	Action to set the message dismissal option
-		add_action('admin_init', array($this, 'handleNoticeDismissal'));
+		add_action('admin_init', [$this, 'handleNoticeDismissal']);
 	}
 	//endregion
 
@@ -101,7 +101,7 @@ class Notices {
 		wp_enqueue_script (
 			'jq-mt2mba-clear-notices',
 			MT2MBA_PLUGIN_URL . 'src/js/jq-mt2mba-clear-notices.js',
-			array('jquery'),
+			['jquery'],
 			MT2MBA_VERSION,
 			true
 		);
@@ -178,10 +178,10 @@ class Notices {
 			'admin_notices',
 			function() use ($type, $message, $dismiss_option) {
 				$dismiss_url = add_query_arg (
-					array(
+					[
 						'mt2mba_dismiss' => $dismiss_option,
 						'_wpnonce'       => wp_create_nonce('mt2mba_dismiss_notice'),
-					),
+					],
 					admin_url()
 				);
 				// No second dismissal check here: notice() already returned early

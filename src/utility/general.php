@@ -116,7 +116,7 @@ class General {
 	 * @return	string				Formatted description
 	 */
 	public static function formatVariationMarkupDescription(string $markup, string $attrb_name, string $term_name): string {
-		if ($markup != "" && $markup != 0) {
+		if ($markup != '' && $markup != 0) {
 			// Clean any existing markup from the term name before formatting
 			$term_name = self::stripMarkupAnnotation($term_name);
 
@@ -176,7 +176,7 @@ class General {
 		$beginningPos = strpos($string, $beginning, 0);
 		$endingPos = strpos($string, $ending, $beginningPos);
 
-		if ($beginningPos === FALSE || $endingPos === FALSE) return trim($string);
+		if ($beginningPos === false || $endingPos === false) return trim($string);
 
 		$textToDelete = substr($string, $beginningPos, ($endingPos + strlen($ending)) - $beginningPos);
 

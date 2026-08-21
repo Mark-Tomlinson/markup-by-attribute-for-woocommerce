@@ -42,7 +42,7 @@ final class BulkMetaIO {
 
 		$rows = $wpdb->get_results($wpdb->prepare(
 			"SELECT post_id, meta_value FROM {$wpdb->postmeta}
-			WHERE post_id IN (" . self::placeholders($ids) . ") AND meta_key = %s",
+			WHERE post_id IN (" . self::placeholders($ids) . ') AND meta_key = %s',
 			array_merge($ids, [$meta_key])
 		));
 
@@ -75,7 +75,7 @@ final class BulkMetaIO {
 
 		return $wpdb->get_results($wpdb->prepare(
 			"SELECT post_id, meta_key, meta_value FROM {$wpdb->postmeta}
-			WHERE post_id IN (" . self::placeholders($ids) . ") AND meta_key LIKE %s",
+			WHERE post_id IN (" . self::placeholders($ids) . ') AND meta_key LIKE %s',
 			array_merge($ids, [$key_like])
 		));
 	}

@@ -39,16 +39,16 @@ class Db_Upgrade_2_0 implements UpgradeInterface {
 		// Add prefix to attribute markup meta data key
 		$results = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}termmeta WHERE meta_key LIKE 'markup'");
 		foreach ($results as $row) {
-			if (strpos($row->meta_key, 'mt2mba_') === FALSE) {
-				add_term_meta($row->term_id, "mt2mba_" . $row->meta_key, $row->meta_value, TRUE);
+			if (strpos($row->meta_key, 'mt2mba_') === false) {
+				add_term_meta($row->term_id, 'mt2mba_' . $row->meta_key, $row->meta_value, true);
 			}
 		}
 
 		// Add prefix to product markup meta data
 		$results = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}postmeta WHERE `meta_key` LIKE '%_markup_amount'");
 		foreach ($results as $row) {
-			if (strpos($row->meta_key, 'mt2mba_') === FALSE) {
-				add_post_meta($row->post_id, "mt2mba_" . $row->meta_key, $row->meta_value, TRUE);
+			if (strpos($row->meta_key, 'mt2mba_') === false) {
+				add_post_meta($row->post_id, 'mt2mba_' . $row->meta_key, $row->meta_value, true);
 			}
 		}
 
@@ -56,7 +56,7 @@ class Db_Upgrade_2_0 implements UpgradeInterface {
 		$last_parent_id = '';
 		$results = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}postmeta WHERE `meta_value` LIKE '%" . MT2MBA_PRICE_META . "%'");
 		foreach ($results as $row) {
-			if ((strpos($row->meta_value, MT2MBA_PRODUCT_MARKUP_DESC_BEG) === FALSE) && (strpos($row->meta_value, MT2MBA_PRICE_META) !== FALSE)) {
+			if ((strpos($row->meta_value, MT2MBA_PRODUCT_MARKUP_DESC_BEG) === false) && (strpos($row->meta_value, MT2MBA_PRICE_META) !== false)) {
 				update_post_meta($row->post_id, $row->meta_key, MT2MBA_PRODUCT_MARKUP_DESC_BEG . $row->meta_value . MT2MBA_PRODUCT_MARKUP_DESC_END);
 			}
 			$v_product = get_post($row->post_id, 'ARRAY_A');
@@ -70,9 +70,9 @@ class Db_Upgrade_2_0 implements UpgradeInterface {
 		}
 
 		// Clean up deprecated formatting options
-		$wpdb->delete("{$wpdb->prefix}options", array('option_name' => 'mt2mba_decimal_points'));
-		$wpdb->delete("{$wpdb->prefix}options", array('option_name' => 'mt2mba_symbol_before'));
-		$wpdb->delete("{$wpdb->prefix}options", array('option_name' => 'mt2mba_symbol_after'));
+		$wpdb->delete("{$wpdb->prefix}options", ['option_name' => 'mt2mba_decimal_points']);
+		$wpdb->delete("{$wpdb->prefix}options", ['option_name' => 'mt2mba_symbol_before']);
+		$wpdb->delete("{$wpdb->prefix}options", ['option_name' => 'mt2mba_symbol_after']);
 
 		// Stamp version as last act of successful upgrade
 		update_option('mt2mba_db_version', self::version(), false);

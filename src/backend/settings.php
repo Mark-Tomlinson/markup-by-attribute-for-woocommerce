@@ -120,12 +120,12 @@ class Settings extends WC_Settings_API {
 	 * @since 2.0.0
 	 */
 	private function __construct() {
-		add_filter('woocommerce_get_sections_products', array($this, 'addSection'));
-		add_filter('woocommerce_get_settings_products', array($this, 'getSettings'), 10, 2);
-		add_filter('sanitize_option_mt2mba_max_variations', array($this, 'validateMaxVariations'), 10, 1);
+		add_filter('woocommerce_get_sections_products', [$this, 'addSection']);
+		add_filter('woocommerce_get_settings_products', [$this, 'getSettings'], 10, 2);
+		add_filter('sanitize_option_mt2mba_max_variations', [$this, 'validateMaxVariations'], 10, 1);
 		// WooCommerce composes this as woocommerce_update_options_{tab}_{section}
 		// and fires it after save_fields() has written the options
-		add_action('woocommerce_update_options_products_mt2mba', array($this, 'setOptionsNotAutoloaded'));
+		add_action('woocommerce_update_options_products_mt2mba', [$this, 'setOptionsNotAutoloaded']);
 	}
 	//endregion
 
@@ -157,10 +157,10 @@ class Settings extends WC_Settings_API {
 			$individually = __('This setting affects products individually and takes effect when you recalculate prices or reapply markups.', 'markup-by-attribute-for-woocommerce');
 
 			// Create settings array
-			$mt2mba_settings = array();
+			$mt2mba_settings = [];
 
 			// Add title to the settings page
-			$mt2mba_settings[] = array(
+			$mt2mba_settings[] = [
 				'name'		=> __('Markup by Attribute Settings', 'markup-by-attribute-for-woocommerce'),
 				'type'		=> 'title',
 				'desc'		=> __('The following options are used to configure variation markups by attribute.', 'markup-by-attribute-for-woocommerce') . ' ' .
@@ -169,89 +169,89 @@ class Settings extends WC_Settings_API {
 						'https://github.com/Mark-Tomlinson/markup-by-attribute-for-woocommerce/wiki'
 					),
 				'id'	=> 'mt2mba'
-			);
+			];
 
 			// *** Display settings ***
-			$mt2mba_settings[] = array(
+			$mt2mba_settings[] = [
 				'name'	=> __('Markup Display', 'markup-by-attribute-for-woocommerce'),
 				'type'	=> 'title',
 				'id'	=> 'mt2mbaDisplaySection'
-			);
+			];
 
 			/** -- Option Drop-down Behavior --
 			 *	Should Markup-by-Attribute add the markup to the options drop-down box, and should the currency
 			 *	symbol be displayed?
 			 *	This setting affects all products and takes effect immediately.
 			 */
-			$mt2mba_settings[] = array(
+			$mt2mba_settings[] = [
 				'name'		=> __('Option Drop-down Behavior', 'markup-by-attribute-for-woocommerce'),
 				'desc'		=> __('Should Markup-by-Attribute add the markup to the options drop-down box, and should the currency symbol be displayed?', 'markup-by-attribute-for-woocommerce') . '<br/>' .
 					'<em>' . $immediately . '</em>',
 				'id'		=> 'mt2mba_dropdown_behavior',
 				'type'		=> 'radio',
-				'options'	=> array(
+				'options'	=> [
 					'hide'			=> __('Do NOT show the markup in the options drop-down box.', 'markup-by-attribute-for-woocommerce'),
 					'add'			=> __('Show the markup WITH the currency symbol in the options drop-down box.', 'markup-by-attribute-for-woocommerce'),
 					'do_not_add'	=> __('Show the markup WITHOUT the currency symbol in the options drop-down box.', 'markup-by-attribute-for-woocommerce'),
-				),
+				],
 				'default'	=> $this->dropdown_behavior
-			);
+			];
 
 			/** -- Variation Description Behavior --
 			 *	How should Markup-by-Attribute handle adding price markup information to the product variation
 			 *	description?
 			 */
-			$mt2mba_settings[] = array(
+			$mt2mba_settings[] = [
 				'name'		=> __('Variation Description Behavior', 'markup-by-attribute-for-woocommerce'),
 				'desc'		=> __('How should Markup-by-Attribute handle adding price markup information to the product variation description?', 'markup-by-attribute-for-woocommerce') . '<br/>' .
 					'<em>' . $individually . '</em>',
 				'id'		=> 'mt2mba_desc_behavior',
 				'type'		=> 'radio',
-				'options'	=> array(
+				'options'	=> [
 					'ignore'	=> __('Do NOT add pricing information to the description field.', 'markup-by-attribute-for-woocommerce'),
 					'append'	=> __('Add pricing information to the end of the existing description.', 'markup-by-attribute-for-woocommerce'),
 					'overwrite' => __('Overwrite the variation description with price information.', 'markup-by-attribute-for-woocommerce'),
-				),
+				],
 				'default'	=> $this->desc_behavior
-			);
+			];
 
 			/** -- Include Attribute Name --
 			 *	Include the name of the attribute in the variatiable product's decription. 'Add $1.50 for Blue' becomes 'Add $1.50 for Color Blue'.
 			 */
-			$mt2mba_settings[] = array(
+			$mt2mba_settings[] = [
 				'name'		=> __('Include Attribute Names in Variation Descriptions', 'markup-by-attribute-for-woocommerce'),
 				'desc'		=> __("Include the name of the attribute in the variable product's description. <b>Add $1.50 for Blue</b> becomes <b>Add $1.50 for Color: Blue</b>.", 'markup-by-attribute-for-woocommerce') . ' <br/>' .
 					'<em>' . $individually . '</em>',
 				'id'		=> 'mt2mba_include_attrb_name',
 				'type'		=> 'checkbox',
 				'default'	=> $this->include_attrb_name
-			);
+			];
 
 			/** -- Hide Base Price --
 			 *	Do NOT show the base price in the product description.
 			 *	This setting affects products individually and takes effect when you recalculate the regular price
 			 *	for the product.
 			 */
-			$mt2mba_settings[] = array(
+			$mt2mba_settings[] = [
 				'name'		=> __('Hide Base Price', 'markup-by-attribute-for-woocommerce'),
 				'desc'		=> __('Do NOT show the base price in the product description.', 'markup-by-attribute-for-woocommerce') . ' <br/>' .
 					'<em>' . $individually . '</em>',
 				'id'		=> 'mt2mba_hide_base_price',
 				'type'		=> 'checkbox',
 				'default'	=> $this->hide_base_price
-			);
+			];
 
-			$mt2mba_settings[] = array(
+			$mt2mba_settings[] = [
 				'type'		=> 'sectionend',
 				'id'		=> 'mt2mbaDisplaySection'
-			);
+			];
 
 			// *** Markup Calculation settings ***
-			$mt2mba_settings[] = array(
+			$mt2mba_settings[] = [
 				'name'		=> __('Markup Calculation', 'markup-by-attribute-for-woocommerce'),
 				'type'		=> 'title',
 				'id'		=> 'mt2mbaCalcSection'
-			);
+			];
 
 			/** -- Sale Price Markup --
 			 *	Should Markup-by-Attribute calculate percentage markups on sale prices?
@@ -260,7 +260,7 @@ class Settings extends WC_Settings_API {
 			 *	This setting affects products individually and takes effect when you recalculate the sale price for
 			 *	the product.
 			 */
-			$mt2mba_settings[] = array(
+			$mt2mba_settings[] = [
 				'name'		=> __('Sale Price Markup', 'markup-by-attribute-for-woocommerce'),
 				'desc'		=> __('Should Markup-by-Attribute calculate percentage markups on sale prices?', 'markup-by-attribute-for-woocommerce') . ' <br/>' .
 					__('A 10% markup on a $30 regular price yields a $3 markup. If you set a $20 sale price, setting this option ON yields a $2 markup, setting it OFF leaves the markup at $3.',
@@ -268,7 +268,7 @@ class Settings extends WC_Settings_API {
 				'id'		=> 'mt2mba_sale_price_markup',
 				'type'		=> 'checkbox',
 				'default'	=> $this->sale_price_markup
-			);
+			];
 
 			/** -- Round Markup --
 			 *	Round percentage markups to keep the value below the decimal intact?
@@ -277,7 +277,7 @@ class Settings extends WC_Settings_API {
 			 *	This setting affects products individually and takes effect when you recalculate the regular price
 			 *	for the product.
 			 */
-			$mt2mba_settings[] = array(
+			$mt2mba_settings[] = [
 				'name'		=> __('Round Markup', 'markup-by-attribute-for-woocommerce'),
 				'desc'		=> __('Round percentage markups to keep the value below the decimal intact?', 'markup-by-attribute-for-woocommerce') . '<br/>' .
 					__('Some stores want prices with specific numbers below the decimal place (such as xx.00 or xx.95). Rounding percentage markups will keep the value below the decimal intact.',
@@ -285,19 +285,19 @@ class Settings extends WC_Settings_API {
 				'id'		=> 'mt2mba_round_markup',
 				'type'		=> 'checkbox',
 				'default'	=> $this->round_markup
-			);
+			];
 
-			$mt2mba_settings[] = array(
+			$mt2mba_settings[] = [
 				'type'		=> 'sectionend',
 				'id'		=> 'mt2mbaCalcSection'
-			);
+			];
 
 			// *** Other settings ***
-			$mt2mba_settings[] = array(
+			$mt2mba_settings[] = [
 				'name'		=> __('Other', 'markup-by-attribute-for-woocommerce'),
 				'type'		=> 'title',
 				'id'		=> 'mt2mbaOtherSection'
-			);
+			];
 
 			/** -- Max Variations --
 			 *	Maximum number of variations that can be created per run.
@@ -305,27 +305,27 @@ class Settings extends WC_Settings_API {
 			 *	to prevent server overload. Setting the number too high can cause timeout errors; you may have to
 			 *	experiment. You can always create more by running 'Create variations from all attributes' again.
 			 */
-			$mt2mba_settings[] = array(
+			$mt2mba_settings[] = [
 				'name'		=> __('Max Variations', 'markup-by-attribute-for-woocommerce'),
 				'desc'		=> __('Maximum number of variations that can be created per run.', 'markup-by-attribute-for-woocommerce') . '<br/>' .
 				__("<em>Use Cautiously:</em> WooCommerce limits the number of linked variations you can create at a time to 50 to prevent server overload. Setting the number too high can cause timeout errors; you may have to experiment. You can always create more by running 'Create variations from all attributes' again.",
 				'markup-by-attribute-for-woocommerce'),
 				'id'		=> 'mt2mba_max_variations',
 				'type'		=> 'number',
-				'custom_attributes' => array(
+				'custom_attributes' => [
 					'min'	=> MT2MBA_DEFAULT_MAX_VARIATIONS,
 					'step'	=> 1
-				),
+				],
 				'default'	=> $this->max_variations
-			);
+			];
 
-			$mt2mba_settings[] = array(
+			$mt2mba_settings[] = [
 				'type'		=> 'sectionend',
 				'id'		=> 'mt2mbaOtherSection'
-			);
+			];
 
 			// *** Donate section ***
-			$mt2mba_settings[] = array(
+			$mt2mba_settings[] = [
 				'name'	=> __('Support Markup by Attribute', 'markup-by-attribute-for-woocommerce'),
 				'type'	=> 'title',
 				'desc'	=> sprintf(
@@ -333,12 +333,12 @@ class Settings extends WC_Settings_API {
 					'https://github.com/Mark-Tomlinson/markup-by-attribute-for-woocommerce/wiki/4.0_Donate'
 				),
 				'id'	=> 'mt2mbaDonateSection'
-			);
+			];
 
-			$mt2mba_settings[] = array(
+			$mt2mba_settings[] = [
 				'type'	=> 'sectionend',
 				'id'	=> 'mt2mbaDonateSection'
-			);
+			];
 
 			return $mt2mba_settings;
 		} else {

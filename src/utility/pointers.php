@@ -72,11 +72,11 @@ class Pointers {
 	 * @since 1.0.0
 	 */
 	private function __construct() {
-		add_action('admin_enqueue_scripts', array($this, 'adminPointerLoad'), MT2MBA_ADMIN_POINTER_PRIORITY);
+		add_action('admin_enqueue_scripts', [$this, 'adminPointerLoad'], MT2MBA_ADMIN_POINTER_PRIORITY);
 		// Admin pointers for attribute term edit screen
-		add_filter('mt2mba_admin_pointers-edit-term', array($this, 'adminPointersEditTerm'));
+		add_filter('mt2mba_admin_pointers-edit-term', [$this, 'adminPointersEditTerm']);
 		// Admin pointer for plugin page
-		add_filter('mt2mba_admin_pointers-plugins', array($this, 'adminPointersPlugins'));
+		add_filter('mt2mba_admin_pointers-plugins', [$this, 'adminPointersPlugins']);
 	}
 	//endregion
 
@@ -93,16 +93,16 @@ class Pointers {
 	public function adminPointerLoad(string $hook_suffix): void {
 		// Get pointers for this screen
 		$screen = get_current_screen();
-		$screen_id = strpos($screen->id, 'edit-pa_') === FALSE ? $screen->id : 'edit-term';
+		$screen_id = strpos($screen->id, 'edit-pa_') === false ? $screen->id : 'edit-term';
 		$pointer_filter = 'mt2mba_admin_pointers-' . $screen_id;
 
-		$pointers = apply_filters($pointer_filter, array());
+		$pointers = apply_filters($pointer_filter, []);
 
 		if (!$pointers || !is_array($pointers)) return;
 
 		// Get dismissed pointers
 		$dismissed = explode(',', (string) get_user_meta(get_current_user_id(), 'dismissed_wp_pointers', true));
-		$valid_pointers = array();
+		$valid_pointers = [];
 
 		// Check pointers and remove dismissed ones.
 		foreach ($pointers as $pointer_id => $pointer) {
@@ -126,7 +126,7 @@ class Pointers {
 		wp_enqueue_script (
 			'mt2mba-pointer',
 			MT2MBA_PLUGIN_URL . 'src/js/jq-mt2mba-pointers.js',
-			array('wp-pointer'),
+			['wp-pointer'],
 			MT2MBA_VERSION,
 			true
 		);
@@ -153,24 +153,24 @@ class Pointers {
 			'markup-by-attribute-for-woocommerce')
 		);
 
-		$pointers = array (
-			'mt2mba-term_add_markup' => array (
+		$pointers = [
+			'mt2mba-term_add_markup' => [
 				'target' => '#term_add_markup',
-				'options' => array (
+				'options' => [
 					'content' => $pointer_content,
-					'position' => array('edge' => 'left', 'align' => 'middle')
-				)
-			),
+					'position' => ['edge' => 'left', 'align' => 'middle']
+				]
+			],
 
-			'mt2mba-term_edit_markup' => array (
+			'mt2mba-term_edit_markup' => [
 				'target' => '#term_edit_markup',
-				'options' => array (
+				'options' => [
 					'content' => $pointer_content,
-					'position' => array('edge' => 'top', 'align' => 'middle')
-				)
-			),
+					'position' => ['edge' => 'top', 'align' => 'middle']
+				]
+			],
 
-		);
+		];
 		return $pointers;
 	}
 
@@ -188,19 +188,19 @@ class Pointers {
 		$pointer_content = sprintf (
 			'<h3>%s</h3><p>%s</p>',
 			MT2MBA_PLUGIN_NAME,
-			__('Using this plugin is simple, but might be a little obscure. This link to the instructions may help get you started.<br/>We\'ll just leave the instructions link right here.', 'markup-by-attribute-for-woocommerce')
+			__("Using this plugin is simple, but might be a little obscure. This link to the instructions may help get you started.<br/>We'll just leave the instructions link right here.", 'markup-by-attribute-for-woocommerce')
 		);
 
-		$pointers = array (
-			'mt2mba-instructions' => array (
+		$pointers = [
+			'mt2mba-instructions' => [
 				'target' => '#mt2mba_instructions',
-				'options' => array (
+				'options' => [
 					'content' => $pointer_content,
-					'position' => array('edge' => 'left', 'align' => 'middle')
-				)
-			),
+					'position' => ['edge' => 'left', 'align' => 'middle']
+				]
+			],
 
-		);
+		];
 		return $pointers;
 	}
 	//endregion

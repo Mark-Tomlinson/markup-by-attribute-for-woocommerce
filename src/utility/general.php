@@ -9,8 +9,6 @@ namespace mt2Tech\MarkupByAttribute\Utility;
  * plugin bootstrap (constants, schema stamping) lives in the main plugin file.
  *
  * @package   mt2Tech\MarkupByAttribute\Utility
- * @author    Mark Tomlinson
- * @license   GPL-3.0-or-later
  * @since     1.0.0
  */
 
@@ -459,8 +457,6 @@ class General {
 	}
 
 	/**
-	 * Sanitize markup value for safe database storage
-	 *
 	 * @param	string	$markup		Markup value to sanitize
 	 * @return	string				Sanitized markup value
 	 */

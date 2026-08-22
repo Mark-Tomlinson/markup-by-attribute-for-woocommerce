@@ -8,8 +8,6 @@ namespace mt2Tech\MarkupByAttribute\Backend;
  * theme overwrite prevention) on the WooCommerce global attribute admin pages.
  *
  * @package   mt2Tech\MarkupByAttribute\Backend
- * @author    Mark Tomlinson
- * @license   GPL-3.0-or-later
  * @since     4.6.0
  */
 class Attribute {
@@ -40,12 +38,7 @@ class Attribute {
 	//endregion
 
 	//region INSTANCE MANAGEMENT
-	/**
-	 * Get singleton instance
-	 *
-	 * @since 4.6.0
-	 * @return Attribute Single instance of this class
-	 */
+	/** Singleton accessor. @since 4.6.0 */
 	public static function get_instance(): self {
 		if (self::$instance === null) {
 			self::$instance = new self();
@@ -53,35 +46,20 @@ class Attribute {
 		return self::$instance;
 	}
 
-	/**
-	 * Prevent object cloning
-	 *
-	 * @since 4.6.0
-	 */
+	/** Singleton: cloning is not supported. */
 	private function __clone() {}
 
-	/**
-	 * Prevent object unserialization
-	 *
-	 * @since 4.6.0
-	 */
+	/** Singleton: unserialization is not supported. @since 4.6.0 */
 	public function __wakeup() {}
 
 	/**
 	 * Initialize the class and set up hooks
-	 *
-	 * @since 4.6.0
 	 */
 	private function __construct() {
 		$this->initializeLabels();
 		$this->registerAttributeHooks();
 	}
 
-	/**
-	 * Initialize text labels and descriptions
-	 *
-	 * @since 4.6.0
-	 */
 	private function initializeLabels(): void {
 		$this->rewrite_name_label = __('Add Markup to Name?', 'markup-by-attribute-for-woocommerce');
 		$this->rewrite_name_description = sprintf(
@@ -100,11 +78,6 @@ class Attribute {
 		);
 	}
 
-	/**
-	 * Register hooks for attribute actions
-	 *
-	 * @since 3.0.0
-	 */
 	private function registerAttributeHooks(): void {
 		// Add fields to forms
 		add_action('woocommerce_after_add_attribute_fields', [$this, 'addAttributeFields'], 10, 2);

@@ -10,8 +10,6 @@ use mt2Tech\MarkupByAttribute\Utility as Utility;
  * plugin settings, and price display formatting.
  *
  * @package   mt2Tech\MarkupByAttribute\Frontend
- * @author    Mark Tomlinson
- * @license   GPL-3.0-or-later
  * @since     1.0.0
  */
 
@@ -29,11 +27,7 @@ class Options {
 	//endregion
 
 	//region INSTANCE MANAGEMENT
-	/**
-	 * Get singleton instance
-	 *
-	 * @return self Single instance of this class
-	 */
+	/** Singleton accessor. */
 	public static function get_instance(): self {
 		if (self::$instance === null) {
 			self::$instance = new self();
@@ -41,14 +35,10 @@ class Options {
 		return self::$instance;
 	}
 
-	/**
-	 * Prevent object cloning
-	 */
+	/** Singleton: cloning is not supported. */
 	public function __clone() {}
 
-	/**
-	 * Prevent object unserialization
-	 */
+	/** Singleton: unserialization is not supported. */
 	public function __wakeup() {}
 
 	/**

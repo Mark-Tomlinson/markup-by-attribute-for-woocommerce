@@ -11,8 +11,6 @@ use Throwable;
  * the base price, then updates both the variation prices and descriptions.
  *
  * @package   mt2Tech\MarkupByAttribute\Backend\Handlers
- * @author    Mark Tomlinson
- * @license   GPL-3.0-or-later
  * @since     4.0.0
  */
 class PriceSetHandler extends PriceMarkupHandler {
@@ -156,7 +154,6 @@ class PriceSetHandler extends PriceMarkupHandler {
 	 * This method processes both percentage and fixed markups, applying appropriate rounding
 	 * and business logic based on plugin settings.
 	 *
-	 * @since 4.0.0
 	 * @param array $attribute_data Array of attributes with labels and terms
 	 * @return array                Markup table indexed by [taxonomy][term_slug] with markup/description data
 	 */
@@ -369,7 +366,6 @@ class PriceSetHandler extends PriceMarkupHandler {
 	 * Updates both _price and _regular_price/_sale_price meta fields, plus variation descriptions.
 	 * Uses DELETE + INSERT pattern for better performance than individual UPDATEs.
 	 *
-	 * @since 4.0.0
 	 * @param array $updates Array of variation data with id, price, and description keys
 	 */
 	protected function updateVariationPricesAndDescriptions($updates): void {

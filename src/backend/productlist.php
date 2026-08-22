@@ -9,8 +9,6 @@ namespace mt2Tech\MarkupByAttribute\Backend;
  * and attribute-based filtering of products.
  *
  * @package   mt2Tech\MarkupByAttribute\Backend
- * @author    Mark Tomlinson
- * @license   GPL-3.0-or-later
  * @since     3.13.0
  */
 
@@ -41,12 +39,7 @@ class ProductList {
 	//endregion
 
 	//region INSTANCE MANAGEMENT
-	/**
-	 * Get singleton instance of ProductList
-	 *
-	 * @since 3.13.0
-	 * @return ProductList Single instance of this class
-	 */
+	/** Singleton accessor. @since 3.13.0 */
 	public static function get_instance(): self {
 		if (self::$instance === null) {
 			self::$instance = new self();
@@ -54,18 +47,10 @@ class ProductList {
 		return self::$instance;
 	}
 
-	/**
-	 * Prevent object cloning
-	 *
-	 * @since 3.13.0
-	 */
+	/** Singleton: cloning is not supported. @since 3.13.0 */
 	public function __clone() {}
 
-	/**
-	 * Prevent object unserialization
-	 *
-	 * @since 3.13.0
-	 */
+	/** Singleton: unserialization is not supported. @since 3.13.0 */
 	public function __wakeup(): void {}
 
 	/**
@@ -73,8 +58,6 @@ class ProductList {
 	 *
 	 * Sets up all necessary WordPress and WooCommerce hooks for product list management,
 	 * including custom columns, filtering, bulk actions, and AJAX handlers.
-	 *
-	 * @since 3.13.0
 	 */
 	private function __construct() {
 		// Column Management
@@ -170,8 +153,6 @@ class ProductList {
 
 	//region COLUMN DISPLAY
 	/**
-	 * Add custom columns to product list table
-	 *
 	 * @since 3.13.0
 	 * @param array $columns Existing columns
 	 * @return array         Modified columns with base price and attributes columns
@@ -192,8 +173,6 @@ class ProductList {
 	}
 
 	/**
-	 * Render content for custom columns
-	 *
 	 * @since 3.13.0
 	 * @param string $column     Column identifier
 	 * @param int    $product_id Product ID
@@ -232,7 +211,6 @@ class ProductList {
 	/**
 	 * Render base price column content with regular and sale prices
 	 *
-	 * @since 3.13.0
 	 * @param WC_Product $product    Product object
 	 * @param int        $product_id Product ID
 	 */
@@ -269,7 +247,6 @@ class ProductList {
 	/**
 	 * Render attributes column content with markup information
 	 *
-	 * @since 3.13.0
 	 * @param WC_Product $product    Product object
 	 * @param int        $product_id Product ID
 	 * @param float      $base_price Current base price for the product
@@ -370,8 +347,6 @@ class ProductList {
 
 	//region BULK OPERATIONS
 	/**
-	 * Add bulk actions for markup handling
-	 *
 	 * @since 4.0.0
 	 * @param array $bulk_actions Existing bulk actions
 	 * @return array              Modified bulk actions with markup reapplication option
@@ -392,8 +367,6 @@ class ProductList {
 	}
 
 	/**
-	 * Process bulk markup actions
-	 *
 	 * @since 4.0.0
 	 * @param string $redirect_to Redirect URL
 	 * @param string $doaction    Action being performed
@@ -451,7 +424,6 @@ class ProductList {
 	/**
 	 * Check if current page is the WooCommerce product list
 	 *
-	 * @since	3.13.0
 	 * @param	string	$hook	Current admin page hook
 	 * @return	bool        	True if on product list page
 	 */
@@ -464,7 +436,6 @@ class ProductList {
 	/**
 	 * Check if an attribute taxonomy has any terms with markup
 	 *
-	 * @since	3.13.0
 	 * @param	string	$taxonomy	Attribute taxonomy name
 	 * @return	bool				True if markup exists
 	 */

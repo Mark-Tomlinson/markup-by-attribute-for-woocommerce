@@ -9,8 +9,6 @@ namespace mt2Tech\MarkupByAttribute\Utility;
  * and storing dismissal preferences in the database.
  *
  * @package   mt2Tech\MarkupByAttribute\Utility
- * @author    Mark Tomlinson
- * @license   GPL-3.0-or-later
  * @since     1.0.0
  */
 
@@ -23,7 +21,6 @@ class Notices {
 	 * Singleton instance
 	 *
 	 * @var self|null
-	 * @since 1.0.0
 	 */
 	private static ?self $instance = null;
 
@@ -35,18 +32,12 @@ class Notices {
 	 * admin page when there is nothing to dismiss.
 	 *
 	 * @var bool
-	 * @since 4.6.3
 	 */
 	private bool $has_active_notices = false;
 	//endregion
 
 	//region INSTANCE MANAGEMENT
-	/**
-	 * Get singleton instance
-	 *
-	 * @since 1.0.0
-	 * @return Notices Single instance of this class
-	 */
+	/** Singleton accessor. @since 1.0.0 */
 	public static function get_instance(): self {
 		if (self::$instance === null) {
 			self::$instance = new self();
@@ -54,26 +45,16 @@ class Notices {
 		return self::$instance;
 	}
 
-	/**
-	 * Prevent object cloning
-	 *
-	 * @since 1.0.0
-	 */
+	/** Singleton: cloning is not supported. @since 1.0.0 */
 	public function __clone() {}
 
-	/**
-	 * Prevent object unserialization
-	 *
-	 * @since 1.0.0
-	 */
+	/** Singleton: unserialization is not supported. @since 1.0.0 */
 	public function __wakeup(): void {}
 
 	/**
 	 * Initialize notice handling and register hooks
 	 *
 	 * Sets up admin notice scripts and dismissal handling.
-	 *
-	 * @since 1.0.0
 	 */
 	private function __construct() {
 		//	Enqueue notice dismissal JScript
@@ -161,7 +142,6 @@ class Notices {
 	 * Creates and displays an admin notice of the specified type with
 	 * optional dismissal functionality.
 	 *
-	 * @since 1.0.0
 	 * @param string $type           Notice type: 'error', 'warning', 'success', 'info'
 	 * @param string $message        The notice message content
 	 * @param string $dismiss_option Unique identifier for dismissal tracking

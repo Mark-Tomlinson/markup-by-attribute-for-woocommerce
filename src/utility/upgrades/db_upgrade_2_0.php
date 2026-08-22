@@ -13,8 +13,6 @@ namespace mt2Tech\MarkupByAttribute\Utility\Upgrades;
  * Original v1.x data is left intact as fallback.
  *
  * @package   mt2Tech\MarkupByAttribute\Utility\Upgrades
- * @author    Mark Tomlinson
- * @license   GPL-3.0-or-later
  * @since     2.0.0
  */
 

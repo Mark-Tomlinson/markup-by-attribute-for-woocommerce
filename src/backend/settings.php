@@ -9,8 +9,6 @@ use WC_Settings_API;
  * Manages all plugin settings including markup behavior, display options, and limits.
  *
  * @package   mt2Tech\MarkupByAttribute\Backend
- * @author    Mark Tomlinson
- * @license   GPL-3.0-or-later
  * @since     2.0.0
  */
 
@@ -87,12 +85,7 @@ class Settings extends WC_Settings_API {
 	//endregion
 
 	//region INSTANCE MANAGEMENT
-	/**
-	 * Get singleton instance
-	 *
-	 * @since 2.0.0
-	 * @return Settings Single instance of this class
-	 */
+	/** Singleton accessor. @since 2.0.0 */
 	public static function get_instance(): self {
 		if (self::$instance === null) {
 			self::$instance = new self();
@@ -100,24 +93,14 @@ class Settings extends WC_Settings_API {
 		return self::$instance;
 	}
 
-	/**
-	 * Prevent cloning of the instance
-	 *
-	 * @since 2.0.0
-	 */
+	/** Singleton: cloning is not supported. @since 2.0.0 */
 	public function __clone() {}
 
-	/**
-	 * Prevent unserializing of the instance
-	 *
-	 * @since 2.0.0
-	 */
+	/** Singleton: unserialization is not supported. @since 2.0.0 */
 	public function __wakeup(): void {}
 
 	/**
 	 * Initialize settings and register WooCommerce hooks
-	 *
-	 * @since 2.0.0
 	 */
 	private function __construct() {
 		add_filter('woocommerce_get_sections_products', [$this, 'addSection']);

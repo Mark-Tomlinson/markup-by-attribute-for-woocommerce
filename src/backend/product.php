@@ -316,7 +316,6 @@ class Product {
 	 * capability checks, and product type validation. Returns product data
 	 * on success or sends JSON error response on failure.
 	 *
-	 * @since 4.0.0
 	 * @return array|false Product data array on success, false on failure
 	 */
 	private function validateReapplyMarkupsRequest() {

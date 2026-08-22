@@ -11,8 +11,6 @@ use WP_Meta_Query;
  * including form generation, data validation, and metadata storage.
  *
  * @package   mt2Tech\MarkupByAttribute\Backend
- * @author    Mark Tomlinson
- * @license   GPL-3.0-or-later
  * @since     1.0.0
  */
 class Term {
@@ -37,12 +35,7 @@ class Term {
 	//endregion
 
 	//region INSTANCE MANAGEMENT
-	/**
-	 * Get singleton instance
-	 *
-	 * @since 1.0.0
-	 * @return Term Single instance of this class
-	 */
+	/** Singleton accessor. @since 1.0.0 */
 	public static function get_instance(): self {
 		if (self::$instance === null) {
 			self::$instance = new self();
@@ -50,18 +43,10 @@ class Term {
 		return self::$instance;
 	}
 
-	/**
-	 * Prevent object cloning
-	 *
-	 * @since 1.0.0
-	 */
+	/** Singleton: cloning is not supported. */
 	private function __clone() {}
 
-	/**
-	 * Prevent object unserialization
-	 *
-	 * @since 1.0.0
-	 */
+	/** Singleton: unserialization is not supported. @since 1.0.0 */
 	public function __wakeup() {}
 
 	/**
@@ -69,8 +54,6 @@ class Term {
 	 *
 	 * Sets up WordPress hooks for term management, including
 	 * form field generation, data saving, and admin interface integration.
-	 *
-	 * @since 1.0.0
 	 */
 	private function __construct() {
 		$this->initializeLabels();
@@ -85,8 +68,6 @@ class Term {
 	 * Initialize text labels and descriptions
 	 *
 	 * Sets up all translatable strings used in the admin interface.
-	 *
-	 * @since 3.0.0
 	 */
 	private function initializeLabels(): void {
 		$this->markup_label = __('Markup (or markdown)', 'markup-by-attribute-for-woocommerce');
@@ -94,9 +75,6 @@ class Term {
 		$this->placeholder = '[+|-]' . wc_format_localized_decimal('0.00') .' or [+|-]' . wc_format_localized_decimal('00.0%');
 	}
 
-	/**
-	 * Register hooks for taxonomies
-	 */
 	private function registerTaxonomyHooks(): void {
 		// Get all WooCommerce global attributes (like Color, Size, etc.)
 		$attribute_taxonomies = wc_get_attribute_taxonomies();

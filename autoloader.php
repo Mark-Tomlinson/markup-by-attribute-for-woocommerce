@@ -8,8 +8,6 @@ namespace mt2Tech\MarkupByAttribute;
  * Follows PSR-4 standards for mapping namespaces to file system paths.
  *
  * @package   mt2Tech\MarkupByAttribute
- * @author    Mark Tomlinson
- * @license   GPL-3.0-or-later
  * @since     3.0.0
  */
 class Autoloader {

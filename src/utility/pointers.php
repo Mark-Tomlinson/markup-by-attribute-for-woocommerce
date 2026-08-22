@@ -9,8 +9,6 @@ namespace mt2Tech\MarkupByAttribute\Utility;
  * to improve user experience and onboarding.
  *
  * @package   mt2Tech\MarkupByAttribute\Utility
- * @author    Mark Tomlinson
- * @license   GPL-3.0-or-later
  * @since     1.0.0
  */
 
@@ -23,7 +21,6 @@ class Pointers {
 	 * Singleton instance
 	 *
 	 * @var self|null
-	 * @since 1.0.0
 	 */
 	private static ?self $instance = null;
 
@@ -31,18 +28,12 @@ class Pointers {
 	 * Title for pointer messages
 	 *
 	 * @var string
-	 * @since 1.0.0
 	 */
 	private string $pointer_title;
 	//endregion
 
 	//region INSTANCE MANAGEMENT
-	/**
-	 * Get singleton instance
-	 *
-	 * @since 1.0.0
-	 * @return Pointers Single instance of this class
-	 */
+	/** Singleton accessor. @since 1.0.0 */
 	public static function get_instance(): self {
 		if (self::$instance === null) {
 			self::$instance = new self();
@@ -50,26 +41,16 @@ class Pointers {
 		return self::$instance;
 	}
 
-	/**
-	 * Prevent object cloning
-	 *
-	 * @since 1.0.0
-	 */
+	/** Singleton: cloning is not supported. @since 1.0.0 */
 	public function __clone() {}
 
-	/**
-	 * Prevent object unserialization
-	 *
-	 * @since 1.0.0
-	 */
+	/** Singleton: unserialization is not supported. @since 1.0.0 */
 	public function __wakeup(): void {}
 
 	/**
 	 * Initialize pointer management and register hooks
 	 *
 	 * Sets up WordPress hooks for admin pointer display and management.
-	 *
-	 * @since 1.0.0
 	 */
 	private function __construct() {
 		add_action('admin_enqueue_scripts', [$this, 'adminPointerLoad'], MT2MBA_ADMIN_POINTER_PRIORITY);

@@ -34,7 +34,14 @@ foreach ($files as $file) {
 	}
 }
 
-t_assert($tagged >= 15, "@license tags found to check ($tagged)");
+// This used to demand 15+ tagged files. Item 20 (2026-08-21) cut @license and
+// @author down to the one file wp.org actually reads, so the population is now
+// exactly one — and a guard that only counts would have gone quietly green on a
+// tree with zero. Name the file instead: test-27 keeps the tag out of the others.
+t_assert($tagged >= 1, "@license tags found to check ($tagged)");
+t_assert((bool) preg_match('/@license\s+GPL-3\.0-or-later/',
+	file_get_contents($root . '/markup-by-attribute-for-woocommerce.php')),
+	'the main plugin file carries the @license tag');
 t_assert(empty($offenders),
 	'every @license docblock says GPL-3.0-or-later' . ($offenders ? ' — ' . implode(', ', $offenders) : ''));
 

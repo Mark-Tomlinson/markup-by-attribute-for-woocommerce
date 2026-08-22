@@ -10,8 +10,6 @@ use mt2Tech\MarkupByAttribute\Utility as Utility;
  * and then delegates to PriceSetHandler to reapply markups.
  *
  * @package   mt2Tech\MarkupByAttribute\Backend\Handlers
- * @author    Mark Tomlinson
- * @license   GPL-3.0-or-later
  * @since     4.0.0
  */
 class PriceUpdateHandler extends PriceMarkupHandler {

@@ -18,8 +18,6 @@ namespace mt2Tech\MarkupByAttribute\Backend\Handlers;
  * issuer.
  *
  * @package   mt2Tech\MarkupByAttribute\Backend\Handlers
- * @author    Mark Tomlinson
- * @license   GPL-3.0-or-later
  * @since     4.7.0
  */
 final class BulkMetaIO {

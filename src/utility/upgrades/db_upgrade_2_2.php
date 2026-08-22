@@ -7,8 +7,6 @@ namespace mt2Tech\MarkupByAttribute\Utility\Upgrades;
  * Removes the discontinued 'mt2mba_show_attrb_list' setting.
  *
  * @package   mt2Tech\MarkupByAttribute\Utility\Upgrades
- * @author    Mark Tomlinson
- * @license   GPL-3.0-or-later
  * @since     2.2.0
  */
 

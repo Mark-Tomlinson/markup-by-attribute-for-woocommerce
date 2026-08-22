@@ -9,8 +9,6 @@ namespace mt2Tech\MarkupByAttribute\Backend\Handlers;
  * handlers to implement their own markup calculation strategies.
  *
  * @package   mt2Tech\MarkupByAttribute\Backend\Handlers
- * @author    Mark Tomlinson
- * @license   GPL-3.0-or-later
  * @since     4.0.0
  */
 abstract class PriceMarkupHandler {

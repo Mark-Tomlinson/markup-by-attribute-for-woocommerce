@@ -216,6 +216,15 @@ Compatibility update for WordPress 7.0 and WooCommerce 10.6.2. No functional cha
 Removed the "Preserve Zero Prices" setting. If you had this enabled and have free products with global attribute markups, see the wiki for details.
 
 == Changelog ==
+= Unreleased =
+
+**Bug Fixes**
+*The following shipped in 4.7.0 but were left out of that release's changelog.*
+
+* Markup values are now read correctly in stores that use a comma as the decimal separator, or a space or period for thousands. A value such as 1 000,50 could previously be misread when markups were applied from the product list
+* A markup containing stray characters, such as 5abc, is now rejected rather than quietly stored as 5
+* A markup typed with a space before the percent sign, such as 5 %, is no longer flagged as invalid in the browser. WooCommerce itself accepts that form, so the field now does too
+
 = 4.7.0 =
 *Release Date: August 2026*
 

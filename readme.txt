@@ -9,8 +9,8 @@ Contributors:			MarkTomlinson
 Donate link:			https://github.com/Mark-Tomlinson/markup-by-attribute-for-woocommerce/wiki/4.0_Donate
 License:				GPLv3 or later
 License URI:			https://www.gnu.org/licenses/gpl-3.0.html
-Version:                4.7.0
-Stable tag:             4.7.0
+Version:                4.8.0
+Stable tag:             4.8.0
 Tested up to:           7.1
 Requires at least:      5.7
 PHP tested up to:       8.4.23
@@ -49,10 +49,9 @@ This plugin does one thing - it adds pricing control to WooCommerce's global pro
 * Add-on services: Pricing for monogramming, gift wrapping, etc.
 * Attribute-driven costs: Any situation where product options consistently affect pricing
 
-= New in Version 4.6 =
-* Removed the "Preserve Zero Prices" setting — markups now always apply to zero-priced variations
-* Simplified zero-price handling with automatic price floor (prices never go negative)
-* Improved code clarity with refactored price-handling methods
+= New in Version 4.8 =
+* The product edit screen now warns when a global attribute set to "Any" on a variation carries markups — customers see the markup in the options drop-down, but the "Any" variation's price never includes it
+* Informational only: nothing is blocked, and a deliberate configuration is left exactly as you set it
 
 == Installation ==
 
@@ -200,6 +199,9 @@ If you use Markup-by-Attribute and want to see me continue support for it, I enc
 7. The settings page allows configuration of how the markup is displayed.
 
 == Upgrade Notice ==
+= 4.8.0 =
+Adds a warning on the product edit screen when an attribute set to "Any" on a variation carries markups that customers will see but never be charged. Informational only — nothing is blocked and no prices change. Also documents three fixes that shipped in 4.7.0 without a changelog entry.
+
 = 4.7.0 =
 Compatibility update for WordPress 7.1. Markup annotations are now consistent everywhere they appear, and several long-standing bugs are fixed — including "Reapply markups to prices" disappearing from the variations Bulk actions menu after [Save attributes]. Recommended for all users.
 
@@ -216,7 +218,11 @@ Compatibility update for WordPress 7.0 and WooCommerce 10.6.2. No functional cha
 Removed the "Preserve Zero Prices" setting. If you had this enabled and have free products with global attribute markups, see the wiki for details.
 
 == Changelog ==
-= Unreleased =
+= 4.8.0 =
+*Release Date: August 2026*
+
+**Added**
+* The product edit screen now warns when a global attribute carrying markups is left as "Any" on a variation. WooCommerce offers every one of that attribute's options in the drop-down, markup and all, but prices the "Any" variation — so the markup is shown to the customer and never applied. Where the markup is negative, the customer is charged more than the drop-down promised. The notice lists the affected attributes and sits above the variations [Bulk actions] menu. It is informational only: nothing is blocked, and a deliberate configuration is left exactly as you set it
 
 **Bug Fixes**
 *The following shipped in 4.7.0 but were left out of that release's changelog.*
@@ -224,6 +230,10 @@ Removed the "Preserve Zero Prices" setting. If you had this enabled and have fre
 * Markup values are now read correctly in stores that use a comma as the decimal separator, or a space or period for thousands. A value such as 1 000,50 could previously be misread when markups were applied from the product list
 * A markup containing stray characters, such as 5abc, is now rejected rather than quietly stored as 5
 * A markup typed with a space before the percent sign, such as 5 %, is no longer flagged as invalid in the browser. WooCommerce itself accepts that form, so the field now does too
+
+**Maintenance**
+* One syntax dialect throughout the shipping code: short array syntax, lowercase true/false/null, and the quote style needing fewer escapes. No change in behavior — pinned by the test suite
+* Docblock boilerplate trimmed without losing documentation: @since no longer appears on private or protected members, and the identical singleton scaffolding is described in one line instead of seven
 
 = 4.7.0 =
 *Release Date: August 2026*

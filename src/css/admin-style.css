@@ -127,3 +127,59 @@
 span.base-price-info {
 	font-size: 18px;
 }
+
+/* =============================================================================
+   Unchargeable Markup Notice
+   ========================================================================== */
+
+/* Every rule here is scoped through #woocommerce-product-data so it outranks
+   WooCommerce's own panel styling, which reaches our markup as
+   "#woocommerce-product-data .wc-metaboxes-wrapper p" (specificity 1,1,1) and
+   floats, pads and clearfixes anything it finds. A plain .class selector loses
+   that fight -- which is why the notice laid itself out in columns on WP 7.1 /
+   WC 11 while looking correct on WP 5.7 / WC 5. Two IDs beats one ID plus a
+   class, so these win outright without a single !important.
+
+   The box is drawn here in full rather than borrowing core's .notice classes:
+   that styling changed between WP 5.7 and 7.1, and this plugin supports both. */
+#woocommerce-product-data #mt2mba-unchargeable-notice .mt2mba-unchargeable {
+	clear: both;
+	background: #fff;
+	border: 1px solid #c3c4c7;
+	border-left: 4px solid #dba617;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+	margin: 10px 0;
+	padding: 8px 12px;
+}
+
+/* float:none and width:auto are the ones that matter -- WooCommerce floats
+   almost everything inside this panel. */
+#woocommerce-product-data #mt2mba-unchargeable-notice .mt2mba-unchargeable p,
+#woocommerce-product-data #mt2mba-unchargeable-notice .mt2mba-unchargeable ul {
+	display: block;
+	float: none;
+	clear: none;
+	width: auto;
+	font-size: 13px;
+	line-height: 1.5;
+	margin: 4px 0;
+	padding: 0;
+}
+
+#woocommerce-product-data #mt2mba-unchargeable-notice .mt2mba-unchargeable ul {
+	list-style: disc;
+	margin-left: 2em;
+}
+
+#woocommerce-product-data #mt2mba-unchargeable-notice .mt2mba-unchargeable li {
+	float: none;
+	width: auto;
+	margin: 0 0 2px;
+	padding: 0;
+}
+
+/* WooCommerce appends a clearfix pseudo-element to every <p> in the panel
+   (.woocommerce_options_panel p::after). Harmless but it inserts a stray "." */
+#woocommerce-product-data #mt2mba-unchargeable-notice .mt2mba-unchargeable p::after {
+	content: none;
+}

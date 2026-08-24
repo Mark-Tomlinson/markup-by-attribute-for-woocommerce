@@ -48,6 +48,51 @@ jQuery(document).ready(function($) {
 	$(document.body).on('woocommerce_variations_loaded woocommerce_variations_saved', addReapplyMarkupOption);
 	$(document.body).on('reload', '#variable_product_options', addReapplyMarkupOption);
 
+	/**
+	 * Re-evaluate the "Any" markup notice after variations are saved.
+	 *
+	 * [Save changes] posts to woocommerce_save_variations and then reloads only the
+	 * variation rows -- the panel around them, where this notice is rendered, is
+	 * never re-fetched. Without this the notice went stale both ways: it stayed up
+	 * after the problem was corrected, and stayed away after one was introduced,
+	 * until the whole product was [Update]d.
+	 *
+	 * Bound to 'saved' only, NOT 'loaded': the latter also fires on paging through
+	 * variations, where nothing has changed and the query would be wasted.
+	 */
+	function refreshUnchargeableNotice() {
+		var $target = $('#mt2mba-unchargeable-notice');
+		if (!$target.length) return;
+
+		$.ajax({
+			url: mt2mbaLocal.ajaxUrl,
+			type: 'POST',
+			data: {
+				action: 'mt2mba_unchargeable_notice',
+				product_id: $('#post_ID').val(),
+				security: mt2mbaLocal.security
+			},
+			success: function(response) {
+				if (response && response.success) {
+					$target.html(response.data.html);
+				} else {
+					$target.empty();
+				}
+			},
+			// Both failure paths CLEAR rather than leave the old answer standing.
+			// The variations just changed, so whatever is on screen was computed
+			// from data that no longer exists -- and a stale warning about money is
+			// worse than no warning: it is what made this notice untrustworthy in
+			// the first place. The next page load recomputes it correctly.
+			error: function(jqXHR, textStatus, errorThrown) {
+				console.log('Ajax error:', textStatus, errorThrown);
+				$target.empty();
+			}
+		});
+	}
+
+	$(document.body).on('woocommerce_variations_saved', refreshUnchargeableNotice);
+
 	// Add listener for clicking the General tab
 	$('.product_data_tabs .general_tab a').on('click', function() {
 		// Only refresh if prices were changed

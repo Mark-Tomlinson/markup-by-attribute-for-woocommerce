@@ -101,6 +101,7 @@ function __($text, $domain = null) { return $text; }
 // double-escaped pipeline looks correct in the browser.
 function esc_html($text) { return htmlspecialchars((string) $text, ENT_QUOTES, 'UTF-8', false); }
 function esc_attr($text) { return htmlspecialchars((string) $text, ENT_QUOTES, 'UTF-8', false); }
+function esc_html__($text, $domain = null) { return esc_html($text); }
 function esc_url($url) { return $url; }
 function wp_kses_post($text) { return $text; }
 function wp_kses($text, $allowed_html = [], $allowed_protocols = []) { return $text; }

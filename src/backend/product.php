@@ -30,6 +30,10 @@ class Product {
 		// Add base price fields to product general options panel
 		add_action('woocommerce_product_options_general_product_data', [$this, 'addBasePriceFields']);
 
+		// Warn about markups the cart can never charge, directly above the
+		// variations toolbar where the repricing actions live
+		add_action('woocommerce_variable_product_before_variations', [$this, 'showUnchargeableMarkupNotice']);
+
 		// Handle AJAX requests to reapply markups to variations
 		add_action('wp_ajax_handleMarkupReapplication', [$this, 'handleMarkupReapplication']);
 
@@ -38,6 +42,9 @@ class Product {
 
 		// Handle AJAX requests to refresh general panel after price changes
 		add_action('wp_ajax_mt2mba_refresh_general_panel', [$this, 'refreshProductGeneralPanel']);
+
+		// Handle AJAX requests to re-evaluate the unchargeable-markup notice
+		add_action('wp_ajax_mt2mba_unchargeable_notice', [$this, 'refreshUnchargeableNotice']);
 	}
 
 	/**
@@ -305,6 +312,188 @@ class Product {
 				'</p></div>';
 			echo '</div>';
 		}
+	}
+
+	/**
+	 * Warn about markups that are advertised but can never be charged
+	 *
+	 * An attribute left as "Any" on a variation makes WooCommerce offer every one
+	 * of that attribute's options in the drop-down (see read_variation_attributes()
+	 * in WooCommerce's variable-product data store), markup annotation included --
+	 * but the cart resolves to the "Any" variation, whose price carries no markup
+	 * for the option the customer picked. The markup is advertised and never
+	 * charged, and when it is negative the customer is overcharged against what
+	 * the drop-down promised.
+	 *
+	 * Informational only. It does not block or alter any action, because the
+	 * configuration is legitimate for a store that means it -- and the owner who
+	 * means it is the one person who does not need telling twice.
+	 *
+	 * @since 4.8.0
+	 */
+	public function showUnchargeableMarkupNotice(): void {
+		global $post;
+		if (!$post) return;
+
+		// The wrapper is emitted even when there is nothing to say: it is the target
+		// refreshUnchargeableNotice() replaces after [Save changes], which alters the
+		// answer without re-rendering this panel.
+		echo '<div id="mt2mba-unchargeable-notice">' .
+			$this->buildUnchargeableNotice((int) $post->ID) .
+			'</div>';
+	}
+
+	/**
+	 * Rebuild the notice after variations are saved
+	 *
+	 * [Save changes] on the variations tab posts to WooCommerce's own
+	 * woocommerce_save_variations and then reloads only the variation rows, so this
+	 * panel's server-rendered output goes stale in both directions -- a corrected
+	 * product kept warning, and a newly broken one stayed silent until [Update].
+	 *
+	 * @since 4.8.0
+	 */
+	public function refreshUnchargeableNotice(): void {
+		check_ajax_referer('handleMarkupReapplication', 'security');
+
+		if (!current_user_can('edit_products')) {
+			wp_send_json_error(['message' => __('Permission denied', 'markup-by-attribute-for-woocommerce')]);
+			return;
+		}
+
+		$product_id = isset($_POST['product_id']) ? absint($_POST['product_id']) : 0;
+		if (!$product_id) {
+			wp_send_json_error();
+			return;
+		}
+
+		wp_send_json_success(['html' => $this->buildUnchargeableNotice($product_id)]);
+	}
+
+	/**
+	 * Build the notice markup, or an empty string when there is nothing to report
+	 *
+	 * @param  int    $product_id The product to examine
+	 * @return string             Ready-to-echo HTML, already escaped
+	 */
+	private function buildUnchargeableNotice($product_id): string {
+		// A store that hides markups in the drop-down advertises nothing there, so
+		// this notice's central claim would simply be false. Known gap, deliberately
+		// not covered: "Add Markup to Name?" writes the markup into the term name
+		// itself, which shows whatever this setting says.
+		if (MT2MBA_DROPDOWN_BEHAVIOR === 'hide') return '';
+
+		$product = wc_get_product($product_id);
+		if (!$product || !$product->is_type('variable')) return '';
+
+		$labels = self::findUnchargeableAttributes($product, $product_id, $product->get_children());
+		if (empty($labels)) return '';
+
+		// The rule goes in the sentence and the instances go in the list. Naming one
+		// attribute inline read as though it were the only one that could ever be
+		// affected, and quoting the generic "Any" beside a specific "Any Colour…"
+		// collided badly (Mark, 2026-08-23).
+		// Deliberately NOT class="notice notice-warning inline". Borrowing core's
+		// notice styling put this at the mercy of two moving targets at once: WP
+		// restyled .notice between 5.7 and 7.1, and WooCommerce's own panel rules
+		// (#woocommerce-product-data .wc-metaboxes-wrapper p, admin.css) outrank a
+		// plain class selector. The box is drawn entirely in admin-style.css instead,
+		// so it looks the same on every supported version.
+		$html = '<div class="mt2mba-unchargeable"><p><strong>' .
+			esc_html(MT2MBA_PLUGIN_NAME) . '</strong> &mdash; ' .
+			esc_html__('Global attributes set to "Any" will not reflect the markup in the price:', 'markup-by-attribute-for-woocommerce') .
+			'</p><ul>';
+
+		// Label each one the way WooCommerce does in the variation rows
+		// ("Any %s&hellip;", html-variation-admin.php) so the owner can match the
+		// warning to what is in front of them. The ellipsis entity is appended
+		// outside the escaped text so escaping cannot turn it into &amp;hellip;.
+		foreach ($labels as $label) {
+			$html .= '<li>' . esc_html(sprintf(
+				/* translators: %s: attribute name, e.g. Colour */
+				__('Any %s', 'markup-by-attribute-for-woocommerce'),
+				$label
+			)) . '&hellip;</li>';
+		}
+
+		return $html . '</ul></div>';
+	}
+
+	/**
+	 * Find every attribute whose advertised markups no variation can charge
+	 *
+	 * Collecting all of them rather than stopping at the first costs nothing
+	 * measurable: the candidate loop below already walks every attribute before any
+	 * query runs, and the variation rows are a single bulk read either way.
+	 *
+	 * Kept static and free of page context so it can be exercised directly by the
+	 * test harness -- the rendering above is the only part that needs $post.
+	 *
+	 * @since  4.8.0
+	 * @param  object $product       The variable product
+	 * @param  int    $product_id    The product's ID
+	 * @param  array  $variation_ids Every variation belonging to the product
+	 * @return array                 Display labels of the offending attributes
+	 */
+	public static function findUnchargeableAttributes($product, $product_id, array $variation_ids): array {
+		$candidates = [];
+
+		foreach ($product->get_attributes() as $attribute) {
+			// Local attributes cannot carry markups. Attributes with "Used for
+			// variations" off render no drop-down at all, so nothing of theirs is
+			// advertised -- and that is the transient state the documented
+			// uncheck/generate/reprice/re-check workflow passes through, which must
+			// not be flagged. (buildMarkupTable() deliberately does NOT filter on
+			// get_variation(); see test-21. This is a different question.)
+			if (!$attribute->is_taxonomy() || !$attribute->get_variation()) continue;
+
+			$selected = $attribute->get_options();
+			if (empty($selected)) continue;
+
+			// Read the same meta the storefront reads (Frontend\Options), so the
+			// notice fires exactly when the customer is shown a markup, and quotes
+			// exactly the amount they are shown. A product that has never been
+			// repriced has no such meta, advertises nothing, and is not flagged.
+			$advertised = [];
+			foreach ($selected as $term_id) {
+				$amount = get_metadata('post', $product_id, "mt2mba_{$term_id}_markup_amount", true);
+				if ($amount !== '' && (float) $amount != 0) {
+					$advertised[(int) $term_id] = $amount;
+				}
+			}
+
+			// Only whether it advertises anything matters; the amounts do not appear
+			// in the notice, so they are not carried forward.
+			if (!empty($advertised)) {
+				$candidates[] = $attribute->get_name();
+			}
+		}
+
+		// Nothing advertised means no query is needed at all -- the common case on
+		// a store where most products carry no markups
+		if (empty($candidates) || empty($variation_ids)) return [];
+
+		// One bulk read covers every variation's attribute assignments
+		$assigned = [];
+		foreach (Handlers\BulkMetaIO::fetchMetaLike($variation_ids, 'attribute_pa_%') as $row) {
+			$assigned[(int) $row->post_id][substr($row->meta_key, 10)] = $row->meta_value;
+		}
+
+		$flagged = [];
+		foreach ($candidates as $taxonomy) {
+			foreach ($variation_ids as $variation_id) {
+				// empty(), not === '': WooCommerce writes '' for an explicit "Any",
+				// but an attribute that gains "Used for variations" after the
+				// variations already exist may have no row written at all. Missing
+				// and empty both mean Any.
+				if (empty($assigned[(int) $variation_id][$taxonomy])) {
+					$flagged[] = wc_attribute_label($taxonomy);
+					break;		// one mention per attribute, however many variations
+				}
+			}
+		}
+
+		return $flagged;
 	}
 	//endregion
 

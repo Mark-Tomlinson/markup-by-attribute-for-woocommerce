@@ -114,9 +114,6 @@ class PriceUpdateHandler extends PriceMarkupHandler {
 		// Rewrite locale notation ("%50", "5 %", "1 000,50") into canonical form.
 		// Without this, floatval("%50") is 0 and the price silently never changes.
 		$normalized = Utility\General::normalizeMarkupNotation((string) $markup);
-		if ($normalized !== (string) $markup && defined('WP_DEBUG') && WP_DEBUG) {
-			error_log("MT2MBA: normalized bulk-edit value '{$markup}' to '{$normalized}'");
-		}
 
 		// Strip the percent sign, then move the decimal point to '.' so floatval()
 		// reads it. No wc_format_decimal() — normalizeMarkupNotation() has already

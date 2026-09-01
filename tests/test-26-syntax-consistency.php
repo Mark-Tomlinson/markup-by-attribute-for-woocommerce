@@ -10,7 +10,7 @@
  * flagged, while a naive pattern cannot see the difference.
  *
  * The quote rule is FEWER ESCAPES WINS, measured on the string's value, and it
- * runs in both directions (Mark, 2026-08-21). Single quotes are the default
+ * runs in both directions. Single quotes are the default
  * because they cost nothing; double quotes earn their place only when they let
  * the literal carry fewer backslashes. Counting rather than eyeballing is the
  * point — the donation blurb in settings.php reads like a double-quoted string

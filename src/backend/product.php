@@ -252,12 +252,9 @@ class Product {
 		// Each handler received everything it needs above; the run takes no arguments
 		$handler->processProductMarkups();
 
-		// The handlers above write meta directly via $wpdb (DELETE/INSERT), which bypasses
-		// WordPress's object cache. WooCommerce syncs the parent after this hook, but never
-		// invalidates the individual variations — so on a persistent object cache (Redis/
-		// Memcached) stale variation prices/descriptions would keep serving. Flush the post
-		// + post_meta cache for the parent and every edited variation *before* WC's post-hook
-		// sync, so that sync recomputes from fresh data. 🌸
+		// The handlers write meta through $wpdb, bypassing the object cache, and
+		// WooCommerce's post-hook sync never invalidates the variations. Flush them
+		// here so a persistent cache (Redis, Memcached) does not keep serving stale prices.
 		clean_post_cache($product_id);
 		foreach ($variations as $variation_id) {
 			clean_post_cache($variation_id);
@@ -325,9 +322,8 @@ class Product {
 	 * charged, and when it is negative the customer is overcharged against what
 	 * the drop-down promised.
 	 *
-	 * Informational only. It does not block or alter any action, because the
-	 * configuration is legitimate for a store that means it -- and the owner who
-	 * means it is the one person who does not need telling twice.
+	 * Informational only: the configuration is legitimate for a store that means
+	 * it, so nothing is blocked or altered.
 	 *
 	 * @since 4.8.0
 	 */
@@ -346,10 +342,8 @@ class Product {
 	/**
 	 * Rebuild the notice after variations are saved
 	 *
-	 * [Save changes] on the variations tab posts to WooCommerce's own
-	 * woocommerce_save_variations and then reloads only the variation rows, so this
-	 * panel's server-rendered output goes stale in both directions -- a corrected
-	 * product kept warning, and a newly broken one stayed silent until [Update].
+	 * [Save changes] reloads only the variation rows, not the panel this notice
+	 * sits in, so without this the notice would stay stale until [Update].
 	 *
 	 * @since 4.8.0
 	 */
@@ -377,10 +371,9 @@ class Product {
 	 * @return string             Ready-to-echo HTML, already escaped
 	 */
 	private function buildUnchargeableNotice($product_id): string {
-		// A store that hides markups in the drop-down advertises nothing there, so
-		// this notice's central claim would simply be false. Known gap, deliberately
-		// not covered: "Add Markup to Name?" writes the markup into the term name
-		// itself, which shows whatever this setting says.
+		// A store that hides markups in the drop-down advertises nothing, so the
+		// notice would be false. Known gap: "Add Markup to Name?" bakes the markup
+		// into the term name regardless of this setting, and is not detected.
 		if (MT2MBA_DROPDOWN_BEHAVIOR === 'hide') return '';
 
 		$product = wc_get_product($product_id);
@@ -389,25 +382,17 @@ class Product {
 		$labels = self::findUnchargeableAttributes($product, $product_id, $product->get_children());
 		if (empty($labels)) return '';
 
-		// The rule goes in the sentence and the instances go in the list. Naming one
-		// attribute inline read as though it were the only one that could ever be
-		// affected, and quoting the generic "Any" beside a specific "Any Colour…"
-		// collided badly (Mark, 2026-08-23).
-		// Deliberately NOT class="notice notice-warning inline". Borrowing core's
-		// notice styling put this at the mercy of two moving targets at once: WP
-		// restyled .notice between 5.7 and 7.1, and WooCommerce's own panel rules
-		// (#woocommerce-product-data .wc-metaboxes-wrapper p, admin.css) outrank a
-		// plain class selector. The box is drawn entirely in admin-style.css instead,
-		// so it looks the same on every supported version.
+		// Not class="notice notice-warning": core restyled .notice between WP 5.7
+		// and 7.1, and WooCommerce's panel rules outrank a plain class selector.
+		// Styled in admin-style.css instead, so it looks the same on every version.
 		$html = '<div class="mt2mba-unchargeable"><p><strong>' .
 			esc_html(MT2MBA_PLUGIN_NAME) . '</strong> &mdash; ' .
 			esc_html__('Global attributes set to "Any" will not reflect the markup in the price:', 'markup-by-attribute-for-woocommerce') .
 			'</p><ul>';
 
-		// Label each one the way WooCommerce does in the variation rows
-		// ("Any %s&hellip;", html-variation-admin.php) so the owner can match the
-		// warning to what is in front of them. The ellipsis entity is appended
-		// outside the escaped text so escaping cannot turn it into &amp;hellip;.
+		// Labelled the way WooCommerce labels the variation rows ("Any Colour…") so
+		// the owner can match the warning to the screen. The ellipsis entity sits
+		// outside the escaped text so it cannot become &amp;hellip;.
 		foreach ($labels as $label) {
 			$html .= '<li>' . esc_html(sprintf(
 				/* translators: %s: attribute name, e.g. Colour */
@@ -422,12 +407,9 @@ class Product {
 	/**
 	 * Find every attribute whose advertised markups no variation can charge
 	 *
-	 * Collecting all of them rather than stopping at the first costs nothing
-	 * measurable: the candidate loop below already walks every attribute before any
-	 * query runs, and the variation rows are a single bulk read either way.
-	 *
-	 * Kept static and free of page context so it can be exercised directly by the
-	 * test harness -- the rendering above is the only part that needs $post.
+	 * Static and free of page context so the test suite can call it directly.
+	 * Collecting every attribute costs nothing extra: the variation rows are one
+	 * bulk read however many attributes are flagged.
 	 *
 	 * @since  4.8.0
 	 * @param  object $product       The variable product
@@ -439,21 +421,18 @@ class Product {
 		$candidates = [];
 
 		foreach ($product->get_attributes() as $attribute) {
-			// Local attributes cannot carry markups. Attributes with "Used for
-			// variations" off render no drop-down at all, so nothing of theirs is
-			// advertised -- and that is the transient state the documented
-			// uncheck/generate/reprice/re-check workflow passes through, which must
-			// not be flagged. (buildMarkupTable() deliberately does NOT filter on
-			// get_variation(); see test-21. This is a different question.)
+			// Local attributes cannot carry markups, and an attribute with "Used for
+			// variations" off renders no drop-down, so it advertises nothing. Unlike
+			// getAttributeData(), which keeps such attributes: their markups still
+			// belong in the markup table.
 			if (!$attribute->is_taxonomy() || !$attribute->get_variation()) continue;
 
 			$selected = $attribute->get_options();
 			if (empty($selected)) continue;
 
-			// Read the same meta the storefront reads (Frontend\Options), so the
-			// notice fires exactly when the customer is shown a markup, and quotes
-			// exactly the amount they are shown. A product that has never been
-			// repriced has no such meta, advertises nothing, and is not flagged.
+			// Read the same meta the storefront reads (Frontend\Options), so the notice
+			// fires exactly when a customer is shown a markup. A product that has never
+			// been repriced has no such meta and is not flagged.
 			$advertised = [];
 			foreach ($selected as $term_id) {
 				$amount = get_metadata('post', $product_id, "mt2mba_{$term_id}_markup_amount", true);
@@ -482,10 +461,9 @@ class Product {
 		$flagged = [];
 		foreach ($candidates as $taxonomy) {
 			foreach ($variation_ids as $variation_id) {
-				// empty(), not === '': WooCommerce writes '' for an explicit "Any",
-				// but an attribute that gains "Used for variations" after the
-				// variations already exist may have no row written at all. Missing
-				// and empty both mean Any.
+				// empty(), not === '': WooCommerce writes '' for an explicit "Any", but
+				// an attribute that gained "Used for variations" after the variations
+				// existed may have no row at all. Missing and empty both mean Any.
 				if (empty($assigned[(int) $variation_id][$taxonomy])) {
 					$flagged[] = wc_attribute_label($taxonomy);
 					break;		// one mention per attribute, however many variations

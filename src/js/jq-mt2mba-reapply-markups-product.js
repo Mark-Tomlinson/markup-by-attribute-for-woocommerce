@@ -11,12 +11,8 @@ jQuery(document).ready(function($) {
 	/**
 	 * Add our action to the variations [Bulk actions] menu.
 	 *
-	 * Must be re-runnable: [Save attributes] does
-	 * $('#variable_product_options').load(page + ' #variable_product_options_inner')
-	 * (WooCommerce meta-boxes-product.js), which replaces the whole panel — select
-	 * included — with server HTML that knows nothing about this option. Injecting
-	 * only on document.ready meant the action vanished until the next full page
-	 * load. Same behavior all the way back to WC 5.0.0.
+	 * Must be re-runnable: [Save attributes] replaces the whole panel, select
+	 * included, with server HTML that knows nothing about this option.
 	 */
 	function addReapplyMarkupOption() {
 		var $select = $('#variable_product_options select.variation_actions');
@@ -24,9 +20,8 @@ jQuery(document).ready(function($) {
 		// The reload events can fire more than once for one rebuild
 		if ($select.find('option[value="reapply_markup"]').length) return;
 
-		// Anchor on the action WooCommerce files under 'Pricing' rather than on the
-		// group's position: this menu has gained groups more than once (WC 11 added
-		// 'Cost of goods'), and the old optgroup.eq(1) was right only by luck.
+		// Anchor on the pricing action, not the group's position: WooCommerce adds
+		// groups to this menu over time (WC 11 added 'Cost of goods').
 		var $pricingGroup = $select.find('option[value="variable_regular_price"]').parent('optgroup');
 
 		if ($pricingGroup.length) {
@@ -41,24 +36,18 @@ jQuery(document).ready(function($) {
 
 	addReapplyMarkupOption();
 
-	// 'reload' fires on #variable_product_options right after the panel is replaced;
-	// 'woocommerce_variations_loaded' fires on #woocommerce-product-data once the rows
-	// finish loading. Both bubble to body. Listening for both covers the case where a
-	// product has no variations to load and the later event never arrives.
+	// 'reload' fires as soon as the panel is replaced; 'woocommerce_variations_loaded'
+	// once the rows load. Both are needed: a product with no variations to load
+	// never fires the second.
 	$(document.body).on('woocommerce_variations_loaded woocommerce_variations_saved', addReapplyMarkupOption);
 	$(document.body).on('reload', '#variable_product_options', addReapplyMarkupOption);
 
 	/**
 	 * Re-evaluate the "Any" markup notice after variations are saved.
 	 *
-	 * [Save changes] posts to woocommerce_save_variations and then reloads only the
-	 * variation rows -- the panel around them, where this notice is rendered, is
-	 * never re-fetched. Without this the notice went stale both ways: it stayed up
-	 * after the problem was corrected, and stayed away after one was introduced,
-	 * until the whole product was [Update]d.
-	 *
-	 * Bound to 'saved' only, NOT 'loaded': the latter also fires on paging through
-	 * variations, where nothing has changed and the query would be wasted.
+	 * [Save changes] reloads only the variation rows, never the panel this notice
+	 * is rendered in, so it would stay stale until [Update]. Bound to 'saved' only:
+	 * 'loaded' also fires on paging, where nothing has changed.
 	 */
 	function refreshUnchargeableNotice() {
 		var $target = $('#mt2mba-unchargeable-notice');
@@ -79,11 +68,9 @@ jQuery(document).ready(function($) {
 					$target.empty();
 				}
 			},
-			// Both failure paths CLEAR rather than leave the old answer standing.
-			// The variations just changed, so whatever is on screen was computed
-			// from data that no longer exists -- and a stale warning about money is
-			// worse than no warning: it is what made this notice untrustworthy in
-			// the first place. The next page load recomputes it correctly.
+			// Both failure paths CLEAR rather than leave the old answer standing: the
+			// variations just changed, and a stale warning about money is worse than
+			// none. The next page load recomputes it.
 			error: function(jqXHR, textStatus, errorThrown) {
 				console.log('Ajax error:', textStatus, errorThrown);
 				$target.empty();
@@ -187,11 +174,8 @@ jQuery(document).ready(function($) {
 												// Tell WooCommerce to update all related panels
 												$('body').trigger('woocommerce_variations_saved');
 											},
-											// Reached only after the reprice has committed. This must NOT claim the
-											// reprice failed -- the prices really did change; only the panel showing
-											// them is stale. Re-running from here would be harmless (the handler
-											// recomputes from mt2mba_base_regular_price rather than compounding), but
-											// saying "failed to reapply" would invite exactly that.
+											// Reached only after the reprice has committed: the prices did change,
+											// only the panel showing them is stale. Must not claim the reprice failed.
 											error: function() {
 												showReapplyFailure(mt2mbaLocal.i18n.failedRefreshing);
 											}
@@ -221,11 +205,9 @@ jQuery(document).ready(function($) {
 		}
 	});
 
-	// Surface a failed reapply as a standard WP admin notice inside the variations
-	// panel. Both failure paths -- the request erroring and the server reporting
-	// failure -- are silent otherwise, and the panel has no notice area of its own.
-	// Placing it in #variable_product_options also makes it self-clearing:
-	// [Save attributes] replaces that whole panel (see addReapplyMarkupOption).
+	// Surface a failed reapply as a WP admin notice inside the variations panel,
+	// which has no notice area of its own. Self-clearing: [Save attributes]
+	// replaces that whole panel.
 	function showReapplyFailure(message) {
 		var $panel = $('#variable_product_options');
 		if (!$panel.length) return;

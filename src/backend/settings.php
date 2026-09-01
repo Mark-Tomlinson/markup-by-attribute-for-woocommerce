@@ -333,15 +333,12 @@ class Settings extends WC_Settings_API {
 	 * Stop this plugin's settings from being autoloaded on every page request
 	 *
 	 * WooCommerce writes these options with update_option(), which leaves a new
-	 * row at WordPress's autoload default of 'yes' — so they would be loaded into
-	 * memory on every request, front end included, to serve an admin settings page.
-	 * Confirmed still true on WPDev 2026-08-06.
+	 * row at WordPress's autoload default of 'yes' — loaded on every request, front
+	 * end included, to serve an admin settings page.
 	 *
-	 * Runs on woocommerce_update_options_products_mt2mba, which fires after WC has
-	 * saved the section. Previously this ran inside the get-settings filter off a
-	 * $_POST['save'] sniff, which meant it fired *before* the write and so missed
-	 * rows that did not exist yet — a first save left them autoloaded until the
-	 * second. WC has already checked the nonce and capability by the time this runs.
+	 * Must run AFTER WooCommerce has written the options: hooked any earlier it
+	 * misses rows that do not exist yet, and a first save leaves them autoloaded.
+	 * WC has already checked the nonce and capability by the time this fires.
 	 *
 	 * @since 4.7.0
 	 */

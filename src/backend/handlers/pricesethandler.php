@@ -453,14 +453,10 @@ class PriceSetHandler extends PriceMarkupHandler {
 			if ($pa_attrb->is_taxonomy()) {
 				$taxonomy = $pa_attrb->get_name();
 
-				// Only the terms this product selected, not every term in the
-				// taxonomy. Without this a 300-term Size attribute writes ~300
-				// markup rows per product per reprice, of which the storefront
-				// reads the handful matching real variation options.
-				//
-				// Deliberately NOT also filtered on get_variation(): an attribute
-				// can be selected on the product while "Used for variations" is off,
-				// and its markups still belong in the table.
+				// Only the terms this product selected, or a 300-term Size attribute
+				// writes ~300 markup rows per product per reprice. Not filtered on
+				// get_variation(): an attribute selected on the product with "Used for
+				// variations" off still belongs in the table.
 				$selected_term_ids = $pa_attrb->get_options();
 
 				// get_terms() reads an empty 'include' as NO restriction, so an

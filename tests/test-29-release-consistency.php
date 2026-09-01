@@ -7,9 +7,9 @@
  * misses were of exactly that kind:
  *
  *   - 4.7.0 shipped with three markup-validation fixes and NO changelog entry for
- *     them (item 21, found 2026-08-21, documented in 4.8.0 instead).
+ *     them (item 21, documented in 4.8.0 instead).
  *   - 4.7.0 also shipped with "= New in Version 4.6 =" still in the readme, a
- *     whole release out of date (found 2026-08-23 while bumping to 4.8.0).
+ *     whole release out of date (found while bumping to 4.8.0).
  *
  * Neither was a coding error and neither could fail a test, because nothing
  * compared these strings to anything. This does.

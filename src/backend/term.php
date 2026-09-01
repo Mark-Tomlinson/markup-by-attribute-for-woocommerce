@@ -113,11 +113,9 @@ class Term {
 			return $columns;
 		}, 10);
 
-		// Add content to Markup column.
-		// NOTE: for *taxonomy term* columns this hook is a filter — core echoes the
-		// returned value — so we must append to and return the incoming $string rather
-		// than echoing. Returning null (or our own content alone) would wipe whatever a
-		// previous callback added, including other plugins' columns. 🌸
+		// Markup column content. For term columns this hook is a filter and core
+		// echoes the return value, so append to $string rather than echoing;
+		// returning only our own content would wipe other plugins' columns.
 		add_filter("manage_{$taxonomy}_custom_column", function ($string, $column_name, $term_id) {
 			if ($column_name == 'markup') {
 				$markup = get_term_meta($term_id, 'mt2mba_markup', true);
@@ -177,12 +175,9 @@ class Term {
 	 * Save the term markup metadata
 	 */
 	public function handleTermMarkupSave(int $term_id) {
-		// Prevent infinite recursion: wp_update_term() (below) re-fires this hook for the
-		// same term. A request-scoped static flag — raised only around that call — catches
-		// the re-entrant pass while still letting every distinct term in a batch get
-		// processed. (A permanent define() here skipped all terms after the first.) 🌸
-		// Checked first because everything below it is a read the re-entrant pass has
-		// no reason to perform.
+		// wp_update_term() below re-fires this hook for the same term. The flag is
+		// raised only around that call, so the re-entrant pass is skipped while
+		// every other term in a batch is still processed.
 		if (self::$is_rewriting_term) return;
 
 		// Sanity check
@@ -201,18 +196,13 @@ class Term {
 		// Clear existing markup metadata first (re-added below if validation passes)
 		delete_term_meta($term_id, 'mt2mba_markup');
 
-		// Validate and sanitize in ONE pass. This deliberately does not validate
-		// first and then hand the result to sanitizeMarkupForStorage(): validation
-		// returns internal notation ('.'-decimal), so a second pass would read that
-		// '.' as a thousands separator in a comma-decimal store and turn 1235,12
-		// into 123512. Validation happens once, here, at the boundary.
+		// Validated exactly once, here at the boundary. Validation is not idempotent
+		// (see General::validateMarkupValue()), so its result must never be fed back in.
 		$markup = Utility\General::sanitizeMarkupForStorage(sanitize_text_field($_POST['term_markup']));
 
-		// Empty means either a cleared field or input we rejected; both mean
-		// "store nothing". Invalid markup is discarded silently — the user-facing
-		// rejection happens client-side in jq-mt2mba-validate-markup.js, because a
-		// server-side admin_notices message is structurally unreachable on both save
-		// paths (the add form posts via admin-ajax.php, the edit form redirects).
+		// Empty means a cleared field or rejected input; both store nothing. The
+		// user-facing rejection is client-side (jq-mt2mba-validate-markup.js): an
+		// admin notice cannot reach either save path (AJAX add, redirecting edit).
 		if ($markup !== '') update_term_meta($term_id, 'mt2mba_markup', $markup);
 
 		$this->maybeRewriteTermNameAndDesc($term, $markup);
@@ -283,9 +273,8 @@ class Term {
 			}
 		}
 
-		// Skip the write when the annotation left the term exactly as it was: no
-		// pointless DB update, and no edited_{taxonomy} re-fire for every other
-		// plugin listening. Loose comparison deliberately, matching what this replaced.
+		// Skip the write when nothing changed: no pointless DB update, and no
+		// edited_{taxonomy} re-fire for every other plugin listening.
 		if (($term->name == $new_name) && ($term->description == $new_description)) return;
 
 		// Raise the guard only around this call (it re-fires edited_{taxonomy}); lower
@@ -349,10 +338,8 @@ class Term {
 	* Handle markup column sorting
 	*/
 	public function handleMarkupColumnSort(object $term_query) {
-		// pre_get_terms fires on frontend term queries too, so a frontend request
-		// carrying ?orderby=markup would otherwise get its query vars rewritten.
-		// This class only registers in admin; the guard makes that a property of
-		// the code rather than of the caller.
+		// pre_get_terms fires on frontend queries too; a frontend request carrying
+		// ?orderby=markup must not have its query vars rewritten.
 		if (!is_admin()) return;
 
 		// WP_Term_Query does not define a get() or a set() method,

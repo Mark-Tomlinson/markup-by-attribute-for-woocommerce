@@ -122,7 +122,7 @@ t28_expect('(none)', 'an "Any" on a markup-free attribute is not flagged');
 // advertised. WooCommerce agrees: read_variation_attributes() skips them outright
 // (`if ( empty( $attribute['is_variation'] ) ) continue;`).
 //
-// This is also the transient state Mark's documented workflow REQUIRES: uncheck
+// This is also the transient state the documented workflow REQUIRES: uncheck
 // all but the markup-bearing attributes, generate, set prices, re-check all. A
 // detector without this guard fires in the middle of the procedure that fixes the
 // problem. Written to fail first -- it passes against a detector that omits the
@@ -176,10 +176,9 @@ t28_expect('(none)', 'a product with no markup amounts stored is silent');
 //endregion
 
 //region 7. Two bad attributes — both are listed
-// The notice states the rule once and bullets the instances (Mark, 2026-08-23):
-// naming only one read as though it were the only attribute that could ever be
-// affected. Collecting them all is free -- the candidate loop already walks every
-// attribute, and the variation rows are one bulk read either way. Colour also
+// The notice states the rule once and bullets the instances: naming only one
+// would read as though it were the only attribute that could ever be affected.
+// Collecting them all is free -- the variation rows are one bulk read. Colour also
 // carries a NEGATIVE markup here, the -600 shape from the wp.org thread, where the
 // customer is overcharged against what the drop-down advertised.
 t28_fixture(

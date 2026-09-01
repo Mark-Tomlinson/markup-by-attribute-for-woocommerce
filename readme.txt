@@ -219,7 +219,7 @@ Removed the "Preserve Zero Prices" setting. If you had this enabled and have fre
 
 == Changelog ==
 = 4.8.0 =
-*Release Date: August 2026*
+*Release Date: September 2026*
 
 **Added**
 * The product edit screen now warns when a global attribute carrying markups is left as "Any" on a variation. WooCommerce offers every one of that attribute's options in the drop-down, markup and all, but prices the "Any" variation — so the markup is shown to the customer and never applied. Where the markup is negative, the customer is charged more than the drop-down promised. The notice lists the affected attributes and sits above the variations [Bulk actions] menu. It is informational only: nothing is blocked, and a deliberate configuration is left exactly as you set it

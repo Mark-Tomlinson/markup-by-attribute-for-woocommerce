@@ -2,17 +2,12 @@
  * Client-side validation for the term markup field.
  *
  * normalizeMarkupNotation() below is a line-for-line mirror of the PHP method of
- * the same name in src/utility/general.php — the value is rewritten into canonical
- * form ([-]digits[.digits][%]) before it is tested, exactly as the server does.
- * Both implementations are held to the same input table by tests/test-08; if you
- * change one, change the other and update that table.
+ * the same name in src/utility/general.php: the value is rewritten into canonical
+ * form before it is tested, exactly as the server does, so "5 %" is accepted here
+ * because the server accepts it. Both implementations are held to the same input
+ * table by tests/test-08 — change one, change the other.
  *
- * Normalizing before testing is the whole point: the previous version tested the
- * raw value against the canonical pattern, so "5 %" — which WooCommerce accepts
- * and the server normalizes happily — was rejected here before it ever got sent.
- *
- * Invalid input blocks the save and flags the field with WordPress's own
- * form-invalid styling — same treatment core gives an empty term Name.
+ * Invalid input blocks the save and flags the field.
  *
  * @requires jQuery
  */
@@ -62,19 +57,15 @@ jQuery(document).ready(function($) {
 
 		const thousandsSeparator = DECIMAL_SEPARATOR === ',' ? '.' : ',';
 
-		// A grouping mark can only appear ahead of the decimal point. In a
-		// comma-decimal store "1,235.12" puts it after, which is malformed rather
-		// than merely foreign — hand it back for rejection instead of stripping it
-		// into 1.23512. Group SIZES are not policed: 3-digit grouping is not
-		// universal (Indian notation groups 2-2-3).
+		// A grouping mark after the decimal point ("1,235.12" in a comma store) is
+		// malformed, not foreign: hand it back for rejection rather than stripping
+		// it into 1.23512. Group sizes are not policed (Indian notation groups 2-2-3).
 		const decimalAt = markup.indexOf(DECIMAL_SEPARATOR);
 		const lastGroupAt = markup.lastIndexOf(thousandsSeparator);
 		if (decimalAt !== -1 && lastGroupAt !== -1 && lastGroupAt > decimalAt) return raw;
 
-		// Drop thousands separators. The decimal separator stays in the store's
-		// notation: this value goes into the field the user is looking at and is
-		// then re-normalized server-side, so it must stay in their locale and this
-		// function must be idempotent.
+		// Drop thousands separators; the decimal separator stays in the store's
+		// notation (see the PHP method on idempotency)
 		markup = markup.split(thousandsSeparator).join('');
 
 		return markup + ((leadingPercent || trailingPercent) ? '%' : '');

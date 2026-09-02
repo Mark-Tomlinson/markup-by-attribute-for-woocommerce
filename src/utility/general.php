@@ -9,8 +9,6 @@ namespace mt2Tech\MarkupByAttribute\Utility;
  * plugin bootstrap (constants, schema stamping) lives in the main plugin file.
  *
  * @package   mt2Tech\MarkupByAttribute\Utility
- * @author    Mark Tomlinson
- * @license   GPL-3.0-or-later
  * @since     1.0.0
  */
 
@@ -116,7 +114,7 @@ class General {
 	 * @return	string				Formatted description
 	 */
 	public static function formatVariationMarkupDescription(string $markup, string $attrb_name, string $term_name): string {
-		if ($markup != "" && $markup != 0) {
+		if ($markup != '' && $markup != 0) {
 			// Clean any existing markup from the term name before formatting
 			$term_name = self::stripMarkupAnnotation($term_name);
 
@@ -176,7 +174,7 @@ class General {
 		$beginningPos = strpos($string, $beginning, 0);
 		$endingPos = strpos($string, $ending, $beginningPos);
 
-		if ($beginningPos === FALSE || $endingPos === FALSE) return trim($string);
+		if ($beginningPos === false || $endingPos === false) return trim($string);
 
 		$textToDelete = substr($string, $beginningPos, ($endingPos + strlen($ending)) - $beginningPos);
 
@@ -191,9 +189,8 @@ class General {
 	 * patterns to handle different languages and currency formats. This is used to
 	 * clean term names before applying new markup annotations.
 	 *
-	 * Both forms are recognized because both exist in the wild: 4.7.0 moved currency
-	 * markups to the sign form without an upgrade routine, so a name baked by an
-	 * earlier version keeps the word form until its term is next saved.
+	 * Both forms are recognized because both exist in the wild: a name annotated
+	 * before 4.7.0 keeps the word form until its term is next saved.
 	 *
 	 * @since 3.9.0
 	 * @param string $text The text to process
@@ -207,11 +204,9 @@ class General {
 		$add_pattern = '/(?:^|\s)' . str_replace('%s', $number_pattern, preg_quote(MT2MBA_MARKUP_NAME_PATTERN_ADD, '/')) . '/u';
 		$subtract_pattern = '/(^|\s)' . str_replace('%s', $number_pattern, preg_quote(MT2MBA_MARKUP_NAME_PATTERN_SUBTRACT, '/')) . '/u';
 
-		// Sign form, anchored to the end of the string — the only place
-		// addMarkupToName() ever puts it. Unanchored, this would eat any
-		// parenthetical that opens with a sign, such as "Widget (-5) Blue". At
-		// least one digit is required so "(+extras)" survives. The cost of the
-		// anchor is a name genuinely ending in a bare signed number.
+		// Sign form, anchored to the end of the string where addMarkupToName() puts
+		// it; unanchored it would eat "Widget (-5) Blue". At least one digit is
+		// required so "(+extras)" survives.
 		$sign_pattern = '/\s*\([-+][0-9.,\s\p{Sc}\p{L}]*[0-9][0-9.,\s\p{Sc}\p{L}]*\)$/u';
 
 		// Decoded HTML encoding
@@ -282,22 +277,19 @@ class General {
 	 *   "1.235,12"  -> "1235,12"  dot as thousands separator (German, Spanish)
 	 *   "+5"        -> "5"        positive is implied
 	 *
-	 * Separator handling needs the store's configured decimal separator, because
-	 * "1.235,12" and "1,235.12" are each correct in some locale and meaningless in
-	 * the other. Whichever character is NOT the decimal separator is treated as a
-	 * thousands separator and dropped.
+	 * Whichever character is NOT the store's decimal separator is a thousands
+	 * separator and is dropped: "1.235,12" and "1,235.12" are each correct in one
+	 * locale and meaningless in the other, so the separator cannot be guessed.
 	 *
-	 * IMPORTANT — the decimal separator is deliberately NOT converted to '.' here.
-	 * This method has to be idempotent, because the browser normalizes the field
-	 * before submitting and the server normalizes again on arrival. Converting
-	 * "1235,12" to "1235.12" here would make that second pass read the '.' as a
-	 * thousands separator and strip it, storing 123512. Use toInternalDecimal()
-	 * once, at the point of storage or calculation, instead.
+	 * IDEMPOTENT BY DESIGN — the decimal separator is NOT converted to '.'. The
+	 * browser normalizes before submitting and the server normalizes again on
+	 * arrival; a '.' introduced by the first pass would be read as a thousands
+	 * separator by the second and stripped, storing 123512 for "1235,12". Convert
+	 * with toInternalDecimal() once, at the point of storage or calculation.
 	 *
-	 * This is a rewriter, not a validator: anything it cannot make sense of comes
-	 * back unchanged for validateMarkupValue() to reject. A trailing sign ("2-")
-	 * is deliberately left alone so it fails validation — WooCommerce silently
-	 * ignores it and treats "2-" as +2, which is worth an error rather than a guess.
+	 * A rewriter, not a validator: anything it cannot make sense of comes back
+	 * unchanged for validateMarkupValue() to reject. A trailing sign ("2-") is left
+	 * alone on purpose so it fails validation rather than being guessed at.
 	 *
 	 * @since 4.7.0
 	 * @param string      $raw               Markup value as entered
@@ -343,19 +335,16 @@ class General {
 
 		$thousands_separator = ($decimal_separator === ',') ? '.' : ',';
 
-		// A grouping mark can only appear ahead of the decimal point. In a
-		// comma-decimal store "1,235.12" puts it after, which is malformed rather
-		// than merely foreign — hand it back for rejection instead of stripping it
-		// into 1.23512. Group SIZES are not policed: 3-digit grouping is not
-		// universal (Indian notation groups 2-2-3).
+		// A grouping mark after the decimal point ("1,235.12" in a comma store) is
+		// malformed, not foreign: hand it back for rejection rather than stripping
+		// it into 1.23512. Group sizes are not policed (Indian notation groups 2-2-3).
 		$decimal_at = strpos($markup, $decimal_separator);
 		$last_group_at = strrpos($markup, $thousands_separator);
 		if ($decimal_at !== false && $last_group_at !== false && $last_group_at > $decimal_at) {
 			return $raw;
 		}
 
-		// Drop thousands separators. The decimal separator is deliberately left in
-		// the store's notation — see the note on idempotency above.
+		// Drop thousands separators; the decimal separator stays (idempotency, above)
 		$markup = str_replace($thousands_separator, '', $markup);
 
 		return $markup . (($leading_percent || $trailing_percent) ? '%' : '');
@@ -385,9 +374,8 @@ class General {
 	/**
 	 * Is this markup a percentage rather than a fixed amount?
 	 *
-	 * The single definition of the percentage/fixed split. Callers used to test
-	 * this with the truthiness of strpos($markup, '%'), which is only correct by
-	 * accident of data shape — a '%' at position 0 reads as false.
+	 * The single definition of the percentage/fixed split. Not strpos() truthiness:
+	 * a '%' at position 0 would read as false.
 	 *
 	 * @since 4.7.0
 	 * @param string $markup Markup value
@@ -401,10 +389,9 @@ class General {
 	 * Validate and sanitize markup value input
 	 *
 	 * Takes a value in the STORE'S notation and returns it in INTERNAL notation
-	 * ('.'-decimal). Those are different alphabets, so this is not idempotent and
-	 * must be called exactly once, at the point input enters the system. Feeding
-	 * its own output back in re-reads the internal '.' as a thousands separator in
-	 * a comma-decimal store — that is how "1235,12" once became 123512.
+	 * ('.'-decimal). NOT idempotent: call it exactly once, where input enters the
+	 * system. Fed its own output, a comma-decimal store would read the internal
+	 * '.' as a thousands separator (see normalizeMarkupNotation()).
 	 *
 	 * @param	string	$markup		Raw markup input, in the store's notation
 	 * @return	string|false		Validated markup in internal notation, or false
@@ -418,20 +405,15 @@ class General {
 		// Sanitize input - remove any HTML tags and trim whitespace
 		$markup = sanitize_text_field(trim($markup));
 
-		// Rewrite locale notation into canonical form: strips whitespace and
-		// thousands separators, unifies percent sign variants, moves a leading
-		// percent sign to the back, and puts the decimal point on '.'
+		// Rewrite locale notation into canonical form; the decimal separator stays
+		// in the store's notation until toInternalDecimal() below
 		$markup = self::normalizeMarkupNotation($markup);
 
-		// Reject anything not canonically shaped. This has to happen before any
-		// numeric parsing: wc_format_decimal() strips characters it does not
-		// recognize rather than failing on them, so without this check "5abc"
-		// parses as 5 and "5%0" as 50 — both silently wrong prices.
-		//
-		// Thousands separators are gone by this point, so at most one separator can
-		// remain and either character is acceptable — whichever one it is, it is
-		// the decimal point. Deliberately identical to MARKUP_PATTERN in
-		// src/js/jq-mt2mba-validate-markup.js; change both together.
+		// Reject anything not canonically shaped BEFORE numeric parsing: "5abc"
+		// would otherwise parse as 5 and "5%0" as 50. Thousands separators are gone,
+		// so the one separator left, whichever it is, is the decimal point.
+		// Identical to MARKUP_PATTERN in src/js/jq-mt2mba-validate-markup.js —
+		// change both together.
 		if (!preg_match('/^-?(\d+([.,]\d+)?|[.,]\d+)%?$/', $markup)) {
 			return false;
 		}
@@ -439,9 +421,8 @@ class General {
 		// Determine markup type: percentage (ends with %) or fixed amount
 		$is_percentage = self::isPercentage($markup);
 
-		// Strip the % symbol, then move the decimal point to '.' for storage. No
-		// call to wc_format_decimal() — it strips unrecognized characters rather
-		// than rejecting them, which is how "5abc" used to store as 5.
+		// Strip the % symbol, then move the decimal point to '.' for storage. Not
+		// wc_format_decimal(): it strips unrecognized characters instead of rejecting them.
 		$numeric_part = $is_percentage ? substr($markup, 0, -1) : $markup;
 		$numeric_part = self::toInternalDecimal($numeric_part);
 
@@ -459,8 +440,6 @@ class General {
 	}
 
 	/**
-	 * Sanitize markup value for safe database storage
-	 *
 	 * @param	string	$markup		Markup value to sanitize
 	 * @return	string				Sanitized markup value
 	 */
@@ -474,10 +453,6 @@ class General {
 		// Additional sanitization for database storage
 		return sanitize_text_field($validated);
 	}
-
-	// sanitizeMarkupForDisplay() lived here. It was esc_html(sanitize_text_field())
-	// — an output escaper with a sanitizer's name — and all three callers escaped
-	// its result again. Escaping now happens once, at each point of output.
 	//endregion
 
 }	//	End class MT2MBA_UTILITY_GENERAL

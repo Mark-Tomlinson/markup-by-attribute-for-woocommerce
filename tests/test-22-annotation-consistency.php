@@ -9,9 +9,8 @@
  *   percentage -> word form   (Add 5%) / (Subtract 5%)   — bare "-5%" is ambiguous
  *   currency   -> sign form   (+$5.00) / (-$5.00)        — the symbol says the rest
  *
- * Decided with Mark 2026-06-17, built 2026-08-13. Two deliberate limits, both
- * his call and both pinned below so a later "consistency" pass does not quietly
- * undo them:
+ * Two deliberate limits, both pinned below so a later "consistency" pass does
+ * not quietly undo them:
  *
  *   - addMarkupToTermDescription() is NOT converted. Term descriptions keep the
  *     word form for both types.
@@ -138,7 +137,7 @@ t_assert(strpos($term_src, 'addMarkupToName($new_name, $markup, $is_negative)') 
 	'term.php no longer passes $is_negative to addMarkupToName');
 //endregion
 
-//region Term DESCRIPTIONS deliberately keep the word form (Mark's call, 2026-08-13)
+//region Term DESCRIPTIONS deliberately keep the word form
 t_assert(General::addMarkupToTermDescription('Nice color', '5') === "Nice color\n(Add \$5.00)",
 	'description, currency positive stays in the word form');
 t_assert(General::addMarkupToTermDescription('Nice color', '-5', true) === "Nice color\n(Subtract \$5.00)",
@@ -167,7 +166,7 @@ t_assert(General::addMarkupToName(General::stripMarkupAnnotation('Blue (+$5.00)'
 	're-annotating replaces rather than appends');
 
 // Names baked by an earlier version keep the word form until the term is next
-// saved (no upgrade routine — Mark's call, 2026-08-13), so the stripper still
+// saved (there is deliberately no upgrade routine), so the stripper still
 // has to recognize them.
 t_assert(General::stripMarkupAnnotation('Blue (Add $5.00)') === 'Blue',
 	'a pre-4.7.0 word-form currency annotation still strips');
@@ -189,7 +188,7 @@ t_assert(General::stripMarkupAnnotation('Blue (+extras)') === 'Blue (+extras)',
 t_assert(General::stripMarkupAnnotation('Cable (2m)') === 'Cable (2m)',
 	'a measurement is left alone');
 
-// Documented false positive, accepted 2026-08-13: a name ending in a bare
+// Documented false positive, accepted: a name ending in a bare
 // signed number is indistinguishable from a symbol-less annotation.
 t_assert(General::stripMarkupAnnotation('Thermostat (-40)') === 'Thermostat',
 	'KNOWN: a name ending in a bare signed number is stripped');

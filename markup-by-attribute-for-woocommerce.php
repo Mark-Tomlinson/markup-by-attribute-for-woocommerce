@@ -12,7 +12,7 @@ use Throwable;
  * This file is part of the Markup by Attribute for WooCommerce plugin by Mark Tomlinson
  *
  * @package   markup-by-attribute-for-woocommerce
- * @version   4.7.0
+ * @version   4.8.0
  * @author    Mark Tomlinson
  * @license   GPL-3.0-or-later
  *
@@ -34,8 +34,8 @@ use Throwable;
  * License URI:             https://www.gnu.org/licenses/gpl-3.0.html
  * Text Domain:             markup-by-attribute-for-woocommerce
  * Domain Path:             /languages
- * Version:                 4.7.0
- * Stable tag:              4.7.0
+ * Version:                 4.8.0
+ * Stable tag:              4.8.0
  * Tested up to:            7.1
  * Requires at least:       5.7
  * PHP tested up to:        8.4.23
@@ -90,7 +90,7 @@ function enqueue_custom_admin_styles(string $hook): void {
 
 	if (($hook === 'post.php' || $hook === 'post-new.php') && $post_type === 'product') {
 		$css_url = plugin_dir_url(__FILE__) . 'src/css/admin-style.css';
-		wp_enqueue_style('mt2mba-admin-styles', $css_url, array(), MT2MBA_VERSION);
+		wp_enqueue_style('mt2mba-admin-styles', $css_url, [], MT2MBA_VERSION);
 	}
 }
 add_action('admin_enqueue_scripts', __NAMESPACE__ . '\enqueue_custom_admin_styles');
@@ -118,7 +118,7 @@ function define_constants(): void {
 	define('MT2MBA_PLUGIN_URL', plugin_dir_url(__FILE__));
 
 	// Plugin version and compatibility
-	define('MT2MBA_VERSION', '4.7.0');
+	define('MT2MBA_VERSION', '4.8.0');
 	define('MT2MBA_SCHEMA_VERSION', '4.6.0');	// Last plugin version that included a database schema change
 	define('MT2MBA_ADMIN_POINTER_PRIORITY', 1000);
 

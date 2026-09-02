@@ -4,8 +4,8 @@
  * contains, what the plugin header declares, and what the wp.org listing says.
  * Every @license docblock tag must agree. Guards new files as much as old ones.
  *
- * "or later" is deliberate (Mark, 2026-08-06): a fork should be able to move to a
- * future GPL version without tracking him down for permission.
+ * "or later" is deliberate: a fork should be able to move to a future GPL
+ * version without tracking the author down for permission.
  */
 require __DIR__ . '/bootstrap.php';
 
@@ -34,7 +34,14 @@ foreach ($files as $file) {
 	}
 }
 
-t_assert($tagged >= 15, "@license tags found to check ($tagged)");
+// Item 20 cut @license and @author down to the one file wp.org actually reads, so
+// the population is exactly one — and a guard that only counts would go quietly
+// green on a tree with zero. Name the file instead: test-27 keeps the tag out of
+// the others.
+t_assert($tagged >= 1, "@license tags found to check ($tagged)");
+t_assert((bool) preg_match('/@license\s+GPL-3\.0-or-later/',
+	file_get_contents($root . '/markup-by-attribute-for-woocommerce.php')),
+	'the main plugin file carries the @license tag');
 t_assert(empty($offenders),
 	'every @license docblock says GPL-3.0-or-later' . ($offenders ? ' — ' . implode(', ', $offenders) : ''));
 

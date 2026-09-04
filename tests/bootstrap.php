@@ -263,8 +263,12 @@ class WP_Term {
 	public $count = 0;
 }
 class WP_Error {}
+// Retains the clauses so a test can assert what was asked for. A stub that threw
+// them away could not tell a typed clause from an untyped one, and the type is
+// the whole difference between a numeric sort and a text one.
 class WP_Meta_Query {
-	public function __construct($query = false) {}
+	public $queries = [];
+	public function __construct($query = false) { $this->queries = $query ?: []; }
 }
 //endregion
 
@@ -305,7 +309,12 @@ function wc_price($price, $args = []) {
 	return $format ? $format((float) $price) : '$' . number_format((float) $price, 2);
 }
 function wc_get_price_decimals() { return 2; }
-function wc_format_localized_decimal($value) { return $value; }
+// Models core: the '.' decimal becomes the store's separator, nothing else moves.
+// An identity stub cannot tell a comma-decimal store apart from a dot one, which
+// is where display formatting goes wrong.
+function wc_format_localized_decimal($value) {
+	return str_replace('.', wc_get_price_decimal_separator(), (string) $value);
+}
 function get_woocommerce_currency() { return $GLOBALS['mt2mba_stub']['currency'] ?? 'USD'; }
 function get_woocommerce_currency_symbol($currency = '') { return $GLOBALS['mt2mba_stub']['currency_symbol'] ?? '&#36;'; }
 

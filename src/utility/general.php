@@ -41,6 +41,43 @@ class General {
 	}
 
 	/**
+	 * Render a stored markup in the canonical notation, for the two admin fields
+	 * that show it unformatted
+	 *
+	 * The attribute list's Markup column and the term edit field show the value
+	 * exactly as stored, so a term last saved by an older version shows that
+	 * version's notation ('+1.00') beside one saved today ('1'). Same markup,
+	 * two spellings — and the column sorts as if they were different.
+	 *
+	 * Works on the stored '.'-decimal form, which is why it cannot reuse
+	 * normalizeMarkupNotation() despite the '+' stripper sitting in it: that one
+	 * reads the STORE'S separator, and in a comma-decimal store it would take the
+	 * '.' in '+1.00' for a thousands separator and return 100.
+	 *
+	 * @since 4.8.0
+	 * @param string $markup Markup exactly as held in term meta
+	 * @return string        Canonical markup, localized for display
+	 */
+	public static function formatStoredMarkupForDisplay(string $markup): string {
+		$markup = trim($markup);
+		if ($markup === '') return '';
+
+		$is_percentage = self::isPercentage($markup);
+		$number = $is_percentage ? substr($markup, 0, -1) : $markup;
+
+		// The canonical form validateMarkupValue() stores: the cast absorbs a
+		// leading '+', the rtrim pair drops trailing zeros.
+		$number = rtrim(rtrim(number_format((float) $number, MT2MBA_INTERNAL_PRECISION, '.', ''), '0'), '.');
+
+		// A negative that rounds away leaves its sign behind, and '-0' in a field
+		// reads as a bug.
+		if ($number === '-0') $number = '0';
+
+		// Localize the number alone; '%' is notation, not part of the decimal.
+		return wc_format_localized_decimal($number) . ($is_percentage ? '%' : '');
+	}
+
+	/**
 	 * Format a markup value as the annotation that decorates a term name or a
 	 * drop-down option
 	 *

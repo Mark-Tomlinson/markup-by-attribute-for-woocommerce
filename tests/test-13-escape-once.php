@@ -66,10 +66,10 @@ t_assert(
 	'a stored markup of 0 renders as 0 in the edit field, not blank'
 );
 
-set_markup(55, '12.50');
+set_markup(55, '12.5');
 $html = render(fn() => $term_admin->editTermFields(make_term(55)));
 t_assert(
-	strpos($html, 'id="term_edit_markup" value="12.50"') !== false,
+	strpos($html, 'id="term_edit_markup" value="12.5"') !== false,
 	'an ordinary markup still reaches the edit field'
 );
 
@@ -84,12 +84,25 @@ t_assert(
 
 //region The edit field escapes hostile input once, and safely
 // A bare quote that survived would close value=" and open an event handler.
+// The field now renders the value through formatStoredMarkupForDisplay(), which
+// reduces it to its canonical number, so a payload is gone before the escaper
+// ever sees it. That is defense in depth, not a replacement for escaping.
 set_markup(55, '5" onmouseover="alert(1)');
 $html = render(fn() => $term_admin->editTermFields(make_term(55)));
 
-t_assert(strpos($html, 'onmouseover="alert(1)"') === false, 'a quote in the markup cannot break out of the value attribute');
-t_assert(strpos($html, '&quot;') !== false, 'the quote is entity-encoded');
-t_assert(strpos($html, '&amp;quot;') === false, 'and encoded exactly once, not twice');
+t_assert(strpos($html, 'onmouseover') === false, 'a quote in the markup cannot break out of the value attribute');
+t_assert(strpos($html, 'id="term_edit_markup" value="5"') !== false, 'the hostile remainder is dropped, leaving the number');
+
+// Escaping still has to be proven, which needs a character that SURVIVES
+// canonicalization. The decimal separator is store-configured free text, so it
+// is the one escapable character that legitimately reaches the attribute.
+$GLOBALS['mt2mba_stub']['decimal_separator'] = '&';
+set_markup(55, '12.50');
+$html = render(fn() => $term_admin->editTermFields(make_term(55)));
+
+t_assert(strpos($html, 'id="term_edit_markup" value="12&amp;5"') !== false, 'the separator is entity-encoded');
+t_assert(strpos($html, '&amp;amp;') === false, 'and encoded exactly once, not twice');
+$GLOBALS['mt2mba_stub']['decimal_separator'] = '.';
 //endregion
 
 //region The markup admin column escapes once
@@ -104,10 +117,14 @@ foreach ($GLOBALS['mt2mba_test']['actions']['manage_pa_color_custom_column'] ?? 
 }
 t_assert(is_callable($column_filter), 'the markup column filter is registered');
 
-set_markup(55, '5 & 6');
+// As in the edit field above, the ampersand has to arrive as the store's decimal
+// separator — canonicalization drops one typed into the markup itself.
+$GLOBALS['mt2mba_stub']['decimal_separator'] = '&';
+set_markup(55, '5.50');
 $cell = $column_filter('', 'markup', 55);
-t_assert($cell === '5 &amp; 6', "the column escapes the ampersand once (got '$cell')");
+t_assert($cell === '5&amp;5', "the column escapes the ampersand once (got '$cell')");
 t_assert(strpos($cell, '&amp;amp;') === false, 'and does not double-encode it');
+$GLOBALS['mt2mba_stub']['decimal_separator'] = '.';
 
 // A column other than ours passes through untouched
 t_assert($column_filter('original', 'name', 55) === 'original', 'the filter ignores columns that are not ours');

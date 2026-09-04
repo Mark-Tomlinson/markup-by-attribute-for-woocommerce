@@ -225,6 +225,9 @@ Removed the "Preserve Zero Prices" setting. If you had this enabled and have fre
 * The product edit screen now warns when a global attribute carrying markups is left as "Any" on a variation. WooCommerce offers every one of that attribute's options in the drop-down, markup and all, but prices the "Any" variation — so the markup is shown to the customer and never applied. Where the markup is negative, the customer is charged more than the drop-down promised. The notice lists the affected attributes and sits above the variations [Bulk actions] menu. It is informational only: nothing is blocked, and a deliberate configuration is left exactly as you set it
 
 **Bug Fixes**
+* Sorting the attribute list by the Markup column now orders the values as numbers. They were compared as text, which put 10 ahead of 8 — noticeable on an attribute with many terms, such as a year or size range
+* The Markup column and the term's markup field now show every value in the same notation. Markups saved by older releases kept the leading plus sign and trailing zeros they were typed with, so +1.00 and 1 sat side by side meaning the same thing. Stored values are not altered; only what is displayed
+
 *The following shipped in 4.7.0 but were left out of that release's changelog.*
 
 * Markup values are now read correctly in stores that use a comma as the decimal separator, or a space or period for thousands. A value such as 1 000,50 could previously be misread when markups were applied from the product list

@@ -119,7 +119,7 @@ class Term {
 		add_filter("manage_{$taxonomy}_custom_column", function ($string, $column_name, $term_id) {
 			if ($column_name == 'markup') {
 				$markup = get_term_meta($term_id, 'mt2mba_markup', true);
-				$string .= esc_html(wc_format_localized_decimal($markup));
+				$string .= esc_html(Utility\General::formatStoredMarkupForDisplay((string) $markup));
 			}
 			return $string;
 		}, 10, 3);
@@ -155,7 +155,9 @@ class Term {
 	 */
 	public function editTermFields(object $term) {
 		// Retrieve the existing markup for this term(NULL results are valid)
-		$term_markup = wc_format_localized_decimal(get_term_meta($term->term_id, 'mt2mba_markup', true));
+		$term_markup = Utility\General::formatStoredMarkupForDisplay(
+			(string) get_term_meta($term->term_id, 'mt2mba_markup', true)
+		);
 
 		// Build row and fill field with current markup
 		?>
@@ -345,10 +347,14 @@ class Term {
 		// WP_Term_Query does not define a get() or a set() method,
 		// so the query_vars member must be manipulated directly
 		if (isset($_GET['orderby']) && 'markup' == sanitize_text_field(wp_unslash($_GET['orderby']))) {
+			// Without a type the meta sorts as text, putting '10' ahead of '8' and
+			// a legacy '+8' ahead of '1'. Both clauses carry it: WP_Term_Query
+			// casts using the FIRST clause, so leaving one untyped restores the
+			// text sort the moment the clauses are reordered.
 			$meta_query = [
 				'relation' => 'OR',
-				['key' => 'mt2mba_markup', 'compare' => 'NOT EXISTS'],
-				['key' => 'mt2mba_markup']
+				['key' => 'mt2mba_markup', 'compare' => 'NOT EXISTS', 'type' => 'DECIMAL(10,4)'],
+				['key' => 'mt2mba_markup', 'type' => 'DECIMAL(10,4)']
 			];
 			$term_query->meta_query = new WP_Meta_Query($meta_query);
 			$term_query->query_vars['orderby'] = 'mt2mba_markup';

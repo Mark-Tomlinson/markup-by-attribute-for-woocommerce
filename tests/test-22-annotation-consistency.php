@@ -178,6 +178,40 @@ t_assert(General::stripMarkupAnnotation('Blue') === 'Blue',
 	'a clean name is left alone');
 //endregion
 
+//region Multi-line descriptions — the whitespace around the annotation goes too
+// Reported against 4.8.0: a description textarea POSTs CRLF endings, and the old
+// stripper consumed exactly one leading whitespace character and nothing trailing.
+// That left the orphaned \r behind (rendering as a blank line) and left the space
+// after the annotation as a stray indent on the following line.
+t_assert(General::stripMarkupAnnotation("Big!\r\n(Add \$6.28)\r\nI added this text")
+		=== "Big!\r\nI added this text",
+	'annotation alone on a middle line leaves no blank line behind');
+t_assert(General::stripMarkupAnnotation("added text\r\n(Subtract 3.141593%) new text")
+		=== "added text\r\nnew text",
+	'annotation at the head of a line leaves no leading space behind');
+t_assert(General::stripMarkupAnnotation("(Subtract 3.141593%)\r\nadded text")
+		=== 'added text',
+	'annotation on the first line takes its line break with it');
+t_assert(General::stripMarkupAnnotation("Big!\r\nsome text\r\n(Add \$6.28)")
+		=== "Big!\r\nsome text",
+	'annotation on the last line takes its line break with it');
+t_assert(General::stripMarkupAnnotation("Big (Add \$5.00) stuff") === 'Big stuff',
+	'annotation between two words collapses to a single space');
+t_assert(General::stripMarkupAnnotation("Para one\r\n\r\nPara two\r\n(Add \$6.28)")
+		=== "Para one\r\n\r\nPara two",
+	"a paragraph break the user typed is NOT collapsed");
+t_assert(General::stripMarkupAnnotation("(Add \$6.28)") === '',
+	'a description that is nothing but an annotation strips to empty');
+
+// The round trip the user actually performs: type text into an already-annotated
+// description, save, and get the annotation back on its own line at the bottom.
+t_assert(General::addMarkupToTermDescription(
+		General::stripMarkupAnnotation("Big!\r\n(Add \$6.28)\r\nI added this text"),
+		'6.28', false)
+		=== "Big!\r\nI added this text\n(Add \$6.28)",
+	'strip-then-re-add round trip is stable across a re-save');
+//endregion
+
 //region End-anchoring is what keeps the sign form off real term names
 t_assert(General::stripMarkupAnnotation('Widget (-5) Blue') === 'Widget (-5) Blue',
 	'a signed number mid-name is NOT an annotation');

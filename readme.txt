@@ -200,7 +200,7 @@ If you use Markup-by-Attribute and want to see me continue support for it, I enc
 
 == Upgrade Notice ==
 = 4.8.0 =
-Adds a warning on the product edit screen when an attribute set to "Any" on a variation carries markups that customers will see but never be charged. Informational only — nothing is blocked and no prices change. Also documents three fixes that shipped in 4.7.0 without a changelog entry.
+Adds a warning on the product edit screen when an attribute set to "Any" on a variation carries markups that customers will see but never be charged. Informational only — nothing is blocked and no prices change. Also fixes Markup column sorting, inconsistent markup notation, and the spacing left behind in attribute term descriptions, and documents three fixes that shipped in 4.7.0 without a changelog entry.
 
 = 4.7.0 =
 Compatibility update for WordPress 7.1. Markup annotations are now consistent everywhere they appear, and several long-standing bugs are fixed — including "Reapply markups to prices" disappearing from the variations Bulk actions menu after [Save attributes]. Recommended for all users.
@@ -227,6 +227,7 @@ Removed the "Preserve Zero Prices" setting. If you had this enabled and have fre
 **Bug Fixes**
 * Sorting the attribute list by the Markup column now orders the values as numbers. They were compared as text, which put 10 ahead of 8 — noticeable on an attribute with many terms, such as a year or size range
 * The Markup column and the term's markup field now show every value in the same notation. Markups saved by older releases kept the leading plus sign and trailing zeros they were typed with, so +1.00 and 1 sat side by side meaning the same thing. Stored values are not altered; only what is displayed
+* Text you add to an attribute term's description is no longer left with a blank line or a stray indent where the markup annotation used to sit. The annotation is rewritten to the bottom of the description on every save, and lifting it out of its old position left the surrounding spacing behind. Only descriptions with text above or beside the annotation were affected
 
 *The following shipped in 4.7.0 but were left out of that release's changelog.*
 

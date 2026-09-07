@@ -234,12 +234,14 @@ class General {
 	 * @return string      Text with markup annotation removed
 	 */
 	public static function stripMarkupAnnotation(string $text): string {
-		// Pattern for numbers that handles international formats
-		$number_pattern = '[0-9.,\s%\p{Sc}A-Z]*';
+		// Pattern for numbers that handles international formats. Horizontal
+		// whitespace only — \s here would let the class run across a line break
+		// and swallow part of a multi-line description.
+		$number_pattern = '[0-9.,\h%\p{Sc}A-Z]*';
 
 		// Convert Add and Subtract constants to regex with international number pattern
-		$add_pattern = '/(?:^|\s)' . str_replace('%s', $number_pattern, preg_quote(MT2MBA_MARKUP_NAME_PATTERN_ADD, '/')) . '/u';
-		$subtract_pattern = '/(^|\s)' . str_replace('%s', $number_pattern, preg_quote(MT2MBA_MARKUP_NAME_PATTERN_SUBTRACT, '/')) . '/u';
+		$add_pattern = str_replace('%s', $number_pattern, preg_quote(MT2MBA_MARKUP_NAME_PATTERN_ADD, '/'));
+		$subtract_pattern = str_replace('%s', $number_pattern, preg_quote(MT2MBA_MARKUP_NAME_PATTERN_SUBTRACT, '/'));
 
 		// Sign form, anchored to the end of the string where addMarkupToName() puts
 		// it; unanchored it would eat "Widget (-5) Blue". At least one digit is
@@ -250,11 +252,38 @@ class General {
 		$text = html_entity_decode($text);
 
 		// Remove markup annotations
-		$text = preg_replace($add_pattern, '', $text);
-		$text = preg_replace($subtract_pattern, '', $text);
+		$text = self::removeWordFormAnnotation($add_pattern, $text);
+		$text = self::removeWordFormAnnotation($subtract_pattern, $text);
 		$text = preg_replace($sign_pattern, '', $text);
 
 		return trim($text);
+	}
+
+	/**
+	 * Remove one word-form annotation together with the whitespace around it
+	 *
+	 * Term descriptions are multi-line and arrive from the textarea with CRLF
+	 * endings, so the whitespace on *both* sides of the annotation has to go with
+	 * it. Consuming a single leading whitespace character (what this method
+	 * replaced) left the orphaned \r behind as a blank line, and left the space
+	 * after the annotation as a stray indent on the following text.
+	 *
+	 * @param string $annotation Regex fragment matching the annotation itself, unanchored
+	 * @param string $text       The text to process
+	 * @return string            Text with that annotation and its surrounding blanks removed
+	 */
+	private static function removeWordFormAnnotation(string $annotation, string $text): string {
+		// Alone on its own line: the line terminator goes with it, or the blank
+		// line it leaves behind reads as an unwanted paragraph break.
+		$text = preg_replace('/\R\h*' . $annotation . '\h*(?=\R|$)/u', '', $text);
+		$text = preg_replace('/^\h*' . $annotation . '\h*\R/u', '', $text);
+
+		// Text on both sides of it: collapse the gap to a single space so the two
+		// halves do not run together.
+		$text = preg_replace('/(?<=\S)\h*' . $annotation . '\h*(?=\S)/u', ' ', $text);
+
+		// Whatever is left sits at the head or tail of a line; its blanks go too.
+		return preg_replace('/\h*' . $annotation . '\h*/u', '', $text);
 	}
 
 	/**

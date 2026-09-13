@@ -425,7 +425,7 @@ class Term {
 	 * @return array               Actions with ours appended
 	 */
 	public function addTermBulkAction(array $bulk_actions): array {
-		$bulk_actions['mt2mba_reapply_settings'] = __('Reapply Attribute Settings', 'markup-by-attribute-for-woocommerce');
+		$bulk_actions['mt2mba_reapply_settings'] = __('Reapply attribute settings', 'markup-by-attribute-for-woocommerce');
 		return $bulk_actions;
 	}
 
@@ -556,8 +556,8 @@ class Term {
 			. ' '
 			. sprintf(
 				/* translators: %s: name of the bulk action, as it reads in the menu */
-				__('Select them below and apply "%s".', 'markup-by-attribute-for-woocommerce'),
-				__('Reapply Attribute Settings', 'markup-by-attribute-for-woocommerce')
+				__('To change them, select them below and apply "%s".', 'markup-by-attribute-for-woocommerce'),
+				__('Reapply attribute settings', 'markup-by-attribute-for-woocommerce')
 			);
 	}
 

@@ -102,6 +102,10 @@ function __($text, $domain = null) { return $text; }
 function esc_html($text) { return htmlspecialchars((string) $text, ENT_QUOTES, 'UTF-8', false); }
 function esc_attr($text) { return htmlspecialchars((string) $text, ENT_QUOTES, 'UTF-8', false); }
 function esc_html__($text, $domain = null) { return esc_html($text); }
+// Returns the form WordPress would pick, so a test can tell a singular string
+// from a plural one rather than always seeing the first argument
+function _n($single, $plural, $number, $domain = null) { return (int) $number === 1 ? $single : $plural; }
+function number_format_i18n($number, $decimals = 0) { return number_format((float) $number, $decimals); }
 function esc_url($url) { return $url; }
 function wp_kses_post($text) { return $text; }
 function wp_kses($text, $allowed_html = [], $allowed_protocols = []) { return $text; }
@@ -247,8 +251,37 @@ function wp_enqueue_style($handle, $src = '', $deps = [], $ver = false, $media =
 	$GLOBALS['mt2mba_test']['enqueued']['style'][$handle] = compact('src', 'deps', 'ver', 'media');
 }
 function wp_localize_script($handle, $name, $data) { $GLOBALS["mt2mba_test"]["localized"][$name] = $data; return true; }
-function add_query_arg($args, $url = '') { return $url . '?' . http_build_query($args); }
+// WordPress accepts both add_query_arg(array, url) and add_query_arg(key, value, url).
+// Both forms are modeled: code written against the three-argument form would
+// otherwise fold the URL into the query string and no test would notice.
+function add_query_arg(...$args) {
+	if (count($args) >= 3) {
+		[$key, $value, $url] = $args;
+		$add = [$key => $value];
+	} else {
+		$add = (array) $args[0];
+		$url = $args[1] ?? '';
+	}
+
+	// Merged into whatever the URL already carries, the way WordPress does it. A
+	// stub that replaced the query string would quietly drop the taxonomy and
+	// post_type a redirect depends on, and every test would still pass.
+	$parts = explode('?', (string) $url, 2);
+	$query = [];
+	if (isset($parts[1])) parse_str($parts[1], $query);
+
+	return $parts[0] . '?' . http_build_query(array_merge($query, $add));
+}
 function admin_url($path = '') { return 'http://test/wp-admin/' . $path; }
+function remove_query_arg($keys, $url = '') {
+	$parts = explode('?', (string) $url, 2);
+	if (!isset($parts[1])) return $parts[0];
+
+	parse_str($parts[1], $query);
+	foreach ((array) $keys as $key) unset($query[$key]);
+
+	return $query ? $parts[0] . '?' . http_build_query($query) : $parts[0];
+}
 function error_log_stub($msg) {}
 
 class WP_Term {

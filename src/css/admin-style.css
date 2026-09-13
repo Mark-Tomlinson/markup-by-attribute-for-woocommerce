@@ -183,3 +183,32 @@ span.base-price-info {
 #woocommerce-product-data #mt2mba-unchargeable-notice .mt2mba-unchargeable p::after {
 	content: none;
 }
+
+/* The bulk action's result is a receipt, not a standing condition: it reports
+   what just happened and has nothing to say a few seconds later. Collapsed as
+   well as faded so it leaves no gap above the term list. Pure CSS because the
+   term screens already load this file and nothing here needs scripting. */
+.mt2mba-notice-transient {
+	max-height: 20em;
+	overflow: hidden;
+	animation: mt2mba-notice-dismiss 0.6s ease-in 6s forwards;
+}
+
+@keyframes mt2mba-notice-dismiss {
+	to {
+		max-height: 0;
+		opacity: 0;
+		margin-top: 0;
+		margin-bottom: 0;
+		padding-top: 0;
+		padding-bottom: 0;
+		border-width: 0;
+	}
+}
+
+/* Still goes away for a reader who asked for no motion — it just stops sliding */
+@media (prefers-reduced-motion: reduce) {
+	.mt2mba-notice-transient {
+		animation-duration: 0.01s;
+	}
+}

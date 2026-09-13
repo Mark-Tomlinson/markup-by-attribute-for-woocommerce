@@ -200,7 +200,7 @@ If you use Markup-by-Attribute and want to see me continue support for it, I enc
 
 == Upgrade Notice ==
 = 4.8.0 =
-Adds a warning on the product edit screen when an attribute set to "Any" on a variation carries markups that customers will see but never be charged. Informational only — nothing is blocked and no prices change. Also fixes Markup column sorting, inconsistent markup notation, and the spacing left behind in attribute term descriptions, and documents three fixes that shipped in 4.7.0 without a changelog entry.
+Adds a "Reapply Attribute Settings" bulk action so a change to an attribute's "Add Markup to Name?" or "Add Markup to Description?" setting can be applied to its terms all at once, plus a warning on the term list when they disagree. Also warns on the product edit screen when an attribute set to "Any" on a variation carries markups that customers will see but never be charged. Informational only — nothing is blocked and no prices change. Fixes Markup column sorting, inconsistent markup notation, and the spacing left behind in attribute term descriptions, and documents three fixes that shipped in 4.7.0 without a changelog entry.
 
 = 4.7.0 =
 Compatibility update for WordPress 7.1. Markup annotations are now consistent everywhere they appear, and several long-standing bugs are fixed — including "Reapply markups to prices" disappearing from the variations Bulk actions menu after [Save attributes]. Recommended for all users.
@@ -222,6 +222,8 @@ Removed the "Preserve Zero Prices" setting. If you had this enabled and have fre
 *Release Date: September 2026*
 
 **Added**
+* A "Reapply Attribute Settings" bulk action on the attribute term list. Turning "Add Markup to Name?" or "Add Markup to Description?" on or off used to affect a term only the next time that term was saved, so changing your mind meant opening every term in the attribute and saving it one at a time. Select the terms and apply the action instead. Names and descriptions are all it rewrites — prices are untouched until you reprice or reapply markups
+* The attribute term list now warns when its terms no longer match the attribute's settings, saying how many are affected and which setting they disagree with. The name and the description are reported separately, because they can disagree in opposite directions at the same time. The warning clears itself once the terms are back in line
 * The product edit screen now warns when a global attribute carrying markups is left as "Any" on a variation. WooCommerce offers every one of that attribute's options in the drop-down, markup and all, but prices the "Any" variation — so the markup is shown to the customer and never applied. Where the markup is negative, the customer is charged more than the drop-down promised. The notice lists the affected attributes and sits above the variations [Bulk actions] menu. It is informational only: nothing is blocked, and a deliberate configuration is left exactly as you set it
 
 **Bug Fixes**

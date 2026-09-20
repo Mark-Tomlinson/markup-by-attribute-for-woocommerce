@@ -132,4 +132,103 @@ t_assert(empty($upper_const),
 t_assert(empty($wrong_quote),
 	'each string uses the delimiter needing fewer escapes' . $show($wrong_quote));
 
+//region Bulk action labels are sentence case
+// WordPress and WooCommerce name their own bulk actions in sentence case, and
+// this plugin's sat on both sides of the line: "Reapply Markups" next to
+// "Reapply markups to prices" in the same menu. Scoped to bulk actions on
+// purpose — the settings page titles its fields ("Hide Base Price", "Round
+// Markup") and that is a different convention, not a mistake.
+//
+// The registrar methods are discovered from the filters themselves rather than
+// listed here, so a bulk action added later is covered without anyone
+// remembering to come back. A label with no lowercase letters at all is left
+// alone: an acronym has no case to get wrong.
+$labels    = [];
+$wrong_case = [];
+
+foreach ($files as $path) {
+	$src = file_get_contents($path);
+	$rel = ltrim(str_replace(str_replace('\\', '/', $root), '', str_replace('\\', '/', $path)), '/');
+
+	// add_filter('bulk_actions-edit-product', [$this, 'addBulkActions'])
+	// add_filter("bulk_actions-edit-{$taxonomy}", [$this, 'addTermBulkAction'])
+	// Anchored on the opening quote so handle_bulk_actions-* (the same name with a
+	// prefix) does not drag the processing methods in alongside the registrars.
+	if (!preg_match_all('/[\'"]bulk_actions-[^\'"]*[\'"]\s*,\s*\[\s*\$this\s*,\s*\'(\w+)\'/', $src, $hooks)) {
+		continue;
+	}
+
+	foreach (array_unique($hooks[1]) as $method) {
+		$body = t26_method_body($src, $method);
+		t_assert($body !== null, "the body of $rel::$method() was found");
+		if ($body === null) continue;
+
+		// Every translated literal inside the registrar is a menu entry
+		preg_match_all('/__\(\s*\'([^\']+)\'/', $body, $found);
+		foreach ($found[1] as $label) {
+			$labels[] = "$rel: \"$label\"";
+			if (!t26_is_sentence_case($label)) $wrong_case[] = "$rel: \"$label\"";
+		}
+	}
+}
+
+/** The source of a named method, braces matched by the tokenizer. */
+function t26_method_body(string $src, string $method): ?string {
+	$tokens = token_get_all($src);
+	$count  = count($tokens);
+
+	for ($i = 0; $i < $count; $i++) {
+		if (!is_array($tokens[$i]) || $tokens[$i][0] !== T_FUNCTION) continue;
+
+		$j = $i + 1;
+		while ($j < $count && is_array($tokens[$j]) && $tokens[$j][0] === T_WHITESPACE) $j++;
+		if ($j >= $count || !is_array($tokens[$j]) || $tokens[$j][1] !== $method) continue;
+
+		$depth = 0;
+		$body  = '';
+		for ($k = $j; $k < $count; $k++) {
+			$piece = is_array($tokens[$k]) ? $tokens[$k][1] : $tokens[$k];
+			if ($piece === '{') $depth++;
+			if ($depth > 0) $body .= $piece;
+			if ($piece === '}') {
+				$depth--;
+				if ($depth === 0) return $body;
+			}
+		}
+	}
+	return null;
+}
+
+/** First word capitalized, the rest not — acronyms and non-letters exempt. */
+function t26_is_sentence_case(string $label): bool {
+	$words = preg_split('/\s+/', trim($label));
+	if ($words === false || $words === []) return true;
+
+	if (preg_match('/^[a-z]/', $words[0])) return false;
+
+	foreach (array_slice($words, 1) as $word) {
+		// Uppercase only counts as wrong where a lowercase form exists to compare
+		if (preg_match('/^[A-Z][a-z]/', $word)) return false;
+	}
+	return true;
+}
+
+// The variations menu is WooCommerce's, not a bulk_actions-* filter: product.php
+// localizes the label and the JS injects the <option>. Nothing above can discover
+// it, and it is the entry that sat next to the one that was wrong.
+$product_php = file_get_contents($root . '/src/backend/product.php');
+preg_match('/\'reapplyMarkupss\'\s*=>\s*__\(\s*\'([^\']+)\'/', $product_php, $variation_label);
+t_assert(!empty($variation_label[1]), 'the variations menu label was found in product.php');
+if (!empty($variation_label[1])) {
+	$labels[] = 'src/backend/product.php: "' . $variation_label[1] . '"';
+	if (!t26_is_sentence_case($variation_label[1])) {
+		$wrong_case[] = 'src/backend/product.php: "' . $variation_label[1] . '"';
+	}
+}
+
+t_assert(count($labels) >= 3, 'bulk action labels found to check (' . count($labels) . ')');
+t_assert(empty($wrong_case),
+	'every bulk action label is sentence case' . $show($wrong_case));
+//endregion
+
 t_done();

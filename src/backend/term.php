@@ -417,7 +417,7 @@ class Term {
 	/**
 	 * Add the reapply action to the term list's bulk-action menu
 	 *
-	 * Deliberately not named "Reapply Markups" like the product-list action: that
+	 * Deliberately not named "Reapply markups" like the product-list action: that
 	 * one rewrites prices, this one rewrites names and descriptions.
 	 *
 	 * @since 4.8.0

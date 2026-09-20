@@ -291,7 +291,7 @@ class ProductList {
 			echo '<br/><a href="#" class="js-mt2mba-reapply-markup" ' .
 				'data-product-id="' . esc_attr($product_id) . '" ' .
 				'data-base-price="' . esc_attr(html_entity_decode(strip_tags(wc_price($base_price)))) . '" ' .
-				'title="' . esc_attr__('Reapply Markups', 'markup-by-attribute-for-woocommerce') . '">' .
+				'title="' . esc_attr__('Reapply markups', 'markup-by-attribute-for-woocommerce') . '">' .
 				'<span class="dashicons dashicons-update"></span>' .
 				__('Reprice', 'markup-by-attribute-for-woocommerce') . '</a>';
 		}
@@ -361,7 +361,7 @@ class ProductList {
 
 			// Add our action after 'Edit'
 			if ($key === 'edit') {
-				$new_actions['reapply_markups'] = __('Reapply Markups', 'markup-by-attribute-for-woocommerce');
+				$new_actions['reapply_markups'] = __('Reapply markups', 'markup-by-attribute-for-woocommerce');
 			}
 		}
 		return $new_actions;

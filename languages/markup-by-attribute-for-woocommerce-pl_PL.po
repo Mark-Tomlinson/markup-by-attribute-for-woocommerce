@@ -230,7 +230,7 @@ msgid "Product price"
 msgstr "Cena produktu"
 
 #: src/backend/productlist.php:293 src/backend/productlist.php:391
-msgid "Reapply Markups"
+msgid "Reapply markups"
 msgstr "Ponowne zastosowanie narzutów"
 
 #: src/backend/product.php:163

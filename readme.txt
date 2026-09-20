@@ -100,7 +100,7 @@ _NOTE:_ These instructions assume you are familiar with WooCommerce global Produ
 		```
 	 * _TIP_: Always set the regular price before setting a sale price. Percentage markups are calculated on the regular price, so they cannot be applied to a sale price if the regular price has not been set.
 	 * _TIP_: If you change a markup value later, you can quickly update affected products using:
-		- The "Reapply Markups" bulk action on the Products list
+		- The "Reapply markups" bulk action on the Products list
 		- The refresh icon beneath the attributes of individual products in the list
 		- The "Reapply markups to prices" option in the product's variation bulk actions
 
@@ -121,14 +121,14 @@ This intentional workflow gives you control over when prices change. You might w
 After changing a markup value, you have several ways to update the affected products:
 1. For new products or variations, Markup-by-Attribute is incorporated into the `Set regular price` bulk action to set the variation price with the appropriate markup.
 2. For existing products:
-- Use the "Reapply Markups" bulk action to update multiple products at once
+- Use the "Reapply markups" bulk action to update multiple products at once
 - Click the refresh icon next to individual products to update them one at a time
 - In the product editor, use "Reapply markups to prices" in the variations bulk actions
 
 = How do I bulk update prices for multiple products at once? =
 
 If you change a markup value for an option, you can quickly update affected products in one of two ways.
-1. There is a `Reapply Markups` bulk action on the 'All Products' product list. You can even select all items on the page, and Markup-by-Attribute will find items with markups and update the prices and descriptions.
+1. There is a `Reapply markups` bulk action on the 'All Products' product list. You can even select all items on the page, and Markup-by-Attribute will find items with markups and update the prices and descriptions.
 2. There is a refresh icon beneath the attributes of individual products on the 'All Products' product list. You can filter the list by selecting the attribute in question and then click "⟳ Reprice" on the products that you want to reapply the markup to.
 
 Additionally, a "Reapply markups to prices" option in the product's variation bulk actions. While this only works on the product you are editing, it does provide a method that is faster than setting the prices again.
@@ -162,7 +162,7 @@ Markup-by-Attribute requires TWO steps:
 2. **Apply it to products** using bulk actions (← This is usually the missing step)
 
 **On the product page**: Use WooCommerce's `Set regular prices` or `Reapply markups to prices` bulk actions on the Variations tab.
-**On the product list**: Use the `Reapply Markups` bulk action or the refresh icon next to individual products.
+**On the product list**: Use the `Reapply markups` bulk action or the refresh icon next to individual products.
 
 **Other common issues**:
 - Variations with "Any" attributes when those attributes have markups
@@ -172,7 +172,7 @@ If none of these solve it, check the support forums.
 
 = What if I change an attribute's markups but do not want to change products marked up previously? =
 
-Then do nothing. Prices, descriptions, and option drop-downs for products will remain at whatever value they were set to last time you ran the `Set regular price` or `Reapply markups to price` bulk variation actions.
+Then do nothing. Prices, descriptions, and option drop-downs for products will remain at whatever value they were set to last time you ran the `Set regular price` or `Reapply markups to prices` bulk variation actions.
 
 = Does this support languages other than English? =
 
@@ -200,7 +200,7 @@ If you use Markup-by-Attribute and want to see me continue support for it, I enc
 
 == Upgrade Notice ==
 = 4.8.0 =
-Adds a "Reapply Attribute Settings" bulk action so a change to an attribute's "Add Markup to Name?" or "Add Markup to Description?" setting can be applied to its terms all at once, plus a warning on the term list when they disagree. Also warns on the product edit screen when an attribute set to "Any" on a variation carries markups that customers will see but never be charged. Informational only — nothing is blocked and no prices change. Fixes Markup column sorting, inconsistent markup notation, and the spacing left behind in attribute term descriptions, and documents three fixes that shipped in 4.7.0 without a changelog entry.
+Adds a "Reapply attribute settings" bulk action so a change to an attribute's "Add Markup to Name?" or "Add Markup to Description?" setting can be applied to its terms all at once, plus a warning on the term list when they disagree. Also warns on the product edit screen when an attribute set to "Any" on a variation carries markups that customers will see but never be charged. Informational only — nothing is blocked and no prices change. Fixes Markup column sorting, inconsistent markup notation, and the spacing left behind in attribute term descriptions, and documents three fixes that shipped in 4.7.0 without a changelog entry.
 
 = 4.7.0 =
 Compatibility update for WordPress 7.1. Markup annotations are now consistent everywhere they appear, and several long-standing bugs are fixed — including "Reapply markups to prices" disappearing from the variations Bulk actions menu after [Save attributes]. Recommended for all users.
@@ -222,14 +222,14 @@ Removed the "Preserve Zero Prices" setting. If you had this enabled and have fre
 *Release Date: September 2026*
 
 **Added**
-* A "Reapply Attribute Settings" bulk action on the attribute term list. Turning "Add Markup to Name?" or "Add Markup to Description?" on or off used to affect a term only the next time that term was saved, so changing your mind meant opening every term in the attribute and saving it one at a time. Select the terms and apply the action instead. Names and descriptions are all it rewrites — prices are untouched until you reprice or reapply markups
+* A "Reapply attribute settings" bulk action on the attribute term list. Turning "Add Markup to Name?" or "Add Markup to Description?" on or off used to affect a term only the next time that term was saved, so changing your mind meant opening every term in the attribute and saving it one at a time. Select the terms and apply the action instead. Names and descriptions are all it rewrites — prices are untouched until you reprice or reapply markups
 * The attribute term list now warns when its terms no longer match the attribute's settings, saying how many are affected and which setting they disagree with. The name and the description are reported separately, because they can disagree in opposite directions at the same time. The warning clears itself once the terms are back in line
 * The product edit screen now warns when a global attribute carrying markups is left as "Any" on a variation. WooCommerce offers every one of that attribute's options in the drop-down, markup and all, but prices the "Any" variation — so the markup is shown to the customer and never applied. Where the markup is negative, the customer is charged more than the drop-down promised. The notice lists the affected attributes and sits above the variations [Bulk actions] menu. It is informational only: nothing is blocked, and a deliberate configuration is left exactly as you set it
 
 **Bug Fixes**
 * Sorting the attribute list by the Markup column now orders the values as numbers. They were compared as text, which put 10 ahead of 8 — noticeable on an attribute with many terms, such as a year or size range
 * The Markup column and the term's markup field now show every value in the same notation. Markups saved by older releases kept the leading plus sign and trailing zeros they were typed with, so +1.00 and 1 sat side by side meaning the same thing. Stored values are not altered; only what is displayed
-* Applying "Reapply Markups" on the product list with only simple products selected no longer repeats the previous run. Nothing was reported and nothing appeared to happen, but the products from the run before were quietly repriced again, using whatever markups were in place at that moment. A selection containing no variable products now says so and changes nothing
+* Applying "Reapply markups" on the product list with only simple products selected no longer repeats the previous run. Nothing was reported and nothing appeared to happen, but the products from the run before were quietly repriced again, using whatever markups were in place at that moment. A selection containing no variable products now says so and changes nothing
 * Text you add to an attribute term's description is no longer left with a blank line or a stray indent where the markup annotation used to sit. The annotation is rewritten to the bottom of the description on every save, and lifting it out of its old position left the surrounding spacing behind. Only descriptions with text above or beside the annotation were affected
 
 *The following shipped in 4.7.0 but were left out of that release's changelog.*
@@ -239,6 +239,7 @@ Removed the "Preserve Zero Prices" setting. If you had this enabled and have fre
 * A markup typed with a space before the percent sign, such as 5 %, is no longer flagged as invalid in the browser. WooCommerce itself accepts that form, so the field now does too
 
 **Maintenance**
+* The bulk actions are named in sentence case throughout, the way WordPress and WooCommerce name their own. "Reapply Markups" on the product list now reads "Reapply markups". Only the label changed
 * One syntax dialect throughout the shipping code: short array syntax, lowercase true/false/null, and the quote style needing fewer escapes. No change in behavior — pinned by the test suite
 * Docblock boilerplate trimmed without losing documentation: @since no longer appears on private or protected members, and the identical singleton scaffolding is described in one line instead of seven
 

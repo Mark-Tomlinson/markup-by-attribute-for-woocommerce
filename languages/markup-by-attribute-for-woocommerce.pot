@@ -223,7 +223,7 @@ msgid "Product price"
 msgstr ""
 
 #: src/backend/productlist.php:293 src/backend/productlist.php:391
-msgid "Reapply Markups"
+msgid "Reapply markups"
 msgstr ""
 
 #: src/backend/product.php:163

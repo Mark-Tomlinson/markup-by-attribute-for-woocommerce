@@ -13,9 +13,9 @@ Version:                4.8.0
 Stable tag:             4.8.0
 Tested up to:           7.1
 Requires at least:      5.7
-PHP tested up to:       8.4.23
+PHP tested up to:       8.4.24
 Requires PHP:           7.4.3
-WC tested up to:        11.0.1
+WC tested up to:        11.1.1
 WC requires at least:   5.0.0
 MariaDB tested up to:   11.8.6
 

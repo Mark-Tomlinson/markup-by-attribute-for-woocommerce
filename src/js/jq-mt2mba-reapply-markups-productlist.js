@@ -20,16 +20,20 @@ jQuery(document).ready(function($) {
 	// Process bulk reapply if needed
 	const urlParams = new URLSearchParams(window.location.search);
 	const bulkIds = urlParams.get('reapply_markups_ids');
-	if (bulkIds) {
-		// Drop only this key from the URL before processing starts, or a refresh, the
-		// back button, or a bookmark silently repeats the entire bulk reprice.
+	const hadNothingToDo = urlParams.has('reapply_markups_none');
+	if (bulkIds || hadNothingToDo) {
+		// Drop only these keys from the URL before processing starts, or a refresh, the
+		// back button, or a bookmark silently repeats the entire bulk reprice. The
+		// warning is dropped with them: PHP has already printed it into this page.
 		urlParams.delete('reapply_markups_ids');
+		urlParams.delete('reapply_markups_none');
 		const query = urlParams.toString();
 		history.replaceState(null, '',
 			window.location.pathname + (query ? '?' + query : '') + window.location.hash);
+	}
 
-		const productIds = bulkIds.split(',');
-		processBulkReapply(productIds);
+	if (bulkIds) {
+		processBulkReapply(bulkIds.split(','));
 	}
 
 	// Handle clicks on individual "Reapply markups" icons

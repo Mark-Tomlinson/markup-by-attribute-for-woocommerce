@@ -229,6 +229,7 @@ Removed the "Preserve Zero Prices" setting. If you had this enabled and have fre
 **Bug Fixes**
 * Sorting the attribute list by the Markup column now orders the values as numbers. They were compared as text, which put 10 ahead of 8 — noticeable on an attribute with many terms, such as a year or size range
 * The Markup column and the term's markup field now show every value in the same notation. Markups saved by older releases kept the leading plus sign and trailing zeros they were typed with, so +1.00 and 1 sat side by side meaning the same thing. Stored values are not altered; only what is displayed
+* Applying "Reapply Markups" on the product list with only simple products selected no longer repeats the previous run. Nothing was reported and nothing appeared to happen, but the products from the run before were quietly repriced again, using whatever markups were in place at that moment. A selection containing no variable products now says so and changes nothing
 * Text you add to an attribute term's description is no longer left with a blank line or a stray indent where the markup annotation used to sit. The annotation is rewritten to the bottom of the description on every save, and lifting it out of its old position left the surrounding spacing behind. Only descriptions with text above or beside the annotation were affected
 
 *The following shipped in 4.7.0 but were left out of that release's changelog.*

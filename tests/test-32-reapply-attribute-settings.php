@@ -1,6 +1,6 @@
 <?php
 /**
- * Reapply Attribute Settings — the term-list bulk action and its notices
+ * Reapply attribute settings — the term-list bulk action and its notices
  *
  * Two things are worth guarding here. The bulk action changes terms, so it needs
  * the same capability and scope discipline as the save path. And the notice is a
@@ -98,14 +98,14 @@ t_assert(strpos($source, 'handle_bulk_actions-edit-{$taxonomy}') !== false,
 	'the handler hooks handle_bulk_actions-edit-{taxonomy}');
 
 // Reusing the product list's action name would claim this rewrites prices
-t_assert(strpos($source, "'Reapply Attribute Settings'") !== false,
-	'the action is named Reapply Attribute Settings');
+t_assert(strpos($source, "'Reapply attribute settings'") !== false,
+	'the action is named Reapply attribute settings');
 t_assert(strpos($source, "'reapply_markups'") === false,
 	"the product list's action name is not reused here");
 
 $menu = $term_component->addTermBulkAction(['delete' => 'Delete']);
 t_assert(isset($menu['delete']), 'core\'s Delete action survives');
-t_assert(($menu['mt2mba_reapply_settings'] ?? '') === 'Reapply Attribute Settings',
+t_assert(($menu['mt2mba_reapply_settings'] ?? '') === 'Reapply attribute settings',
 	'our action is added under its own key');
 //endregion
 

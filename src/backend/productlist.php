@@ -73,6 +73,7 @@ class ProductList {
 		// Bulk Actions
 		add_filter('bulk_actions-edit-product', [$this, 'addBulkActions']);
 		add_filter('handle_bulk_actions-edit-product', [$this, 'processBulkActions'], 10, 3);
+		add_action('admin_notices', [$this, 'showBulkActionNotice']);
 
 		// Add AJAX handler for row refresh
 		add_action('wp_ajax_mt2mba_refresh_product_row', [$this, 'refreshProductRow']);
@@ -384,11 +385,39 @@ class ProductList {
 			return $product && $product->is_type('variable');
 		});
 
-		if (!empty($variable_products)) {
-			// Add products to process to the redirect URL
-			$redirect_to = add_query_arg('reapply_markups_ids', implode(',', $variable_products), $redirect_to);
+		// The redirect starts life as the list table's _wp_http_referer, which was
+		// rendered before the previous run's arguments were scrubbed from the address
+		// bar. Leave them on and a selection that adds nothing silently repeats that
+		// run, or a successful run inherits the last run's warning.
+		$redirect_to = remove_query_arg(['reapply_markups_ids', 'reapply_markups_none'], $redirect_to);
+
+		if (empty($variable_products)) {
+			return add_query_arg('reapply_markups_none', 1, $redirect_to);
 		}
-		return $redirect_to;
+
+		// Add products to process to the redirect URL
+		return add_query_arg('reapply_markups_ids', implode(',', $variable_products), $redirect_to);
+	}
+
+	/**
+	 * Report a bulk reapply that had no variable products to work on
+	 *
+	 * @since 4.8.0
+	 */
+	public function showBulkActionNotice(): void {
+		if (!isset($_GET['reapply_markups_none'])) return;
+
+		$screen = get_current_screen();
+		if (!$screen || $screen->id !== 'edit-product') return;
+
+		printf(
+			'<div class="notice notice-warning mt2mba-notice-transient"><p><strong>%s</strong> &mdash; %s</p></div>',
+			esc_html(MT2MBA_PLUGIN_NAME),
+			esc_html__(
+				'No markups were reapplied. Markups belong to variable products, and none were selected.',
+				'markup-by-attribute-for-woocommerce'
+			)
+		);
 	}
 	//endregion
 

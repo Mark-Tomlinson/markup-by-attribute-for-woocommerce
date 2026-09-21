@@ -32,6 +32,9 @@ class Term {
 
 	/** @var bool Re-entrancy guard: true only while wp_update_term() is running */
 	private static $is_rewriting_term = false;
+
+	/** @var bool True between this request's bulk run and its redirect */
+	private $count_is_fresh = false;
 	//endregion
 
 	//region INSTANCE MANAGEMENT
@@ -91,6 +94,14 @@ class Term {
 		// Reports the outcome of the bulk action, and warns when terms and
 		// attribute settings disagree. Registered once, not per taxonomy.
 		add_action('admin_notices', [$this, 'showTermNotices']);
+
+		// The count describes one click. Core scrubs it from the address bar once
+		// the page loads, and the redirect filter keeps it off later redirects.
+		add_filter('removable_query_args', function ($args) {
+			$args[] = 'mt2mba_rewritten';
+			return $args;
+		});
+		add_filter('redirect_term_location', [$this, 'dropStaleRewriteCount'], 10);
 	}
 
 	/**
@@ -449,10 +460,16 @@ class Term {
 		// capability before this filter fires, but guard our own writes too.
 		if (!current_user_can('manage_product_terms')) return $location;
 
+		// Core passes the IDs from the request without checking them against the
+		// screen's taxonomy, and the nonce does not cover them, so fence them here.
+		$screen = get_current_screen();
+		$taxonomy = $screen ? (string) preg_replace('/^edit-/', '', $screen->id) : '';
+		if (strpos($taxonomy, 'pa_') !== 0) return $location;
+
 		$rewritten = 0;
 		foreach ($term_ids as $term_id) {
 			$term = get_term((int) $term_id);
-			if (!$term instanceof \WP_Term) continue;
+			if (!$term instanceof \WP_Term || $term->taxonomy !== $taxonomy) continue;
 
 			$markup = (string) get_term_meta($term->term_id, 'mt2mba_markup', true);
 			if ($this->maybeRewriteTermNameAndDesc($term, $markup)) $rewritten++;
@@ -469,7 +486,27 @@ class Term {
 			);
 		}
 
+		$this->count_is_fresh = true;
 		return add_query_arg('mt2mba_rewritten', $rewritten, $location);
+	}
+
+	/**
+	 * Keep the count out of every term-list redirect but the run that produced it
+	 *
+	 * The _wp_http_referer field was written from a URL still carrying the count,
+	 * and core builds its own redirects from that field, stripping only its own
+	 * arguments. Without this, a Delete after a run reports the run again.
+	 *
+	 * @since 4.8.0
+	 * @param  string $location Redirect URL
+	 * @return string           The URL, less a count this request did not produce
+	 */
+	public function dropStaleRewriteCount($location) {
+		if ($this->count_is_fresh) {
+			$this->count_is_fresh = false;
+			return $location;
+		}
+		return remove_query_arg('mt2mba_rewritten', $location);
 	}
 	//endregion
 

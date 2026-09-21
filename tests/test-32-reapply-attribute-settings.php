@@ -64,6 +64,7 @@ function t32_fixture(array $terms, string $name_flag, string $desc_flag): void {
 		return $by_id[$term_id] ?? null;
 	};
 	$GLOBALS['mt2mba_stub']['taxonomy_ids'] = ['pa_size' => 42];
+	$GLOBALS['mt2mba_stub']['screen_id'] = 'edit-pa_size';
 	$GLOBALS['mt2mba_test']['options'] = [
 		MT2MBA_REWRITE_TERM_NAME_PREFIX . '42' => $name_flag,
 		MT2MBA_REWRITE_TERM_DESC_PREFIX . '42' => $desc_flag,
@@ -128,6 +129,52 @@ t32_fixture([t32_term(1, 'Small', '', '5%')], 'yes', 'no');
 $term_component->handleTermBulkAction('http://test/edit-tags.php', 'mt2mba_reapply_settings', [1, 999]);
 t_assert(count($GLOBALS['mt2mba_test']['term_updates']) === 1,
 	'a missing term is skipped and the rest of the batch still runs');
+//endregion
+
+//region Only terms of the attribute being listed are touched
+// edit-tags.php builds $term_ids straight from the request without checking them
+// against the screen's taxonomy, and the bulk-tags nonce does not cover the IDs.
+// An edited request from the pa_size list could otherwise rewrite any term on the
+// site, and a write also strips the HTML from its description.
+function t32_add_foreign_term(int $term_id, string $taxonomy): void {
+	$term = new WP_Term();
+	$term->term_id     = $term_id;
+	$term->name        = 'Clearance (Add 10%)';
+	$term->description = '<p>Our <em>best</em> deals.</p>';
+	$term->taxonomy    = $taxonomy;
+
+	$inner = $GLOBALS['mt2mba_stub']['get_term'];
+	$GLOBALS['mt2mba_stub']['get_term'] = function ($id) use ($inner, $term, $term_id) {
+		return $id === $term_id ? $term : $inner($id);
+	};
+}
+
+t32_fixture([t32_term(1, 'Small', 'A size.', '5%')], 'yes', 'no');
+t32_add_foreign_term(50, 'product_cat');
+$term_component->handleTermBulkAction('http://test/x', 'mt2mba_reapply_settings', [50]);
+t_assert($GLOBALS['mt2mba_test']['term_updates'] === [],
+	'a product category smuggled into the selection is not rewritten');
+
+t32_fixture([t32_term(1, 'Small', 'A size.', '5%')], 'yes', 'no');
+t32_add_foreign_term(50, 'product_cat');
+$term_component->handleTermBulkAction('http://test/x', 'mt2mba_reapply_settings', [1, 50]);
+t_assert(array_column($GLOBALS['mt2mba_test']['term_updates'], 0) === [1],
+	'...while the genuine terms beside it still are');
+
+// "Any pa_ taxonomy" is not the fence; the one on screen is. Another attribute's
+// terms follow that attribute's settings, not these.
+t32_fixture([t32_term(1, 'Small', 'A size.', '5%')], 'yes', 'no');
+t32_add_foreign_term(60, 'pa_color');
+$term_component->handleTermBulkAction('http://test/x', 'mt2mba_reapply_settings', [60]);
+t_assert($GLOBALS['mt2mba_test']['term_updates'] === [],
+	'a term from a different attribute is not rewritten either');
+
+// With no attribute screen to read the taxonomy from, there is nothing to fence to
+t32_fixture([t32_term(1, 'Small', 'A size.', '5%')], 'yes', 'no');
+$GLOBALS['mt2mba_stub']['screen_id'] = '';
+$untouched = $term_component->handleTermBulkAction('http://test/x', 'mt2mba_reapply_settings', [1]);
+t_assert($GLOBALS['mt2mba_test']['term_updates'] === [] && $untouched === 'http://test/x',
+	'no attribute screen, no writes, and the redirect is handed back untouched');
 //endregion
 
 //region What the bulk action writes
@@ -329,6 +376,32 @@ $_GET['mt2mba_rewritten'] = '0';
 t_assert(strpos(t32_notices($term_component), '0 terms updated.') !== false,
 	'a run that changed nothing still reports');
 unset($_GET['mt2mba_rewritten']);
+//endregion
+
+//region The count lives for one redirect only
+// Left in the address bar, a refresh or the Back button repeats "3 terms updated"
+// for a click made earlier. Core scrubs any argument listed here once the page loads.
+$removable = apply_filters('removable_query_args', ['message']);
+t_assert(in_array('mt2mba_rewritten', $removable, true) && in_array('message', $removable, true),
+	'the count is added to core\'s removable arguments, alongside core\'s own');
+
+// Scrubbing the address bar is not enough. wp_referer_field() wrote the URL into
+// _wp_http_referer when the page rendered, and core builds Delete's redirect from
+// that field, stripping only its own arguments (edit-tags.php:77, :147). So a bulk
+// Delete right after a run would report the run's count again beside its own.
+// Verified against WP core on WPDev 2026-09-21.
+t32_fixture([t32_term(1, 'Small', 'A size.', '5%')], 'yes', 'no');
+$ours = $term_component->handleTermBulkAction(
+	'http://test/wp-admin/edit-tags.php?taxonomy=pa_size', 'mt2mba_reapply_settings', [1]);
+t_assert(strpos(apply_filters('redirect_term_location', $ours, null), 'mt2mba_rewritten=1') !== false,
+	'our own run keeps its count all the way to the redirect');
+
+$deleted = 'http://test/wp-admin/edit-tags.php?taxonomy=pa_size&mt2mba_rewritten=3&message=6';
+$redirect = apply_filters('redirect_term_location', $deleted, null);
+t_assert(strpos($redirect, 'mt2mba_rewritten') === false,
+	'a Delete that inherited the count from the referer loses it');
+t_assert(strpos($redirect, 'message=6') !== false && strpos($redirect, 'taxonomy=pa_size') !== false,
+	'...and keeps core\'s own message and the taxonomy');
 //endregion
 
 t_done();

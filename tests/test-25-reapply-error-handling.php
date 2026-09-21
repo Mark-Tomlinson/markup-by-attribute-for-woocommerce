@@ -63,8 +63,14 @@ t_assert(strpos($js, '#variable_product_options') !== false,
 $ajax_calls    = preg_match_all('/\$\.ajax\(\s*\{/', $js);
 $error_handlers = preg_match_all('/\berror:\s*function/', $js);
 
-t_assert($ajax_calls === 4,
-	"the file still makes 4 AJAX calls (found $ajax_calls) — guards the count below");
+// 5 since item 23 added mt2mba_unchargeable_notice, which re-evaluates the "Any"
+// warning after [Save changes] (WooCommerce reloads only the variation rows, so
+// the panel around them goes stale). Its two failure paths CLEAR the notice rather
+// than leave a stale one standing — same invariant as the four below, opposite
+// remedy, because this one is advisory and a stale warning about money is worse
+// than none.
+t_assert($ajax_calls === 5,
+	"the file still makes 5 AJAX calls (found $ajax_calls) — guards the count below");
 
 t_assert($error_handlers === $ajax_calls,
 	"every AJAX call has an error: handler ($error_handlers of $ajax_calls)");
@@ -91,8 +97,8 @@ t_assert(strpos($js, 'mt2mbaLocal.i18n.failedRecalculating') !== false,
 t_assert(strpos($php, "'failedRefreshing'") !== false,
 	'product.php defines the separate post-commit message');
 
-$localized_block = strstr($php, "'i18n' => array(");
-t_assert($localized_block !== false && strpos($localized_block, "'failedRefreshing'") !== false,
+$localized_block = t_array_block($php, 'i18n');
+t_assert($localized_block !== null && strpos($localized_block, "'failedRefreshing'") !== false,
 	'failedRefreshing is localized inside the i18n block');
 
 t_assert(strpos($js, 'mt2mbaLocal.i18n.failedRefreshing') !== false,

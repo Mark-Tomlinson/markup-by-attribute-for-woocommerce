@@ -17,18 +17,22 @@ class Product {
 	 */
 	public function __construct() {
 		// Override WooCommerce's default maximum variation threshold with custom setting
-		if (!defined("WC_MAX_LINKED_VARIATIONS")) {
-			define("WC_MAX_LINKED_VARIATIONS", MT2MBA_MAX_VARIATIONS);
+		if (!defined('WC_MAX_LINKED_VARIATIONS')) {
+			define('WC_MAX_LINKED_VARIATIONS', MT2MBA_MAX_VARIATIONS);
 		}
 
 		// Add JavaScript for markup reapplication functionality on product edit pages
 		add_action('admin_enqueue_scripts', [$this, 'enqueueMarkupScripts']);
 
 		// Hook into WooCommerce's bulk variation editing to apply markups during price changes
-		add_action("woocommerce_bulk_edit_variations", [$this, "handleBulkPriceAction"], 10, 4);
+		add_action('woocommerce_bulk_edit_variations', [$this, 'handleBulkPriceAction'], 10, 4);
 
 		// Add base price fields to product general options panel
 		add_action('woocommerce_product_options_general_product_data', [$this, 'addBasePriceFields']);
+
+		// Warn about markups the cart can never charge, directly above the
+		// variations toolbar where the repricing actions live
+		add_action('woocommerce_variable_product_before_variations', [$this, 'showUnchargeableMarkupNotice']);
 
 		// Handle AJAX requests to reapply markups to variations
 		add_action('wp_ajax_handleMarkupReapplication', [$this, 'handleMarkupReapplication']);
@@ -38,6 +42,9 @@ class Product {
 
 		// Handle AJAX requests to refresh general panel after price changes
 		add_action('wp_ajax_mt2mba_refresh_general_panel', [$this, 'refreshProductGeneralPanel']);
+
+		// Handle AJAX requests to re-evaluate the unchargeable-markup notice
+		add_action('wp_ajax_mt2mba_unchargeable_notice', [$this, 'refreshUnchargeableNotice']);
 	}
 
 	/**
@@ -77,11 +84,11 @@ class Product {
 			wp_localize_script(
 				'mt2mba-reapply-markup',
 				'mt2mbaLocal',
-				array(
+				[
 					'ajaxUrl' => admin_url('admin-ajax.php'),
 					'security' => wp_create_nonce('handleMarkupReapplication'),
 					'variationsNonce' => wp_create_nonce('load-variations'),
-					'i18n' => array(
+					'i18n' => [
 						'reapplyMarkupss' => __('Reapply markups to prices', 'markup-by-attribute-for-woocommerce'),
 						'confirmReapply' => __('Reprice variations at %s, plus or minus the markups?', 'markup-by-attribute-for-woocommerce'),
 						'failedRecalculating' => __('Failed to reapply markups. Please try again.', 'markup-by-attribute-for-woocommerce'),
@@ -89,8 +96,8 @@ class Product {
 						// reprice has already committed, so it must not tell the shop owner
 						// their prices are unchanged when they are not.
 						'failedRefreshing' => __('Markups were reapplied, but the variations list could not be refreshed. Reload the page to see the new prices.', 'markup-by-attribute-for-woocommerce')
-					)
-				)
+					]
+				]
 			);
 		}
 	}
@@ -225,15 +232,15 @@ class Product {
 	 */
 	public function handleBulkPriceAction($bulk_action, $data, $product_id, $variations): void {
 		// Determine which class should extend PriceMarkupHandler based on the bulk_action
-		if ($bulk_action == "variable_regular_price" || $bulk_action == "variable_sale_price") {
+		if ($bulk_action == 'variable_regular_price' || $bulk_action == 'variable_sale_price') {
 			// Set either the regular price or the sale price
 			$handler = new Handlers\PriceSetHandler($bulk_action, $data, $product_id, $variations);
 
-		} elseif (strpos($bulk_action, "_price_increase") !== false || strpos($bulk_action, "_price_decrease") !== false) {
+		} elseif (strpos($bulk_action, '_price_increase') !== false || strpos($bulk_action, '_price_decrease') !== false) {
 			// Increase or decrease the regular price or the sale price
 			$handler = new Handlers\PriceUpdateHandler($bulk_action, $data, $product_id, $variations);
 
-		} elseif ($bulk_action == "delete_all") {
+		} elseif ($bulk_action == 'delete_all') {
 			// Delete all markup metadata for product
 			$handler = new Handlers\MarkupDeleteHandler($product_id);
 
@@ -245,12 +252,9 @@ class Product {
 		// Each handler received everything it needs above; the run takes no arguments
 		$handler->processProductMarkups();
 
-		// The handlers above write meta directly via $wpdb (DELETE/INSERT), which bypasses
-		// WordPress's object cache. WooCommerce syncs the parent after this hook, but never
-		// invalidates the individual variations — so on a persistent object cache (Redis/
-		// Memcached) stale variation prices/descriptions would keep serving. Flush the post
-		// + post_meta cache for the parent and every edited variation *before* WC's post-hook
-		// sync, so that sync recomputes from fresh data. 🌸
+		// The handlers write meta through $wpdb, bypassing the object cache, and
+		// WooCommerce's post-hook sync never invalidates the variations. Flush them
+		// here so a persistent cache (Redis, Memcached) does not keep serving stale prices.
 		clean_post_cache($product_id);
 		foreach ($variations as $variation_id) {
 			clean_post_cache($variation_id);
@@ -269,7 +273,7 @@ class Product {
 		if ($post) {
 			$base_regular_price = get_post_meta($post->ID, 'mt2mba_base_regular_price', true);
 			$base_sale_price = get_post_meta($post->ID, 'mt2mba_base_sale_price', true);
-			$currency_symbol = " (" . get_woocommerce_currency_symbol() . ")";
+			$currency_symbol = ' (' . get_woocommerce_currency_symbol() . ')';
 
 			echo '<div class="options_group show_if_variable">';
 
@@ -306,6 +310,169 @@ class Product {
 			echo '</div>';
 		}
 	}
+
+	/**
+	 * Warn about markups that are advertised but can never be charged
+	 *
+	 * An attribute left as "Any" on a variation makes WooCommerce offer every one
+	 * of that attribute's options in the drop-down (see read_variation_attributes()
+	 * in WooCommerce's variable-product data store), markup annotation included --
+	 * but the cart resolves to the "Any" variation, whose price carries no markup
+	 * for the option the customer picked. The markup is advertised and never
+	 * charged, and when it is negative the customer is overcharged against what
+	 * the drop-down promised.
+	 *
+	 * Informational only: the configuration is legitimate for a store that means
+	 * it, so nothing is blocked or altered.
+	 *
+	 * @since 4.8.0
+	 */
+	public function showUnchargeableMarkupNotice(): void {
+		global $post;
+		if (!$post) return;
+
+		// The wrapper is emitted even when there is nothing to say: it is the target
+		// refreshUnchargeableNotice() replaces after [Save changes], which alters the
+		// answer without re-rendering this panel.
+		echo '<div id="mt2mba-unchargeable-notice">' .
+			$this->buildUnchargeableNotice((int) $post->ID) .
+			'</div>';
+	}
+
+	/**
+	 * Rebuild the notice after variations are saved
+	 *
+	 * [Save changes] reloads only the variation rows, not the panel this notice
+	 * sits in, so without this the notice would stay stale until [Update].
+	 *
+	 * @since 4.8.0
+	 */
+	public function refreshUnchargeableNotice(): void {
+		check_ajax_referer('handleMarkupReapplication', 'security');
+
+		if (!current_user_can('edit_products')) {
+			wp_send_json_error(['message' => __('Permission denied', 'markup-by-attribute-for-woocommerce')]);
+			return;
+		}
+
+		$product_id = isset($_POST['product_id']) ? absint($_POST['product_id']) : 0;
+		if (!$product_id) {
+			wp_send_json_error();
+			return;
+		}
+
+		wp_send_json_success(['html' => $this->buildUnchargeableNotice($product_id)]);
+	}
+
+	/**
+	 * Build the notice markup, or an empty string when there is nothing to report
+	 *
+	 * @param  int    $product_id The product to examine
+	 * @return string             Ready-to-echo HTML, already escaped
+	 */
+	private function buildUnchargeableNotice($product_id): string {
+		// A store that hides markups in the drop-down advertises nothing, so the
+		// notice would be false. Known gap: "Add Markup to Name?" bakes the markup
+		// into the term name regardless of this setting, and is not detected.
+		if (MT2MBA_DROPDOWN_BEHAVIOR === 'hide') return '';
+
+		$product = wc_get_product($product_id);
+		if (!$product || !$product->is_type('variable')) return '';
+
+		$labels = self::findUnchargeableAttributes($product, $product_id, $product->get_children());
+		if (empty($labels)) return '';
+
+		// Not class="notice notice-warning": core restyled .notice between WP 5.7
+		// and 7.1, and WooCommerce's panel rules outrank a plain class selector.
+		// Styled in admin-style.css instead, so it looks the same on every version.
+		$html = '<div class="mt2mba-unchargeable"><p><strong>' .
+			esc_html(MT2MBA_PLUGIN_NAME) . '</strong> &mdash; ' .
+			esc_html__('Global attributes set to "Any" will not reflect the markup in the price:', 'markup-by-attribute-for-woocommerce') .
+			'</p><ul>';
+
+		// Labelled the way WooCommerce labels the variation rows ("Any Colour…") so
+		// the owner can match the warning to the screen. The ellipsis entity sits
+		// outside the escaped text so it cannot become &amp;hellip;.
+		foreach ($labels as $label) {
+			$html .= '<li>' . esc_html(sprintf(
+				/* translators: %s: attribute name, e.g. Colour */
+				__('Any %s', 'markup-by-attribute-for-woocommerce'),
+				$label
+			)) . '&hellip;</li>';
+		}
+
+		return $html . '</ul></div>';
+	}
+
+	/**
+	 * Find every attribute whose advertised markups no variation can charge
+	 *
+	 * Static and free of page context so the test suite can call it directly.
+	 * Collecting every attribute costs nothing extra: the variation rows are one
+	 * bulk read however many attributes are flagged.
+	 *
+	 * @since  4.8.0
+	 * @param  object $product       The variable product
+	 * @param  int    $product_id    The product's ID
+	 * @param  array  $variation_ids Every variation belonging to the product
+	 * @return array                 Display labels of the offending attributes
+	 */
+	public static function findUnchargeableAttributes($product, $product_id, array $variation_ids): array {
+		$candidates = [];
+
+		foreach ($product->get_attributes() as $attribute) {
+			// Local attributes cannot carry markups, and an attribute with "Used for
+			// variations" off renders no drop-down, so it advertises nothing. Unlike
+			// getAttributeData(), which keeps such attributes: their markups still
+			// belong in the markup table.
+			if (!$attribute->is_taxonomy() || !$attribute->get_variation()) continue;
+
+			$selected = $attribute->get_options();
+			if (empty($selected)) continue;
+
+			// Read the same meta the storefront reads (Frontend\Options), so the notice
+			// fires exactly when a customer is shown a markup. A product that has never
+			// been repriced has no such meta and is not flagged.
+			$advertised = [];
+			foreach ($selected as $term_id) {
+				$amount = get_metadata('post', $product_id, "mt2mba_{$term_id}_markup_amount", true);
+				if ($amount !== '' && (float) $amount != 0) {
+					$advertised[(int) $term_id] = $amount;
+				}
+			}
+
+			// Only whether it advertises anything matters; the amounts do not appear
+			// in the notice, so they are not carried forward.
+			if (!empty($advertised)) {
+				$candidates[] = $attribute->get_name();
+			}
+		}
+
+		// Nothing advertised means no query is needed at all -- the common case on
+		// a store where most products carry no markups
+		if (empty($candidates) || empty($variation_ids)) return [];
+
+		// One bulk read covers every variation's attribute assignments
+		$assigned = [];
+		foreach (Handlers\BulkMetaIO::fetchMetaLike($variation_ids, 'attribute_pa_%') as $row) {
+			$assigned[(int) $row->post_id][substr($row->meta_key, 10)] = $row->meta_value;
+		}
+
+		$flagged = [];
+		foreach ($candidates as $taxonomy) {
+			foreach ($variation_ids as $variation_id) {
+				// empty(), not === '': WooCommerce writes '' for an explicit "Any", but
+				// an attribute that gained "Used for variations" after the variations
+				// existed may have no row at all. Missing and empty both mean Any.
+				if (empty($assigned[(int) $variation_id][$taxonomy])) {
+					$flagged[] = wc_attribute_label($taxonomy);
+					break;		// one mention per attribute, however many variations
+				}
+			}
+		}
+
+		return $flagged;
+	}
 	//endregion
 
 	//region PRIVATE UTILITIES
@@ -316,7 +483,6 @@ class Product {
 	 * capability checks, and product type validation. Returns product data
 	 * on success or sends JSON error response on failure.
 	 *
-	 * @since 4.0.0
 	 * @return array|false Product data array on success, false on failure
 	 */
 	private function validateReapplyMarkupsRequest() {

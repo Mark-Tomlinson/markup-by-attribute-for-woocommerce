@@ -5,9 +5,9 @@
  * getAttributeData() asked get_terms() for every term in each of the product's
  * taxonomies (hide_empty => false) and never consulted the product's own
  * selections, so mt2mba_{term_id}_markup_amount rows were written for terms the
- * product does not offer. Mark's reproduction on WPDev: a product across three
- * attributes holding 11 markup-bearing terms wrote 11 rows; deselecting six of
- * them and repricing still wrote 11.
+ * product does not offer. Reproduced: a product across three attributes holding
+ * 11 markup-bearing terms wrote 11 rows; deselecting six of them and repricing
+ * still wrote 11.
  *
  * Harmless to read -- the storefront only ever looks up the terms it displays --
  * but it is DB writes and postmeta bloat proportional to taxonomy size, not to
@@ -113,7 +113,7 @@ t_assert($actual_none === '(no markup-amount INSERT)',
 //endregion
 
 //region Attributes not used for variations still carry their markups
-// Mark's advised workflow for large variation counts: clear "Used for variations"
+// The documented workflow for large variation counts: clear "Used for variations"
 // on the markup-free attributes, generate and price, then re-select. At price
 // time the markup-bearing attribute may itself be flagged not-for-variations, so
 // filtering on get_variation() here would strip exactly the rows that workflow

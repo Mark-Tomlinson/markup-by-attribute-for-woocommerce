@@ -11,8 +11,6 @@ namespace mt2Tech\MarkupByAttribute\Backend\Handlers;
  * deletion — WordPress core removes the post's meta in that case.
  *
  * @package   mt2Tech\MarkupByAttribute\Backend\Handlers
- * @author    Mark Tomlinson
- * @license   GPL-3.0-or-later
  * @since     4.0.0
  */
 class MarkupDeleteHandler extends PriceMarkupHandler {

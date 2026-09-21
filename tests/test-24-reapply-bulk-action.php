@@ -66,23 +66,13 @@ t_assert(strpos($php, "'variable_regular_price'") !== false || strpos($php, '"va
 // $('<option>', {text: undefined}) renders a blank menu entry rather than throwing.
 // Note 'reapplyMarkupss' really does carry two s's on BOTH sides — a matched pair
 // since v4.3.3 (dccd939). Ugly, harmless, and this test is what keeps it matched.
-// Scope to the i18n block by paren-matching. Scraping the whole file also catches
+// Scope to the i18n block. Scraping the whole file also catches
 // 'message' => __('Permission denied') and friends in the AJAX handlers below, which
 // are wp_send_json payload keys, not localized script strings.
-$i18n_start = strpos($php, "'i18n' => array(");
-t_assert($i18n_start !== false, 'the i18n block is where the scrape expects it');
-
-$open  = strpos($php, '(', $i18n_start + strlen("'i18n' => array"));
-$depth = 0;
-$end   = $open;
-for ($i = $open; $i < strlen($php); $i++) {
-	if ($php[$i] === '(') $depth++;
-	elseif ($php[$i] === ')') {
-		$depth--;
-		if ($depth === 0) { $end = $i; break; }
-	}
-}
-$i18n_block = substr($php, $open, $end - $open + 1);
+// t_array_block() walks tokens: the character-matching version this replaced was
+// pinned to `'i18n' => array(` and broke the moment item 18 swept the syntax.
+$i18n_block = t_array_block($php, 'i18n');
+t_assert($i18n_block !== null, 'the i18n block is where the scrape expects it');
 
 preg_match_all('/\'(\w+)\'\s*=>\s*__\(/', $i18n_block, $php_matches);
 $defined = array_unique($php_matches[1]);
@@ -98,9 +88,8 @@ foreach ($used as $key) {
 }
 
 // And the reverse, for the keys the JS actually consumes
-$localized_block = strstr($php, "'i18n' => array(");
 foreach ($used as $key) {
-	t_assert($localized_block !== false && strpos($localized_block, "'$key'") !== false,
+	t_assert($i18n_block !== null && strpos($i18n_block, "'$key'") !== false,
 		"product.php localizes $key inside the i18n block, not elsewhere");
 }
 

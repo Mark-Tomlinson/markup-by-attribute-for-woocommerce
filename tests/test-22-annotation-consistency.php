@@ -9,9 +9,8 @@
  *   percentage -> word form   (Add 5%) / (Subtract 5%)   — bare "-5%" is ambiguous
  *   currency   -> sign form   (+$5.00) / (-$5.00)        — the symbol says the rest
  *
- * Decided with Mark 2026-06-17, built 2026-08-13. Two deliberate limits, both
- * his call and both pinned below so a later "consistency" pass does not quietly
- * undo them:
+ * Two deliberate limits, both pinned below so a later "consistency" pass does
+ * not quietly undo them:
  *
  *   - addMarkupToTermDescription() is NOT converted. Term descriptions keep the
  *     word form for both types.
@@ -138,7 +137,7 @@ t_assert(strpos($term_src, 'addMarkupToName($new_name, $markup, $is_negative)') 
 	'term.php no longer passes $is_negative to addMarkupToName');
 //endregion
 
-//region Term DESCRIPTIONS deliberately keep the word form (Mark's call, 2026-08-13)
+//region Term DESCRIPTIONS deliberately keep the word form
 t_assert(General::addMarkupToTermDescription('Nice color', '5') === "Nice color\n(Add \$5.00)",
 	'description, currency positive stays in the word form');
 t_assert(General::addMarkupToTermDescription('Nice color', '-5', true) === "Nice color\n(Subtract \$5.00)",
@@ -167,7 +166,7 @@ t_assert(General::addMarkupToName(General::stripMarkupAnnotation('Blue (+$5.00)'
 	're-annotating replaces rather than appends');
 
 // Names baked by an earlier version keep the word form until the term is next
-// saved (no upgrade routine — Mark's call, 2026-08-13), so the stripper still
+// saved (there is deliberately no upgrade routine), so the stripper still
 // has to recognize them.
 t_assert(General::stripMarkupAnnotation('Blue (Add $5.00)') === 'Blue',
 	'a pre-4.7.0 word-form currency annotation still strips');
@@ -177,6 +176,40 @@ t_assert(General::stripMarkupAnnotation('Blue (Subtract 10%)') === 'Blue',
 	'a word-form percentage annotation still strips');
 t_assert(General::stripMarkupAnnotation('Blue') === 'Blue',
 	'a clean name is left alone');
+//endregion
+
+//region Multi-line descriptions — the whitespace around the annotation goes too
+// Reported against 4.8.0: a description textarea POSTs CRLF endings, and the old
+// stripper consumed exactly one leading whitespace character and nothing trailing.
+// That left the orphaned \r behind (rendering as a blank line) and left the space
+// after the annotation as a stray indent on the following line.
+t_assert(General::stripMarkupAnnotation("Big!\r\n(Add \$6.28)\r\nI added this text")
+		=== "Big!\r\nI added this text",
+	'annotation alone on a middle line leaves no blank line behind');
+t_assert(General::stripMarkupAnnotation("added text\r\n(Subtract 3.141593%) new text")
+		=== "added text\r\nnew text",
+	'annotation at the head of a line leaves no leading space behind');
+t_assert(General::stripMarkupAnnotation("(Subtract 3.141593%)\r\nadded text")
+		=== 'added text',
+	'annotation on the first line takes its line break with it');
+t_assert(General::stripMarkupAnnotation("Big!\r\nsome text\r\n(Add \$6.28)")
+		=== "Big!\r\nsome text",
+	'annotation on the last line takes its line break with it');
+t_assert(General::stripMarkupAnnotation("Big (Add \$5.00) stuff") === 'Big stuff',
+	'annotation between two words collapses to a single space');
+t_assert(General::stripMarkupAnnotation("Para one\r\n\r\nPara two\r\n(Add \$6.28)")
+		=== "Para one\r\n\r\nPara two",
+	"a paragraph break the user typed is NOT collapsed");
+t_assert(General::stripMarkupAnnotation("(Add \$6.28)") === '',
+	'a description that is nothing but an annotation strips to empty');
+
+// The round trip the user actually performs: type text into an already-annotated
+// description, save, and get the annotation back on its own line at the bottom.
+t_assert(General::addMarkupToTermDescription(
+		General::stripMarkupAnnotation("Big!\r\n(Add \$6.28)\r\nI added this text"),
+		'6.28', false)
+		=== "Big!\r\nI added this text\n(Add \$6.28)",
+	'strip-then-re-add round trip is stable across a re-save');
 //endregion
 
 //region End-anchoring is what keeps the sign form off real term names
@@ -189,7 +222,7 @@ t_assert(General::stripMarkupAnnotation('Blue (+extras)') === 'Blue (+extras)',
 t_assert(General::stripMarkupAnnotation('Cable (2m)') === 'Cable (2m)',
 	'a measurement is left alone');
 
-// Documented false positive, accepted 2026-08-13: a name ending in a bare
+// Documented false positive, accepted: a name ending in a bare
 // signed number is indistinguishable from a symbol-less annotation.
 t_assert(General::stripMarkupAnnotation('Thermostat (-40)') === 'Thermostat',
 	'KNOWN: a name ending in a bare signed number is stripped');

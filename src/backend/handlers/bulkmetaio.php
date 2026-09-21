@@ -5,21 +5,14 @@ namespace mt2Tech\MarkupByAttribute\Backend\Handlers;
  * Bulk postmeta reads and writes for the markup handlers
  *
  * The price handlers touch hundreds of meta rows per reprice, so they bypass the
- * WordPress meta API and issue their own multi-row statements. That raw SQL used
- * to be spread across the handlers, which meant the IN-clause placeholder dance
- * appeared six times and the DELETE+INSERT pair four times — each one a separate
- * chance to forget the empty-array guard and emit "WHERE post_id IN ()".
+ * WordPress meta API and issue multi-row statements through this class. Every
+ * method no-ops on empty input, so the "WHERE post_id IN ()" guard exists once.
  *
- * Every method here no-ops on empty input, so that guard exists once.
- *
- * Deliberately does NOT manage transactions. Callers wrap these calls in their
- * own START TRANSACTION/COMMIT and decide who owns it (see PriceSetHandler's
- * $owns_transaction), which only works if this class stays a dumb statement
- * issuer.
+ * Does NOT manage transactions. Callers own START TRANSACTION/COMMIT (see
+ * PriceSetHandler's $owns_transaction), which only works if this class stays a
+ * plain statement issuer.
  *
  * @package   mt2Tech\MarkupByAttribute\Backend\Handlers
- * @author    Mark Tomlinson
- * @license   GPL-3.0-or-later
  * @since     4.7.0
  */
 final class BulkMetaIO {
@@ -42,7 +35,7 @@ final class BulkMetaIO {
 
 		$rows = $wpdb->get_results($wpdb->prepare(
 			"SELECT post_id, meta_value FROM {$wpdb->postmeta}
-			WHERE post_id IN (" . self::placeholders($ids) . ") AND meta_key = %s",
+			WHERE post_id IN (" . self::placeholders($ids) . ') AND meta_key = %s',
 			array_merge($ids, [$meta_key])
 		));
 
@@ -75,7 +68,7 @@ final class BulkMetaIO {
 
 		return $wpdb->get_results($wpdb->prepare(
 			"SELECT post_id, meta_key, meta_value FROM {$wpdb->postmeta}
-			WHERE post_id IN (" . self::placeholders($ids) . ") AND meta_key LIKE %s",
+			WHERE post_id IN (" . self::placeholders($ids) . ') AND meta_key LIKE %s',
 			array_merge($ids, [$key_like])
 		));
 	}

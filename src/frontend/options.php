@@ -10,8 +10,6 @@ use mt2Tech\MarkupByAttribute\Utility as Utility;
  * plugin settings, and price display formatting.
  *
  * @package   mt2Tech\MarkupByAttribute\Frontend
- * @author    Mark Tomlinson
- * @license   GPL-3.0-or-later
  * @since     1.0.0
  */
 
@@ -29,11 +27,7 @@ class Options {
 	//endregion
 
 	//region INSTANCE MANAGEMENT
-	/**
-	 * Get singleton instance
-	 *
-	 * @return self Single instance of this class
-	 */
+	/** Singleton accessor. */
 	public static function get_instance(): self {
 		if (self::$instance === null) {
 			self::$instance = new self();
@@ -41,14 +35,10 @@ class Options {
 		return self::$instance;
 	}
 
-	/**
-	 * Prevent object cloning
-	 */
+	/** Singleton: cloning is not supported. */
 	public function __clone() {}
 
-	/**
-	 * Prevent object unserialization
-	 */
+	/** Singleton: unserialization is not supported. */
 	public function __wakeup() {}
 
 	/**
@@ -57,7 +47,7 @@ class Options {
 	 * Sets up filter to modify WooCommerce variation dropdown HTML.
 	 */
 	private function __construct() {
-		add_filter('woocommerce_dropdown_variation_attribute_options_html', array($this, 'mt2mbaDropdownOptionsMarkupHTML'), 10, 2);
+		add_filter('woocommerce_dropdown_variation_attribute_options_html', [$this, 'mt2mbaDropdownOptionsMarkupHTML'], 10, 2);
 	}
 	//endregion
 
@@ -128,7 +118,7 @@ class Options {
 		$name					= $args['name'] ? $args['name'] : 'attribute_' . sanitize_title($attribute);
 		$id						= $args['id'] ? $args['id'] : sanitize_title($attribute);
 		$class					= $args['class'];
-		$show_option_none		= $args['show_option_none'] ? TRUE : FALSE;
+		$show_option_none		= $args['show_option_none'] ? true : false;
 		$show_option_none_text	= $args['show_option_none'] ? $args['show_option_none'] : __('Choose an option', 'woocommerce');
 		$options				= $args['options'];
 
@@ -153,7 +143,7 @@ class Options {
 		if (!empty($options)) {
 			if ($product && taxonomy_exists($attribute)) {  // product exists and attribute is global
 				// Get all attribute terms for this product
-				$terms = wc_get_product_terms($product->get_id(), $attribute, array('fields' => 'all'));
+				$terms = wc_get_product_terms($product->get_id(), $attribute, ['fields' => 'all']);
 				foreach ($terms as $term) {
 					// Only include terms that are actually used in this product's variations
 					if (in_array($term->slug, $options)) {
@@ -166,7 +156,7 @@ class Options {
 							$term_name = Utility\General::stripMarkupAnnotation($term->name);
 						} else {
 							$term_name = $term->name;
-							$raw_markup = get_metadata('post', $product->get_id(), 'mt2mba_' . $term->term_id . '_markup_amount', TRUE);
+							$raw_markup = get_metadata('post', $product->get_id(), 'mt2mba_' . $term->term_id . '_markup_amount', true);
 							if ($raw_markup) {
 								$markup = Utility\General::formatOptionMarkup($raw_markup);
 							}
@@ -174,7 +164,7 @@ class Options {
 
 						// Build the option element with proper escaping
 						$html .= PHP_EOL .
-							'<option value="' . esc_attr($term->slug) . '"' . selected(sanitize_title($args['selected']), $term->slug, FALSE) . '>' .
+							'<option value="' . esc_attr($term->slug) . '"' . selected(sanitize_title($args['selected']), $term->slug, false) . '>' .
 							esc_html(apply_filters('woocommerce_variation_option_name', $term_name)) . esc_html($markup) . '</option>';
 					}
 				}
@@ -183,7 +173,7 @@ class Options {
 					// For non-taxonomy attributes, just use the option as is
 					$html .= PHP_EOL .
 						'<option value="' . esc_attr($option) . '"' .
-						selected($args['selected'], sanitize_title($option), FALSE) . '>' .
+						selected($args['selected'], sanitize_title($option), false) . '>' .
 						esc_html(apply_filters('woocommerce_variation_option_name', $option)) .
 						'</option>';
 				}

@@ -20,18 +20,20 @@ jQuery(document).ready(function($) {
 	// Process bulk reapply if needed
 	const urlParams = new URLSearchParams(window.location.search);
 	const bulkIds = urlParams.get('reapply_markups_ids');
-	if (bulkIds) {
-		// Drop the parameter before processing starts. It rides on WooCommerce's own
-		// redirect, so only this one key is removed and the rest of the query string
-		// (post_type, paged, filters) survives. Without this, a refresh -- or the back
-		// button, or a bookmarked URL -- silently repeats the entire bulk reprice.
+	const hadNothingToDo = urlParams.has('reapply_markups_none');
+	if (bulkIds || hadNothingToDo) {
+		// Drop only these keys from the URL before processing starts, or a refresh, the
+		// back button, or a bookmark silently repeats the entire bulk reprice. The
+		// warning is dropped with them: PHP has already printed it into this page.
 		urlParams.delete('reapply_markups_ids');
+		urlParams.delete('reapply_markups_none');
 		const query = urlParams.toString();
 		history.replaceState(null, '',
 			window.location.pathname + (query ? '?' + query : '') + window.location.hash);
+	}
 
-		const productIds = bulkIds.split(',');
-		processBulkReapply(productIds);
+	if (bulkIds) {
+		processBulkReapply(bulkIds.split(','));
 	}
 
 	// Handle clicks on individual "Reapply markups" icons
@@ -151,12 +153,9 @@ jQuery(document).ready(function($) {
 									}
 								}
 							},
-							// The markup itself was already applied and saved before this
-							// request went out, so the row has to be handed back whether or
-							// not the fresh HTML arrives. When this lived in success() a
-							// failed refresh left the icon stuck on the checkmark with
-							// .processing still set, and that row could not be reapplied
-							// again without a page reload.
+							// complete, not success: the markup was already saved before this
+							// request went out, so the row must be handed back even if the
+							// fresh HTML never arrives, or it could not be reapplied again.
 							complete: function() {
 								setTimeout(function() {
 									$icon.removeClass('dashicons-yes').addClass('dashicons-update');

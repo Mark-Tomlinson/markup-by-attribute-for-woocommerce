@@ -152,8 +152,8 @@ $cases = [
 		$saved_meta . ' | wp_update_term(123,"pa_cows",name="Holstein",desc="A cow.\n(Add $5.00)")',
 	],
 	// The two fields deliberately disagree since 4.7.0: a currency markup takes the
-	// sign form in the NAME and keeps the word form in the DESCRIPTION (Mark's call,
-	// 2026-08-13). Pinned so the split reads as a decision, not a missed conversion.
+	// sign form in the NAME and keeps the word form in the DESCRIPTION. Pinned so
+	// the split reads as a decision, not a missed conversion.
 	'name on, desc on' => [
 		['name_flag' => 'yes', 'desc_flag' => 'yes'],
 		$saved_meta . ' | wp_update_term(123,"pa_cows",name="Holstein (+$5.00)",desc="A cow.\n(Add $5.00)")',

@@ -8,8 +8,6 @@ namespace mt2Tech\MarkupByAttribute\Backend;
  * theme overwrite prevention) on the WooCommerce global attribute admin pages.
  *
  * @package   mt2Tech\MarkupByAttribute\Backend
- * @author    Mark Tomlinson
- * @license   GPL-3.0-or-later
  * @since     4.6.0
  */
 class Attribute {
@@ -40,12 +38,7 @@ class Attribute {
 	//endregion
 
 	//region INSTANCE MANAGEMENT
-	/**
-	 * Get singleton instance
-	 *
-	 * @since 4.6.0
-	 * @return Attribute Single instance of this class
-	 */
+	/** Singleton accessor. @since 4.6.0 */
 	public static function get_instance(): self {
 		if (self::$instance === null) {
 			self::$instance = new self();
@@ -53,35 +46,20 @@ class Attribute {
 		return self::$instance;
 	}
 
-	/**
-	 * Prevent object cloning
-	 *
-	 * @since 4.6.0
-	 */
+	/** Singleton: cloning is not supported. */
 	private function __clone() {}
 
-	/**
-	 * Prevent object unserialization
-	 *
-	 * @since 4.6.0
-	 */
+	/** Singleton: unserialization is not supported. @since 4.6.0 */
 	public function __wakeup() {}
 
 	/**
 	 * Initialize the class and set up hooks
-	 *
-	 * @since 4.6.0
 	 */
 	private function __construct() {
 		$this->initializeLabels();
 		$this->registerAttributeHooks();
 	}
 
-	/**
-	 * Initialize text labels and descriptions
-	 *
-	 * @since 4.6.0
-	 */
 	private function initializeLabels(): void {
 		$this->rewrite_name_label = __('Add Markup to Name?', 'markup-by-attribute-for-woocommerce');
 		$this->rewrite_name_description = sprintf(
@@ -90,7 +68,7 @@ class Attribute {
 		);
 		$this->rewrite_desc_label = __('Add Markup to Description?', 'markup-by-attribute-for-woocommerce');
 		$this->rewrite_desc_description = sprintf(
-			__('Add the markup to the option\'s description.', 'markup-by-attribute-for-woocommerce') . ' ' .
+			__("Add the markup to the option's description.", 'markup-by-attribute-for-woocommerce') . ' ' .
 			__('Often needed if the option drop-down box is overwritten by another plugin or theme and markup is no longer visible.', 'markup-by-attribute-for-woocommerce')
 		);
 		$this->dont_overwrite_theme_label = __('Do Not Overwrite Theme', 'markup-by-attribute-for-woocommerce');
@@ -100,15 +78,10 @@ class Attribute {
 		);
 	}
 
-	/**
-	 * Register hooks for attribute actions
-	 *
-	 * @since 3.0.0
-	 */
 	private function registerAttributeHooks(): void {
 		// Add fields to forms
-		add_action("woocommerce_after_add_attribute_fields", array($this, 'addAttributeFields'), 10, 2);
-		add_action("woocommerce_after_edit_attribute_fields", array($this, 'editAttributeFields'), 10, 2);
+		add_action('woocommerce_after_add_attribute_fields', [$this, 'addAttributeFields'], 10, 2);
+		add_action('woocommerce_after_edit_attribute_fields', [$this, 'editAttributeFields'], 10, 2);
 
 		// Persist per-attribute options after WooCommerce saves the attribute.
 		// These hooks hand us the authoritative attribute ID — never derive it from
@@ -122,7 +95,7 @@ class Attribute {
 		}, 10, 3);
 
 		// Delete options when attribute is deleted
-		add_action("woocommerce_before_attribute_delete", function () {
+		add_action('woocommerce_before_attribute_delete', function () {
 			$delete_id = isset($_GET['delete']) ? absint($_GET['delete']) : 0;
 			if ($delete_id > 0) {
 				delete_option(MT2MBA_REWRITE_TERM_NAME_PREFIX . $delete_id);
@@ -217,9 +190,9 @@ class Attribute {
 		$dont_overwrite_theme_flag	= get_option(MT2MBA_DONT_OVERWRITE_THEME_PREFIX . $attribute_id, false);
 
 		// Build row and fill field with current markup
-		$checked_name_flag = $rewrite_name_flag == 'yes' ? ' checked' : "";
-		$checked_desc_flag = $rewrite_desc_flag == 'yes' ? ' checked' : "";
-		$checked_overwrite_flag = $dont_overwrite_theme_flag == 'yes' ? ' checked' : "";
+		$checked_name_flag = $rewrite_name_flag == 'yes' ? ' checked' : '';
+		$checked_desc_flag = $rewrite_desc_flag == 'yes' ? ' checked' : '';
+		$checked_overwrite_flag = $dont_overwrite_theme_flag == 'yes' ? ' checked' : '';
 		?>
 		<tr class="form-field">
 			<th scope="row" valign="top"><label for="dont_overwrite_theme"><?php echo esc_html($this->dont_overwrite_theme_label); ?></label></th>

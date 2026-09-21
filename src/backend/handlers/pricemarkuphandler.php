@@ -9,8 +9,6 @@ namespace mt2Tech\MarkupByAttribute\Backend\Handlers;
  * handlers to implement their own markup calculation strategies.
  *
  * @package   mt2Tech\MarkupByAttribute\Backend\Handlers
- * @author    Mark Tomlinson
- * @license   GPL-3.0-or-later
  * @since     4.0.0
  */
 abstract class PriceMarkupHandler {
@@ -68,8 +66,8 @@ abstract class PriceMarkupHandler {
 	public function __construct($bulk_action, $product_id, $variations, $base_price, $owns_transaction = true) {
 		// Extract price_type from bulk_action (e.g., "variable_regular_price" -> "regular_price")
 		if ($bulk_action) {
-			$bulk_action_array = explode("_", $bulk_action);
-			$this->price_type = $bulk_action_array[1] . "_" . $bulk_action_array[2];
+			$bulk_action_array = explode('_', $bulk_action);
+			$this->price_type = $bulk_action_array[1] . '_' . $bulk_action_array[2];
 		}
 
 		$this->bulk_action = $bulk_action;

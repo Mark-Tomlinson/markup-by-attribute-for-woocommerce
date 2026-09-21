@@ -9,8 +9,6 @@ namespace mt2Tech\MarkupByAttribute\Utility\Upgrades;
  * be idempotent — safe to re-run if a previous attempt partially completed.
  *
  * @package   mt2Tech\MarkupByAttribute\Utility\Upgrades
- * @author    Mark Tomlinson
- * @license   GPL-3.0-or-later
  * @since     4.6.0
  */
 interface UpgradeInterface {

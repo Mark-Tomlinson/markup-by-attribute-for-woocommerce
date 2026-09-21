@@ -101,6 +101,11 @@ function __($text, $domain = null) { return $text; }
 // double-escaped pipeline looks correct in the browser.
 function esc_html($text) { return htmlspecialchars((string) $text, ENT_QUOTES, 'UTF-8', false); }
 function esc_attr($text) { return htmlspecialchars((string) $text, ENT_QUOTES, 'UTF-8', false); }
+function esc_html__($text, $domain = null) { return esc_html($text); }
+// Returns the form WordPress would pick, so a test can tell a singular string
+// from a plural one rather than always seeing the first argument
+function _n($single, $plural, $number, $domain = null) { return (int) $number === 1 ? $single : $plural; }
+function number_format_i18n($number, $decimals = 0) { return number_format((float) $number, $decimals); }
 function esc_url($url) { return $url; }
 function wp_kses_post($text) { return $text; }
 function wp_kses($text, $allowed_html = [], $allowed_protocols = []) { return $text; }
@@ -246,8 +251,37 @@ function wp_enqueue_style($handle, $src = '', $deps = [], $ver = false, $media =
 	$GLOBALS['mt2mba_test']['enqueued']['style'][$handle] = compact('src', 'deps', 'ver', 'media');
 }
 function wp_localize_script($handle, $name, $data) { $GLOBALS["mt2mba_test"]["localized"][$name] = $data; return true; }
-function add_query_arg($args, $url = '') { return $url . '?' . http_build_query($args); }
+// WordPress accepts both add_query_arg(array, url) and add_query_arg(key, value, url).
+// Both forms are modeled: code written against the three-argument form would
+// otherwise fold the URL into the query string and no test would notice.
+function add_query_arg(...$args) {
+	if (count($args) >= 3) {
+		[$key, $value, $url] = $args;
+		$add = [$key => $value];
+	} else {
+		$add = (array) $args[0];
+		$url = $args[1] ?? '';
+	}
+
+	// Merged into whatever the URL already carries, the way WordPress does it. A
+	// stub that replaced the query string would quietly drop the taxonomy and
+	// post_type a redirect depends on, and every test would still pass.
+	$parts = explode('?', (string) $url, 2);
+	$query = [];
+	if (isset($parts[1])) parse_str($parts[1], $query);
+
+	return $parts[0] . '?' . http_build_query(array_merge($query, $add));
+}
 function admin_url($path = '') { return 'http://test/wp-admin/' . $path; }
+function remove_query_arg($keys, $url = '') {
+	$parts = explode('?', (string) $url, 2);
+	if (!isset($parts[1])) return $parts[0];
+
+	parse_str($parts[1], $query);
+	foreach ((array) $keys as $key) unset($query[$key]);
+
+	return $query ? $parts[0] . '?' . http_build_query($query) : $parts[0];
+}
 function error_log_stub($msg) {}
 
 class WP_Term {
@@ -262,8 +296,12 @@ class WP_Term {
 	public $count = 0;
 }
 class WP_Error {}
+// Retains the clauses so a test can assert what was asked for. A stub that threw
+// them away could not tell a typed clause from an untyped one, and the type is
+// the whole difference between a numeric sort and a text one.
 class WP_Meta_Query {
-	public function __construct($query = false) {}
+	public $queries = [];
+	public function __construct($query = false) { $this->queries = $query ?: []; }
 }
 //endregion
 
@@ -304,7 +342,12 @@ function wc_price($price, $args = []) {
 	return $format ? $format((float) $price) : '$' . number_format((float) $price, 2);
 }
 function wc_get_price_decimals() { return 2; }
-function wc_format_localized_decimal($value) { return $value; }
+// Models core: the '.' decimal becomes the store's separator, nothing else moves.
+// An identity stub cannot tell a comma-decimal store apart from a dot one, which
+// is where display formatting goes wrong.
+function wc_format_localized_decimal($value) {
+	return str_replace('.', wc_get_price_decimal_separator(), (string) $value);
+}
 function get_woocommerce_currency() { return $GLOBALS['mt2mba_stub']['currency'] ?? 'USD'; }
 function get_woocommerce_currency_symbol($currency = '') { return $GLOBALS['mt2mba_stub']['currency_symbol'] ?? '&#36;'; }
 
@@ -439,6 +482,68 @@ function t_product($product_id, array $taxonomies, array $labels = [], array $se
 		}
 	}
 	$GLOBALS['mt2mba_stub']['products'][$product_id] = new MT2MBA_Fake_Product($attributes);
+}
+//endregion
+
+//region Source-scraping helpers
+/**
+ * Return the source text of the array literal assigned to $key in $php.
+ *
+ * Walks tokens rather than characters so the result cannot be thrown off by
+ * quoting, spacing, or a bracket that happens to sit inside a string literal —
+ * and so it reads array() and [] alike. Item 18's syntax sweep broke the
+ * character-matching version of this, which is why it walks tokens now.
+ *
+ * @param  string $php Full PHP source
+ * @param  string $key Array key whose value to extract, e.g. 'i18n'
+ * @return string|null The literal including its delimiters, or null if absent
+ */
+function t_array_block($php, $key) {
+	$tokens = token_get_all($php);
+	$count = count($tokens);
+
+	for ($i = 0; $i < $count; $i++) {
+		$token = $tokens[$i];
+		if (!is_array($token) || $token[0] !== T_CONSTANT_ENCAPSED_STRING) continue;
+		if (substr($token[1], 1, -1) !== $key) continue;
+
+		// Expect  'key' => [   or   'key' => array(
+		$j = $i + 1;
+		while ($j < $count && is_array($tokens[$j])
+			&& in_array($tokens[$j][0], [T_WHITESPACE, T_COMMENT, T_DOC_COMMENT], true)) $j++;
+		if ($j >= $count || !is_array($tokens[$j]) || $tokens[$j][0] !== T_DOUBLE_ARROW) continue;
+
+		$j++;
+		while ($j < $count && is_array($tokens[$j])
+			&& in_array($tokens[$j][0], [T_WHITESPACE, T_COMMENT, T_DOC_COMMENT], true)) $j++;
+		if ($j >= $count) continue;
+
+		if (is_array($tokens[$j]) && $tokens[$j][0] === T_ARRAY) {
+			$j++;
+			while ($j < $count && is_array($tokens[$j])
+				&& in_array($tokens[$j][0], [T_WHITESPACE, T_COMMENT, T_DOC_COMMENT], true)) $j++;
+			$open = '('; $close = ')';
+		} elseif ($tokens[$j] === '[') {
+			$open = '['; $close = ']';
+		} else {
+			continue;
+		}
+		if ($j >= $count || $tokens[$j] !== $open) continue;
+
+		// Reassemble from the opening delimiter to its match
+		$depth = 0;
+		$text = '';
+		for ($k = $j; $k < $count; $k++) {
+			$piece = is_array($tokens[$k]) ? $tokens[$k][1] : $tokens[$k];
+			$text .= $piece;
+			if ($piece === $open) $depth++;
+			elseif ($piece === $close) {
+				$depth--;
+				if ($depth === 0) return $text;
+			}
+		}
+	}
+	return null;
 }
 //endregion
 
